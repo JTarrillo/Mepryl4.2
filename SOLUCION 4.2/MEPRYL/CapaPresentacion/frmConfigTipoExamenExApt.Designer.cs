@@ -1,0 +1,1265 @@
+﻿namespace CapaPresentacion
+{
+    partial class frmConfigTipoExamenExApt
+    {
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
+
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        #region Windows Form Designer generated code
+
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmConfigTipoExamenExApt));
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
+            this.lbTitulo = new System.Windows.Forms.Label();
+            this.botonLaboratorio = new System.Windows.Forms.Panel();
+            this.botSalir = new System.Windows.Forms.Button();
+            this.btnSalir = new System.Windows.Forms.Button();
+            this.botCancelar = new System.Windows.Forms.Button();
+            this.botAgregar = new System.Windows.Forms.Button();
+            this.botEliminar = new System.Windows.Forms.Button();
+            this.botEditar = new System.Windows.Forms.Button();
+            this.botGuardar = new System.Windows.Forms.Button();
+            this.panelMenu = new System.Windows.Forms.Panel();
+            this.cboSubTipo = new System.Windows.Forms.ComboBox();
+            this.label23 = new System.Windows.Forms.Label();
+            this.cboTipoExamen = new System.Windows.Forms.ComboBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.cboMotivoConsulta = new System.Windows.Forms.ComboBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.panelPrincipal = new System.Windows.Forms.Panel();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.tabControl = new System.Windows.Forms.TabControl();
+            this.tabPageResumen = new System.Windows.Forms.TabPage();
+            this.tbResumenEstCompl = new System.Windows.Forms.TextBox();
+            this.tbResumenRx = new System.Windows.Forms.TextBox();
+            this.tbResumenLaboratorio = new System.Windows.Forms.TextBox();
+            this.tbResumenClinico = new System.Windows.Forms.TextBox();
+            this.label22 = new System.Windows.Forms.Label();
+            this.label21 = new System.Windows.Forms.Label();
+            this.label20 = new System.Windows.Forms.Label();
+            this.label19 = new System.Windows.Forms.Label();
+            this.tabPageClinico = new System.Windows.Forms.TabPage();
+            this.label17 = new System.Windows.Forms.Label();
+            this.dgvClinico = new System.Windows.Forms.DataGridView();
+            this.tabPageLaboratorio = new System.Windows.Forms.TabPage();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
+            this.dgvOrina = new System.Windows.Forms.DataGridView();
+            this.dgvBacteriologia = new System.Windows.Forms.DataGridView();
+            this.dgvPerfilLipidico = new System.Windows.Forms.DataGridView();
+            this.dgvSerologia = new System.Windows.Forms.DataGridView();
+            this.dgvQuimicaHematica = new System.Windows.Forms.DataGridView();
+            this.dgvHematologia = new System.Windows.Forms.DataGridView();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.label13 = new System.Windows.Forms.Label();
+            this.dgvMiembroInferior = new System.Windows.Forms.DataGridView();
+            this.label14 = new System.Windows.Forms.Label();
+            this.dgvTroncoYPelvis = new System.Windows.Forms.DataGridView();
+            this.label15 = new System.Windows.Forms.Label();
+            this.dgvCraneoYMSuperior = new System.Windows.Forms.DataGridView();
+            this.label16 = new System.Windows.Forms.Label();
+            this.dgvLaboralesBasicas = new System.Windows.Forms.DataGridView();
+            this.tabPageCardiologia = new System.Windows.Forms.TabPage();
+            this.label18 = new System.Windows.Forms.Label();
+            this.dgvEstComplementarios = new System.Windows.Forms.DataGridView();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.label2 = new System.Windows.Forms.Label();
+            this.tbId = new System.Windows.Forms.TextBox();
+            this.tbCodigo = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.tbDescripcionInformes = new System.Windows.Forms.TextBox();
+            this.tbDescripcion = new System.Windows.Forms.TextBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.tbPrecioBase = new System.Windows.Forms.TextBox();
+            this.botonLaboratorio.SuspendLayout();
+            this.panelMenu.SuspendLayout();
+            this.panelPrincipal.SuspendLayout();
+            this.panel2.SuspendLayout();
+            this.tabControl.SuspendLayout();
+            this.tabPageResumen.SuspendLayout();
+            this.tabPageClinico.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvClinico)).BeginInit();
+            this.tabPageLaboratorio.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvOrina)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvBacteriologia)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvPerfilLipidico)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvSerologia)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvQuimicaHematica)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvHematologia)).BeginInit();
+            this.tabPage3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvMiembroInferior)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvTroncoYPelvis)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvCraneoYMSuperior)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvLaboralesBasicas)).BeginInit();
+            this.tabPageCardiologia.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvEstComplementarios)).BeginInit();
+            this.panel1.SuspendLayout();
+            this.SuspendLayout();
+            // 
+            // lbTitulo
+            // 
+            this.lbTitulo.BackColor = System.Drawing.Color.SeaGreen;
+            this.lbTitulo.Dock = System.Windows.Forms.DockStyle.Top;
+            this.lbTitulo.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbTitulo.ForeColor = System.Drawing.Color.White;
+            this.lbTitulo.Location = new System.Drawing.Point(0, 0);
+            this.lbTitulo.Name = "lbTitulo";
+            this.lbTitulo.Size = new System.Drawing.Size(1186, 30);
+            this.lbTitulo.TabIndex = 129;
+            this.lbTitulo.Text = "Configuración Exámen de Aptitud";
+            this.lbTitulo.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // botonLaboratorio
+            // 
+            this.botonLaboratorio.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.botonLaboratorio.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.botonLaboratorio.Controls.Add(this.botSalir);
+            this.botonLaboratorio.Controls.Add(this.btnSalir);
+            this.botonLaboratorio.Controls.Add(this.botCancelar);
+            this.botonLaboratorio.Controls.Add(this.botAgregar);
+            this.botonLaboratorio.Controls.Add(this.botEliminar);
+            this.botonLaboratorio.Controls.Add(this.botEditar);
+            this.botonLaboratorio.Controls.Add(this.botGuardar);
+            this.botonLaboratorio.Dock = System.Windows.Forms.DockStyle.Right;
+            this.botonLaboratorio.Location = new System.Drawing.Point(1040, 30);
+            this.botonLaboratorio.Name = "botonLaboratorio";
+            this.botonLaboratorio.Size = new System.Drawing.Size(146, 508);
+            this.botonLaboratorio.TabIndex = 2;
+            // 
+            // botSalir
+            // 
+            this.botSalir.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+            this.botSalir.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold);
+            this.botSalir.Image = ((System.Drawing.Image)(resources.GetObject("botSalir.Image")));
+            this.botSalir.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.botSalir.Location = new System.Drawing.Point(10, 457);
+            this.botSalir.Name = "botSalir";
+            this.botSalir.Size = new System.Drawing.Size(120, 45);
+            this.botSalir.TabIndex = 133;
+            this.botSalir.Text = "Salir";
+            this.botSalir.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.botSalir.UseVisualStyleBackColor = true;
+            this.botSalir.Click += new System.EventHandler(this.botSalir_Click);
+            // 
+            // btnSalir
+            // 
+            this.btnSalir.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+            this.btnSalir.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnSalir.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold);
+            this.btnSalir.Image = ((System.Drawing.Image)(resources.GetObject("btnSalir.Image")));
+            this.btnSalir.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnSalir.Location = new System.Drawing.Point(10, 498);
+            this.btnSalir.Name = "btnSalir";
+            this.btnSalir.Size = new System.Drawing.Size(127, 46);
+            this.btnSalir.TabIndex = 132;
+            this.btnSalir.Text = "Salir";
+            this.btnSalir.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btnSalir.UseVisualStyleBackColor = true;
+            this.btnSalir.Visible = false;
+            this.btnSalir.Click += new System.EventHandler(this.btnSalir_Click);
+            // 
+            // botCancelar
+            // 
+            this.botCancelar.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+            this.botCancelar.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold);
+            this.botCancelar.Image = ((System.Drawing.Image)(resources.GetObject("botCancelar.Image")));
+            this.botCancelar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.botCancelar.Location = new System.Drawing.Point(10, 318);
+            this.botCancelar.Name = "botCancelar";
+            this.botCancelar.Size = new System.Drawing.Size(120, 45);
+            this.botCancelar.TabIndex = 1;
+            this.botCancelar.Text = "Cancelar";
+            this.botCancelar.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.botCancelar.UseVisualStyleBackColor = true;
+            this.botCancelar.Click += new System.EventHandler(this.botCancelar_Click);
+            // 
+            // botAgregar
+            // 
+            this.botAgregar.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+            this.botAgregar.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.botAgregar.Image = ((System.Drawing.Image)(resources.GetObject("botAgregar.Image")));
+            this.botAgregar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.botAgregar.Location = new System.Drawing.Point(10, 114);
+            this.botAgregar.Name = "botAgregar";
+            this.botAgregar.Size = new System.Drawing.Size(120, 45);
+            this.botAgregar.TabIndex = 2;
+            this.botAgregar.Text = "Agregar";
+            this.botAgregar.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.botAgregar.UseVisualStyleBackColor = true;
+            this.botAgregar.Click += new System.EventHandler(this.botAgregar_Click);
+            // 
+            // botEliminar
+            // 
+            this.botEliminar.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+            this.botEliminar.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.botEliminar.Image = ((System.Drawing.Image)(resources.GetObject("botEliminar.Image")));
+            this.botEliminar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.botEliminar.Location = new System.Drawing.Point(10, 216);
+            this.botEliminar.Name = "botEliminar";
+            this.botEliminar.Size = new System.Drawing.Size(120, 45);
+            this.botEliminar.TabIndex = 4;
+            this.botEliminar.Text = "Eliminar";
+            this.botEliminar.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.botEliminar.UseVisualStyleBackColor = true;
+            this.botEliminar.Visible = false;
+            this.botEliminar.Click += new System.EventHandler(this.botEliminar_Click);
+            // 
+            // botEditar
+            // 
+            this.botEditar.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+            this.botEditar.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.botEditar.Image = ((System.Drawing.Image)(resources.GetObject("botEditar.Image")));
+            this.botEditar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.botEditar.Location = new System.Drawing.Point(10, 165);
+            this.botEditar.Name = "botEditar";
+            this.botEditar.Size = new System.Drawing.Size(120, 45);
+            this.botEditar.TabIndex = 3;
+            this.botEditar.Text = "Editar";
+            this.botEditar.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.botEditar.UseVisualStyleBackColor = true;
+            this.botEditar.Click += new System.EventHandler(this.botEditar_Click);
+            // 
+            // botGuardar
+            // 
+            this.botGuardar.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+            this.botGuardar.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold);
+            this.botGuardar.Image = ((System.Drawing.Image)(resources.GetObject("botGuardar.Image")));
+            this.botGuardar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.botGuardar.Location = new System.Drawing.Point(10, 267);
+            this.botGuardar.Name = "botGuardar";
+            this.botGuardar.Size = new System.Drawing.Size(120, 45);
+            this.botGuardar.TabIndex = 0;
+            this.botGuardar.Text = "Guardar";
+            this.botGuardar.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.botGuardar.UseVisualStyleBackColor = true;
+            this.botGuardar.Click += new System.EventHandler(this.botGuardar_Click);
+            // 
+            // panelMenu
+            // 
+            this.panelMenu.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelMenu.Controls.Add(this.cboSubTipo);
+            this.panelMenu.Controls.Add(this.label23);
+            this.panelMenu.Controls.Add(this.cboTipoExamen);
+            this.panelMenu.Controls.Add(this.label1);
+            this.panelMenu.Controls.Add(this.cboMotivoConsulta);
+            this.panelMenu.Controls.Add(this.label4);
+            this.panelMenu.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panelMenu.Location = new System.Drawing.Point(0, 30);
+            this.panelMenu.Name = "panelMenu";
+            this.panelMenu.Size = new System.Drawing.Size(1040, 65);
+            this.panelMenu.TabIndex = 0;
+            // 
+            // cboSubTipo
+            // 
+            this.cboSubTipo.DropDownHeight = 150;
+            this.cboSubTipo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboSubTipo.DropDownWidth = 400;
+            this.cboSubTipo.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cboSubTipo.FormattingEnabled = true;
+            this.cboSubTipo.IntegralHeight = false;
+            this.cboSubTipo.Location = new System.Drawing.Point(314, 25);
+            this.cboSubTipo.Name = "cboSubTipo";
+            this.cboSubTipo.Size = new System.Drawing.Size(271, 24);
+            this.cboSubTipo.TabIndex = 11;
+            this.cboSubTipo.SelectedIndexChanged += new System.EventHandler(this.cboSubTipo_SelectedIndexChanged);
+            this.cboSubTipo.SelectionChangeCommitted += new System.EventHandler(this.cboSubTipo_SelectionChangeCommitted);
+            // 
+            // label23
+            // 
+            this.label23.AutoSize = true;
+            this.label23.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label23.Location = new System.Drawing.Point(614, 5);
+            this.label23.Name = "label23";
+            this.label23.Size = new System.Drawing.Size(54, 16);
+            this.label23.TabIndex = 12;
+            this.label23.Text = "Subtipo";
+            // 
+            // cboTipoExamen
+            // 
+            this.cboTipoExamen.DropDownHeight = 150;
+            this.cboTipoExamen.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboTipoExamen.DropDownWidth = 400;
+            this.cboTipoExamen.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cboTipoExamen.FormattingEnabled = true;
+            this.cboTipoExamen.IntegralHeight = false;
+            this.cboTipoExamen.Location = new System.Drawing.Point(617, 25);
+            this.cboTipoExamen.Name = "cboTipoExamen";
+            this.cboTipoExamen.Size = new System.Drawing.Size(271, 24);
+            this.cboTipoExamen.TabIndex = 1;
+            this.cboTipoExamen.SelectedIndexChanged += new System.EventHandler(this.cboTipoExamen_SelectedIndexChanged);
+            this.cboTipoExamen.SelectionChangeCommitted += new System.EventHandler(this.cboTipoExamen_SelectionChangeCommitted);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(311, 6);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(107, 16);
+            this.label1.TabIndex = 8;
+            this.label1.Text = "Tipo de Exámen";
+            // 
+            // cboMotivoConsulta
+            // 
+            this.cboMotivoConsulta.DropDownHeight = 150;
+            this.cboMotivoConsulta.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboMotivoConsulta.DropDownWidth = 400;
+            this.cboMotivoConsulta.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cboMotivoConsulta.FormattingEnabled = true;
+            this.cboMotivoConsulta.IntegralHeight = false;
+            this.cboMotivoConsulta.Location = new System.Drawing.Point(15, 25);
+            this.cboMotivoConsulta.Name = "cboMotivoConsulta";
+            this.cboMotivoConsulta.Size = new System.Drawing.Size(271, 24);
+            this.cboMotivoConsulta.TabIndex = 0;
+            this.cboMotivoConsulta.SelectedIndexChanged += new System.EventHandler(this.cboMotivoConsulta_SelectedIndexChanged);
+            this.cboMotivoConsulta.SelectionChangeCommitted += new System.EventHandler(this.cboMotivoConsulta_SelectionChangeCommitted);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.Location = new System.Drawing.Point(12, 6);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(122, 16);
+            this.label4.TabIndex = 10;
+            this.label4.Text = "Motivo de Consulta";
+            // 
+            // panelPrincipal
+            // 
+            this.panelPrincipal.AutoScroll = true;
+            this.panelPrincipal.Controls.Add(this.panel2);
+            this.panelPrincipal.Controls.Add(this.panel1);
+            this.panelPrincipal.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panelPrincipal.Location = new System.Drawing.Point(0, 95);
+            this.panelPrincipal.Name = "panelPrincipal";
+            this.panelPrincipal.Size = new System.Drawing.Size(1040, 443);
+            this.panelPrincipal.TabIndex = 1;
+            // 
+            // panel2
+            // 
+            this.panel2.Controls.Add(this.tabControl);
+            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel2.Location = new System.Drawing.Point(0, 59);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(1040, 384);
+            this.panel2.TabIndex = 133;
+            // 
+            // tabControl
+            // 
+            this.tabControl.Controls.Add(this.tabPageResumen);
+            this.tabControl.Controls.Add(this.tabPageClinico);
+            this.tabControl.Controls.Add(this.tabPageLaboratorio);
+            this.tabControl.Controls.Add(this.tabPage3);
+            this.tabControl.Controls.Add(this.tabPageCardiologia);
+            this.tabControl.Dock = System.Windows.Forms.DockStyle.Top;
+            this.tabControl.Enabled = false;
+            this.tabControl.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tabControl.Location = new System.Drawing.Point(0, 0);
+            this.tabControl.Name = "tabControl";
+            this.tabControl.SelectedIndex = 0;
+            this.tabControl.Size = new System.Drawing.Size(1040, 387);
+            this.tabControl.TabIndex = 4;
+            this.tabControl.SelectedIndexChanged += new System.EventHandler(this.tabControl_SelectedIndexChanged);
+            // 
+            // tabPageResumen
+            // 
+            this.tabPageResumen.AutoScroll = true;
+            this.tabPageResumen.BackColor = System.Drawing.SystemColors.Control;
+            this.tabPageResumen.Controls.Add(this.tbResumenEstCompl);
+            this.tabPageResumen.Controls.Add(this.tbResumenRx);
+            this.tabPageResumen.Controls.Add(this.tbResumenLaboratorio);
+            this.tabPageResumen.Controls.Add(this.tbResumenClinico);
+            this.tabPageResumen.Controls.Add(this.label22);
+            this.tabPageResumen.Controls.Add(this.label21);
+            this.tabPageResumen.Controls.Add(this.label20);
+            this.tabPageResumen.Controls.Add(this.label19);
+            this.tabPageResumen.Location = new System.Drawing.Point(4, 25);
+            this.tabPageResumen.Name = "tabPageResumen";
+            this.tabPageResumen.Size = new System.Drawing.Size(1032, 358);
+            this.tabPageResumen.TabIndex = 4;
+            this.tabPageResumen.Text = "Resúmen";
+            // 
+            // tbResumenEstCompl
+            // 
+            this.tbResumenEstCompl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbResumenEstCompl.BackColor = System.Drawing.Color.White;
+            this.tbResumenEstCompl.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+            this.tbResumenEstCompl.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tbResumenEstCompl.Location = new System.Drawing.Point(22, 258);
+            this.tbResumenEstCompl.Multiline = true;
+            this.tbResumenEstCompl.Name = "tbResumenEstCompl";
+            this.tbResumenEstCompl.ReadOnly = true;
+            this.tbResumenEstCompl.Size = new System.Drawing.Size(981, 72);
+            this.tbResumenEstCompl.TabIndex = 23;
+            // 
+            // tbResumenRx
+            // 
+            this.tbResumenRx.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbResumenRx.BackColor = System.Drawing.Color.White;
+            this.tbResumenRx.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+            this.tbResumenRx.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tbResumenRx.Location = new System.Drawing.Point(22, 165);
+            this.tbResumenRx.Multiline = true;
+            this.tbResumenRx.Name = "tbResumenRx";
+            this.tbResumenRx.ReadOnly = true;
+            this.tbResumenRx.Size = new System.Drawing.Size(981, 72);
+            this.tbResumenRx.TabIndex = 21;
+            // 
+            // tbResumenLaboratorio
+            // 
+            this.tbResumenLaboratorio.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbResumenLaboratorio.BackColor = System.Drawing.Color.White;
+            this.tbResumenLaboratorio.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+            this.tbResumenLaboratorio.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tbResumenLaboratorio.Location = new System.Drawing.Point(22, 72);
+            this.tbResumenLaboratorio.Multiline = true;
+            this.tbResumenLaboratorio.Name = "tbResumenLaboratorio";
+            this.tbResumenLaboratorio.ReadOnly = true;
+            this.tbResumenLaboratorio.Size = new System.Drawing.Size(981, 72);
+            this.tbResumenLaboratorio.TabIndex = 19;
+            // 
+            // tbResumenClinico
+            // 
+            this.tbResumenClinico.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbResumenClinico.BackColor = System.Drawing.Color.White;
+            this.tbResumenClinico.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+            this.tbResumenClinico.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tbResumenClinico.Location = new System.Drawing.Point(22, 22);
+            this.tbResumenClinico.Multiline = true;
+            this.tbResumenClinico.Name = "tbResumenClinico";
+            this.tbResumenClinico.ReadOnly = true;
+            this.tbResumenClinico.Size = new System.Drawing.Size(981, 27);
+            this.tbResumenClinico.TabIndex = 17;
+            // 
+            // label22
+            // 
+            this.label22.AutoSize = true;
+            this.label22.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label22.Location = new System.Drawing.Point(19, 241);
+            this.label22.Name = "label22";
+            this.label22.Size = new System.Drawing.Size(169, 16);
+            this.label22.TabIndex = 24;
+            this.label22.Text = "Estudios Complementarios";
+            // 
+            // label21
+            // 
+            this.label21.AutoSize = true;
+            this.label21.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label21.Location = new System.Drawing.Point(19, 148);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(45, 16);
+            this.label21.TabIndex = 22;
+            this.label21.Text = "Ex. Rx";
+            // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label20.Location = new System.Drawing.Point(19, 55);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(98, 16);
+            this.label20.TabIndex = 20;
+            this.label20.Text = "Ex. Laboratorio";
+            // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label19.Location = new System.Drawing.Point(19, 5);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(69, 16);
+            this.label19.TabIndex = 18;
+            this.label19.Text = "Ex. Clinico";
+            // 
+            // tabPageClinico
+            // 
+            this.tabPageClinico.BackColor = System.Drawing.SystemColors.Control;
+            this.tabPageClinico.Controls.Add(this.label17);
+            this.tabPageClinico.Controls.Add(this.dgvClinico);
+            this.tabPageClinico.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tabPageClinico.Location = new System.Drawing.Point(4, 25);
+            this.tabPageClinico.Name = "tabPageClinico";
+            this.tabPageClinico.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageClinico.Size = new System.Drawing.Size(1032, 358);
+            this.tabPageClinico.TabIndex = 0;
+            this.tabPageClinico.Text = "Ex. Clínico";
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label17.Location = new System.Drawing.Point(9, 9);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(48, 16);
+            this.label17.TabIndex = 8;
+            this.label17.Text = "Clinico";
+            // 
+            // dgvClinico
+            // 
+            this.dgvClinico.AllowUserToAddRows = false;
+            this.dgvClinico.AllowUserToDeleteRows = false;
+            this.dgvClinico.AllowUserToOrderColumns = true;
+            this.dgvClinico.AllowUserToResizeColumns = false;
+            this.dgvClinico.AllowUserToResizeRows = false;
+            this.dgvClinico.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.dgvClinico.BackgroundColor = System.Drawing.Color.WhiteSmoke;
+            this.dgvClinico.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.dgvClinico.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvClinico.ColumnHeadersVisible = false;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.WhiteSmoke;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.WhiteSmoke;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvClinico.DefaultCellStyle = dataGridViewCellStyle1;
+            this.dgvClinico.GridColor = System.Drawing.Color.WhiteSmoke;
+            this.dgvClinico.Location = new System.Drawing.Point(12, 28);
+            this.dgvClinico.Name = "dgvClinico";
+            this.dgvClinico.RowHeadersVisible = false;
+            this.dgvClinico.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
+            this.dgvClinico.Size = new System.Drawing.Size(176, 315);
+            this.dgvClinico.TabIndex = 0;
+            // 
+            // tabPageLaboratorio
+            // 
+            this.tabPageLaboratorio.BackColor = System.Drawing.SystemColors.Control;
+            this.tabPageLaboratorio.Controls.Add(this.label7);
+            this.tabPageLaboratorio.Controls.Add(this.label8);
+            this.tabPageLaboratorio.Controls.Add(this.label9);
+            this.tabPageLaboratorio.Controls.Add(this.label10);
+            this.tabPageLaboratorio.Controls.Add(this.label11);
+            this.tabPageLaboratorio.Controls.Add(this.label12);
+            this.tabPageLaboratorio.Controls.Add(this.dgvOrina);
+            this.tabPageLaboratorio.Controls.Add(this.dgvBacteriologia);
+            this.tabPageLaboratorio.Controls.Add(this.dgvPerfilLipidico);
+            this.tabPageLaboratorio.Controls.Add(this.dgvSerologia);
+            this.tabPageLaboratorio.Controls.Add(this.dgvQuimicaHematica);
+            this.tabPageLaboratorio.Controls.Add(this.dgvHematologia);
+            this.tabPageLaboratorio.Location = new System.Drawing.Point(4, 25);
+            this.tabPageLaboratorio.Name = "tabPageLaboratorio";
+            this.tabPageLaboratorio.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageLaboratorio.Size = new System.Drawing.Size(1032, 358);
+            this.tabPageLaboratorio.TabIndex = 1;
+            this.tabPageLaboratorio.Text = "Laboratorio";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label7.Location = new System.Drawing.Point(823, 11);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(40, 16);
+            this.label7.TabIndex = 12;
+            this.label7.Text = "Orina";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label8.Location = new System.Drawing.Point(660, 11);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(88, 16);
+            this.label8.TabIndex = 11;
+            this.label8.Text = "Bacteriología";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label9.Location = new System.Drawing.Point(497, 11);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(88, 16);
+            this.label9.TabIndex = 10;
+            this.label9.Text = "Perfil Lipídico";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label10.Location = new System.Drawing.Point(334, 11);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(67, 16);
+            this.label10.TabIndex = 9;
+            this.label10.Text = "Serología";
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label11.Location = new System.Drawing.Point(171, 11);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(118, 16);
+            this.label11.TabIndex = 8;
+            this.label11.Text = "Quimica Hemática";
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label12.Location = new System.Drawing.Point(8, 11);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(86, 16);
+            this.label12.TabIndex = 7;
+            this.label12.Text = "Hematología";
+            // 
+            // dgvOrina
+            // 
+            this.dgvOrina.AllowUserToAddRows = false;
+            this.dgvOrina.AllowUserToDeleteRows = false;
+            this.dgvOrina.AllowUserToOrderColumns = true;
+            this.dgvOrina.AllowUserToResizeColumns = false;
+            this.dgvOrina.AllowUserToResizeRows = false;
+            this.dgvOrina.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.dgvOrina.BackgroundColor = System.Drawing.Color.WhiteSmoke;
+            this.dgvOrina.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.dgvOrina.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvOrina.ColumnHeadersVisible = false;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.WhiteSmoke;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.WhiteSmoke;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvOrina.DefaultCellStyle = dataGridViewCellStyle2;
+            this.dgvOrina.GridColor = System.Drawing.Color.WhiteSmoke;
+            this.dgvOrina.Location = new System.Drawing.Point(826, 30);
+            this.dgvOrina.Name = "dgvOrina";
+            this.dgvOrina.RowHeadersVisible = false;
+            this.dgvOrina.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
+            this.dgvOrina.Size = new System.Drawing.Size(157, 313);
+            this.dgvOrina.TabIndex = 6;
+            // 
+            // dgvBacteriologia
+            // 
+            this.dgvBacteriologia.AllowUserToAddRows = false;
+            this.dgvBacteriologia.AllowUserToDeleteRows = false;
+            this.dgvBacteriologia.AllowUserToOrderColumns = true;
+            this.dgvBacteriologia.AllowUserToResizeColumns = false;
+            this.dgvBacteriologia.AllowUserToResizeRows = false;
+            this.dgvBacteriologia.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.dgvBacteriologia.BackgroundColor = System.Drawing.Color.WhiteSmoke;
+            this.dgvBacteriologia.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.dgvBacteriologia.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvBacteriologia.ColumnHeadersVisible = false;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.Color.WhiteSmoke;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.WhiteSmoke;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvBacteriologia.DefaultCellStyle = dataGridViewCellStyle3;
+            this.dgvBacteriologia.GridColor = System.Drawing.Color.WhiteSmoke;
+            this.dgvBacteriologia.Location = new System.Drawing.Point(663, 30);
+            this.dgvBacteriologia.Name = "dgvBacteriologia";
+            this.dgvBacteriologia.RowHeadersVisible = false;
+            this.dgvBacteriologia.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
+            this.dgvBacteriologia.Size = new System.Drawing.Size(157, 313);
+            this.dgvBacteriologia.TabIndex = 5;
+            // 
+            // dgvPerfilLipidico
+            // 
+            this.dgvPerfilLipidico.AllowUserToAddRows = false;
+            this.dgvPerfilLipidico.AllowUserToDeleteRows = false;
+            this.dgvPerfilLipidico.AllowUserToOrderColumns = true;
+            this.dgvPerfilLipidico.AllowUserToResizeColumns = false;
+            this.dgvPerfilLipidico.AllowUserToResizeRows = false;
+            this.dgvPerfilLipidico.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.dgvPerfilLipidico.BackgroundColor = System.Drawing.Color.WhiteSmoke;
+            this.dgvPerfilLipidico.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.dgvPerfilLipidico.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvPerfilLipidico.ColumnHeadersVisible = false;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.Color.WhiteSmoke;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.Color.WhiteSmoke;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvPerfilLipidico.DefaultCellStyle = dataGridViewCellStyle4;
+            this.dgvPerfilLipidico.GridColor = System.Drawing.Color.WhiteSmoke;
+            this.dgvPerfilLipidico.Location = new System.Drawing.Point(500, 30);
+            this.dgvPerfilLipidico.Name = "dgvPerfilLipidico";
+            this.dgvPerfilLipidico.RowHeadersVisible = false;
+            this.dgvPerfilLipidico.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
+            this.dgvPerfilLipidico.Size = new System.Drawing.Size(157, 313);
+            this.dgvPerfilLipidico.TabIndex = 4;
+            // 
+            // dgvSerologia
+            // 
+            this.dgvSerologia.AllowUserToAddRows = false;
+            this.dgvSerologia.AllowUserToDeleteRows = false;
+            this.dgvSerologia.AllowUserToOrderColumns = true;
+            this.dgvSerologia.AllowUserToResizeColumns = false;
+            this.dgvSerologia.AllowUserToResizeRows = false;
+            this.dgvSerologia.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.dgvSerologia.BackgroundColor = System.Drawing.Color.WhiteSmoke;
+            this.dgvSerologia.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.dgvSerologia.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvSerologia.ColumnHeadersVisible = false;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle5.BackColor = System.Drawing.Color.WhiteSmoke;
+            dataGridViewCellStyle5.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.Color.WhiteSmoke;
+            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvSerologia.DefaultCellStyle = dataGridViewCellStyle5;
+            this.dgvSerologia.GridColor = System.Drawing.Color.WhiteSmoke;
+            this.dgvSerologia.Location = new System.Drawing.Point(337, 30);
+            this.dgvSerologia.Name = "dgvSerologia";
+            this.dgvSerologia.RowHeadersVisible = false;
+            this.dgvSerologia.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
+            this.dgvSerologia.Size = new System.Drawing.Size(157, 313);
+            this.dgvSerologia.TabIndex = 3;
+            // 
+            // dgvQuimicaHematica
+            // 
+            this.dgvQuimicaHematica.AllowUserToAddRows = false;
+            this.dgvQuimicaHematica.AllowUserToDeleteRows = false;
+            this.dgvQuimicaHematica.AllowUserToOrderColumns = true;
+            this.dgvQuimicaHematica.AllowUserToResizeColumns = false;
+            this.dgvQuimicaHematica.AllowUserToResizeRows = false;
+            this.dgvQuimicaHematica.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.dgvQuimicaHematica.BackgroundColor = System.Drawing.Color.WhiteSmoke;
+            this.dgvQuimicaHematica.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.dgvQuimicaHematica.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvQuimicaHematica.ColumnHeadersVisible = false;
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle6.BackColor = System.Drawing.Color.WhiteSmoke;
+            dataGridViewCellStyle6.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.Color.WhiteSmoke;
+            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvQuimicaHematica.DefaultCellStyle = dataGridViewCellStyle6;
+            this.dgvQuimicaHematica.GridColor = System.Drawing.Color.WhiteSmoke;
+            this.dgvQuimicaHematica.Location = new System.Drawing.Point(174, 30);
+            this.dgvQuimicaHematica.Name = "dgvQuimicaHematica";
+            this.dgvQuimicaHematica.RowHeadersVisible = false;
+            this.dgvQuimicaHematica.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
+            this.dgvQuimicaHematica.Size = new System.Drawing.Size(157, 313);
+            this.dgvQuimicaHematica.TabIndex = 2;
+            // 
+            // dgvHematologia
+            // 
+            this.dgvHematologia.AllowUserToAddRows = false;
+            this.dgvHematologia.AllowUserToDeleteRows = false;
+            this.dgvHematologia.AllowUserToOrderColumns = true;
+            this.dgvHematologia.AllowUserToResizeColumns = false;
+            this.dgvHematologia.AllowUserToResizeRows = false;
+            this.dgvHematologia.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.dgvHematologia.BackgroundColor = System.Drawing.Color.WhiteSmoke;
+            this.dgvHematologia.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.dgvHematologia.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvHematologia.ColumnHeadersVisible = false;
+            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle7.BackColor = System.Drawing.Color.WhiteSmoke;
+            dataGridViewCellStyle7.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            dataGridViewCellStyle7.SelectionBackColor = System.Drawing.Color.WhiteSmoke;
+            dataGridViewCellStyle7.SelectionForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvHematologia.DefaultCellStyle = dataGridViewCellStyle7;
+            this.dgvHematologia.GridColor = System.Drawing.Color.WhiteSmoke;
+            this.dgvHematologia.Location = new System.Drawing.Point(11, 30);
+            this.dgvHematologia.Name = "dgvHematologia";
+            this.dgvHematologia.RowHeadersVisible = false;
+            this.dgvHematologia.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
+            this.dgvHematologia.Size = new System.Drawing.Size(157, 313);
+            this.dgvHematologia.TabIndex = 1;
+            // 
+            // tabPage3
+            // 
+            this.tabPage3.BackColor = System.Drawing.SystemColors.Control;
+            this.tabPage3.Controls.Add(this.label13);
+            this.tabPage3.Controls.Add(this.dgvMiembroInferior);
+            this.tabPage3.Controls.Add(this.label14);
+            this.tabPage3.Controls.Add(this.dgvTroncoYPelvis);
+            this.tabPage3.Controls.Add(this.label15);
+            this.tabPage3.Controls.Add(this.dgvCraneoYMSuperior);
+            this.tabPage3.Controls.Add(this.label16);
+            this.tabPage3.Controls.Add(this.dgvLaboralesBasicas);
+            this.tabPage3.Location = new System.Drawing.Point(4, 25);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage3.Size = new System.Drawing.Size(1032, 358);
+            this.tabPage3.TabIndex = 2;
+            this.tabPage3.Text = "Rayos X";
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label13.Location = new System.Drawing.Point(714, 12);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(65, 16);
+            this.label13.TabIndex = 15;
+            this.label13.Text = "M. Inferior";
+            // 
+            // dgvMiembroInferior
+            // 
+            this.dgvMiembroInferior.AllowUserToAddRows = false;
+            this.dgvMiembroInferior.AllowUserToDeleteRows = false;
+            this.dgvMiembroInferior.AllowUserToOrderColumns = true;
+            this.dgvMiembroInferior.AllowUserToResizeColumns = false;
+            this.dgvMiembroInferior.AllowUserToResizeRows = false;
+            this.dgvMiembroInferior.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.dgvMiembroInferior.BackgroundColor = System.Drawing.Color.WhiteSmoke;
+            this.dgvMiembroInferior.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.dgvMiembroInferior.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
+            this.dgvMiembroInferior.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvMiembroInferior.ColumnHeadersVisible = false;
+            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle8.BackColor = System.Drawing.Color.WhiteSmoke;
+            dataGridViewCellStyle8.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            dataGridViewCellStyle8.SelectionBackColor = System.Drawing.Color.WhiteSmoke;
+            dataGridViewCellStyle8.SelectionForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvMiembroInferior.DefaultCellStyle = dataGridViewCellStyle8;
+            this.dgvMiembroInferior.GridColor = System.Drawing.Color.WhiteSmoke;
+            this.dgvMiembroInferior.Location = new System.Drawing.Point(717, 31);
+            this.dgvMiembroInferior.Name = "dgvMiembroInferior";
+            this.dgvMiembroInferior.RowHeadersVisible = false;
+            this.dgvMiembroInferior.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
+            this.dgvMiembroInferior.Size = new System.Drawing.Size(231, 312);
+            this.dgvMiembroInferior.TabIndex = 14;
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label14.Location = new System.Drawing.Point(477, 12);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(101, 16);
+            this.label14.TabIndex = 13;
+            this.label14.Text = "Tronco y Pélvis";
+            // 
+            // dgvTroncoYPelvis
+            // 
+            this.dgvTroncoYPelvis.AllowUserToAddRows = false;
+            this.dgvTroncoYPelvis.AllowUserToDeleteRows = false;
+            this.dgvTroncoYPelvis.AllowUserToOrderColumns = true;
+            this.dgvTroncoYPelvis.AllowUserToResizeColumns = false;
+            this.dgvTroncoYPelvis.AllowUserToResizeRows = false;
+            this.dgvTroncoYPelvis.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.dgvTroncoYPelvis.BackgroundColor = System.Drawing.Color.WhiteSmoke;
+            this.dgvTroncoYPelvis.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.dgvTroncoYPelvis.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
+            this.dgvTroncoYPelvis.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvTroncoYPelvis.ColumnHeadersVisible = false;
+            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle9.BackColor = System.Drawing.Color.WhiteSmoke;
+            dataGridViewCellStyle9.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            dataGridViewCellStyle9.SelectionBackColor = System.Drawing.Color.WhiteSmoke;
+            dataGridViewCellStyle9.SelectionForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle9.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvTroncoYPelvis.DefaultCellStyle = dataGridViewCellStyle9;
+            this.dgvTroncoYPelvis.GridColor = System.Drawing.Color.WhiteSmoke;
+            this.dgvTroncoYPelvis.Location = new System.Drawing.Point(480, 31);
+            this.dgvTroncoYPelvis.Name = "dgvTroncoYPelvis";
+            this.dgvTroncoYPelvis.RowHeadersVisible = false;
+            this.dgvTroncoYPelvis.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
+            this.dgvTroncoYPelvis.Size = new System.Drawing.Size(231, 312);
+            this.dgvTroncoYPelvis.TabIndex = 12;
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label15.Location = new System.Drawing.Point(240, 12);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(133, 16);
+            this.label15.TabIndex = 11;
+            this.label15.Text = "Cráneo y M. Superior";
+            // 
+            // dgvCraneoYMSuperior
+            // 
+            this.dgvCraneoYMSuperior.AllowUserToAddRows = false;
+            this.dgvCraneoYMSuperior.AllowUserToDeleteRows = false;
+            this.dgvCraneoYMSuperior.AllowUserToOrderColumns = true;
+            this.dgvCraneoYMSuperior.AllowUserToResizeColumns = false;
+            this.dgvCraneoYMSuperior.AllowUserToResizeRows = false;
+            this.dgvCraneoYMSuperior.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.dgvCraneoYMSuperior.BackgroundColor = System.Drawing.Color.WhiteSmoke;
+            this.dgvCraneoYMSuperior.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.dgvCraneoYMSuperior.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
+            this.dgvCraneoYMSuperior.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvCraneoYMSuperior.ColumnHeadersVisible = false;
+            dataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle10.BackColor = System.Drawing.Color.WhiteSmoke;
+            dataGridViewCellStyle10.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle10.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            dataGridViewCellStyle10.SelectionBackColor = System.Drawing.Color.WhiteSmoke;
+            dataGridViewCellStyle10.SelectionForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle10.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvCraneoYMSuperior.DefaultCellStyle = dataGridViewCellStyle10;
+            this.dgvCraneoYMSuperior.GridColor = System.Drawing.Color.WhiteSmoke;
+            this.dgvCraneoYMSuperior.Location = new System.Drawing.Point(243, 31);
+            this.dgvCraneoYMSuperior.Name = "dgvCraneoYMSuperior";
+            this.dgvCraneoYMSuperior.RowHeadersVisible = false;
+            this.dgvCraneoYMSuperior.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
+            this.dgvCraneoYMSuperior.Size = new System.Drawing.Size(231, 312);
+            this.dgvCraneoYMSuperior.TabIndex = 10;
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label16.Location = new System.Drawing.Point(6, 12);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(121, 16);
+            this.label16.TabIndex = 9;
+            this.label16.Text = "Laborales Básicas";
+            // 
+            // dgvLaboralesBasicas
+            // 
+            this.dgvLaboralesBasicas.AllowUserToAddRows = false;
+            this.dgvLaboralesBasicas.AllowUserToDeleteRows = false;
+            this.dgvLaboralesBasicas.AllowUserToOrderColumns = true;
+            this.dgvLaboralesBasicas.AllowUserToResizeColumns = false;
+            this.dgvLaboralesBasicas.AllowUserToResizeRows = false;
+            this.dgvLaboralesBasicas.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.dgvLaboralesBasicas.BackgroundColor = System.Drawing.Color.WhiteSmoke;
+            this.dgvLaboralesBasicas.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.dgvLaboralesBasicas.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
+            this.dgvLaboralesBasicas.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvLaboralesBasicas.ColumnHeadersVisible = false;
+            dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle11.BackColor = System.Drawing.Color.WhiteSmoke;
+            dataGridViewCellStyle11.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle11.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            dataGridViewCellStyle11.SelectionBackColor = System.Drawing.Color.WhiteSmoke;
+            dataGridViewCellStyle11.SelectionForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle11.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvLaboralesBasicas.DefaultCellStyle = dataGridViewCellStyle11;
+            this.dgvLaboralesBasicas.GridColor = System.Drawing.Color.WhiteSmoke;
+            this.dgvLaboralesBasicas.Location = new System.Drawing.Point(6, 31);
+            this.dgvLaboralesBasicas.Name = "dgvLaboralesBasicas";
+            this.dgvLaboralesBasicas.RowHeadersVisible = false;
+            this.dgvLaboralesBasicas.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
+            this.dgvLaboralesBasicas.Size = new System.Drawing.Size(231, 312);
+            this.dgvLaboralesBasicas.TabIndex = 8;
+            // 
+            // tabPageCardiologia
+            // 
+            this.tabPageCardiologia.BackColor = System.Drawing.SystemColors.Control;
+            this.tabPageCardiologia.Controls.Add(this.label18);
+            this.tabPageCardiologia.Controls.Add(this.dgvEstComplementarios);
+            this.tabPageCardiologia.Location = new System.Drawing.Point(4, 25);
+            this.tabPageCardiologia.Name = "tabPageCardiologia";
+            this.tabPageCardiologia.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageCardiologia.Size = new System.Drawing.Size(1032, 358);
+            this.tabPageCardiologia.TabIndex = 3;
+            this.tabPageCardiologia.Text = "Est. Complementarios";
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label18.Location = new System.Drawing.Point(9, 9);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(139, 16);
+            this.label18.TabIndex = 11;
+            this.label18.Text = "Est. Complementarios";
+            // 
+            // dgvEstComplementarios
+            // 
+            this.dgvEstComplementarios.AllowUserToAddRows = false;
+            this.dgvEstComplementarios.AllowUserToDeleteRows = false;
+            this.dgvEstComplementarios.AllowUserToOrderColumns = true;
+            this.dgvEstComplementarios.AllowUserToResizeColumns = false;
+            this.dgvEstComplementarios.AllowUserToResizeRows = false;
+            this.dgvEstComplementarios.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.dgvEstComplementarios.BackgroundColor = System.Drawing.Color.WhiteSmoke;
+            this.dgvEstComplementarios.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.dgvEstComplementarios.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvEstComplementarios.ColumnHeadersVisible = false;
+            dataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle12.BackColor = System.Drawing.Color.WhiteSmoke;
+            dataGridViewCellStyle12.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle12.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            dataGridViewCellStyle12.SelectionBackColor = System.Drawing.Color.WhiteSmoke;
+            dataGridViewCellStyle12.SelectionForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle12.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvEstComplementarios.DefaultCellStyle = dataGridViewCellStyle12;
+            this.dgvEstComplementarios.GridColor = System.Drawing.Color.WhiteSmoke;
+            this.dgvEstComplementarios.Location = new System.Drawing.Point(12, 28);
+            this.dgvEstComplementarios.Name = "dgvEstComplementarios";
+            this.dgvEstComplementarios.RowHeadersVisible = false;
+            this.dgvEstComplementarios.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
+            this.dgvEstComplementarios.Size = new System.Drawing.Size(181, 315);
+            this.dgvEstComplementarios.TabIndex = 10;
+            // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.label2);
+            this.panel1.Controls.Add(this.tbId);
+            this.panel1.Controls.Add(this.tbCodigo);
+            this.panel1.Controls.Add(this.label3);
+            this.panel1.Controls.Add(this.tbDescripcionInformes);
+            this.panel1.Controls.Add(this.tbDescripcion);
+            this.panel1.Controls.Add(this.label6);
+            this.panel1.Controls.Add(this.label5);
+            this.panel1.Controls.Add(this.tbPrecioBase);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel1.Location = new System.Drawing.Point(0, 0);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(1040, 59);
+            this.panel1.TabIndex = 132;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(12, 8);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(52, 16);
+            this.label2.TabIndex = 4;
+            this.label2.Text = "Código";
+            // 
+            // tbId
+            // 
+            this.tbId.Enabled = false;
+            this.tbId.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tbId.Location = new System.Drawing.Point(813, 3);
+            this.tbId.Name = "tbId";
+            this.tbId.Size = new System.Drawing.Size(46, 22);
+            this.tbId.TabIndex = 131;
+            this.tbId.Visible = false;
+            // 
+            // tbCodigo
+            // 
+            this.tbCodigo.Enabled = false;
+            this.tbCodigo.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tbCodigo.Location = new System.Drawing.Point(15, 28);
+            this.tbCodigo.Name = "tbCodigo";
+            this.tbCodigo.Size = new System.Drawing.Size(49, 22);
+            this.tbCodigo.TabIndex = 0;
+            this.tbCodigo.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.Location = new System.Drawing.Point(71, 8);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(80, 16);
+            this.label3.TabIndex = 7;
+            this.label3.Text = "Descripción";
+            // 
+            // tbDescripcionInformes
+            // 
+            this.tbDescripcionInformes.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+            this.tbDescripcionInformes.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tbDescripcionInformes.Location = new System.Drawing.Point(333, 28);
+            this.tbDescripcionInformes.Name = "tbDescripcionInformes";
+            this.tbDescripcionInformes.Size = new System.Drawing.Size(342, 22);
+            this.tbDescripcionInformes.TabIndex = 2;
+            // 
+            // tbDescripcion
+            // 
+            this.tbDescripcion.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+            this.tbDescripcion.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tbDescripcion.Location = new System.Drawing.Point(74, 28);
+            this.tbDescripcion.Name = "tbDescripcion";
+            this.tbDescripcion.Size = new System.Drawing.Size(249, 22);
+            this.tbDescripcion.TabIndex = 1;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.Location = new System.Drawing.Point(330, 8);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(134, 16);
+            this.label6.TabIndex = 16;
+            this.label6.Text = "Descripción Informes";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.Location = new System.Drawing.Point(681, 8);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(82, 16);
+            this.label5.TabIndex = 14;
+            this.label5.Text = "Precio Base";
+            // 
+            // tbPrecioBase
+            // 
+            this.tbPrecioBase.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+            this.tbPrecioBase.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tbPrecioBase.Location = new System.Drawing.Point(684, 28);
+            this.tbPrecioBase.Name = "tbPrecioBase";
+            this.tbPrecioBase.Size = new System.Drawing.Size(107, 22);
+            this.tbPrecioBase.TabIndex = 3;
+            this.tbPrecioBase.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tbPrecioBase.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tbPrecioBase_KeyPress);
+            // 
+            // frmConfigTipoExamenExApt
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(1186, 538);
+            this.Controls.Add(this.panelPrincipal);
+            this.Controls.Add(this.panelMenu);
+            this.Controls.Add(this.botonLaboratorio);
+            this.Controls.Add(this.lbTitulo);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.LookAndFeel.SkinName = "Office 2016 Colorful";
+            this.LookAndFeel.UseDefaultLookAndFeel = false;
+            this.Name = "frmConfigTipoExamenExApt";
+            this.ShowIcon = false;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "Configuración Exámen de Aptitud";
+            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.frmConfigTipoExamen_KeyUp);
+            this.botonLaboratorio.ResumeLayout(false);
+            this.panelMenu.ResumeLayout(false);
+            this.panelMenu.PerformLayout();
+            this.panelPrincipal.ResumeLayout(false);
+            this.panel2.ResumeLayout(false);
+            this.tabControl.ResumeLayout(false);
+            this.tabPageResumen.ResumeLayout(false);
+            this.tabPageResumen.PerformLayout();
+            this.tabPageClinico.ResumeLayout(false);
+            this.tabPageClinico.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvClinico)).EndInit();
+            this.tabPageLaboratorio.ResumeLayout(false);
+            this.tabPageLaboratorio.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvOrina)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvBacteriologia)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvPerfilLipidico)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvSerologia)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvQuimicaHematica)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvHematologia)).EndInit();
+            this.tabPage3.ResumeLayout(false);
+            this.tabPage3.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvMiembroInferior)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvTroncoYPelvis)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvCraneoYMSuperior)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvLaboralesBasicas)).EndInit();
+            this.tabPageCardiologia.ResumeLayout(false);
+            this.tabPageCardiologia.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvEstComplementarios)).EndInit();
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
+            this.ResumeLayout(false);
+
+        }
+
+        #endregion
+
+        protected System.Windows.Forms.Label lbTitulo;
+        protected System.Windows.Forms.Panel botonLaboratorio;
+        private System.Windows.Forms.Button botCancelar;
+        private System.Windows.Forms.Button botGuardar;
+        private System.Windows.Forms.Panel panelMenu;
+        private System.Windows.Forms.ComboBox cboTipoExamen;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button botAgregar;
+        private System.Windows.Forms.Button botEliminar;
+        private System.Windows.Forms.Button botEditar;
+        private System.Windows.Forms.Panel panelPrincipal;
+        private System.Windows.Forms.ComboBox cboMotivoConsulta;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TextBox tbDescripcion;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TextBox tbCodigo;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.TextBox tbPrecioBase;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.TextBox tbDescripcionInformes;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.TabControl tabControl;
+        private System.Windows.Forms.TabPage tabPageClinico;
+        private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.DataGridView dgvClinico;
+        private System.Windows.Forms.TabPage tabPageLaboratorio;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.DataGridView dgvOrina;
+        private System.Windows.Forms.DataGridView dgvBacteriologia;
+        private System.Windows.Forms.DataGridView dgvPerfilLipidico;
+        private System.Windows.Forms.DataGridView dgvSerologia;
+        private System.Windows.Forms.DataGridView dgvQuimicaHematica;
+        private System.Windows.Forms.DataGridView dgvHematologia;
+        private System.Windows.Forms.TabPage tabPage3;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.DataGridView dgvMiembroInferior;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.DataGridView dgvTroncoYPelvis;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.DataGridView dgvCraneoYMSuperior;
+        private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.DataGridView dgvLaboralesBasicas;
+        private System.Windows.Forms.TabPage tabPageCardiologia;
+        private System.Windows.Forms.DataGridView dgvEstComplementarios;
+        private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.TextBox tbId;
+        private System.Windows.Forms.TabPage tabPageResumen;
+        private System.Windows.Forms.TextBox tbResumenEstCompl;
+        private System.Windows.Forms.TextBox tbResumenRx;
+        private System.Windows.Forms.TextBox tbResumenLaboratorio;
+        private System.Windows.Forms.TextBox tbResumenClinico;
+        private System.Windows.Forms.Label label22;
+        private System.Windows.Forms.Label label21;
+        private System.Windows.Forms.Label label20;
+        private System.Windows.Forms.Label label19;
+        private System.Windows.Forms.Button btnSalir;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.ComboBox cboSubTipo;
+        private System.Windows.Forms.Label label23;
+        private System.Windows.Forms.Button botSalir;
+    }
+}

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<xs:schema id="dsArticulos" targetNamespace="http://tempuri.org/dsArticulos.xsd" elementFormDefault="qualified"
+	attributeFormDefault="qualified" xmlns="http://tempuri.org/dsArticulos.xsd" xmlns:mstns="http://tempuri.org/dsArticulos.xsd"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+	<xs:element name="dsArticulos" msdata:IsDataSet="true">
+		<xs:complexType>
+			<xs:choice maxOccurs="unbounded">
+				<xs:element name="v_Articulo">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Rubro" type="xs:string" minOccurs="0" default="" />
+							<xs:element name="Sub_x0020_Rubro" type="xs:string" minOccurs="0" default="" />
+							<xs:element name="Bodega" type="xs:string" minOccurs="0" default="" />
+							<xs:element name="Marca" type="xs:string" minOccurs="0" default="" />
+							<xs:element name="Cepaje" type="xs:string" minOccurs="0" default="" />
+							<xs:element name="Origen" type="xs:string" minOccurs="0" default="" />
+							<xs:element name="Cosecha" type="xs:string" minOccurs="0" default="" />
+							<xs:element name="Presentación" type="xs:string" minOccurs="0" default="" />
+							<xs:element name="Región" type="xs:string" minOccurs="0" default="" />
+							<xs:element name="Variedad" type="xs:string" minOccurs="0" default="" />
+							<xs:element name="Categoría" type="xs:string" minOccurs="0" default="" />
+							<xs:element name="Tipo" type="xs:string" minOccurs="0" default="" />
+							<xs:element name="articuloID" msdata:ReadOnly="true" type="xs:string" default="0" />
+							<xs:element name="Contenido" type="xs:string" default="" />
+							<xs:element name="Precio" type="xs:decimal" default="0" />
+							<xs:element name="Graduación_x0020_Alcohólica" type="xs:decimal" default="0" />
+							<xs:element name="Años" type="xs:int" default="0" />
+							<xs:element name="Sabor" type="xs:string" default="" />
+							<xs:element name="Descripción" type="xs:string" default="" />
+							<xs:element name="Código_x0020_Interno" type="xs:string" default="" />
+							<xs:element name="Código_x0020_de_x0020_Barras" type="xs:string" default="" />
+							<xs:element name="Cantidad" type="xs:int" minOccurs="0" default="0" />
+							<xs:element name="ID" type="xs:string" minOccurs="0" default="" />
+							<xs:element name="itemNro" type="xs:int" minOccurs="0" />
+							<xs:element name="precioTotal" type="xs:decimal" minOccurs="0" default="0" />
+							<xs:element name="promocion" type="xs:boolean" minOccurs="0" />
+							<xs:element name="descuento" type="xs:decimal" minOccurs="0" default="0" />
+							<xs:element name="precioTotalConDesc" type="xs:decimal" minOccurs="0" default="0" />
+							<xs:element name="precioUnitario" type="xs:decimal" minOccurs="0" />
+							<xs:element name="itemSeleccionado" type="xs:boolean" minOccurs="0" />
+							<xs:element name="precioUnitarioIVA" type="xs:decimal" minOccurs="0" />
+							<xs:element name="registroBLOB" type="xs:string" minOccurs="0" />
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:choice>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

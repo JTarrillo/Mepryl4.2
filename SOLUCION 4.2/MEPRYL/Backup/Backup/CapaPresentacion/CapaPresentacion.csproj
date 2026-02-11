@@ -1,0 +1,338 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{F86CC74C-3FEC-402E-A8AA-BE4D2E0BCD91}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CapaPresentacion</RootNamespace>
+    <AssemblyName>CapaPresentacion</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\Release\</OutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="CrystalDecisions.CrystalReports.Engine, Version=10.2.3600.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
+    <Reference Include="CrystalDecisions.Enterprise.Framework, Version=10.2.3600.0, Culture=neutral, PublicKeyToken=692fbea5521e1304" />
+    <Reference Include="CrystalDecisions.Enterprise.InfoStore, Version=10.2.3600.0, Culture=neutral, PublicKeyToken=692fbea5521e1304" />
+    <Reference Include="CrystalDecisions.ReportSource, Version=10.2.3600.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
+    <Reference Include="CrystalDecisions.Shared, Version=10.2.3600.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
+    <Reference Include="KMCurrencyTextBox, Version=1.0.1956.38445, Culture=neutral">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\LibreriasBase\CapaPresentacionBase\bin\Debug\KMCurrencyTextBox.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ApplicationBlocks.Data, Version=2.0.0.0, Culture=neutral">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\CapaDatos\bin\Microsoft.ApplicationBlocks.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="frmEspecialidad.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmEspecialidad.Designer.cs">
+      <DependentUpon>frmEspecialidad.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmParametrosPlacas.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmParametrosPlacas.Designer.cs">
+      <DependentUpon>frmParametrosPlacas.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmBorrarTurnos.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmBorrarTurnos.Designer.cs">
+      <DependentUpon>frmBorrarTurnos.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmNotificacionesSMS.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmNotificacionesSMS.Designer.cs">
+      <DependentUpon>frmNotificacionesSMS.cs</DependentUpon>
+    </Compile>
+    <Compile Include="rptReporteTurnos.cs">
+      <DependentUpon>rptReporteTurnos.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="dsAgenda.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>dsAgenda.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="dsCheque.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>dsCheque.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="frmAgenda.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmAgenda.Designer.cs">
+      <DependentUpon>frmAgenda.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmLiga.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmLiga.Designer.cs">
+      <DependentUpon>frmLiga.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmReporteTurnosAsignados.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmReporteTurnosAsignados.Designer.cs">
+      <DependentUpon>frmReporteTurnosAsignados.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmTurno.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmTurno.Designer.cs">
+      <DependentUpon>frmTurno.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmAvisoChequeRechazado.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmAvisoChequeRechazado.Designer.cs">
+      <DependentUpon>frmAvisoChequeRechazado.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmBusqueda.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmBusqueda.Designer.cs">
+      <DependentUpon>frmBusqueda.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmCheque.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmCheque.Designer.cs">
+      <DependentUpon>frmCheque.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmClienteABM.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmClienteABM.designer.cs">
+      <DependentUpon>frmClienteABM.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmClub.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmClub.Designer.cs">
+      <DependentUpon>frmClub.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmHorario.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmHorario.Designer.cs">
+      <DependentUpon>frmHorario.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmPaciente.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmPaciente.Designer.cs">
+      <DependentUpon>frmPaciente.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmProfesional.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmProfesional.Designer.cs">
+      <DependentUpon>frmProfesional.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="rptAgenda.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>rptAgenda.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="rptListadoCheques.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>rptListadoCheques.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\LibreriasBase\CapaNegocioBase\CapaNegocioBase.csproj">
+      <Project>{24B98E93-CAF3-4B54-A458-9A0FBF262B83}</Project>
+      <Name>CapaNegocioBase</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\LibreriasBase\CapaPresentacionBase\CapaPresentacionBase.csproj">
+      <Project>{263F025D-F0F5-4690-9213-6F4487849644}</Project>
+      <Name>CapaPresentacionBase</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\LibreriasBase\Comunes\Comunes.csproj">
+      <Project>{3A1AF435-5DB7-473C-9322-F0560A360E7F}</Project>
+      <Name>Comunes</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\LibreriasBase\UserControls\UserControls.csproj">
+      <Project>{3EFFEB97-EAED-44F6-AD9F-8F78AA504A57}</Project>
+      <Name>UserControls</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CapaNegocio\CapaNegocio.csproj">
+      <Project>{7F6DF0E8-3A00-4465-B9DB-B88826705BA3}</Project>
+      <Name>CapaNegocio</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="frmEspecialidad.resx">
+      <DependentUpon>frmEspecialidad.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmParametrosPlacas.resx">
+      <DependentUpon>frmParametrosPlacas.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmBorrarTurnos.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>frmBorrarTurnos.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmNotificacionesSMS.resx">
+      <DependentUpon>frmNotificacionesSMS.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="rptReporteTurnos.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>rptReporteTurnos.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmAgenda.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>frmAgenda.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmLiga.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>frmLiga.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmReporteTurnosAsignados.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>frmReporteTurnosAsignados.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmTurno.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>frmTurno.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmAvisoChequeRechazado.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>frmAvisoChequeRechazado.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmCheque.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>frmCheque.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmClienteABM.resx">
+      <DependentUpon>frmClienteABM.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmClub.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>frmClub.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmHorario.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>frmHorario.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmPaciente.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>frmPaciente.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmProfesional.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>frmProfesional.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="rptAgenda.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>rptAgenda.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="rptListadoCheques.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>rptListadoCheques.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{967B4E0D-AD0C-4609-AB67-0FA40C0206D8}" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="ClassDiagram2.cd" />
+    <None Include="dsAgenda.xsc">
+      <DependentUpon>dsAgenda.xsd</DependentUpon>
+    </None>
+    <None Include="dsAgenda.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>dsAgenda.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="dsAgenda.xss">
+      <DependentUpon>dsAgenda.xsd</DependentUpon>
+    </None>
+    <None Include="dsCheque.xsc">
+      <DependentUpon>dsCheque.xsd</DependentUpon>
+    </None>
+    <None Include="dsCheque.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>dsCheque.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="dsCheque.xss">
+      <DependentUpon>dsCheque.xsd</DependentUpon>
+    </None>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

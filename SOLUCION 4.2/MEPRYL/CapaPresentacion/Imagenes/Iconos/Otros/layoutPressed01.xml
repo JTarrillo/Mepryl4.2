@@ -1,0 +1,74 @@
+﻿<XtraSerializer version="1.0" application="Appearances">
+  <property name="ItemAppearance.Pressed" iskey="true" value="ItemAppearance.Pressed">
+    <property name="BackColor2" />
+    <property name="GradientMode">Horizontal</property>
+    <property name="Options" isnull="true" iskey="true">
+      <property name="UseBackColor">true</property>
+    </property>
+    <property name="BackColor">Silver</property>
+    <property name="TextOptions" isnull="true" iskey="true">
+      <property name="HAlignment">Default</property>
+      <property name="VAlignment">Default</property>
+    </property>
+  </property>
+  <property name="ItemInMenuAppearance.Hovered" iskey="true" value="ItemInMenuAppearance.Hovered">
+    <property name="BackColor2" />
+    <property name="GradientMode">Horizontal</property>
+    <property name="TextOptions" isnull="true" iskey="true">
+      <property name="HAlignment">Default</property>
+      <property name="VAlignment">Default</property>
+    </property>
+  </property>
+  <property name="ItemInMenuAppearance.Pressed" iskey="true" value="ItemInMenuAppearance.Pressed">
+    <property name="BackColor2" />
+    <property name="GradientMode">Horizontal</property>
+    <property name="Options" isnull="true" iskey="true">
+      <property name="UseBackColor">true</property>
+    </property>
+    <property name="BackColor">Silver</property>
+    <property name="TextOptions" isnull="true" iskey="true">
+      <property name="HAlignment">Default</property>
+      <property name="VAlignment">Default</property>
+    </property>
+  </property>
+  <property name="ItemAppearance.Hovered" iskey="true" value="ItemAppearance.Hovered">
+    <property name="BackColor2" />
+    <property name="GradientMode">Horizontal</property>
+    <property name="TextOptions" isnull="true" iskey="true">
+      <property name="HAlignment">Default</property>
+      <property name="VAlignment">Default</property>
+    </property>
+  </property>
+  <property name="ItemInMenuAppearance.Disabled" iskey="true" value="ItemInMenuAppearance.Disabled">
+    <property name="BackColor2" />
+    <property name="GradientMode">Horizontal</property>
+    <property name="TextOptions" isnull="true" iskey="true">
+      <property name="HAlignment">Default</property>
+      <property name="VAlignment">Default</property>
+    </property>
+  </property>
+  <property name="ItemInMenuAppearance.Normal" iskey="true" value="ItemInMenuAppearance.Normal">
+    <property name="BackColor2" />
+    <property name="GradientMode">Horizontal</property>
+    <property name="TextOptions" isnull="true" iskey="true">
+      <property name="HAlignment">Default</property>
+      <property name="VAlignment">Default</property>
+    </property>
+  </property>
+  <property name="ItemAppearance.Disabled" iskey="true" value="ItemAppearance.Disabled">
+    <property name="BackColor2" />
+    <property name="GradientMode">Horizontal</property>
+    <property name="TextOptions" isnull="true" iskey="true">
+      <property name="HAlignment">Default</property>
+      <property name="VAlignment">Default</property>
+    </property>
+  </property>
+  <property name="ItemAppearance.Normal" iskey="true" value="ItemAppearance.Normal">
+    <property name="BackColor2" />
+    <property name="GradientMode">Horizontal</property>
+    <property name="TextOptions" isnull="true" iskey="true">
+      <property name="HAlignment">Default</property>
+      <property name="VAlignment">Default</property>
+    </property>
+  </property>
+</XtraSerializer>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<xs:schema id="dsFacturaImpresion" targetNamespace="http://tempuri.org/dsFacturaImpresion.xsd"
+	elementFormDefault="qualified" attributeFormDefault="qualified" xmlns="http://tempuri.org/dsFacturaImpresion.xsd"
+	xmlns:mstns="http://tempuri.org/dsFacturaImpresion.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+	<xs:element name="dsFacturaImpresion" msdata:IsDataSet="true">
+		<xs:complexType>
+			<xs:choice maxOccurs="unbounded">
+				<xs:element name="v_FormaPagoLinea">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="id" msdata:DataType="System.Guid, mscorlib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"
+								type="xs:string" />
+							<xs:element name="tipoPagoID" msdata:DataType="System.Guid, mscorlib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"
+								type="xs:string" minOccurs="0" />
+							<xs:element name="tipoPagoDetalleID" msdata:DataType="System.Guid, mscorlib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"
+								type="xs:string" minOccurs="0" />
+							<xs:element name="importe" type="xs:decimal" />
+							<xs:element name="ajuste" type="xs:decimal" />
+							<xs:element name="pesos" type="xs:decimal" />
+							<xs:element name="Tipo_x0020_Pago" type="xs:string" minOccurs="0" />
+							<xs:element name="identificador" type="xs:string" minOccurs="0" />
+							<xs:element name="operacion" type="xs:string" minOccurs="0" />
+							<xs:element name="Detalle" msdata:ReadOnly="true" type="xs:string" minOccurs="0" />
+							<xs:element name="Nro._x0020_Cheque" type="xs:string" />
+							<xs:element name="bancoID" msdata:DataType="System.Guid, mscorlib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"
+								type="xs:string" minOccurs="0" />
+							<xs:element name="cantidadPagosID" msdata:DataType="System.Guid, mscorlib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"
+								type="xs:string" minOccurs="0" />
+							<xs:element name="formaPagoID" msdata:DataType="System.Guid, mscorlib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"
+								type="xs:string" />
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="v_NotaPedidoLineas">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="id" msdata:DataType="System.Guid, mscorlib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"
+								type="xs:string" />
+							<xs:element name="notaPedidoID" msdata:DataType="System.Guid, mscorlib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"
+								type="xs:string" minOccurs="0" />
+							<xs:element name="articuloID" msdata:DataType="System.Guid, mscorlib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"
+								type="xs:string" minOccurs="0" />
+							<xs:element name="cantidad" type="xs:int" />
+							<xs:element name="descuento" type="xs:decimal" />
+							<xs:element name="itemNro" type="xs:int" />
+							<xs:element name="aplicaPromocion" type="xs:int" />
+							<xs:element name="precioTotal" type="xs:decimal" />
+							<xs:element name="precioTotalConDesc" type="xs:decimal" />
+							<xs:element name="descripcion" type="xs:string" minOccurs="0" />
+							<xs:element name="codigoInterno" type="xs:string" minOccurs="0" />
+							<xs:element name="codigoBarras" type="xs:string" minOccurs="0" />
+							<xs:element name="Rubro" type="xs:string" minOccurs="0" />
+							<xs:element name="SubRubro" type="xs:string" minOccurs="0" />
+							<xs:element name="precioUnitario" type="xs:decimal" />
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:choice>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

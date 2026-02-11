@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?> 
+<Configuracion>
+	<Conexion>
+		<SERVER>192.168.1.254</SERVER>
+		<DATABASE>MEPRYL</DATABASE>
+		<UID>user</UID>
+		<PWD>Mepryl22</PWD>
+		<SeguridadIntegrada>NO</SeguridadIntegrada>
+	</Conexion>
+	<Errores>
+		<Email>info@datadominus.com.ar</Email>
+	</Errores>
+	<Parametros>
+	</Parametros>
+</Configuracion>

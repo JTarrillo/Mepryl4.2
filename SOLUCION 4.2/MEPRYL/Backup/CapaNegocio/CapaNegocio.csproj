@@ -1,0 +1,108 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{7F6DF0E8-3A00-4465-B9DB-B88826705BA3}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CapaNegocio</RootNamespace>
+    <AssemblyName>CapaNegocio</AssemblyName>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>2.0</OldToolsVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\Release\</OutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Cheque.cs" />
+    <Compile Include="ChequeBancoSucursal.cs" />
+    <Compile Include="ChequeBancoSucursalFactory.cs" />
+    <Compile Include="ChequeFactory.cs" />
+    <Compile Include="ChequeFirmante.cs" />
+    <Compile Include="ChequeFirmanteFactory.cs" />
+    <Compile Include="Cliente.cs" />
+    <Compile Include="ClienteFactory.cs" />
+    <Compile Include="ChequeCuenta.cs" />
+    <Compile Include="ChequeCuentaFactory.cs" />
+    <Compile Include="Club.cs" />
+    <Compile Include="ClubFactory.cs" />
+    <Compile Include="EspecialidadFactory.cs" />
+    <Compile Include="Especialidad.cs" />
+    <Compile Include="Empresa.cs" />
+    <Compile Include="EmpresaFactory.cs" />
+    <Compile Include="PacienteTipo.cs" />
+    <Compile Include="PacienteTipoFactory.cs" />
+    <Compile Include="ParametrosPlacasFactory.cs" />
+    <Compile Include="ParametrosPlacas.cs" />
+    <Compile Include="EntidadGeneralFactory.cs" />
+    <Compile Include="Horario.cs" />
+    <Compile Include="HorarioFactory.cs" />
+    <Compile Include="Liga.cs" />
+    <Compile Include="LigaFactory.cs" />
+    <Compile Include="Paciente.cs" />
+    <Compile Include="PacienteFactory.cs" />
+    <Compile Include="Profesional.cs" />
+    <Compile Include="ProfesionalFactory.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Turno.cs" />
+    <Compile Include="TurnoFactory.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\LibreriasBase\CapaDatosBase\CapaDatosBase.csproj">
+      <Project>{6B78EEB9-5BFE-464E-B315-766997A120BC}</Project>
+      <Name>CapaDatosBase</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\LibreriasBase\CapaNegocioBase\CapaNegocioBase.csproj">
+      <Project>{24B98E93-CAF3-4B54-A458-9A0FBF262B83}</Project>
+      <Name>CapaNegocioBase</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\LibreriasBase\Comunes\Comunes.csproj">
+      <Project>{3A1AF435-5DB7-473C-9322-F0560A360E7F}</Project>
+      <Name>Comunes</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CapaDatos\CapaDatos.csproj">
+      <Project>{AB5777C1-8AF9-4B82-8331-EFCEBEADA8BB}</Project>
+      <Name>CapaDatos</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

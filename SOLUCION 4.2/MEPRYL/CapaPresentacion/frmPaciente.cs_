@@ -1,0 +1,475 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Text;
+using System.Windows.Forms;
+using Comunes;
+using CapaNegocio;
+using CapaPresentacionBase;
+using CapaNegocioBase;
+using UserControls;
+using System.Data.SqlClient;
+
+
+namespace CapaPresentacion
+{
+    public partial class frmPaciente : CapaPresentacionBase.frmBaseEntidadABM
+    {
+        public Paciente rglEntidad;
+
+        public frmPaciente()
+        {
+            InitializeComponent();
+        }
+
+        public frmPaciente(Configuracion config, bool mostrarBotonOk)
+            : base(config, mostrarBotonOk)
+        {
+            EntidadNombre = "Paciente";
+        }
+
+        public frmPaciente(Configuracion config) : base(config)
+        {
+            EntidadNombre = "Paciente";
+        }
+
+        //Implementacion
+        protected override void inicializarEntidad()
+        {
+            rglEntidad = new Paciente();
+        }
+        
+
+        //
+        //Para redefinir en cada formulario
+        //
+        protected override void modoEstatico(bool hayObjetoActivo)
+        {
+            base.modoEstatico(hayObjetoActivo);
+
+
+            habilitarControles(ref gbDatosPersonales, false);
+        }
+
+
+        protected override void modoEditable()
+        {
+            base.modoEditable();
+            habilitarControles(ref gbDatosPersonales, true);
+            this.Focus();
+            
+            if (this.edicion == ModoEdicion.MODIFICANDO)
+                cboLiga.Focus();
+            else
+                tbApellido.Focus();
+        }
+
+        protected override void inicializarComponentes()
+        {
+            InitializeComponent();
+            base.inicializarComponentes();
+
+            //Aquí llenar los combos Liga y Club
+            Utilidades.llenarCombo(ref cboLiga, this.configuracion.getConectionString(), "sp_Liga_SelectAll", "", -1);
+            llenarClubes();
+            //Utilidades.llenarCombo(ref cboClub, this.configuracion.getConectionString(), "sp_Club_SelectAll", "", -1);
+
+            inicializarEntidad();
+
+            //Si lo llaman desde turnos no muestra el campo de observaciones del paciente.
+            if (this.mostrarBotonOk)
+            {
+                tbObservaciones.Visible = false;
+                lbObservaciones.Visible = false;
+            }
+        }
+
+        private void llenarClubes() {
+            llenarClubes("");
+        }
+        private void llenarClubes(string palabras)
+        {
+            try 
+            {
+                string ligaID = Utilidades.comboObtenerID(ref cboLiga);
+                string filtro = "ligaID='" + ligaID + "'";
+                palabras = palabras.Trim();
+                if (palabras != "") { 
+                    palabras = palabras.Replace("  ", " ");
+                    string[] aPalabras = palabras.Split(" ".ToCharArray(),StringSplitOptions.RemoveEmptyEntries);
+                    foreach (string palabra in aPalabras) {
+                        filtro += " AND descripcion LIKE '%" + palabra + "%'";
+                    }
+                }
+                Utilidades.llenarListBox(ref lbxClub, this.configuracion.getConectionString(), "sp_Club_SelectFiltro", "", -1, filtro);
+            }
+            catch (Exception ex)
+            {
+                ManejadorErrores.escribirLog(ex, true, this.configuracion);
+            }
+        }
+
+        //Carga el Navegador de Formularios
+        protected override void cargarNavegadorFormulario()
+        {
+            try
+            {
+                base.cargarNavegadorFormulario();
+
+                //Carga las teclas rapidas primero
+                //navegador.agregarControlTeclaRapida(new CapsulaControl((Control)butBuscar, (char)Keys.F1));
+
+                //Carga los controles
+                navegador.agregarControl(new CapsulaControl((Control)tbApellido));
+                navegador.agregarControl(new CapsulaControl((Control)tbNombres));
+                navegador.agregarControl(new CapsulaControl((Control)dtpFechaNacimiento));
+                navegador.agregarControl(new CapsulaControl((Control)cboLiga));
+                navegador.agregarControl(new CapsulaControl((Control)tbBuscarClub));
+                navegador.agregarControl(new CapsulaControl((Control)lbxClub));
+                navegador.agregarControl(new CapsulaControl((Control)tbTelefonos));
+                navegador.agregarControl(new CapsulaControl((Control)tbCelular));
+                navegador.agregarControl(new CapsulaControl((Control)tbObservaciones));
+                navegador.agregarControl(new CapsulaControl((Control)tbDNI));
+
+                //Agrega los handlers para todos los controles del control contenedor
+                navegador.agregarHandlersContenedor(this);
+            }
+            catch (Exception ex)
+            {
+                ManejadorErrores.escribirLog(ex, true, this.configuracion);
+            }
+        }
+
+        protected override void mostrarDatosObjeto()
+        {
+            base.mostrarDatosObjeto();
+            try
+            {
+                rglEntidad = (Paciente)base.rglEntidad;
+                tbApellido.Text = rglEntidad.apellido.ToString();
+                tbNombres.Text = rglEntidad.nombres.ToString();
+                tbDNI.Text = rglEntidad.dni.ToString();
+                dtpFechaNacimiento.Text = rglEntidad.fechaNacimiento.ToString();
+                Utilidades.comboSeleccionarItemById(rglEntidad.ligaID, ref cboLiga);
+                Utilidades.listBoxSeleccionarItemById(rglEntidad.clubID, ref lbxClub);
+               
+                tbTelefonos.Text = rglEntidad.telefonos.ToString();
+                tbCelular.Text = rglEntidad.celular.ToString();
+                tbObservaciones.Text = rglEntidad.observaciones.ToString();
+
+                /*DateTime fechaLimiteUltimoExamenDesde = DateTime.Parse(this.configuracion.obtenerParametro("PACIENTE_FECHA_ULTIMO_EXAMEN_DESDE").ToString());
+                DateTime fechaLimiteUltimoExamenHasta = DateTime.Parse(this.configuracion.obtenerParametro("PACIENTE_FECHA_ULTIMO_EXAMEN_HASTA").ToString());
+                
+                //bool mostrarAlert = false;
+                lbTienePlaca.Text = "";
+                if (rglEntidad.fechaUltimoExamen >= fechaLimiteUltimoExamenDesde) //Si está dentro del rango se verifica la placa
+                {
+                    if (rglEntidad.hizoPlacaID == 1) //Hizo Placa
+                    {
+                        lbTienePlaca.ForeColor = Color.Red;
+                        lbTienePlaca.Text = "NO DEBE REALIZAR RX."; //"HIZO PLACA";
+                    }
+                    else
+                    {
+                        lbTienePlaca.ForeColor = Color.LimeGreen;
+                        lbTienePlaca.Text = "DEBE REALIZAR RX."; // "NO HIZO PLACA";
+                        //mostrarAlert = true;
+                    }
+                    
+                }
+                else
+                {
+                    //mostrarAlert = true;
+                    lbTienePlaca.ForeColor = Color.LimeGreen;
+                    lbTienePlaca.Text = "DEBE REALIZAR RX."; // "NO HIZO PLACA";
+                }
+                if (rglEntidad.fechaUltimoExamen.ToString().Substring(0, 10) != "01/01/0001")
+                {
+                    tbFechaUltimoExamen.Text = rglEntidad.fechaUltimoExamen.ToString();
+                    lbFechaUltimoExamen.Visible = true;
+                    tbFechaUltimoExamen.Visible = true;
+                }
+                else
+                {
+                    //tbFechaUltimoExamen.Text = "No examinado en el último año.";
+                    lbFechaUltimoExamen.Visible = false;
+                    tbFechaUltimoExamen.Visible = false;
+                }
+
+                //if (mostrarAlert)
+                MessageBox.Show(lbTienePlaca.Text, "¡Atención!", MessageBoxButtons.OK, MessageBoxIcon.Information);*/
+            
+                
+                bool hacerPlaca = false;
+                lbTienePlaca.Text = "";
+                
+                //Toma los parametros para el criterio de evaluacion
+                ParametrosPlacasFactory ppf = new ParametrosPlacasFactory(this.configuracion, "ParametrosPlacas");
+                ParametrosPlacas pp = (ParametrosPlacas)ppf.getByCodigo("1");
+
+                //Lee los datos auxiliares del paciente
+                SqlConnection con = new SqlConnection(this.configuracion.getConectionString());
+                con.Open();
+
+                SqlCommand cmd = new SqlCommand("SELECT * FROM PacienteFechaPlaca WHERE dni='" + rglEntidad.dni + "'", con);
+                SqlDataReader dr = cmd.ExecuteReader();
+
+                //Criterio 1: Continúa la evaluación si hay registro, sino directamente tiene que hacer placa
+                if (!dr.HasRows)
+                    hacerPlaca = true;
+                else 
+                {
+                    dr.Read();
+                    //Lee los datos complementarios del paciente
+                    rglEntidad.fechaUltimoExamen = DateTime.Parse(dr["fechaUltimoExamen"].ToString());
+                    String auxFechaUltimoExamen = dr["fechaUltimoExamen"].ToString();
+                    String auxHizoPlaca = dr["hizoPlacaID"].ToString();
+                    //String auxAñoUltimoExamen = auxFechaUltimoExamen.Split(" ".ToCharArray())[0].Split("/".ToCharArray())[2];
+
+
+                    //int añoUltimoExamen = int.Parse(auxAñoUltimoExamen);
+                    //Criterio 2: si no hizo placa en el año indicado en los parámetros
+                    //Criterio 3: si se examino el ultimo año pero no hizo placa
+                    //if ((añoUltimoExamen < parAño) || (añoUltimoExamen >= parAño && auxHizoPlaca != "1"))
+                    //MessageBox.Show("fechaUltimoExamen=" + rglEntidad.fechaUltimoExamen.ToString() + ", ultimoPeriodoDesde=" + pp.ultimoPeriodoDesde.ToString() + ", auxHizoPlaca=" + auxHizoPlaca);
+                    if (!(rglEntidad.fechaUltimoExamen >= pp.ultimoPeriodoDesde) ||
+                        ((rglEntidad.fechaUltimoExamen >= pp.ultimoPeriodoDesde) && auxHizoPlaca != "1"))
+                        hacerPlaca = true;
+                    else  
+                    {
+                        int categoriaPaciente = rglEntidad.fechaNacimiento.Year;
+                        bool ligaOk = false;
+                        if (pp.ligasIDs.Contains(rglEntidad.ligaID.ToString()))
+                            ligaOk = true;
+
+                        //Citerio 4: si pertenece a las categorias marcadas y a las ligas marcadas
+                        if ((categoriaPaciente == int.Parse(pp.categoriaInicial) || categoriaPaciente == int.Parse(pp.novenaCategoria)) && ligaOk)
+                            hacerPlaca = true;
+                    }
+                    dr.Close();
+                }
+                
+                cmd.Dispose();
+                con.Close();
+            
+
+                if (hacerPlaca) 
+                {
+                    lbTienePlaca.ForeColor = Color.LimeGreen;
+                    lbTienePlaca.Text = "DEBE REALIZAR RX."; 
+                }
+                else
+                {
+                    lbTienePlaca.ForeColor = Color.Red;
+                    lbTienePlaca.Text = "NO DEBE REALIZAR RX."; 
+
+                }
+            
+                if (rglEntidad.fechaUltimoExamen.ToString().Substring(0, 10) != "01/01/0001")
+                {
+                    tbFechaUltimoExamen.Text = rglEntidad.fechaUltimoExamen.ToString();
+                    lbFechaUltimoExamen.Visible = true;
+                    tbFechaUltimoExamen.Visible = true;
+                }
+                else
+                {
+                    //tbFechaUltimoExamen.Text = "No examinado en el último año.";
+                    lbFechaUltimoExamen.Visible = false;
+                    tbFechaUltimoExamen.Visible = false;
+                }
+
+                //if (mostrarAlert)
+                MessageBox.Show(lbTienePlaca.Text, "¡Atención!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                ManejadorErrores.escribirLog(ex, true, this.configuracion);
+            }
+        }
+
+        public override string validarDatosIngresados()
+        {
+            string resultado = "";
+
+            try
+            {
+                if (tbApellido.Text.Trim() == "" && tbNombres.Text.Trim() == "")
+                    resultado += "\r\n\t- Debe ingresar Apellido y Nombres.";
+
+                /*if (tbDNI.Text.Trim() == "")
+                    resultado += "\r\n\t- Debe ingresar el DNI.";
+                */
+                DateTime d;
+                if (!DateTime.TryParse(dtpFechaNacimiento.Text, out d))
+                    resultado += "\r\n\t- La Fecha de Nacimiento no es válida.";
+
+            }
+            catch (Exception ex)
+            {
+                ManejadorErrores.escribirLog(ex, true, this.configuracion);
+            }
+            return resultado;
+        }
+
+        protected override void limpiarFormulario()
+        {
+            try
+            {
+                tbId.Text = Utilidades.ID_VACIO;
+                tbApellido.Text = "";
+                tbNombres.Text = "";
+                tbDNI.Text = "";
+                tbTelefonos.Text = "";
+                tbCelular.Text = "";
+                tbObservaciones.Text = "";
+                dtpFechaNacimiento.Text = "";
+            }
+            catch (Exception ex)
+            {
+                ManejadorErrores.escribirLog(ex, true, this.configuracion);
+            }
+        }
+
+
+        protected override void cargarObjetoReglas()
+        {
+            try
+            {
+                //MessageBox.Show(cboaNroSucursal.cboCombo.Text);
+                inicializarEntidad();
+                rglEntidad.id = new Guid(tbId.Text);
+                rglEntidad.codigo = tbCodigo.Text;
+                rglEntidad.apellido = tbApellido.Text;
+                rglEntidad.nombres = tbNombres.Text;
+                rglEntidad.dni = tbDNI.Text;
+                rglEntidad.fechaNacimiento = DateTime.Parse(dtpFechaNacimiento.Text);
+                rglEntidad.ligaID = new Guid(Utilidades.comboObtenerID(ref cboLiga));
+                rglEntidad.clubID = new Guid(Utilidades.listBoxObtenerID(ref lbxClub));
+                rglEntidad.telefonos = tbTelefonos.Text;
+                rglEntidad.celular = tbCelular.Text;
+                rglEntidad.observaciones = tbObservaciones.Text;
+            }
+            catch (Exception ex)
+            {
+                ManejadorErrores.escribirLog(ex, true, this.configuracion);
+            }
+        }
+
+        public override string validarNegocio()
+        {
+            PacienteFactory negEntidadFac = (PacienteFactory)crearNegEntidadFac();
+            string resultado = negEntidadFac.validar(rglEntidad, edicion);
+            negEntidadFac = null;
+
+            return resultado;
+        }
+
+        public override frmBaseBusqueda crearFormularioBusqueda()
+        {
+            frmBusqueda fb = new frmBusqueda(this.configuracion, this.EntidadNombre);
+            fb.habilitarBusquedaAutomatica = false;
+            return fb;
+        }
+
+        public override CapaNegocioBase.EntidadFactoryBase crearNegEntidadFac()
+        {
+            return new PacienteFactory(this.configuracion, this.EntidadNombre);
+        }
+
+        public override Resultado alta()
+        {
+            Resultado resultado = new Resultado();
+
+            try
+            {
+                PacienteFactory negEntidadFac = (PacienteFactory)crearNegEntidadFac();
+                resultado = negEntidadFac.alta(rglEntidad);
+                negEntidadFac = null;
+
+            }
+            catch (Exception ex)
+            {
+                ManejadorErrores.escribirLog(ex, true, this.configuracion);
+            }
+            return resultado;
+        }
+
+        //
+        public override Resultado modificar()
+        {
+            Resultado resultado = new Resultado();
+            try
+            {
+                PacienteFactory negEntidadFac = (PacienteFactory)crearNegEntidadFac();
+                resultado = negEntidadFac.modificar(rglEntidad);
+                negEntidadFac = null;
+
+            }
+            catch (Exception ex)
+            {
+                ManejadorErrores.escribirLog(ex, true, this.configuracion);
+            }
+            return resultado;
+        }
+
+        public override string borrar(string id)
+        {
+            string resultado = "";
+
+            try
+            {
+                PacienteFactory negPacienteFac = new PacienteFactory(this.configuracion, this.EntidadNombre);
+                resultado = negPacienteFac.borrar(id);
+
+                negPacienteFac = null;
+            }
+            catch (Exception ex)
+            {
+                ManejadorErrores.escribirLog(ex, true, this.configuracion);
+                resultado = ex.Message;
+            }
+            return resultado;
+        }
+
+        private void cboLiga_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            llenarClubes();
+        }
+
+        protected override bool recuperarObjetoPorCodigo(string codigo)
+        {
+            bool encontro = false;
+            try
+            {
+                encontro = base.recuperarObjetoPorCodigo(codigo);
+                if (!encontro)
+                {
+                    agregar();
+                    tbDNI.Text = codigo;
+                }
+                else
+                {
+                    butModificar_Click(butModificar, new EventArgs());
+                }
+            }
+            catch (Exception ex)
+            {
+                ManejadorErrores.escribirLog(ex, true, this.configuracion);
+            }
+            return encontro;
+        }
+
+        protected override void focoEnOK()
+        {
+            butOk.Focus();
+        }
+
+        private void tbBuscarClub_TextChanged(object sender, EventArgs e)
+        {
+            llenarClubes(tbBuscarClub.Text);
+        }
+
+    }
+}

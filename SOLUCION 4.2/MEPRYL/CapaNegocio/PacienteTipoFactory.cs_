@@ -1,0 +1,101 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
+using CapaNegocioBase;
+using Comunes;
+
+namespace CapaNegocio
+{
+    public class PacienteTipoFactory : EntidadFactoryBase
+    {
+        public PacienteTipoFactory(Configuracion conf, string entNombre)
+            : base(conf, entNombre)
+        { }
+
+        public override void crearDatEntidadFac()
+        {
+            this.datEntidadFac = new CapaDatos.PacienteTipoFactory(this.configuracion, this.EntidadNombre);
+        }
+
+        protected override CapaNegocioBase.EntidadBase crearEntidadNegocio()
+        {
+            return new CapaNegocio.PacienteTipo();
+        }
+
+
+        protected override EntidadBase convertirEnObjetoNegocio(CapaDatosBase.EntidadBase datEntidad)
+        {
+            CapaNegocio.PacienteTipo negPacienteTipo = new CapaNegocio.PacienteTipo();
+            try
+            {
+                /*************************/
+                /* Copia las propiedades */
+                object origen = (object)datEntidad;
+                object destino = (object)negPacienteTipo;
+
+                Utilidades.copiarAtributos(ref origen, ref destino);
+                negPacienteTipo = (CapaNegocio.PacienteTipo)destino;
+
+                origen = null;
+                destino = null;
+                /*************************/
+
+              
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
+            }
+            return negPacienteTipo;
+        }
+
+        //Da el alta recibiendo todos los datos en un objeto
+        public override Resultado alta(CapaNegocioBase.EntidadBase negEntidad)
+        {
+            Resultado resultado = new Resultado();
+            try
+            {
+                crearDatEntidadFac();
+
+                CapaDatos.PacienteTipo datPacienteTipo = (CapaDatos.PacienteTipo)((CapaNegocio.PacienteTipo)negEntidad).convertirEnObjetoDatos();
+
+                resultado = datEntidadFac.alta(datPacienteTipo);
+                datPacienteTipo = (CapaDatos.PacienteTipo)resultado.objeto;
+                negEntidad = convertirEnObjetoNegocio(datPacienteTipo);
+
+                resultado.objeto = (CapaNegocio.PacienteTipo)negEntidad;
+            }
+            catch (Exception ex)
+            {
+                ManejadorErrores.escribirLog(ex, true, this.configuracion);
+                resultado.mensaje = ex.Message;
+            }
+            return resultado;
+        }
+
+        public override Resultado modificar(EntidadBase entidad)
+        {
+            Resultado resultado = new Resultado(entidad, "");
+
+            try
+            {
+                crearDatEntidadFac();
+
+                CapaDatos.PacienteTipo datPacienteTipo = (CapaDatos.PacienteTipo)((CapaNegocio.PacienteTipo)entidad).convertirEnObjetoDatos();
+                resultado = datEntidadFac.modificar(datPacienteTipo);
+
+                datPacienteTipo = (CapaDatos.PacienteTipo)resultado.objeto;
+                entidad = convertirEnObjetoNegocio(datPacienteTipo);
+
+                resultado.objeto = (CapaNegocio.PacienteTipo)entidad;
+            }
+            catch (Exception ex)
+            {
+                ManejadorErrores.escribirLog(ex, true, this.configuracion);
+                resultado.mensaje = ex.Message;
+            }
+            return resultado;
+        }
+
+    }
+}

@@ -1,0 +1,45 @@
+# Archivos binarios
+*.dll
+*.exe
+*.pdb
+*.cache
+*.db
+*.log
+
+# Carpetas de salida de compilación
+bin/
+obj/
+[Bb]uild/
+[Ll]og/
+
+# Configuración de usuario de VS
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Archivos temporales
+*.tmp
+*.bak
+*.swp
+*.~*
+
+# Visual Studio Code
+.vscode/
+
+# Archivos de paquetes
+*.nupkg
+packages/
+.nuget/
+
+# Archivos de Rider
+.idea/
+
+# Archivos de configuración local
+*.dbmdl
+*.vscode/
+*.vs/
+# Otros
+*.dbcache.json
+*.MDF
+*.D9Q

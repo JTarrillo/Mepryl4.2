@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<xs:schema id="dsListadoFacturas" targetNamespace="http://tempuri.org/dsListadoFacturas.xsd"
+	elementFormDefault="qualified" attributeFormDefault="qualified" xmlns="http://tempuri.org/dsListadoFacturas.xsd"
+	xmlns:mstns="http://tempuri.org/dsListadoFacturas.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+	<xs:element name="dsListadoFacturas" msdata:IsDataSet="true">
+		<xs:complexType>
+			<xs:choice maxOccurs="unbounded">
+				<xs:element name="v_Factura">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Fecha" type="xs:dateTime" />
+							<xs:element name="clienteID" msdata:DataType="System.Guid, mscorlib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"
+								type="xs:string" minOccurs="0" />
+							<xs:element name="apellido" type="xs:string" minOccurs="0" />
+							<xs:element name="nombres" type="xs:string" minOccurs="0" />
+							<xs:element name="Razón_x0020_Social" type="xs:string" />
+							<xs:element name="ivaIDCliente" msdata:DataType="System.Guid, mscorlib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"
+								type="xs:string" minOccurs="0" />
+							<xs:element name="IVA" type="xs:string" minOccurs="0" />
+							<xs:element name="Dirección_x0020_Cliente" type="xs:string" />
+							<xs:element name="CUIT" type="xs:string" />
+							<xs:element name="id" msdata:DataType="System.Guid, mscorlib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"
+								type="xs:string" />
+							<xs:element name="Dirección_x0020_Entrega" type="xs:string" />
+							<xs:element name="vendedorID" msdata:DataType="System.Guid, mscorlib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"
+								type="xs:string" minOccurs="0" />
+							<xs:element name="Vendedor" msdata:ReadOnly="true" type="xs:string" minOccurs="0" />
+							<xs:element name="autorizadorBonificacionID" msdata:DataType="System.Guid, mscorlib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"
+								type="xs:string" minOccurs="0" />
+							<xs:element name="Autorizó" msdata:ReadOnly="true" type="xs:string" minOccurs="0" />
+							<xs:element name="Condición_x0020_de_x0020_Entrega" type="xs:string" minOccurs="0" />
+							<xs:element name="condicionEntregaID" msdata:DataType="System.Guid, mscorlib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"
+								type="xs:string" minOccurs="0" />
+							<xs:element name="Bonif._x0020__x0025_" type="xs:decimal" />
+							<xs:element name="SubTotal_x0020_1" type="xs:decimal" />
+							<xs:element name="IVA_x0020_1" type="xs:decimal" />
+							<xs:element name="IVA_x0020_2" type="xs:decimal" />
+							<xs:element name="total" type="xs:decimal" />
+							<xs:element name="estadoFacturaID" msdata:DataType="System.Guid, mscorlib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"
+								type="xs:string" minOccurs="0" />
+							<xs:element name="maquinaID" msdata:DataType="System.Guid, mscorlib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"
+								type="xs:string" minOccurs="0" />
+							<xs:element name="Máquina" type="xs:string" minOccurs="0" />
+							<xs:element name="SubTotal_x0020_2" type="xs:decimal" />
+							<xs:element name="Bonif._x0020_Importe" type="xs:decimal" />
+							<xs:element name="formaPagoID" msdata:DataType="System.Guid, mscorlib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"
+								type="xs:string" minOccurs="0" />
+							<xs:element name="facturaSuc" type="xs:string" />
+							<xs:element name="facturaNro" type="xs:string" />
+							<xs:element name="Tipo_x0020_Factura" type="xs:string" />
+							<xs:element name="Nro._x0020_Factura" msdata:ReadOnly="true" type="xs:string" minOccurs="0" />
+							<xs:element name="jornadaVentaID" msdata:DataType="System.Guid, mscorlib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"
+								type="xs:string" minOccurs="0" />
+							<xs:element name="sucursalID" msdata:DataType="System.Guid, mscorlib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"
+								type="xs:string" minOccurs="0" />
+							<xs:element name="Sucursal" msdata:ReadOnly="true" type="xs:string" minOccurs="0" />
+							<xs:element name="notaPedidoID" msdata:DataType="System.Guid, mscorlib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"
+								type="xs:string" minOccurs="0" />
+							<xs:element name="Estado" type="xs:string" minOccurs="0" />
+							<xs:element name="estadoCuentaCorrienteID" msdata:DataType="System.Guid, mscorlib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"
+								type="xs:string" minOccurs="0" />
+							<xs:element name="Estado_x0020_Cta._x0020_Cte." type="xs:string" minOccurs="0" />
+							<xs:element name="Plazo_x0020_Pago" type="xs:string" minOccurs="0" />
+							<xs:element name="Ejercicio_x0020_Nro." type="xs:int" minOccurs="0" />
+							<xs:element name="notaPedidoSuc" type="xs:string" minOccurs="0" />
+							<xs:element name="notaPedidoNro" type="xs:string" minOccurs="0" />
+							<xs:element name="Nota_x0020_Pedido" msdata:ReadOnly="true" type="xs:string" minOccurs="0" />
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:choice>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

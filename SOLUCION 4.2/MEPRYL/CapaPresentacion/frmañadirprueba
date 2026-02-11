@@ -1,0 +1,3965 @@
+// Método para filtrar y mostrar los tipos de examen padre por nombre
+
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using CapaNegocioMepryl;
+using Entidades;
+
+namespace CapaPresentacion
+{
+    public partial class FrmAñadirEspecialidad : Form
+    {
+        // Permite ocultar y mostrar el tab "Items" dinámicamente
+        private TabPage tabItemsBackup = null;
+        private TabPage tabPruenaBackup = null; // 
+        private TabPage tabGestionarBackup = null; // ← NUEVA
+        private TabPage tabAgregarBackup = null;           // ← NUEVA
+        private TabPage tabItemsSeccionesBackup = null;   // ← NUEVA
+        private TabPage tabResumenBackup = null;
+
+
+        // Bandera para controlar el mensaje de estado
+
+        private bool mostrarMensajeEstado = true;
+        private CapaNegocioMepryl.TipoExamen negocioTipoExamen;
+        private List<Entidades.TipoExamen> listaTiposExamenes; // Lista temporal en memoria
+        private int idMotivoConsultaSeleccionado;
+        private string idTipoExamenSeleccionado; // Almacena el ID del TipoExamen seleccionado
+        private string idSubtipoActualmenteCargado; // Almacena el ID del subtipo actual para auto-save al cambiar
+
+        private DataTable dtTiposExamenesOriginal; // DataTable original para filtrar correctamente
+
+        private bool permitirEventoSubtipo = true;
+        private bool permitirSincronizacion = true;  // ✅ Bandera para evitar sincronización recursiva
+
+        public void SincronizarCombosDesde(int idMotivo, string idTipo, string idSubtipo)
+        {
+            try
+            {
+                permitirEventoSubtipo = false;
+                permitirSincronizacion = false;
+
+                try
+                {
+                    // 1. Cargar motivos y seleccionar
+                    CargarMotivosConsulta();
+
+                    if (idMotivo > 0)
+                    {
+                        if (cmbMotivoConsulta.SelectedValue == null || Convert.ToInt32(cmbMotivoConsulta.SelectedValue) != idMotivo)
+                        {
+                            cmbMotivoConsulta.SelectedValue = idMotivo;
+                            idMotivoConsultaSeleccionado = idMotivo;
+                        }
+                    }
+
+                    // 2. Cargar tipos y seleccionar
+                    if (idMotivo > 0)
+                    {
+                        CargarTiposExamen();
+                        Application.DoEvents();
+
+                        // ✅ REFRESCAR DTTIPOSEXAMENESORIGINAL CON DATOS ACTUALIZADOS (incluye nuevos subtipos)
+                        if (idMotivo > 0) // Solo mostrar si no es 'Todos'
+                            MostrarGestionMotivoTipoSubtipo(idMotivo);
+
+                        if (!string.IsNullOrEmpty(idTipo) && (cmbTipoExamen.SelectedValue == null || cmbTipoExamen.SelectedValue.ToString() != idTipo))
+                        {
+                            cmbTipoExamen.SelectedValue = idTipo;
+                            idTipoExamenSeleccionado = idTipo;
+                        }
+                    }
+
+                    // 3. Cargar subtipos y seleccionar
+                    if (!string.IsNullOrEmpty(idTipo))
+                    {
+                        CargarSubtipos();
+                        Application.DoEvents();
+
+                        if (!string.IsNullOrEmpty(idSubtipo) && (cmbSubtipo.SelectedValue == null || cmbSubtipo.SelectedValue.ToString() != idSubtipo))
+                        {
+                            cmbSubtipo.SelectedValue = idSubtipo;
+                            idSubtipoActualmenteCargado = idSubtipo;
+                        }
+                    }
+
+                    ActualizarEstadoControles();
+                }
+                finally
+                {
+                    permitirEventoSubtipo = true;
+                    permitirSincronizacion = true;
+
+                    Application.DoEvents();
+                    if (!string.IsNullOrEmpty(idSubtipo) && cmbSubtipo.SelectedIndex != -1)
+                    {
+                        CmbSubtipo_SelectedIndexChanged(cmbSubtipo, EventArgs.Empty);
+                    }
+                    else if (!string.IsNullOrEmpty(idTipo) && cmbTipoExamen.SelectedIndex != -1)
+                    {
+                        CmbTipoExamen_SelectedIndexChanged(cmbTipoExamen, EventArgs.Empty);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                permitirEventoSubtipo = true;
+                permitirSincronizacion = true;
+            }
+        }
+
+        // ✅ EVENT0: Notificar cuando se crea un subtipo
+        public event EventHandler SubtipoCreado;
+
+        // ✅ EVENT: Notificar cuando cambian los combos de sincronización (bidireccional)
+        public event EventHandler<CombosChangedEventArgs> CombosChanged;
+
+        public class CombosChangedEventArgs : EventArgs
+        {
+            public int IdMotivo { get; set; }
+            public string IdTipo { get; set; }
+            public string IdSubtipo { get; set; }
+        }
+
+        // ✅ PROPIEDADES PÚBLICAS PARA SINCRONIZACIÓN BIDIRECCIONAL
+        public int ObtenerIdMotivoConsultaSeleccionado
+        {
+            get { return idMotivoConsultaSeleccionado; }
+        }
+
+        public string ObtenerIdTipoExamenSeleccionado
+        {
+            get { return idTipoExamenSeleccionado ?? ""; }
+        }
+
+        public string ObtenerIdSubtipoActualmenteCargado
+        {
+            get { return idSubtipoActualmenteCargado ?? ""; }
+        }
+
+        // ✅ PROPIEDAD PÚBLICA para acceder a la lista de tipos de exámenes
+        public List<Entidades.TipoExamen> ObtenerListaTiposExamenes
+        {
+            get { return listaTiposExamenes; }
+        }
+
+        // ✅ MÉTODO PÚBLICO: Controlar visibilidad de tabs
+        public void ConfigurarTabs(bool mostrarItems)
+        {
+            try
+            {
+                // Buscar el TabControl en el formulario
+                foreach (Control ctrl in this.Controls)
+                {
+                    if (ctrl is TabControl tabCtrl)
+                    {
+                        // Recorrer todos los tabs y ocultar/mostrar solo el tab "Items" (tabItems)
+                        foreach (TabPage tab in tabCtrl.TabPages)
+                        {
+                            // Buscar por el nombre de la variable (Name property) o por el texto (Text property)
+                            if (tab.Name == "tabItems" || tab.Text.Equals("Items", StringComparison.OrdinalIgnoreCase))
+                            {
+                                tab.Visible = mostrarItems;
+                            }
+                        }
+
+                        break; // Solo procesar el primer TabControl encontrado
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Manejo silencioso de error
+            }
+        }
+
+        private Button btnGuardarGestion; // <-- aquí
+        // Handler para crear motivo de consulta
+        private void button1_Click(object sender, EventArgs e)
+        {
+            // Mostrar diálogo para ingresar nombre e identificador interno
+            using (var dlg = new FrmNuevoMotivoConsulta())
+            {
+                if (dlg.ShowDialog() == DialogResult.OK)
+                {
+                    string nombre = dlg.NombreMotivo;
+                    string identificador = dlg.IdentificadorInterno;
+                    if (string.IsNullOrWhiteSpace(nombre))
+                    {
+                        MessageBox.Show("Ingrese un nombre para el motivo de consulta", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+                    var resultado = negocioTipoExamen.CrearMotivoDeConsulta(nombre, identificador);
+                    if (resultado != null && resultado.Modo > 0)
+                    {
+                        // ✅ Cargar motivos actualizados
+                        CargarMotivosConsulta();
+
+                        // ✅ Seleccionar automáticamente el nuevo motivo creado por nombre
+                        if (cmbMotivoConsulta.DataSource is DataTable dt)
+                        {
+                            var filaMotivo = dt.AsEnumerable().FirstOrDefault(r => r.Field<string>("nombre").Equals(nombre, StringComparison.OrdinalIgnoreCase));
+                            if (filaMotivo != null)
+                            {
+                                int nuevoMotivoId = int.Parse(filaMotivo.Field<object>("id").ToString());
+                                cmbMotivoConsulta.SelectedValue = nuevoMotivoId;
+                            }
+                        }
+
+                        MessageBox.Show(resultado.Mensaje, "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show(resultado?.Mensaje ?? "No se pudo crear el motivo de consulta", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════════════════
+        // MÉTODOS PARA TAB AGREGAR
+        // ═══════════════════════════════════════════════════════════════════════
+
+        public void OcultarTabAgregar()
+        {
+            if (tabControl.TabPages.Contains(tabAgregar))
+            {
+                tabAgregarBackup = tabAgregar;
+                tabControl.TabPages.Remove(tabAgregar);
+            }
+        }
+
+        public void MostrarTabAgregar(int index = -1)
+        {
+            if (!tabControl.TabPages.Contains(tabAgregar) && tabAgregarBackup != null)
+            {
+                if (index >= 0 && index <= tabControl.TabPages.Count)
+                    tabControl.TabPages.Insert(index, tabAgregarBackup);
+                else
+                    tabControl.TabPages.Add(tabAgregarBackup);
+            }
+        }
+
+
+        // ═══════════════════════════════════════════════════════════════════════
+        // MÉTODOS PARA TAB ITEMS POR SECCIONES
+        // ═══════════════════════════════════════════════════════════════════════
+
+        // ✅ NUEVO: Navegar a un tab específico por nombre
+        public void NavigarATab(string tabName)
+        {
+            try
+            {
+                foreach (TabPage tab in tabControl.TabPages)
+                {
+                    if (tab.Name == tabName)
+                    {
+                        tabControl.SelectedTab = tab;
+                        return;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Manejo silencioso de error
+            }
+        }
+
+        public void OcultarTabItemsSecciones()
+        {
+            if (tabControl.TabPages.Contains(tabItemsSecciones))
+            {
+                tabItemsSeccionesBackup = tabItemsSecciones;
+                tabControl.TabPages.Remove(tabItemsSecciones);
+            }
+        }
+
+        public void MostrarTabItemsSecciones(int index = -1)
+        {
+            if (!tabControl.TabPages.Contains(tabItemsSecciones) && tabItemsSeccionesBackup != null)
+            {
+                if (index >= 0 && index <= tabControl.TabPages.Count)
+                    tabControl.TabPages.Insert(index, tabItemsSeccionesBackup);
+                else
+                    tabControl.TabPages.Add(tabItemsSeccionesBackup);
+            }
+        }
+
+
+        // ═══════════════════════════════════════════════════════════════════════
+        // MÉTODOS PARA TAB RESUMEN
+        // ═══════════════════════════════════════════════════════════════════════
+
+        public void OcultarTabResumen()
+        {
+            if (tabControl.TabPages.Contains(tabResumen))
+            {
+                tabResumenBackup = tabResumen;
+                tabControl.TabPages.Remove(tabResumen);
+            }
+        }
+
+        public void MostrarTabResumen(int index = -1)
+        {
+            if (!tabControl.TabPages.Contains(tabResumen) && tabResumenBackup != null)
+            {
+                if (index >= 0 && index <= tabControl.TabPages.Count)
+                    tabControl.TabPages.Insert(index, tabResumenBackup);
+                else
+                    tabControl.TabPages.Add(tabResumenBackup);
+            }
+        }
+        public void OcultarTabItems()
+        {
+            if (tabControl.TabPages.Contains(tabItems))
+            {
+                tabItemsBackup = tabItems;
+                tabControl.TabPages.Remove(tabItems);
+            }
+        }
+
+        public void MostrarTabItems(int index = -1)
+        {
+            if (!tabControl.TabPages.Contains(tabItems) && tabItemsBackup != null)
+            {
+                if (index >= 0 && index <= tabControl.TabPages.Count)
+                    tabControl.TabPages.Insert(index, tabItemsBackup);
+                else
+                    tabControl.TabPages.Add(tabItemsBackup);
+            }
+        }
+
+
+        public void OcultarTabPruena()
+        {
+            if (tabControl.TabPages.Contains(tabPruena))
+            {
+                tabPruenaBackup = tabPruena;
+                tabControl.TabPages.Remove(tabPruena);
+            }
+        }
+
+        public void MostrarTabPruena(int index = -1)
+        {
+            if (!tabControl.TabPages.Contains(tabPruena) && tabPruenaBackup != null)
+            {
+                if (index >= 0 && index <= tabControl.TabPages.Count)
+                    tabControl.TabPages.Insert(index, tabPruenaBackup);
+                else
+                    tabControl.TabPages.Add(tabPruenaBackup);
+            }
+        }
+
+
+        public void OcultarTabGestionar()
+        {
+            if (tabControl.TabPages.Contains(tabGestionar))
+            {
+                tabGestionarBackup = tabGestionar;
+                tabControl.TabPages.Remove(tabGestionar);
+            }
+        }
+
+        public void MostrarTabGestionar(int index = -1)
+        {
+            if (!tabControl.TabPages.Contains(tabGestionar) && tabGestionarBackup != null)
+            {
+                if (index >= 0 && index <= tabControl.TabPages.Count)
+                    tabControl.TabPages.Insert(index, tabGestionarBackup);
+                else
+                    tabControl.TabPages.Add(tabGestionarBackup);
+            }
+        }
+
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            // Validar selección
+            if (cmbMotivoConsulta.SelectedValue == null)
+            {
+                MessageBox.Show("Seleccione un motivo de consulta para eliminar.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            int idMotivo;
+            if (!int.TryParse(cmbMotivoConsulta.SelectedValue.ToString(), out idMotivo))
+            {
+                MessageBox.Show("No se pudo obtener el motivo seleccionado.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            string nombreMotivo = cmbMotivoConsulta.Text;
+            var confirm = MessageBox.Show($"¿Está seguro que desea eliminar el motivo '{nombreMotivo}'?", "Confirmar eliminación", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (confirm == DialogResult.Yes)
+            {
+                var resultado = negocioTipoExamen.EliminarMotivoDeConsulta(idMotivo);
+                if (resultado != null && resultado.Modo > 0)
+                {
+                    MessageBox.Show(resultado.Mensaje, "Eliminado", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    CargarMotivosConsulta();
+                }
+                else
+                {
+                    MessageBox.Show(resultado?.Mensaje ?? "No se pudo eliminar el motivo de consulta.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        public FrmAñadirEspecialidad()
+        {
+            InitializeComponent();
+
+            // Inicialización defensiva para uso incrustado
+
+            negocioTipoExamen = new CapaNegocioMepryl.TipoExamen();
+            listaTiposExamenes = new List<Entidades.TipoExamen>();
+            idMotivoConsultaSeleccionado = -1;
+            idTipoExamenSeleccionado = "";
+
+            // Activar autocompletar en el ComboBox de Subtipo
+            cmbSubtipo.DropDownStyle = ComboBoxStyle.DropDown;
+            cmbSubtipo.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+            cmbSubtipo.AutoCompleteSource = AutoCompleteSource.ListItems;
+
+            // Agrega el botón al final del constructor
+            btnGuardarGestion = new Button();
+            btnGuardarGestion.Text = "Guardar Gestión";
+            btnGuardarGestion.Size = new Size(120, 32);
+            btnGuardarGestion.Location = new Point(20, 520); // Ajusta la posición según tu diseño
+            btnGuardarGestion.Click += BtnGuardarGestion_Click;
+            this.Controls.Add(btnGuardarGestion);
+
+            // ✅ Ocultar botón Guardar original (será llamado desde frmLocalidadNacionalidad)
+            this.btnGuardar.Visible = false;
+
+            // ✅ Ocultar texto de la pestaña Items por Secciones
+            this.tabItemsSecciones.Text = "";
+
+            // ✅ Configurar evento para cambiar color del tab activo
+            this.tabControl.DrawItem += TabControl_DrawItem;
+
+            // Eventos
+            this.Load += FrmAñadirEspecialidad_Load;
+            this.Shown += FrmAñadirEspecialidad_Shown; // Agregar evento Shown como fallback
+            this.btnAgregarTipoExamen.Click += BtnAgregar_Click;
+            this.btnEliminarTipoExamen.Click += BtnEliminarTipoExamen_Click;
+            this.btnEliminarSubtipo.Click += BtnEliminarSubtipo_Click;
+            this.btnAgregarSubtipo.Click += BtnAgregarSubtipo_Click;
+            this.btnEliminar.Click += BtnEliminar_Click;
+            this.btnEditar.Click += BtnEditar_Click;
+            this.btnEliminarTodo.Click += BtnEliminarTodo_Click;
+            this.btnGuardar.Click += BtnGuardar_Click;
+            this.btnCancelar.Click += BtnCancelar_Click;
+            this.cmbMotivoConsulta.SelectedIndexChanged += CmbMotivoConsulta_SelectedIndexChanged;
+            this.cmbTipoExamen.SelectedIndexChanged += CmbTipoExamen_SelectedIndexChanged;
+            this.cmbSubtipo.SelectedIndexChanged += CmbSubtipo_SelectedIndexChanged;
+            this.dgvTiposExamenes.SelectionChanged += DgvTiposExamenes_SelectionChanged;
+            this.btnMotivodeConsulta.Click += button1_Click;
+            this.button2.Click += button2_Click;
+            this.dgvTiposExamenes.DataBindingComplete += DgvTiposExamenes_DataBindingComplete;
+            // Eventos para manejo inmediato de checkbox
+            this.dgvTiposExamenes.CellValueChanged += DgvTiposExamenes_CellValueChanged;
+            this.dgvTiposExamenes.CurrentCellDirtyStateChanged += DgvTiposExamenes_CurrentCellDirtyStateChanged;
+
+            this.dgvTiposExamenes.CellClick += DgvTiposExamenes_CellClickAccion;
+
+            System.Diagnostics.Debug.WriteLine("✓ FrmAñadirEspecialidad Constructor completado");
+        }
+
+        private void DgvTiposExamenes_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
+        {
+            // Obtén la lista de tipos temporales
+            var tiposTemporales = listaTiposExamenes.Where(t => t.IdMotivoConsulta == idMotivoConsultaSeleccionado).ToList();
+            foreach (DataGridViewRow row in dgvTiposExamenes.Rows)
+            {
+                string idReal = null;
+                if (row.DataBoundItem is DataRowView drv && drv.DataView.Table.Columns.Contains("Id"))
+                {
+                    idReal = drv["Id"].ToString();
+                }
+                bool esNuevo = !string.IsNullOrEmpty(idReal) && tiposTemporales.Any(t => t.Id.ToString() == idReal);
+                if (esNuevo)
+                {
+                    row.DefaultCellStyle.BackColor = Color.LightGreen;
+                    row.DefaultCellStyle.SelectionBackColor = Color.GreenYellow;
+                }
+            }
+        }
+        private void FrmAñadirEspecialidad_Load(object sender, EventArgs e)
+        {
+            try
+            {
+                System.Diagnostics.Debug.WriteLine("► FrmAñadirEspecialidad_Load disparado");
+                // ✅ OCULTAR BOTÓN GUARDAR PERMANENTEMENTE
+                this.btnGuardar.Visible = false;
+                this.btnGuardar.Enabled = false;
+                InitializeForm();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("✗ Error en Load: " + ex.Message);
+                MessageBox.Show("Error al cargar: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // Evento Shown para contextos incrustados (más confiable)
+        private void FrmAñadirEspecialidad_Shown(object sender, EventArgs e)
+        {
+            try
+            {
+                System.Diagnostics.Debug.WriteLine("► FrmAñadirEspecialidad_Shown disparado");
+                // ✅ OCULTAR BOTÓN GUARDAR PERMANENTEMENTE
+                this.btnGuardar.Visible = false;
+                this.btnGuardar.Enabled = false;
+                InitializeForm();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("✗ Error en Shown: " + ex.Message);
+                MessageBox.Show("Error al mostrar: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // Método centralizado de inicialización (ejecutado una sola vez)
+        private bool formInitialized = false;
+        private void InitializeForm()
+        {
+            if (formInitialized)
+                return;
+
+            System.Diagnostics.Debug.WriteLine("► InitializeForm: Cargando datos...");
+            try
+            {
+
+                System.Diagnostics.Debug.WriteLine("✓ Motivos de consulta cargados");
+
+                ConfigurarDataGridViews();
+                System.Diagnostics.Debug.WriteLine("✓ DataGridViews configurados");
+
+                ConfigurarDataGridViewsPruebas();
+                System.Diagnostics.Debug.WriteLine("✓ DataGridViews de pruebas configurados");
+
+                // Dejar la grilla vacía hasta que el usuario seleccione un motivo
+                dgvTiposExamenes.DataSource = null;
+                dgvTiposExamenes.Rows.Clear();
+
+                ActualizarEstadoControles();
+                System.Diagnostics.Debug.WriteLine("✓ Estado de controles actualizado");
+
+                formInitialized = true;
+                System.Diagnostics.Debug.WriteLine("✓ Formulario inicializado correctamente");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("✗ Error en InitializeForm: " + ex.StackTrace);
+                throw;
+            }
+        }
+
+        // ✅ MÉTODO PÚBLICO: Para recargar datos cuando el formulario se muestra nuevamente (incrustado)
+        public void RecargarDatos()
+        {
+            try
+            {
+                System.Diagnostics.Debug.WriteLine("► RecargarDatos: Recargando datos del formulario incrustado");
+                CargarMotivosConsulta();
+                ConfigurarDataGridViews();
+                ConfigurarDataGridViewsPruebas();
+                ActualizarEstadoControles();
+                System.Diagnostics.Debug.WriteLine("✓ Datos recargados correctamente");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"✗ Error en RecargarDatos: {ex.Message}");
+                MessageBox.Show($"Error al recargar datos: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// MÉTODO HELPER: Oculta la columna "id" en cualquier DataGridView
+        /// DEBE LLAMARSE DESPUÉS de asignar DataSource
+        /// </summary>
+        private void OcultarColumnaID(DataGridView dgv)
+        {
+            try
+            {
+                if (dgv != null && dgv.Columns.Count > 0)
+                {
+                    if (dgv.Columns.Contains("id"))
+                    {
+                        dgv.Columns["id"].Visible = false;
+                        System.Diagnostics.Debug.WriteLine($"✓ Columna 'id' oculta en {dgv.Name}");
+                    }
+                    else
+                    {
+                        System.Diagnostics.Debug.WriteLine($"⚠️ Columna 'id' no encontrada en {dgv.Name}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"ERROR ocultando ID: {ex.Message}");
+            }
+        }
+
+        private void BtnGuardarGestion_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                foreach (DataGridViewRow row in dgvTiposExamenes.Rows)
+                {
+                    var idCell = row.Cells["id"];
+                    var estadoCell = row.Cells["EstadoEspecialidad"];
+                    var padreCell = row.Cells["Padre"];
+                    if (idCell != null && estadoCell != null)
+                    {
+                        string id = idCell.Value?.ToString();
+                        bool estado = Convert.ToBoolean(estadoCell.Value ?? false);
+                        int padre = 1;
+                        if (padreCell != null && int.TryParse(padreCell.Value?.ToString(), out int p))
+                            padre = p;
+                        if (!string.IsNullOrEmpty(id) && Guid.TryParse(id, out Guid guid))
+                        {
+                            negocioTipoExamen.ActualizarEstadoEspecialidad(id, estado ? 1 : 0);
+                            // Si es tipo examen (padre=1) o subtipo (padre=0), recargar combos para mostrar solo los activos
+                            if (padre == 1)
+                                CargarTiposExamen();
+                            else if (padre == 0)
+                                CargarSubtipos();
+                        }
+                    }
+                }
+                MessageBox.Show("Estados actualizados correctamente.", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                // Recargar la grilla después de guardar
+                CargarTiposExamen();
+                if (idMotivoConsultaSeleccionado > 0)
+                    MostrarGestionMotivoTipoSubtipo(idMotivoConsultaSeleccionado);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al guardar estados: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // ...existing code...
+        private void CargarMotivosConsulta()
+        {
+            try
+            {
+                DataTable dt = negocioTipoExamen.cargarMotivosDeConsulta();
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    // Agregar opción "Todos" SOLO si estamos en el tab Gestionar
+                    if (tabControl.SelectedTab == tabGestionar && !dt.AsEnumerable().Any(r => r.Field<string>("nombre") == "Todos"))
+                    {
+                        DataRow rowTodos = dt.NewRow();
+                        rowTodos[dt.Columns[0].ColumnName] = 0; // ID = 0 para "Todos"
+                        rowTodos[dt.Columns[1].ColumnName] = "TODOS";
+                        dt.Rows.InsertAt(rowTodos, 0);
+                    }
+                    cmbMotivoConsulta.DataSource = dt;
+                    cmbMotivoConsulta.DisplayMember = dt.Columns.Count > 1 ? dt.Columns[1].ColumnName : dt.Columns[0].ColumnName;
+                    cmbMotivoConsulta.ValueMember = dt.Columns[0].ColumnName;
+                    cmbMotivoConsulta.SelectedIndex = -1; // <-- Esto hace que aparezca vacío al inicio
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al cargar motivos: " + ex.Message);
+            }
+        }
+        // ...existing code...
+        private void ConfigurarDataGridViews()
+        {
+            dgvTiposExamenes.Columns.Clear();
+            dgvTiposExamenes.AutoGenerateColumns = false;
+            dgvTiposExamenes.Columns.Add(new DataGridViewTextBoxColumn { Name = "id", HeaderText = "ID", DataPropertyName = "id" });
+            dgvTiposExamenes.Columns.Add(new DataGridViewTextBoxColumn { Name = "MotivoConsulta", HeaderText = "Motivo de Consulta", DataPropertyName = "MotivoConsulta", ReadOnly = true, Width = 200 });
+            dgvTiposExamenes.Columns.Add(new DataGridViewTextBoxColumn { Name = "TipoExamen", HeaderText = "Tipo de Examen", DataPropertyName = "TipoExamen", ReadOnly = true, Width = 150 });
+            // ✅ COLUMNA ACTIVO PADRE - Solo para tipos padre (al lado de Tipo de Examen)
+            dgvTiposExamenes.Columns.Add(new DataGridViewCheckBoxColumn { Name = "ActivoPadre", HeaderText = "Activo Padre", DataPropertyName = "ActivoPadre", TrueValue = true, FalseValue = false, Width = 80, ReadOnly = false });
+            dgvTiposExamenes.Columns.Add(new DataGridViewTextBoxColumn { Name = "SubtipoExamen", HeaderText = "Subtipo", DataPropertyName = "SubtipoExamen", ReadOnly = true, Width = 150 });
+            dgvTiposExamenes.Columns.Add(new DataGridViewTextBoxColumn { Name = "PrecioSubtipo", HeaderText = "Precio", DataPropertyName = "PrecioSubtipo", ReadOnly = true, Width = 100, DefaultCellStyle = { FormatProvider = new System.Globalization.CultureInfo("es-AR"), Format = "C2", NullValue = "$ 0,00" } });
+            dgvTiposExamenes.Columns.Add(new DataGridViewCheckBoxColumn { Name = "EstadoEspecialidad", HeaderText = "Activo", DataPropertyName = "EstadoTipo", TrueValue = true, FalseValue = false, Width = 60, ReadOnly = false });
+
+            // AGREGAR COLUMNAS VISUALES PARA LOS DÍAS DE LA SEMANA Y "TURNO GENERAL" AL FINAL
+            dgvTiposExamenes.Columns.Add(new DataGridViewCheckBoxColumn { Name = "Lun", HeaderText = "Lun", Width = 40, ReadOnly = false });
+            dgvTiposExamenes.Columns.Add(new DataGridViewCheckBoxColumn { Name = "Mar", HeaderText = "Mar", Width = 40, ReadOnly = false });
+            dgvTiposExamenes.Columns.Add(new DataGridViewCheckBoxColumn { Name = "Mie", HeaderText = "Mié", Width = 40, ReadOnly = false });
+            dgvTiposExamenes.Columns.Add(new DataGridViewCheckBoxColumn { Name = "Jue", HeaderText = "Jue", Width = 40, ReadOnly = false });
+            dgvTiposExamenes.Columns.Add(new DataGridViewCheckBoxColumn { Name = "Vie", HeaderText = "Vie", Width = 40, ReadOnly = false });
+            var colTurnoGeneral = new DataGridViewCheckBoxColumn
+            {
+                Name = "TurnoGeneral",
+                HeaderText = "TURNO GENERAL",
+                Width = 80,
+                ReadOnly = false
+            };
+            dgvTiposExamenes.Columns.Add(colTurnoGeneral);
+
+            // Estilo visual para el encabezado de "TURNO GENERAL"
+            dgvTiposExamenes.EnableHeadersVisualStyles = false;
+            dgvTiposExamenes.ColumnHeadersDefaultCellStyle.ForeColor = Color.Black;
+            dgvTiposExamenes.ColumnHeadersDefaultCellStyle.BackColor = Color.White;
+            dgvTiposExamenes.ColumnHeadersDefaultCellStyle.Font = new Font("Arial", 9, FontStyle.Bold);
+            dgvTiposExamenes.Columns["TurnoGeneral"].HeaderCell.Style.ForeColor = Color.Red;
+            dgvTiposExamenes.Columns["TurnoGeneral"].HeaderCell.Style.Font = new Font("Arial", 9, FontStyle.Bold);
+
+            // ✅ NUEVO: Ocultar la columna ID aquí y siempre
+            dgvTiposExamenes.Columns["id"].Visible = false;
+            // Ocultar la columna de precios si existe
+            if (dgvTiposExamenes.Columns.Contains("PrecioSubtipo"))
+            {
+                dgvTiposExamenes.Columns["PrecioSubtipo"].Visible = false;
+            }
+
+            // DataGridView Items - Configurar columnas desde código
+            dgvItems.Columns.Clear();
+
+            // Columna Código
+            dgvItems.Columns.Add("Codigo", "Código");
+            dgvItems.Columns[0].Width = 60;
+            dgvItems.Columns[0].ReadOnly = true;
+
+            // Columna Estado (CheckBox)
+            System.Windows.Forms.DataGridViewCheckBoxColumn colEstado = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            colEstado.Name = "Estado";
+            colEstado.HeaderText = "Estado";
+            colEstado.Width = 60;
+            colEstado.ReadOnly = false;
+            colEstado.TrueValue = true;
+            colEstado.FalseValue = false;
+            dgvItems.Columns.Add(colEstado);
+
+            // Columna Item (Descripción)
+            dgvItems.Columns.Add("Item", "Descripción");
+            dgvItems.Columns[2].Width = 600;
+            dgvItems.Columns[2].ReadOnly = true;
+
+            // Columna Orden
+            dgvItems.Columns.Add("OrdenFormulario", "Orden");
+            dgvItems.Columns[3].Width = 80;
+            dgvItems.Columns[3].ReadOnly = true;
+
+            // Limpiar grillas de secciones
+            if (dgvClinico != null)
+            {
+                dgvClinico.Rows.Clear();
+                dgvClinico.DataSource = null;
+            }
+            if (dgvLaboratorio != null)
+            {
+                dgvLaboratorio.Rows.Clear();
+                dgvLaboratorio.DataSource = null;
+            }
+            if (dgvRadiologia != null)
+            {
+                dgvRadiologia.Rows.Clear();
+                dgvRadiologia.DataSource = null;
+            }
+            if (dgvCardiologia != null)
+            {
+                dgvCardiologia.Rows.Clear();
+                dgvCardiologia.DataSource = null;
+            }
+        }
+
+        private void DgvTiposExamenes_CellClickAccion(object sender, DataGridViewCellEventArgs e)
+        {
+            if (
+                e.RowIndex >= 0 &&
+                e.ColumnIndex >= 0 &&
+                dgvTiposExamenes.Columns.Contains("Acciones") &&
+                dgvTiposExamenes.Columns[e.ColumnIndex].Name == "Acciones"
+            )
+            {
+                var row = dgvTiposExamenes.Rows[e.RowIndex];
+                string id = row.Cells["id"]?.Value?.ToString();
+                bool estado = Convert.ToBoolean(row.Cells["EstadoEspecialidad"]?.Value ?? false);
+                if (!string.IsNullOrEmpty(id) && Guid.TryParse(id, out Guid guid))
+                {
+                    negocioTipoExamen.ActualizarEstadoEspecialidad(id, estado ? 1 : 0);
+                    MessageBox.Show("Estado actualizado correctamente.", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    // Recargar la grilla para reflejar el cambio
+                    CargarTiposExamen();
+                    if (idMotivoConsultaSeleccionado > 0)
+                        MostrarGestionMotivoTipoSubtipo(idMotivoConsultaSeleccionado);
+                    // Selección segura de la primera celda visible si hay filas
+                    if (dgvTiposExamenes.Rows.Count > 0)
+                    {
+                        var firstRow = dgvTiposExamenes.Rows[0];
+                        firstRow.Selected = true;
+                        foreach (DataGridViewColumn col in dgvTiposExamenes.Columns)
+                        {
+                            if (col.Visible && col.Index < firstRow.Cells.Count)
+                            {
+                                dgvTiposExamenes.CurrentCell = firstRow.Cells[col.Index];
+                                break;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    MessageBox.Show($"No se pudo obtener el ID válido para actualizar. Valor actual: '{id}'", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
+
+
+        /// <summary>
+        /// Llena las 4 grillas de secciones (Clínico, Laboratorio, Radiología, Cardiología)
+        /// distribuyendo los items según su OrdenFormulario:
+        /// - Clínico: 1, 12 (Examen Físico y Estudios Complementarios)
+        /// - Laboratorio: 2, 3, 4, 5, 6, 7 (Laboratorio y análisis)
+        /// - Radiología: 8, 9, 10, 11 (Radiografías y estudios por imagen)
+        /// - Cardiología: 12 (Estudios del corazón)
+        /// </summary>
+        private void InitializarDataTablesSubtipo(Entidades.TipoExamen subtipo)
+        {
+            try
+            {
+                // Inicializar todos los DataTables con la estructura correcta
+                // Estructura: [0]=Id, [1]=Codigo, [2]=Estado, [3]=Item, [4]=OrdenFormulario
+
+                subtipo.Clinico = CrearDataTableVacio();
+                subtipo.Hematologia = CrearDataTableVacio();
+                subtipo.QuimicaHematica = CrearDataTableVacio();
+                subtipo.Serologia = CrearDataTableVacio();
+                subtipo.PerfilLipidico = CrearDataTableVacio();
+                subtipo.Bacteriologia = CrearDataTableVacio();
+                subtipo.Orina = CrearDataTableVacio();
+                subtipo.LaboralesBasicas = CrearDataTableVacio();
+                subtipo.CraneoYMSuperior = CrearDataTableVacio();
+                subtipo.TroncoYPelvis = CrearDataTableVacio();
+                subtipo.MiembroInferior = CrearDataTableVacio();
+                subtipo.EstComplementarios = CrearDataTableVacio();
+
+                System.Diagnostics.Debug.WriteLine("✅ DataTables del subtipo inicializados");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"ERROR en InitializarDataTablesSubtipo: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Crea un DataTable vacío con la estructura esperada: [0]=Id, [1]=Codigo, [2]=Estado, [3]=Item, [4]=OrdenFormulario
+        /// </summary>
+        private DataTable CrearDataTableVacio()
+        {
+            DataTable dt = new DataTable();
+            dt.Columns.Add("Id", typeof(Guid));
+            dt.Columns.Add("Codigo", typeof(int));
+            dt.Columns.Add("Estado", typeof(bool));
+            dt.Columns.Add("Item", typeof(string));
+            dt.Columns.Add("OrdenFormulario", typeof(int));
+            return dt;
+        }
+
+        private void LlenarSecciones(DataTable dtItems)
+        {
+            try
+            {
+                // Limpiar todas las grillas
+                if (dgvClinico != null) { dgvClinico.Rows.Clear(); }
+                if (dgvLaboratorio != null) { dgvLaboratorio.Rows.Clear(); }
+                if (dgvRadiologia != null) { dgvRadiologia.Rows.Clear(); }
+                if (dgvCardiologia != null) { dgvCardiologia.Rows.Clear(); }
+
+                if (dtItems == null || dtItems.Rows.Count == 0)
+                    return;
+
+                // ✅ VERIFICAR QUE LOS DATAGRIDS TENGAN COLUMNAS ANTES DE AGREGAR FILAS
+                if (dgvClinico != null && dgvClinico.Columns.Count == 0)
+                {
+                    dgvClinico.Columns.Add("Codigo", "Código");
+                    dgvClinico.Columns.Add("Estado", "Estado");
+                    dgvClinico.Columns.Add("Item", "Descripción");
+                    dgvClinico.Columns.Add("Orden", "Orden");
+                }
+                if (dgvLaboratorio != null && dgvLaboratorio.Columns.Count == 0)
+                {
+                    dgvLaboratorio.Columns.Add("Codigo", "Código");
+                    dgvLaboratorio.Columns.Add("Estado", "Estado");
+                    dgvLaboratorio.Columns.Add("Item", "Descripción");
+                    dgvLaboratorio.Columns.Add("Orden", "Orden");
+                }
+                if (dgvRadiologia != null && dgvRadiologia.Columns.Count == 0)
+                {
+                    dgvRadiologia.Columns.Add("Codigo", "Código");
+                    dgvRadiologia.Columns.Add("Estado", "Estado");
+                    dgvRadiologia.Columns.Add("Item", "Descripción");
+                    dgvRadiologia.Columns.Add("Orden", "Orden");
+                }
+                if (dgvCardiologia != null && dgvCardiologia.Columns.Count == 0)
+                {
+                    dgvCardiologia.Columns.Add("Codigo", "Código");
+                    dgvCardiologia.Columns.Add("Estado", "Estado");
+                    dgvCardiologia.Columns.Add("Item", "Descripción");
+                    dgvCardiologia.Columns.Add("Orden", "Orden");
+                }
+
+                // Distribuir items según su OrdenFormulario
+                foreach (DataRow row in dtItems.Rows)
+                {
+                    string codigo = row["Codigo"].ToString();
+                    string item = row["Item"].ToString();
+                    bool estado = ConvertirABooleano(row["Estado"]);
+                    int orden = Convert.ToInt32(row.IsNull("OrdenFormulario") ? 0 : row["OrdenFormulario"]);
+
+                    // Clasificación según OrdenFormulario
+                    // Clínico: Orden 1 (Examen Físico, Otoscopia, etc.)
+                    if (orden == 1)
+                    {
+                        if (dgvClinico != null)
+                            dgvClinico.Rows.Add(codigo, estado, item, orden);
+                    }
+                    // Laboratorio: Orden 2, 3, 4, 5, 6, 7
+                    else if (orden >= 2 && orden <= 7)
+                    {
+                        if (dgvLaboratorio != null)
+                            dgvLaboratorio.Rows.Add(codigo, estado, item, orden);
+                    }
+                    // Radiología: Orden 8, 9, 10, 11
+                    else if (orden >= 8 && orden <= 11)
+                    {
+                        if (dgvRadiologia != null)
+                            dgvRadiologia.Rows.Add(codigo, estado, item, orden);
+                    }
+                    // Cardiología/Estudios Complementarios: Orden 12
+                    else if (orden == 12)
+                    {
+                        if (dgvCardiologia != null)
+                            dgvCardiologia.Rows.Add(codigo, estado, item, orden);
+                    }
+                }
+
+                // Agregar event handlers para detectar cambios de checkbox
+                AgregarEventHandlersGrillas();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al llenar secciones: " + ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Agrega event handlers a todas las grillas de secciones para detectar
+        /// cambios en los checkboxes y actualizar el resumen
+        /// </summary>
+        /// 
+        private void AgregarEventHandlersGrillas()
+        {
+            List<DataGridView> grillas = new List<DataGridView> { dgvClinico, dgvLaboratorio, dgvRadiologia, dgvCardiologia };
+
+            foreach (DataGridView dgv in grillas)
+            {
+                if (dgv != null)
+                {
+                    // Remover handlers previos si existen para evitar duplicados
+                    dgv.CellValueChanged -= Dgv_CellValueChanged;
+                    dgv.CellClick -= Dgv_CellClick;
+                    // Agregar nuevos handlers
+                    dgv.CellValueChanged += Dgv_CellValueChanged;
+                    dgv.CellClick += Dgv_CellClick;
+                }
+            }
+
+            // También agregar handler a dgvItems para sincronizar cambios hacia las secciones
+            if (dgvItems != null)
+            {
+                dgvItems.CellValueChanged -= DgvItems_CellValueChanged;
+                dgvItems.CellClick -= DgvItems_CellClick;
+                dgvItems.CellValueChanged += DgvItems_CellValueChanged;
+                dgvItems.CellClick += DgvItems_CellClick;
+            }
+        }
+
+        private void btnGuardarEstado_Click(object sender, EventArgs e)
+        {
+            foreach (DataGridViewRow row in dgvTiposExamenes.Rows)
+            {
+                if (row.Cells["IdEspecialidad"].Value != null)
+                {
+                    string idEspecialidad = row.Cells["IdEspecialidad"].Value.ToString();
+                    bool estado = Convert.ToBoolean(row.Cells["EstadoEspecialidad"].Value ?? true);
+                    negocioTipoExamen.ActualizarEstadoEspecialidad(idEspecialidad, estado ? 1 : 0);
+                }
+            }
+            MessageBox.Show("Estados actualizados correctamente.", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        /// <summary>
+        /// Event handler que se dispara cuando hace click en una celda (especialmente checkbox)
+        /// </summary>
+        private void Dgv_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            // Si hace click en la columna 1 (checkbox), actualizar después de un pequeño delay
+            if (e.ColumnIndex == 1 && e.RowIndex >= 0)
+            {
+                // Usar BeginInvoke para que se dispare después de que se procese el click
+                this.BeginInvoke(new Action(() => ActualizarResumen()));
+            }
+        }
+
+        /// <summary>
+        /// Event handler que se dispara cuando cambia un valor en las grillas de secciones
+        /// </summary>
+        private void Dgv_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            // Solo procesar cambios en la columna Estado (índice 1)
+            if (e.ColumnIndex == 1 && e.RowIndex >= 0)
+            {
+                ActualizarResumen();
+                // Sincronizar el cambio hacia dgvItems
+                SincronizarSeccionesAItems((DataGridView)sender, e.RowIndex);
+            }
+        }
+
+        /// <summary>
+        /// Event handler que se dispara cuando cambia un valor en dgvItems
+        /// </summary>
+        private void DgvItems_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            // Solo procesar cambios en la columna Estado (índice 1)
+            if (e.ColumnIndex == 1 && e.RowIndex >= 0)
+            {
+                ActualizarResumen();
+                // Sincronizar el cambio hacia las secciones
+                SincronizarItemsASecciones(e.RowIndex);
+            }
+        }
+
+        /// <summary>
+        /// Event handler que se dispara cuando hace click en dgvItems
+        /// </summary>
+        private void DgvItems_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            // Si hace click en la columna 1 (checkbox), actualizar después de un pequeño delay
+            if (e.ColumnIndex == 1 && e.RowIndex >= 0)
+            {
+                // Usar BeginInvoke para que se dispare después de que se procese el click
+                this.BeginInvoke(new Action(() =>
+                {
+                    ActualizarResumen();
+                    SincronizarItemsASecciones(e.RowIndex);
+                }));
+            }
+        }
+
+        /// <summary>
+        /// Sincroniza un cambio de checkbox desde las secciones hacia dgvItems
+        /// Busca el item por código y actualiza su estado en dgvItems
+        /// </summary>
+        private void SincronizarSeccionesAItems(DataGridView dgvOrigen, int filaOrigen)
+        {
+            try
+            {
+                if (dgvItems == null || dgvOrigen == null)
+                    return;
+
+                // Obtener el código del item desde la grilla origen (columna 0)
+                string codigoOrigen = dgvOrigen.Rows[filaOrigen].Cells[0].Value?.ToString();
+                bool estadoOrigen = Convert.ToBoolean(dgvOrigen.Rows[filaOrigen].Cells[1].Value ?? false);
+
+                if (string.IsNullOrEmpty(codigoOrigen))
+                    return;
+
+                // Buscar el mismo código en dgvItems y actualizar su estado
+                foreach (DataGridViewRow row in dgvItems.Rows)
+                {
+                    string codigoItems = row.Cells[0].Value?.ToString();
+                    if (codigoItems == codigoOrigen)
+                    {
+                        // Actualizar el estado en dgvItems sin generar eventos en cascada
+                        row.Cells[1].Value = estadoOrigen;
+                        break;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error en SincronizarSeccionesAItems: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Sincroniza un cambio de checkbox desde dgvItems hacia todas las secciones
+        /// Busca el item por código en todas las grillas y actualiza su estado
+        /// </summary>
+        private void SincronizarItemsASecciones(int filaItems)
+        {
+            try
+            {
+                if (dgvItems == null)
+                    return;
+
+                // Obtener el código del item desde dgvItems (columna 0)
+                string codigoItems = dgvItems.Rows[filaItems].Cells[0].Value?.ToString();
+                bool estadoItems = Convert.ToBoolean(dgvItems.Rows[filaItems].Cells[1].Value ?? false);
+
+                if (string.IsNullOrEmpty(codigoItems))
+                    return;
+
+                // Buscar el mismo código en todas las secciones y actualizar su estado
+                List<DataGridView> grillas = new List<DataGridView> { dgvClinico, dgvLaboratorio, dgvRadiologia, dgvCardiologia };
+                foreach (DataGridView dgv in grillas)
+                {
+                    if (dgv != null && dgv.Rows.Count > 0)
+                    {
+                        foreach (DataGridViewRow row in dgv.Rows)
+                        {
+                            string codigoSeccion = row.Cells[0].Value?.ToString();
+                            if (codigoSeccion == codigoItems)
+                            {
+                                // Actualizar el estado en la sección
+                                row.Cells[1].Value = estadoItems;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error en SincronizarItemsASecciones: {ex.Message}");
+            }
+        }
+
+        private void ActualizarEstadoControles()
+        {
+            // TipoExamen siempre está habilitado si hay motivo seleccionado
+            cmbTipoExamen.Enabled = idMotivoConsultaSeleccionado > 0;
+            // Subtipo solo está habilitado si hay un TipoExamen seleccionado
+            cmbSubtipo.Enabled = !string.IsNullOrEmpty(idTipoExamenSeleccionado);
+        }
+
+        private void CmbMotivoConsulta_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // ✅ EVITAR EVENTOS DURANTE SINCRONIZACIÓN
+            if (!permitirSincronizacion) return;
+
+            try
+            {
+                if (cmbMotivoConsulta.SelectedValue != null && int.TryParse(cmbMotivoConsulta.SelectedValue.ToString(), out int id))
+                {
+                    idMotivoConsultaSeleccionado = id;
+                    CargarTiposExamen();
+                    LimpiarSubtipo();
+                    ActualizarEstadoControles();
+                    // Mostrar todos los tipos y subtipos SOLO si se seleccionó 'Todos' (id==0)
+                    if (idMotivoConsultaSeleccionado == 0)
+                    {
+                        MostrarGestionMotivoTipoSubtipo(0);
+                    }
+                    else
+                    {
+                        MostrarGestionMotivoTipoSubtipo(idMotivoConsultaSeleccionado);
+                    }
+                    // Puedes comentar o eliminar la siguiente línea si ya no quieres la vista anterior:
+                    // MostrarTiposYSubtiposPorMotivo();
+
+                    // ✅ SINCRONIZACIÓN BIDIRECCIONAL: Disparar evento si estamos permitiendo sincronización
+                    if (permitirSincronizacion)
+                    {
+                        CombosChanged?.Invoke(this, new CombosChangedEventArgs
+                        {
+                            IdMotivo = id,
+                            IdTipo = ObtenerIdTipoExamenSeleccionado,
+                            IdSubtipo = ObtenerIdSubtipoActualmenteCargado
+                        });
+                    }
+                }
+            }
+            catch { }
+        }
+        /// <summary>
+        /// Muestra los Tipos de Examen y sus Subtipos relacionados al Motivo de Consulta seleccionado en el grid de gestión
+        /// </summary>
+        private void MostrarTiposYSubtiposPorMotivo()
+        {
+            try
+            {
+                dgvTiposExamenes.Rows.Clear();
+                List<Entidades.TipoExamen> tipos;
+                if (idMotivoConsultaSeleccionado == 0)
+                {
+                    // Mostrar todos los tipos padre
+                    tipos = listaTiposExamenes.Where(t => t.Padre).ToList();
+                }
+                else
+                {
+                    // Filtrar tipos por motivo seleccionado
+                    tipos = listaTiposExamenes.Where(t => t.Padre && t.IdMotivoConsulta == idMotivoConsultaSeleccionado).ToList();
+                }
+                foreach (var tipo in tipos)
+                {
+                    // Mostrar TipoExamen (Padre) con GUID completo
+                    dgvTiposExamenes.Rows.Add(
+                        tipo.Id.ToString(),            // id GUID completo
+                        tipo.Descripcion,
+                        "Tipo Examen",
+                        tipo.PrecioBase
+                    );
+                    // Mostrar Subtipos (Hijos) relacionados con GUID completo
+                    var subtipos = listaTiposExamenes.Where(s => !s.Padre && s.IdPadre == tipo.Id.ToString()).ToList();
+                    foreach (var subtipo in subtipos)
+                    {
+                        dgvTiposExamenes.Rows.Add(
+                            subtipo.Id.ToString(),     // id GUID completo
+                            "   ↳ " + subtipo.Descripcion,
+                            "Subtipo",
+                            subtipo.PrecioBase
+                        );
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al mostrar tipos y subtipos: " + ex.Message);
+            }
+        }
+        private void CargarTiposExamen()
+        {
+            try
+            {
+                // Guardar la selección actual del combo antes de recargar
+                var selectedTipoId = cmbTipoExamen.SelectedValue?.ToString();
+
+                if (idMotivoConsultaSeleccionado <= 0)
+                {
+                    cmbTipoExamen.DataSource = null;
+                    cmbTipoExamen.Items.Clear();
+                    cmbTipoExamen.SelectedIndex = -1;
+                    return;
+                }
+
+                // 1. Obtener tipos de la base de datos
+                DataTable dtBD = negocioTipoExamen.cargarTiposDeExamenPadreConSubtiposActivos(idMotivoConsultaSeleccionado.ToString());
+                // 2. Crear DataTable final
+                DataTable dtFinal = new DataTable();
+                dtFinal.Columns.Add("id", typeof(string));
+                dtFinal.Columns.Add("descripcion", typeof(string));
+
+                // 3. Agregar tipos de BD solo activos
+                if (dtBD != null && dtBD.Rows.Count > 0)
+                {
+                    foreach (DataRow row in dtBD.Rows)
+                    {
+                        int estado = 1;
+                        if (row.Table.Columns.Contains("estado") && row["estado"] != DBNull.Value)
+                        {
+                            int.TryParse(row["estado"].ToString(), out estado);
+                        }
+                        if (estado == 1)
+                        {
+                            dtFinal.Rows.Add(row["id"].ToString(), row["descripcion"].ToString());
+                        }
+                    }
+                }
+
+                // 4. Agregar tipos temporales activos
+                var tiposTemporales = listaTiposExamenes
+                    .Where(t => t.Padre && t.IdMotivoConsulta == idMotivoConsultaSeleccionado && t.Estado == 1)
+                    .ToList();
+                foreach (var tipo in tiposTemporales)
+                {
+                    dtFinal.Rows.Add(tipo.Id.ToString(), tipo.Descripcion);
+                }
+
+                cmbTipoExamen.DataSource = dtFinal;
+                cmbTipoExamen.DisplayMember = "descripcion";
+                cmbTipoExamen.ValueMember = "id";
+
+                // Restaurar la selección si existe
+                if (!string.IsNullOrEmpty(selectedTipoId) && dtFinal.AsEnumerable().Any(r => r.Field<string>("id") == selectedTipoId))
+                {
+                    cmbTipoExamen.SelectedValue = selectedTipoId;
+                }
+                else
+                {
+                    cmbTipoExamen.SelectedIndex = -1;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al cargar tipos de examen: " + ex.Message);
+                cmbTipoExamen.DataSource = null;
+                cmbTipoExamen.Items.Clear();
+                cmbTipoExamen.SelectedIndex = -1;
+            }
+        }
+        private void CargarSubtipos()
+        {
+            try
+            {
+                permitirEventoSubtipo = false;
+                if (string.IsNullOrEmpty(idTipoExamenSeleccionado))
+                {
+                    cmbSubtipo.DataSource = null;
+                    cmbSubtipo.Items.Clear();
+                    cmbSubtipo.SelectedIndex = -1; // <-- Vacío al inicio
+                    return;
+                }
+
+                var subtiposTemporales = listaTiposExamenes.Where(t => !t.Padre && t.IdPadre == idTipoExamenSeleccionado).ToList();
+
+                if (subtiposTemporales.Count > 0)
+                {
+                    DataTable dt = new DataTable();
+                    dt.Columns.Add("id", typeof(string));
+                    dt.Columns.Add("descripcion", typeof(string));
+
+                    foreach (var subtipo in subtiposTemporales)
+                    {
+                        dt.Rows.Add(subtipo.Id.ToString(), subtipo.Descripcion);
+                    }
+
+                    cmbSubtipo.DataSource = dt;
+                    cmbSubtipo.DisplayMember = "descripcion";
+                    cmbSubtipo.ValueMember = "id";
+                    cmbSubtipo.SelectedIndex = -1; // <-- Vacío al inicio
+                }
+                else
+                {
+                    DataTable dt = negocioTipoExamen.cargarNivel2Especialidad(idTipoExamenSeleccionado);
+                    if (dt != null && dt.Rows.Count > 0)
+                    {
+                        cmbSubtipo.DataSource = dt;
+                        cmbSubtipo.DisplayMember = "descripcion";
+                        cmbSubtipo.ValueMember = "id";
+                        cmbSubtipo.SelectedIndex = -1; // <-- Vacío al inicio
+                    }
+                    else
+                    {
+                        cmbSubtipo.DataSource = null;
+                        cmbSubtipo.Items.Clear();
+                        cmbSubtipo.SelectedIndex = -1; // <-- Vacío al inicio
+                    }
+                }
+                permitirEventoSubtipo = true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al cargar subtipos: " + ex.Message);
+                cmbSubtipo.DataSource = null;
+                cmbSubtipo.Items.Clear();
+                cmbSubtipo.SelectedIndex = -1; // <-- Vacío al inicio
+            }
+        }
+
+        private void CmbTipoExamen_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if (cmbTipoExamen.SelectedValue != null && dtTiposExamenesOriginal != null)
+                {
+                    idTipoExamenSeleccionado = cmbTipoExamen.SelectedValue.ToString();
+
+                    if (!string.IsNullOrEmpty(idTipoExamenSeleccionado))
+                    {
+                        // ✅ CONVERTIR DataView A DataTable PARA PRESERVAR COLUMNAS DE ESTADO (días)
+                        DataView dv = new DataView(dtTiposExamenesOriginal);
+                        dv.RowFilter = $"TipoExamen = '{cmbTipoExamen.Text.Replace("'", "''")}'";
+
+                        // ✅ VALIDAR QUE EL FILTRO TENGA RESULTADOS
+                        if (dv.Count > 0)
+                        {
+                            // Convertir a DataTable para preservar todas las columnas
+                            dgvTiposExamenes.DataSource = dv.ToTable();
+                        }
+                        else
+                        {
+                            // Fallback: si no hay resultados, mostrar tabla vacía con la misma estructura
+                            dgvTiposExamenes.DataSource = dtTiposExamenesOriginal.Clone();
+                        }
+
+                        OcultarColumnaID(dgvTiposExamenes);
+                        CargarSubtipos();
+                    }
+                    else
+                    {
+                        idTipoExamenSeleccionado = "";
+                        LimpiarSubtipo();
+
+                        // Mostrar todos los registros cuando no hay selección
+                        if (dtTiposExamenesOriginal != null)
+                            dgvTiposExamenes.DataSource = dtTiposExamenesOriginal.Copy();
+                        OcultarColumnaID(dgvTiposExamenes);
+                    }
+
+                    // ✅ SINCRONIZACIÓN BIDIRECCIONAL: Disparar evento si estamos permitiendo sincronización
+                    if (permitirSincronizacion)
+                    {
+                        CombosChanged?.Invoke(this, new CombosChangedEventArgs
+                        {
+                            IdMotivo = idMotivoConsultaSeleccionado,
+                            IdTipo = idTipoExamenSeleccionado,
+                            IdSubtipo = ObtenerIdSubtipoActualmenteCargado
+                        });
+                    }
+                }
+                ActualizarEstadoControles();
+            }
+            catch { }
+        }
+
+
+        private void CmbSubtipo_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!permitirEventoSubtipo) return;
+            try
+            {
+                System.Diagnostics.Debug.WriteLine($"\n► CmbSubtipo_SelectedIndexChanged disparado");
+                System.Diagnostics.Debug.WriteLine($"   SelectedIndex: {cmbSubtipo.SelectedIndex}");
+                System.Diagnostics.Debug.WriteLine($"   SelectedValue: {cmbSubtipo.SelectedValue ?? "NULL"}");
+                System.Diagnostics.Debug.WriteLine($"   Text: {cmbSubtipo.Text}");
+
+                // ✅ NUEVO: GUARDAR ESTADO ACTUAL ANTES DE CAMBIAR
+                if (!string.IsNullOrEmpty(idSubtipoActualmenteCargado))
+                {
+                    System.Diagnostics.Debug.WriteLine($"► Guardando estado del subtipo anterior: {idSubtipoActualmenteCargado}");
+                    GuardarEstadoItemsParaSubtipo(idSubtipoActualmenteCargado);
+                }
+
+                string idSubtipo = "";
+
+                if (cmbSubtipo.SelectedIndex >= 0)
+                {
+                    // ✅ MÉTODO 1: Intentar obtener desde DataRowView
+                    if (cmbSubtipo.SelectedItem is DataRowView drv)
+                    {
+                        idSubtipo = drv["id"].ToString();
+                        System.Diagnostics.Debug.WriteLine($"✓ ID obtenido desde DataRowView: {idSubtipo}");
+                    }
+                    // ✅ MÉTODO 2: Obtener desde SelectedValue
+                    else if (cmbSubtipo.SelectedValue != null)
+                    {
+                        idSubtipo = cmbSubtipo.SelectedValue.ToString();
+                        System.Diagnostics.Debug.WriteLine($"✓ ID obtenido desde SelectedValue: {idSubtipo}");
+                    }
+                    // ✅ MÉTODO 3: Último recurso - obtener desde DataSource directamente
+                    else if (cmbSubtipo.DataSource is DataTable dt && cmbSubtipo.SelectedIndex >= 0 && cmbSubtipo.SelectedIndex < dt.Rows.Count)
+                    {
+                        idSubtipo = dt.Rows[cmbSubtipo.SelectedIndex]["id"].ToString();
+                        System.Diagnostics.Debug.WriteLine($"✓ ID obtenido desde DataSource directo: {idSubtipo}");
+                    }
+                }
+
+                // ✅ VALIDACIÓN MEJORADA
+                if (string.IsNullOrEmpty(idSubtipo))
+                {
+                    System.Diagnostics.Debug.WriteLine($"❌ ID SUBTIPO VACÍO");
+                    idSubtipoActualmenteCargado = "";
+                    dgvItems.Rows.Clear();
+                    btnEliminarSubtipo.Visible = false;
+                    return;
+                }
+
+                if (!Guid.TryParse(idSubtipo, out Guid guidValidation))
+                {
+                    System.Diagnostics.Debug.WriteLine($"❌ ID NO ES GUID VÁLIDO: {idSubtipo}");
+                    idSubtipoActualmenteCargado = "";
+                    dgvItems.Rows.Clear();
+                    btnEliminarSubtipo.Visible = false;
+                    return;
+                }
+
+                // ✅ ASIGNAR EL ID CORRECTAMENTE
+                idSubtipoActualmenteCargado = idSubtipo;
+                System.Diagnostics.Debug.WriteLine($"✓✓✓ idSubtipoActualmenteCargado = {idSubtipoActualmenteCargado}");
+
+                // Filtrar el DataTable original
+                if (dtTiposExamenesOriginal != null)
+                {
+                    DataView dv = new DataView(dtTiposExamenesOriginal);
+                    dv.RowFilter = $"SubtipoExamen = '{cmbSubtipo.Text.Replace("'", "''")}'";
+                    dgvTiposExamenes.DataSource = dv;
+                    OcultarColumnaID(dgvTiposExamenes);
+                }
+
+                // Cargar datos
+                CargarItemsDelSubtipoConDiagnostico(idSubtipo);
+                CargarDatosEnPruena(idSubtipo);
+
+                // ✅ ACTIVAR BOTÓN ELIMINAR SUBTIPO
+                btnEliminarSubtipo.Visible = true;
+
+                // Cargar en ItemsPorSecciones
+                if (itemsPorSecciones != null)
+                {
+                    System.Diagnostics.Debug.WriteLine($"► Cargando ItemsPorSecciones con ID: {idSubtipo}");
+                    itemsPorSecciones.CargarItemsPorSeccion(idSubtipo);
+                    System.Diagnostics.Debug.WriteLine($"✓ ItemsPorSecciones cargado");
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine($"❌ itemsPorSecciones es NULL");
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"❌ ERROR: {ex.Message}\n{ex.StackTrace}");
+                idSubtipoActualmenteCargado = "";
+            }
+
+            // ✅ SINCRONIZACIÓN BIDIRECCIONAL: Disparar evento si estamos permitiendo sincronización
+            if (permitirSincronizacion && cmbSubtipo.SelectedIndex >= 0)
+            {
+                System.Diagnostics.Debug.WriteLine($"► [Agregar] Subtipo cambió a {idSubtipoActualmenteCargado}, disparando evento...");
+                CombosChanged?.Invoke(this, new CombosChangedEventArgs
+                {
+                    IdMotivo = idMotivoConsultaSeleccionado,
+                    IdTipo = idTipoExamenSeleccionado,
+                    IdSubtipo = idSubtipoActualmenteCargado
+                });
+            }
+        }
+
+        // ✅ EVENTO: Cambio de pestaña en TabControl principal
+        private void TabControl_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if (tabControl.SelectedTab != null)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Tab seleccionado: {tabControl.SelectedTab.Name} - {tabControl.SelectedTab.Text}");
+
+                    // Aquí puedes agregar lógica específica para cada pestaña
+                    // Por ejemplo, cargar datos cuando se selecciona una pestaña específica
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error en TabControl_SelectedIndexChanged: {ex.Message}");
+            }
+        }
+
+        // ✅ NUEVO: Cargar items desde BD y asignarlos a los DataTables del subtipo
+        private void CargarItemsDelSubtipoConDiagnostico(string idSubtipo)
+        {
+            StringBuilder diagnostico = new StringBuilder();
+            diagnostico.AppendLine("╔════════════════════════════════════════════════════╗");
+            diagnostico.AppendLine("║       DIAGNÓSTICO DE CARGA DE ITEMS               ║");
+            diagnostico.AppendLine("╚════════════════════════════════════════════════════╝\n");
+
+            try
+            {
+                diagnostico.AppendLine($"📍 ID SUBTIPO: {idSubtipo}\n");
+
+                // Limpiar grillas
+                dgvItems.Rows.Clear();
+                if (dgvClinico != null) dgvClinico.Rows.Clear();
+                if (dgvLaboratorio != null) dgvLaboratorio.Rows.Clear();
+                if (dgvRadiologia != null) dgvRadiologia.Rows.Clear();
+                if (dgvCardiologia != null) dgvCardiologia.Rows.Clear();
+
+                if (string.IsNullOrEmpty(idSubtipo) || !Guid.TryParse(idSubtipo, out Guid guidSubtipo))
+                {
+                    diagnostico.AppendLine("❌ ERROR: ID inválido o no es GUID\n");
+                    //MostrarDiagnostico(diagnostico.ToString(), "Error");
+                    return;
+                }
+
+                DataTable dtItems = new DataTable();
+                dtItems.Columns.Add("Codigo");
+                dtItems.Columns.Add("Estado", typeof(bool));
+                dtItems.Columns.Add("Item");
+                dtItems.Columns.Add("OrdenFormulario", typeof(int));
+
+                // ✅ INTENTO 1: Cargar desde LISTA TEMPORAL (NUEVO - PRIORIDAD)
+                diagnostico.AppendLine("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
+                diagnostico.AppendLine("INTENTO 1: Buscar en lista temporal (listaTiposExamenes)...\n");
+
+                var subtipoTemporal = listaTiposExamenes.FirstOrDefault(t => t.Id.ToString() == idSubtipo && !t.Padre);
+
+                if (subtipoTemporal != null)
+                {
+                    diagnostico.AppendLine($"✓ Subtipo TEMPORAL encontrado: {subtipoTemporal.Descripcion}\n");
+
+                    // Helper para copiar desde DataTables temporales
+                    void CopiarSeccionTemporal(DataTable tabla, int orden, string nombreSeccion)
+                    {
+                        if (tabla == null)
+                        {
+                            diagnostico.AppendLine($"  ⚠️  {nombreSeccion}: NULL");
+                            return;
+                        }
+                        if (tabla.Rows.Count == 0)
+                        {
+                            diagnostico.AppendLine($"  ⚠️  {nombreSeccion}: VACÍO");
+                            return;
+                        }
+
+                        diagnostico.AppendLine($"  ✓ {nombreSeccion}: {tabla.Rows.Count} items");
+
+                        foreach (DataRow r in tabla.Rows)
+                        {
+                            try
+                            {
+                                // Estructura temporal: [0]=Id, [1]=Codigo, [2]=Estado, [3]=Item
+                                string codigo = r.ItemArray.Length > 1 ? r[1].ToString() : "";
+                                bool estado = r.ItemArray.Length > 2 ? Convert.ToBoolean(r[2]) : false;
+                                string item = r.ItemArray.Length > 3 ? r[3].ToString() : "";
+
+                                if (!string.IsNullOrEmpty(item))
+                                    dtItems.Rows.Add(codigo, estado, item, orden);
+                            }
+                            catch (Exception ex)
+                            {
+                                diagnostico.AppendLine($"    ✗ Error: {ex.Message}");
+                            }
+                        }
+                    }
+
+                    diagnostico.AppendLine("\nSecciones temporales:\n");
+                    CopiarSeccionTemporal(subtipoTemporal.Clinico, 1, "🏥 Clínico");
+                    CopiarSeccionTemporal(subtipoTemporal.Hematologia, 2, "🔬 Hematología");
+                    CopiarSeccionTemporal(subtipoTemporal.QuimicaHematica, 3, "🧪 Química Hematíca");
+                    CopiarSeccionTemporal(subtipoTemporal.Serologia, 4, "🦠 Serología");
+                    CopiarSeccionTemporal(subtipoTemporal.PerfilLipidico, 5, "📊 Perfil Lipídico");
+                    CopiarSeccionTemporal(subtipoTemporal.Bacteriologia, 6, "🧬 Bacteriología");
+                    CopiarSeccionTemporal(subtipoTemporal.Orina, 7, "💧 Orina");
+                    CopiarSeccionTemporal(subtipoTemporal.LaboralesBasicas, 8, "⚙️ Laborales Básicas");
+                    CopiarSeccionTemporal(subtipoTemporal.CraneoYMSuperior, 9, "🧠 Cráneo");
+                    CopiarSeccionTemporal(subtipoTemporal.TroncoYPelvis, 10, "📌 Tronco");
+                    CopiarSeccionTemporal(subtipoTemporal.MiembroInferior, 11, "🦵 Miembro");
+                    CopiarSeccionTemporal(subtipoTemporal.EstComplementarios, 12, "⭐ Complementarios");
+
+                    diagnostico.AppendLine($"\n✓ Total desde TEMPORAL: {dtItems.Rows.Count}");
+                }
+                else
+                {
+                    diagnostico.AppendLine("⚠️  Subtipo no está en lista temporal\n");
+                }
+
+                // ✅ FALLBACK: Si no hay en temporal, intentar desde BD
+                if (dtItems.Rows.Count == 0)
+                {
+                    diagnostico.AppendLine("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
+                    diagnostico.AppendLine("INTENTO 2: Cargar desde BD (CargarItemsDesdeEstudiosPorExamen)...\n");
+
+                    DataTable dtBD = negocioTipoExamen.CargarItemsDesdeEstudiosPorExamen(guidSubtipo);
+
+                    if (dtBD != null && dtBD.Rows.Count > 0)
+                    {
+                        diagnostico.AppendLine($"✓ BD encontró {dtBD.Rows.Count} items\n");
+
+                        foreach (DataRow r in dtBD.Rows)
+                        {
+                            try
+                            {
+                                int orden = r.Table.Columns.Contains("OrdenFormulario") ? Convert.ToInt32(r["OrdenFormulario"]) : 0;
+                                bool estado = ConvertirABooleano(r.Table.Columns.Contains("Estado") ? r["Estado"] : (object)false);
+                                string codigo = r.Table.Columns.Contains("Codigo") ? r["Codigo"]?.ToString() ?? "" : "";
+                                string item = r.Table.Columns.Contains("Item") ? r["Item"]?.ToString() ?? "" : "";
+
+                                if (!string.IsNullOrEmpty(item))
+                                    dtItems.Rows.Add(codigo, estado, item, orden);
+                            }
+                            catch (Exception ex)
+                            {
+                                diagnostico.AppendLine($"  ✗ Error: {ex.Message}");
+                            }
+                        }
+                        diagnostico.AppendLine($"\n✓ Total desde BD: {dtItems.Rows.Count}");
+                    }
+                    else
+                    {
+                        diagnostico.AppendLine("❌ BD sin items (tabla EstudiosPorTipoExamen vacía)\n");
+                    }
+                }
+
+                // ✅ FALLBACK 3: Si aún está vacío, intentar cargarEntidad()
+                if (dtItems.Rows.Count == 0)
+                {
+                    diagnostico.AppendLine("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
+                    diagnostico.AppendLine("INTENTO 3: Cargar desde cargarEntidad()...\n");
+
+                    var entidad = negocioTipoExamen.cargarEntidad(idSubtipo);
+
+                    if (entidad != null)
+                    {
+                        diagnostico.AppendLine("✓ Entidad cargada\n");
+
+                        void CopiarSeccion(DataTable tabla, int orden, string nombreSeccion)
+                        {
+                            if (tabla == null || tabla.Rows.Count == 0)
+                            {
+                                diagnostico.AppendLine($"  ⚠️  {nombreSeccion}: VACÍO");
+                                return;
+                            }
+
+                            diagnostico.AppendLine($"  ✓ {nombreSeccion}: {tabla.Rows.Count} items");
+
+                            foreach (DataRow r in tabla.Rows)
+                            {
+                                try
+                                {
+                                    string codigo = r.Table.Columns.Contains("Codigo") ? r["Codigo"].ToString() : "";
+                                    bool estado = ConvertirABooleano(r.Table.Columns.Contains("Estado") ? r["Estado"] : (object)false);
+                                    string item = r.Table.Columns.Contains("Item") ? r["Item"].ToString() : r.ItemArray.Length > 3 ? r[3].ToString() : "";
+
+                                    if (!string.IsNullOrEmpty(item))
+                                        dtItems.Rows.Add(codigo, estado, item, orden);
+                                }
+                                catch { }
+                            }
+                        }
+
+                        diagnostico.AppendLine("\nSecciones:\n");
+                        CopiarSeccion(entidad.Clinico, 1, "🏥 Clínico");
+                        CopiarSeccion(entidad.Hematologia, 2, "🔬 Hematología");
+                        CopiarSeccion(entidad.QuimicaHematica, 3, "🧪 Química");
+                        CopiarSeccion(entidad.Serologia, 4, "🦠 Serología");
+                        CopiarSeccion(entidad.PerfilLipidico, 5, "📊 Lípidos");
+                        CopiarSeccion(entidad.Bacteriologia, 6, "🧬 Bacterio");
+                        CopiarSeccion(entidad.Orina, 7, "💧 Orina");
+                        CopiarSeccion(entidad.LaboralesBasicas, 8, "⚙️ Labor");
+                        CopiarSeccion(entidad.CraneoYMSuperior, 9, "🧠 Cráneo");
+                        CopiarSeccion(entidad.TroncoYPelvis, 10, "📌 Tronco");
+                        CopiarSeccion(entidad.MiembroInferior, 11, "🦵 Miembro");
+                        CopiarSeccion(entidad.EstComplementarios, 12, "⭐ Est");
+
+                        diagnostico.AppendLine($"\n✓ Total fallback: {dtItems.Rows.Count}");
+                    }
+                    else
+                    {
+                        diagnostico.AppendLine("❌ cargarEntidad() NULL");
+                    }
+                }
+
+                // ✅ POBLAR GRILLAS
+                diagnostico.AppendLine("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
+
+                if (dtItems.Rows.Count > 0)
+                {
+                    diagnostico.AppendLine($"✅ Poblando {dtItems.Rows.Count} items...\n");
+
+                    dtItems.DefaultView.Sort = "OrdenFormulario ASC, Codigo ASC";
+                    DataTable sorted = dtItems.DefaultView.ToTable();
+
+                    dgvItems.Rows.Clear();
+                    foreach (DataRow r in sorted.Rows)
+                    {
+                        dgvItems.Rows.Add(r["Codigo"], Convert.ToBoolean(r["Estado"]), r["Item"], r["OrdenFormulario"]);
+                    }
+
+                    LlenarSecciones(sorted);
+                    ActualizarResumen();
+
+                    diagnostico.AppendLine($"Grillas pobladas:\n");
+                    diagnostico.AppendLine($"  • dgvItems: {dgvItems.Rows.Count}");
+                    diagnostico.AppendLine($"  • dgvClinico: {dgvClinico?.Rows.Count ?? 0}");
+                    diagnostico.AppendLine($"  • dgvLaboratorio: {dgvLaboratorio?.Rows.Count ?? 0}");
+                    diagnostico.AppendLine($"  • dgvRadiologia: {dgvRadiologia?.Rows.Count ?? 0}");
+                    diagnostico.AppendLine($"  • dgvCardiologia: {dgvCardiologia?.Rows.Count ?? 0}\n");
+
+                    diagnostico.AppendLine("✅ ÉXITO: Items cargados");
+                    //MostrarDiagnostico(diagnostico.ToString(), "Éxito");
+                }
+                else
+                {
+                    diagnostico.AppendLine("❌ FALLO: Sin items en ninguna fuente\n");
+                    diagnostico.AppendLine("Para cargar items:\n");
+                    diagnostico.AppendLine("  1. Agregar items en las grillas (Ex. Clínico, etc)");
+                    diagnostico.AppendLine("  2. Guardar el formulario");
+                    diagnostico.AppendLine("  3. Los subtipos temporan necesitan items\n");
+                    //MostrarDiagnostico(diagnostico.ToString(), "Advertencia");
+                }
+            }
+            catch (Exception ex)
+            {
+                diagnostico.AppendLine($"🔴 ERROR: {ex.Message}\n{ex.StackTrace}");
+                //MostrarDiagnostico(diagnostico.ToString(), "Error");
+            }
+        }
+
+        // ✅ NUEVO: Mostrar ventana emergente con diagnóstico - DESACTIVADO
+        /*
+        private void MostrarDiagnostico(string mensaje, string tipo)
+        {
+            Form frmDiagnostico = new Form();
+            frmDiagnostico.Text = $"🔍 Diagnóstico - {tipo}";
+            frmDiagnostico.Width = 700;
+            frmDiagnostico.Height = 500;
+            frmDiagnostico.StartPosition = FormStartPosition.CenterParent;
+            frmDiagnostico.FormBorderStyle = FormBorderStyle.FixedDialog;
+            frmDiagnostico.MaximizeBox = false;
+            frmDiagnostico.MinimizeBox = false;
+
+            // Color de fondo según tipo
+            if (tipo == "Error")
+                frmDiagnostico.BackColor = Color.FromArgb(255, 240, 240);
+            else if (tipo == "Éxito")
+                frmDiagnostico.BackColor = Color.FromArgb(240, 255, 240);
+            else
+                frmDiagnostico.BackColor = Color.FromArgb(255, 250, 240);
+
+            // TextBox para mostrar el diagnóstico
+            TextBox txtDiagnostico = new TextBox();
+            txtDiagnostico.Multiline = true;
+            txtDiagnostico.ScrollBars = ScrollBars.Both;
+            txtDiagnostico.Text = mensaje;
+            txtDiagnostico.ReadOnly = true;
+            txtDiagnostico.Font = new Font("Consolas", 10);
+            txtDiagnostico.Dock = DockStyle.Fill;
+            frmDiagnostico.Controls.Add(txtDiagnostico);
+
+            // Botón Cerrar
+            Button btnCerrar = new Button();
+            btnCerrar.Text = "Cerrar";
+            btnCerrar.Dock = DockStyle.Bottom;
+            btnCerrar.Height = 40;
+            btnCerrar.Click += (s, e) => frmDiagnostico.Close();
+            frmDiagnostico.Controls.Add(btnCerrar);
+
+            frmDiagnostico.ShowDialog(this);
+        }
+        */
+        // ...existing code...
+        // ...existing code...
+        private void CargarItemsDelSubtipo(string idSubtipo)
+        {
+            try
+            {
+                System.Diagnostics.Debug.WriteLine($"🔵 CargarItemsDelSubtipo: Iniciando con idSubtipo={idSubtipo}");
+
+                // Limpiar grillas
+                dgvItems.Rows.Clear();
+                if (dgvClinico != null) dgvClinico.Rows.Clear();
+                if (dgvLaboratorio != null) dgvLaboratorio.Rows.Clear();
+                if (dgvRadiologia != null) dgvRadiologia.Rows.Clear();
+                if (dgvCardiologia != null) dgvCardiologia.Rows.Clear();
+
+                if (string.IsNullOrEmpty(idSubtipo) || !Guid.TryParse(idSubtipo, out Guid guidSubtipo))
+                {
+                    System.Diagnostics.Debug.WriteLine($"❌ IdSubtipo inválido o vacío: {idSubtipo}");
+                    return;
+                }
+
+                DataTable dtItems = new DataTable();
+                dtItems.Columns.Add("Codigo");
+                dtItems.Columns.Add("Estado", typeof(bool));
+                dtItems.Columns.Add("Item");
+                dtItems.Columns.Add("OrdenFormulario", typeof(int));
+
+                // ✅ INTENTO 1: Buscar en lista TEMPORAL primero
+                System.Diagnostics.Debug.WriteLine($"📌 Intento 1: Buscando en lista temporal...");
+                var subtipoTemporal = listaTiposExamenes.FirstOrDefault(t => t.Id == guidSubtipo && !t.Padre);
+
+                if (subtipoTemporal != null)
+                {
+                    System.Diagnostics.Debug.WriteLine($"✓ Subtipo temporal encontrado: {subtipoTemporal.Descripcion}");
+
+                    void CopiarSeccionTemporal(DataTable tabla, int orden, string nombreSeccion)
+                    {
+                        if (tabla == null || tabla.Rows.Count == 0)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"  ⚠️ {nombreSeccion}: VACÍO");
+                            return;
+                        }
+
+                        System.Diagnostics.Debug.WriteLine($"  ✓ {nombreSeccion}: {tabla.Rows.Count} items");
+
+                        foreach (DataRow r in tabla.Rows)
+                        {
+                            try
+                            {
+                                int codigo = r.ItemArray.Length > 1 ? Convert.ToInt32(r[1]) : 0;
+                                bool estado = r.ItemArray.Length > 2 ? Convert.ToBoolean(r[2]) : false;
+                                string item = r.ItemArray.Length > 3 ? r[3].ToString() : "";
+
+                                if (!string.IsNullOrEmpty(item))
+                                    dtItems.Rows.Add(codigo, estado, item, orden);
+                            }
+                            catch { }
+                        }
+                    }
+
+                    CopiarSeccionTemporal(subtipoTemporal.Clinico, 1, "🏥 Clínico");
+                    CopiarSeccionTemporal(subtipoTemporal.Hematologia, 2, "🔬 Hematología");
+                    CopiarSeccionTemporal(subtipoTemporal.QuimicaHematica, 3, "🧪 Química Hematíca");
+                    CopiarSeccionTemporal(subtipoTemporal.Serologia, 4, "🦠 Serología");
+                    CopiarSeccionTemporal(subtipoTemporal.PerfilLipidico, 5, "📊 Perfil Lipídico");
+                    CopiarSeccionTemporal(subtipoTemporal.Bacteriologia, 6, "🧬 Bacteriología");
+                    CopiarSeccionTemporal(subtipoTemporal.Orina, 7, "💧 Orina");
+                    CopiarSeccionTemporal(subtipoTemporal.LaboralesBasicas, 8, "⚙️ Laborales Básicas");
+                    CopiarSeccionTemporal(subtipoTemporal.CraneoYMSuperior, 9, "🧠 Cráneo");
+                    CopiarSeccionTemporal(subtipoTemporal.TroncoYPelvis, 10, "📌 Tronco");
+                    CopiarSeccionTemporal(subtipoTemporal.MiembroInferior, 11, "🦵 Miembro");
+                    CopiarSeccionTemporal(subtipoTemporal.EstComplementarios, 12, "⭐ Complementarios");
+
+                    System.Diagnostics.Debug.WriteLine($"✓ Total desde TEMPORAL: {dtItems.Rows.Count}");
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine($"⚠️ Subtipo no está en lista temporal");
+                }
+
+                // ✅ FALLBACK: Si no hay en temporal, cargar desde BD
+                if (dtItems.Rows.Count == 0)
+                {
+                    System.Diagnostics.Debug.WriteLine($"📌 Intento 2: Cargando desde BD...");
+                    var entidad = negocioTipoExamen.cargarEntidad(idSubtipo);
+
+                    if (entidad != null)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"✓ Entidad cargada");
+
+                        void CopiarSeccion(DataTable tabla, int orden, string nombreSeccion)
+                        {
+                            if (tabla == null || tabla.Rows.Count == 0)
+                            {
+                                System.Diagnostics.Debug.WriteLine($"  ⚠️ {nombreSeccion}: VACÍO");
+                                return;
+                            }
+
+                            System.Diagnostics.Debug.WriteLine($"  ✓ {nombreSeccion}: {tabla.Rows.Count} items");
+
+                            foreach (DataRow r in tabla.Rows)
+                            {
+                                try
+                                {
+                                    int codigo = r.Table.Columns.Contains("Codigo") ? Convert.ToInt32(r["Codigo"]) : 0;
+                                    bool estado = ConvertirABooleano(r.Table.Columns.Contains("Estado") ? r["Estado"] : false);
+                                    string item = r.Table.Columns.Contains("Item") ? r["Item"]?.ToString() ?? "" : "";
+
+                                    if (!string.IsNullOrEmpty(item))
+                                        dtItems.Rows.Add(codigo, estado, item, orden);
+                                }
+                                catch { }
+                            }
+                        }
+
+                        CopiarSeccion(entidad.Clinico, 1, "🏥 Clínico");
+                        CopiarSeccion(entidad.Hematologia, 2, "🔬 Hematología");
+                        CopiarSeccion(entidad.QuimicaHematica, 3, "🧪 Química");
+                        CopiarSeccion(entidad.Serologia, 4, "🦠 Serología");
+                        CopiarSeccion(entidad.PerfilLipidico, 5, "📊 Lípidos");
+                        CopiarSeccion(entidad.Bacteriologia, 6, "🧬 Bacterio");
+                        CopiarSeccion(entidad.Orina, 7, "💧 Orina");
+                        CopiarSeccion(entidad.LaboralesBasicas, 8, "⚙️ Labor");
+                        CopiarSeccion(entidad.CraneoYMSuperior, 9, "🧠 Cráneo");
+                        CopiarSeccion(entidad.TroncoYPelvis, 10, "📌 Tronco");
+                        CopiarSeccion(entidad.MiembroInferior, 11, "🦵 Miembro");
+                        CopiarSeccion(entidad.EstComplementarios, 12, "⭐ Est");
+
+                        System.Diagnostics.Debug.WriteLine($"✓ Total desde BD: {dtItems.Rows.Count}");
+                    }
+                }
+
+                // ✅ Poblar grillas si hay items
+                if (dtItems.Rows.Count > 0)
+                {
+                    System.Diagnostics.Debug.WriteLine($"✓ Poblando {dtItems.Rows.Count} items en grillas");
+
+                    dtItems.DefaultView.Sort = "OrdenFormulario ASC, Codigo ASC";
+                    DataTable sorted = dtItems.DefaultView.ToTable();
+
+                    dgvItems.Rows.Clear();
+                    foreach (DataRow r in sorted.Rows)
+                    {
+                        dgvItems.Rows.Add(r["Codigo"], Convert.ToBoolean(r["Estado"]), r["Item"], r["OrdenFormulario"]);
+                    }
+
+                    LlenarSecciones(sorted);
+                    ActualizarResumen();
+                    AgregarEventHandlersGrillas();
+
+                    System.Diagnostics.Debug.WriteLine($"✅ Items cargados correctamente");
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine($"⚠️ No se encontraron items");
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"❌ ERROR: {ex.Message}");
+                MessageBox.Show("Error al cargar items: " + ex.Message);
+            }
+        }
+
+        private bool ConvertirABooleano(object valor)
+        {
+            if (valor == null || valor == DBNull.Value)
+                return false;
+
+            if (bool.TryParse(valor.ToString(), out bool resultado))
+                return resultado;
+
+            if (int.TryParse(valor.ToString(), out int numResult))
+                return numResult != 0;
+
+            return false;
+        }
+
+        /// <summary>
+        /// Actualiza los TextBox de resumen concatenando los items seleccionados
+        /// (checkboxes marcados) de cada grilla de secciones por separado.
+        /// </summary>
+        private void ActualizarResumen()
+        {
+            try
+            {
+                if (tbResumenClinico == null || tbResumenLaboratorio == null ||
+                    tbResumenRadiologia == null || tbResumenCardiologia == null)
+                    return;
+
+                // Actualizar resumen por sección
+                ActualizarResumenSeccion(dgvClinico, tbResumenClinico);
+                ActualizarResumenSeccion(dgvLaboratorio, tbResumenLaboratorio);
+                ActualizarResumenSeccion(dgvRadiologia, tbResumenRadiologia);
+                ActualizarResumenSeccion(dgvCardiologia, tbResumenCardiologia);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al actualizar resumen: " + ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Actualiza un TextBox de resumen con los items marcados de una grilla
+        /// </summary>
+        private void ActualizarResumenSeccion(DataGridView dgv, TextBox tbResumen)
+        {
+            try
+            {
+                if (dgv == null || tbResumen == null)
+                    return;
+
+                StringBuilder sb = new StringBuilder();
+
+                foreach (DataGridViewRow row in dgv.Rows)
+                {
+                    // Columna[1] = Estado (checkbox)
+                    // Columna[2] = Item (descripción)
+                    bool estado = Convert.ToBoolean(row.Cells[1].Value ?? false);
+                    string item = row.Cells[2].Value?.ToString() ?? "";
+
+                    if (estado && !string.IsNullOrEmpty(item))
+                    {
+                        if (sb.Length > 0)
+                            sb.Append(" - ");
+                        sb.Append(item);
+                    }
+                }
+
+                tbResumen.Text = sb.ToString();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al actualizar sección de resumen: " + ex.Message);
+            }
+        }
+
+
+
+        private void LimpiarSubtipo()
+        {
+            cmbSubtipo.DataSource = null;
+            dgvItems.Rows.Clear();
+        }
+
+        private void DgvTiposExamenes_SelectionChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                btnEliminar.Enabled = dgvTiposExamenes.SelectedRows.Count > 0;
+                btnEditar.Enabled = dgvTiposExamenes.SelectedRows.Count > 0;
+            }
+            catch { }
+        }
+
+        private void BtnAgregar_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // Mostrar diálogo para ingresar Descripción y Precio
+                FrmAgregarTipoExamen dlg = new FrmAgregarTipoExamen();
+                if (dlg.ShowDialog() == DialogResult.OK)
+                {
+                    string descripcion = dlg.Descripcion;
+                    double precio = dlg.Precio;
+                    bool estado = dlg.Estado;  // ✅ NUEVO: Capturar estado del checkbox
+
+                    if (string.IsNullOrWhiteSpace(descripcion))
+                    {
+                        MessageBox.Show("Ingrese una descripción para el TipoExamen", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+
+                    if (idMotivoConsultaSeleccionado <= 0)
+                    {
+                        MessageBox.Show("Seleccione un motivo de consulta", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+
+                    // Crear nueva entidad TIPOEXAMEN (Padre)
+                    Entidades.TipoExamen nuevo = new Entidades.TipoExamen();
+                    nuevo.Id = Guid.NewGuid();
+                    nuevo.Descripcion = descripcion;
+                    nuevo.IdMotivoConsulta = idMotivoConsultaSeleccionado;
+                    nuevo.PrecioBase = precio;
+                    nuevo.Padre = true;
+                    nuevo.IdPadre = null;
+                    nuevo.Codigo = GenerarCodigoTipo();
+                    nuevo.Estado = estado ? 1 : 0;  // ✅ NUEVO: Asignar estado (1=Activo, 0=Inactivo)
+
+                    // Inicializar DataTables
+                    InitializarDataTablesSubtipo(nuevo);
+
+                    // ✅ GUARDAR DIRECTAMENTE EN BASE DE DATOS
+                    Entidades.Resultado res = negocioTipoExamen.crearTipoExamenPadre(nuevo);
+                    if (res != null && res.Modo > 0)
+                    {
+                        listaTiposExamenes.Add(nuevo);
+                        ActualizarGridTiposExamenes();
+                        CargarTiposExamen();
+
+                        // ✅ Seleccionar automáticamente el nuevo tipo creado
+                        cmbTipoExamen.SelectedValue = nuevo.Id.ToString();
+
+                        MessageBox.Show("TipoExamen agregado correctamente en Base de Datos", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show(res?.Mensaje ?? "No se pudo guardar el TipoExamen", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private int GenerarCodigoTipo()
+        {
+            // Generar un código único basado en timestamp
+            long timestamp = DateTime.Now.Ticks;
+            return (int)(timestamp % 100000);
+        }
+
+        private void ActualizarComboTiposExamen()
+        {
+            try
+            {
+                // Recargar el combo con los TipoExamenes actualizados
+                CargarTiposExamen();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al actualizar combo: " + ex.Message);
+            }
+        }
+
+        private void BtnAgregarSubtipo_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(idTipoExamenSeleccionado))
+                {
+                    MessageBox.Show("Seleccione un TipoExamen Padre", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                FrmAgregarTipoExamen dlg = new FrmAgregarTipoExamen("Nuevo Subtipo");
+                if (dlg.ShowDialog() == DialogResult.OK)
+                {
+                    string descripcion = dlg.Descripcion;
+                    double precio = dlg.Precio;
+                    bool estado = dlg.Estado;
+
+                    if (string.IsNullOrWhiteSpace(descripcion))
+                    {
+                        MessageBox.Show("Ingrese una descripción para el Subtipo", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+
+                    Entidades.TipoExamen nuevo = new Entidades.TipoExamen();
+                    nuevo.Id = Guid.NewGuid();
+                    nuevo.Descripcion = descripcion;
+                    nuevo.IdMotivoConsulta = idMotivoConsultaSeleccionado;
+                    nuevo.PrecioBase = precio;
+                    nuevo.Padre = false;
+                    nuevo.IdPadre = idTipoExamenSeleccionado;
+                    nuevo.Codigo = GenerarCodigoSubtipo();
+                    nuevo.Estado = estado ? 1 : 0;
+
+                    System.Diagnostics.Debug.WriteLine($"► Creando subtipo: {nuevo.Descripcion} (ID: {nuevo.Id})");
+
+                    // ✅ GUARDAR EN BASE DE DATOS
+                    Entidades.Resultado res = negocioTipoExamen.crearTipoExamenHijo(nuevo);
+
+                    if (res != null && res.Modo > 0)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"✓ Subtipo creado exitosamente");
+                        MessageBox.Show("Subtipo agregado correctamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                        // ✅ DISPARAR EVENTO SubtipoCreado PARA QUE APAREZCA EL BOTÓN GUARDAR
+                        SubtipoCreado?.Invoke(this, EventArgs.Empty);
+
+                        // ✅ CARGAR ITEMS DESDE BD INMEDIATAMENTE
+                        System.Diagnostics.Debug.WriteLine($"► Cargando items desde BD para ID: {nuevo.Id}");
+                        Entidades.TipoExamen entidadCargada = negocioTipoExamen.cargarEntidad(nuevo.Id.ToString());
+
+                        if (entidadCargada != null)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"✓ Entidad cargada con items");
+
+                            // ✅ NO AGREGAR A listaTiposExamenes - YA FUE GUARDADO EN BD
+                            // listaTiposExamenes.Add(entidadCargada);
+
+                            // ✅ ACTUALIZAR COMBO DE SUBTIPOS
+                            System.Diagnostics.Debug.WriteLine($"► Recargando combo de subtipos");
+                            CargarSubtipos();
+
+                            // ✅ SELECCIONAR EL SUBTIPO RECIÉN CREADO
+                            System.Diagnostics.Debug.WriteLine($"► Seleccionando subtipo: {nuevo.Id}");
+                            permitirEventoSubtipo = false;
+                            cmbSubtipo.SelectedValue = nuevo.Id.ToString();
+                            permitirEventoSubtipo = true;
+
+                            // ✅ ASIGNAR DIRECTAMENTE idSubtipoActualmenteCargado (el evento no se disparó)
+                            idSubtipoActualmenteCargado = nuevo.Id.ToString();
+                            System.Diagnostics.Debug.WriteLine($"✓ idSubtipoActualmenteCargado = {idSubtipoActualmenteCargado}");
+
+                            // ✅ CARGAR ITEMS EN GRILLAS
+                            System.Diagnostics.Debug.WriteLine($"► Cargando items en grillas");
+                            CargarItemsDelSubtipoConDiagnostico(nuevo.Id.ToString());
+
+                            // ✅ CARGAR EN itemsPorSecciones (UserControl) - PERO NO NAVEGAR
+                            System.Diagnostics.Debug.WriteLine($"► Cargando en ItemsPorSecciones");
+                            if (itemsPorSecciones != null)
+                            {
+                                itemsPorSecciones.CargarItemsPorSeccion(nuevo.Id.ToString());
+                                System.Diagnostics.Debug.WriteLine($"✓ ItemsPorSecciones actualizado");
+                            }
+                        }
+                        else
+                        {
+                            System.Diagnostics.Debug.WriteLine($"❌ cargarEntidad devolvió null - intentando cargar items disponibles");
+                            MessageBox.Show("Subtipo creado pero no se pudieron cargar los items.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        }
+                    }
+                    else
+                    {
+                        System.Diagnostics.Debug.WriteLine($"❌ Error creando subtipo: {res?.Mensaje}");
+                        MessageBox.Show(res?.Mensaje ?? "No se pudo guardar el Subtipo", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"❌ Excepción: {ex.Message}\n{ex.StackTrace}");
+                MessageBox.Show("Error: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// Carga items disponibles desde BD y los asigna a los DataTables del subtipo temporal
+        /// Se usa cuando se crea un nuevo subtipo para que tenga items disponibles
+        /// </summary>
+        private void CargarYAsignarItemsAlSubtipo(string idSubtipo, Entidades.TipoExamen subtipo)
+        {
+            try
+            {
+                System.Diagnostics.Debug.WriteLine($"\n► Cargando items para subtipo temporal: {idSubtipo}");
+
+                if (subtipo == null || !Guid.TryParse(idSubtipo, out Guid guidSubtipo))
+                {
+                    System.Diagnostics.Debug.WriteLine($"❌ Subtipo o ID inválido");
+                    return;
+                }
+
+                // ✅ Cargar TODOS los items disponibles (no filtrados por subtipo)
+                // Usar Guid.Empty para obtener todos los items
+                DataTable dtTodos = negocioTipoExamen.CargarItemsDesdeEstudiosPorExamen(Guid.Empty);
+
+                if (dtTodos == null || dtTodos.Rows.Count == 0)
+                {
+                    System.Diagnostics.Debug.WriteLine($"⚠️  No hay items en BD (tabla vacía)");
+                    return;
+                }
+
+                System.Diagnostics.Debug.WriteLine($"✓ {dtTodos.Rows.Count} items cargados desde BD");
+
+                // Mapeo de OrdenFormulario → DataTable del subtipo
+                Dictionary<int, DataTable> mapeoOrden = new Dictionary<int, DataTable>
+                {
+                    { 1, subtipo.Clinico ?? CrearDataTableVacio() },
+                    { 2, subtipo.Hematologia ?? CrearDataTableVacio() },
+                    { 3, subtipo.QuimicaHematica ?? CrearDataTableVacio() },
+                    { 4, subtipo.Serologia ?? CrearDataTableVacio() },
+                    { 5, subtipo.PerfilLipidico ?? CrearDataTableVacio() },
+                    { 6, subtipo.Bacteriologia ?? CrearDataTableVacio() },
+                    { 7, subtipo.Orina ?? CrearDataTableVacio() },
+                    { 8, subtipo.LaboralesBasicas ?? CrearDataTableVacio() },
+                    { 9, subtipo.CraneoYMSuperior ?? CrearDataTableVacio() },
+                    { 10, subtipo.TroncoYPelvis ?? CrearDataTableVacio() },
+                    { 11, subtipo.MiembroInferior ?? CrearDataTableVacio() },
+                    { 12, subtipo.EstComplementarios ?? CrearDataTableVacio() }
+                };
+
+                // Distribuir items a sus DataTables correspondientes
+                int itemsDistribuidos = 0;
+                foreach (DataRow r in dtTodos.Rows)
+                {
+                    try
+                    {
+                        int orden = 1;
+                        if (r.Table.Columns.Contains("OrdenFormulario") && r["OrdenFormulario"] != DBNull.Value)
+                        {
+                            if (!int.TryParse(r["OrdenFormulario"].ToString(), out orden))
+                                orden = 1;
+                        }
+
+                        if (!mapeoOrden.ContainsKey(orden))
+                            orden = 1;
+
+                        DataTable dtDestino = mapeoOrden[orden];
+
+                        string codigo = r.Table.Columns.Contains("Codigo") ? r["Codigo"]?.ToString() ?? "" : "";
+                        bool estado = ConvertirABooleano(r.Table.Columns.Contains("Estado") ? r["Estado"] : false);
+                        string item = r.Table.Columns.Contains("Item") ? r["Item"]?.ToString() ?? "" : "";
+
+                        if (!string.IsNullOrEmpty(item))
+                        {
+                            dtDestino.Rows.Add(Guid.NewGuid(), codigo, estado, item, orden);
+                            itemsDistribuidos++;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"  ✗ Error en fila: {ex.Message}");
+                    }
+                }
+
+                System.Diagnostics.Debug.WriteLine($"✓ {itemsDistribuidos} items distribuidos en DataTables");
+
+                // Reasignar los DataTables al subtipo
+                subtipo.Clinico = mapeoOrden[1];
+                subtipo.Hematologia = mapeoOrden[2];
+                subtipo.QuimicaHematica = mapeoOrden[3];
+                subtipo.Serologia = mapeoOrden[4];
+                subtipo.PerfilLipidico = mapeoOrden[5];
+                subtipo.Bacteriologia = mapeoOrden[6];
+                subtipo.Orina = mapeoOrden[7];
+                subtipo.LaboralesBasicas = mapeoOrden[8];
+                subtipo.CraneoYMSuperior = mapeoOrden[9];
+                subtipo.TroncoYPelvis = mapeoOrden[10];
+                subtipo.MiembroInferior = mapeoOrden[11];
+                subtipo.EstComplementarios = mapeoOrden[12];
+
+                System.Diagnostics.Debug.WriteLine($"✅ Items cargados correctamente en subtipo temporal");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"❌ ERROR en CargarYAsignarItemsAlSubtipo: {ex.Message}");
+            }
+        }
+
+        private int GenerarCodigoSubtipo()
+        {
+            // Generar un código único basado en timestamp + número aleatorio
+            long timestamp = DateTime.Now.Ticks;
+            Random rnd = new Random();
+            int random = rnd.Next(1000, 9999);
+            return (int)((timestamp % 100000) + random);
+        }
+
+        private void ActualizarGridTiposExamenes()
+        {
+            try
+            {
+                dgvTiposExamenes.DataSource = null;
+                dgvTiposExamenes.Rows.Clear();
+
+                string nombreMotivo = "";
+                if (cmbMotivoConsulta.SelectedItem is DataRowView drv && drv.DataView.Table.Columns.Contains(cmbMotivoConsulta.DisplayMember))
+                {
+                    nombreMotivo = drv[cmbMotivoConsulta.DisplayMember].ToString();
+                }
+                else
+                {
+                    nombreMotivo = cmbMotivoConsulta.Text;
+                }
+
+                // Crear DataTable compatible con las columnas del DataGridView
+                DataTable dt = new DataTable();
+                dt.Columns.Add("id", typeof(string));
+                dt.Columns.Add("MotivoConsulta", typeof(string));
+                dt.Columns.Add("TipoExamen", typeof(string));
+                dt.Columns.Add("SubtipoExamen", typeof(string));
+                dt.Columns.Add("PrecioSubtipo", typeof(double));
+                dt.Columns.Add("EstadoTipo", typeof(bool));
+
+                foreach (var item in listaTiposExamenes)
+                {
+                    string guidStr = item.Id != null ? item.Id.ToString() : Guid.NewGuid().ToString();
+                    dt.Rows.Add(
+                        guidStr,
+                        nombreMotivo,
+                        item.Padre ? item.Descripcion : "",
+                        item.Padre ? "" : item.Descripcion,
+                        item.PrecioBase,
+                        true
+                    );
+                }
+
+                dgvTiposExamenes.DataSource = dt;
+                OcultarColumnaID(dgvTiposExamenes);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al actualizar grid: " + ex.Message);
+            }
+        }
+        private void BtnEliminarTipoExamen_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (cmbTipoExamen.SelectedValue == null)
+                {
+                    MessageBox.Show("Seleccione un TipoExamen para eliminar", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                string idTipoExamen = cmbTipoExamen.SelectedValue.ToString();
+
+                // Validar que sea un GUID válido
+                if (!Guid.TryParse(idTipoExamen, out Guid guidTipoExamen))
+                {
+                    MessageBox.Show("El ID del TipoExamen no es válido", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                DialogResult resultado = MessageBox.Show("¿Está seguro de eliminar este TipoExamen de la base de datos? Se eliminarán también todos sus subtipos.", "Confirmación", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (resultado == DialogResult.No)
+                    return;
+
+                // Llamar al método de negocio para eliminar
+                Entidades.Resultado res = negocioTipoExamen.eliminarTipoExamenPadre(guidTipoExamen.ToString());
+
+                if (res != null && res.Modo > 0)
+                {
+                    MessageBox.Show("TipoExamen eliminado correctamente", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    // Recargar el combo
+                    CargarTiposExamen();
+                    LimpiarSubtipo();
+                    ActualizarEstadoControles();
+                }
+                else
+                {
+                    // Mostrar el mensaje específico de error desde la capa de datos
+                    string mensajeError = (res != null && !string.IsNullOrEmpty(res.Mensaje))
+                        ? res.Mensaje
+                        : "No se pudo eliminar el TipoExamen";
+                    MessageBox.Show(mensajeError, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void BtnEliminarSubtipo_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (cmbSubtipo.SelectedValue == null)
+                {
+                    MessageBox.Show("Seleccione un Subtipo para eliminar", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                string idSubtipo = cmbSubtipo.SelectedValue.ToString();
+
+                // Validar que sea un GUID válido
+                if (!Guid.TryParse(idSubtipo, out Guid guidSubtipo))
+                {
+                    MessageBox.Show("El ID del Subtipo no es válido", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                DialogResult resultado = MessageBox.Show("¿Está seguro de eliminar este Subtipo?", "Confirmación", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (resultado == DialogResult.No)
+                    return;
+
+                // Primero intentar eliminar de la lista temporal (si fue creado en esta sesión)
+                var subtipoEnLista = listaTiposExamenes.FirstOrDefault(x => x.Id == guidSubtipo && !x.Padre);
+                if (subtipoEnLista != null)
+                {
+                    listaTiposExamenes.Remove(subtipoEnLista);
+                    ActualizarGridTiposExamenes();
+                    MessageBox.Show("Subtipo eliminado de la lista temporal", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    // Limpiar combo y actualizar grid
+                    CargarSubtipos();
+                    LimpiarSubtipo();
+                    ActualizarEstadoControles();
+                    return;
+                }
+
+                // Si no está en la lista temporal, eliminarlo de base de datos
+                Entidades.Resultado res = negocioTipoExamen.eliminarSubtipo(guidSubtipo.ToString());
+
+                if (res != null && res.Modo > 0)
+                {
+                    MessageBox.Show("Subtipo eliminado de la base de datos correctamente", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    // Recargar los subtipos
+                    CargarSubtipos();
+                    LimpiarSubtipo();
+                    ActualizarEstadoControles();
+                }
+                else
+                {
+                    // Mostrar el mensaje específico de error desde la capa de datos
+                    string mensajeError = (res != null && !string.IsNullOrEmpty(res.Mensaje))
+                        ? res.Mensaje
+                        : "No se pudo eliminar el Subtipo";
+                    MessageBox.Show(mensajeError, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void BtnEliminar_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (dgvTiposExamenes.SelectedRows.Count == 0)
+                {
+                    MessageBox.Show("Seleccione un elemento para eliminar", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                DialogResult resultado = MessageBox.Show("¿Está seguro de eliminar este elemento?", "Confirmación", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (resultado == DialogResult.No)
+                    return;
+
+                int indice = dgvTiposExamenes.SelectedRows[0].Index;
+                if (indice >= 0 && indice < listaTiposExamenes.Count)
+                {
+                    listaTiposExamenes.RemoveAt(indice);
+                    ActualizarGridTiposExamenes();
+                    MessageBox.Show("Elemento eliminado correctamente", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void BtnEditar_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (dgvTiposExamenes.SelectedRows.Count == 0)
+                {
+                    MessageBox.Show("Seleccione un elemento para editar", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                int indice = dgvTiposExamenes.SelectedRows[0].Index;
+                if (indice >= 0 && indice < listaTiposExamenes.Count)
+                {
+                    var item = listaTiposExamenes[indice];
+
+                    // Mostrar diálogo para editar
+                    FrmAgregarTipoExamen dlg = new FrmAgregarTipoExamen();
+                    dlg.Descripcion = item.Descripcion;
+                    dlg.Precio = item.PrecioBase;
+
+                    if (dlg.ShowDialog() == DialogResult.OK)
+                    {
+                        item.Descripcion = dlg.Descripcion;
+                        item.PrecioBase = dlg.Precio;
+                        ActualizarGridTiposExamenes();
+                        MessageBox.Show("Elemento actualizado correctamente", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void BtnEliminarTodo_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (listaTiposExamenes.Count == 0)
+                {
+                    MessageBox.Show("No hay elementos para eliminar", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                DialogResult resultado = MessageBox.Show("¿Está seguro de eliminar TODOS los tipos y subtipos agregados?", "Confirmación", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (resultado == DialogResult.No)
+                    return;
+
+                listaTiposExamenes.Clear();
+                ActualizarGridTiposExamenes();
+                CargarTiposExamen();
+                LimpiarSubtipo();
+                cmbSubtipo.SelectedIndex = -1;
+
+                MessageBox.Show("Todos los elementos han sido eliminados", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// Método público para ejecutar el guardado desde un formulario externo (frmLocalidadNacionalidad)
+        /// </summary>
+        public void EjecutarGuardar()
+        {
+            BtnGuardar_Click(null, EventArgs.Empty);
+        }
+
+        private void BtnGuardar_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (itemsPorSecciones == null || string.IsNullOrEmpty(idSubtipoActualmenteCargado))
+                {
+                    MessageBox.Show("Seleccione un subtipo para guardar.",
+                        "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                itemsPorSecciones.GuardarItems(idSubtipoActualmenteCargado);
+
+                MessageBox.Show("Guardado correctamente.",
+                    "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al guardar: " + ex.Message,
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void MostrarGestionMotivoTipoSubtipo(int idMotivo)
+        {
+            try
+            {
+                // ✅ RESETEAR COMBOS A ESTADO SIN FILTRO
+                cmbTipoExamen.SelectedIndex = -1;
+                cmbSubtipo.SelectedIndex = -1;
+
+                // Guardar el id de la fila seleccionada antes de recargar
+                string idSeleccionado = null;
+                if (dgvTiposExamenes.CurrentRow != null && dgvTiposExamenes.CurrentRow.Cells["id"].Value != null)
+                    idSeleccionado = dgvTiposExamenes.CurrentRow.Cells["id"].Value.ToString();
+
+                // 1. Cargar desde la base de datos
+                DataTable dt = negocioTipoExamen.ObtenerMotivoTipoSubtipoExamenPorMotivo(idMotivo);
+
+                // 2. Crear una copia para agregar los temporales
+                DataTable dtFinal = dt.Clone();
+                if (!dtFinal.Columns.Contains("id"))
+                    dtFinal.Columns.Add("id", typeof(string));
+                if (!dtFinal.Columns.Contains("idMotivoConsulta"))
+                    dtFinal.Columns.Add("idMotivoConsulta", typeof(int));
+                // ✅ AGREGAR COLUMNAS PARA DÍAS
+                if (!dtFinal.Columns.Contains("lunes"))
+                    dtFinal.Columns.Add("lunes", typeof(bool));
+                if (!dtFinal.Columns.Contains("martes"))
+                    dtFinal.Columns.Add("martes", typeof(bool));
+                if (!dtFinal.Columns.Contains("miercoles"))
+                    dtFinal.Columns.Add("miercoles", typeof(bool));
+                if (!dtFinal.Columns.Contains("jueves"))
+                    dtFinal.Columns.Add("jueves", typeof(bool));
+                if (!dtFinal.Columns.Contains("viernes"))
+                    dtFinal.Columns.Add("viernes", typeof(bool));
+                // ✅ AGREGAR COLUMNA PARA ACTIVO PADRE
+                if (!dtFinal.Columns.Contains("ActivoPadre"))
+                    dtFinal.Columns.Add("ActivoPadre", typeof(bool));
+                foreach (DataRow row in dt.Rows)
+                {
+                    string id = null;
+                    if (row.Table.Columns.Contains("IdSubtipo") && !string.IsNullOrEmpty(row["IdSubtipo"].ToString()))
+                        id = row["IdSubtipo"].ToString();
+                    else if (row.Table.Columns.Contains("IdTipo") && !string.IsNullOrEmpty(row["IdTipo"].ToString()))
+                        id = row["IdTipo"].ToString();
+                    else
+                        id = Guid.NewGuid().ToString();
+
+                    DataRow dr = dtFinal.NewRow();
+                    foreach (DataColumn col in dt.Columns)
+                    {
+                        dr[col.ColumnName] = row[col.ColumnName];
+                    }
+                    dr["id"] = id;
+                    // Copiar el valor de idMotivoConsulta si existe
+                    if (row.Table.Columns.Contains("idMotivoConsulta"))
+                        dr["idMotivoConsulta"] = row["idMotivoConsulta"];
+
+                    // ✅ ASIGNAR DÍAS (por defecto todos TRUE si vienen NULL)
+                    dr["lunes"] = row.Table.Columns.Contains("lunes") && row["lunes"] != DBNull.Value ? Convert.ToBoolean(row["lunes"]) : true;
+                    dr["martes"] = row.Table.Columns.Contains("martes") && row["martes"] != DBNull.Value ? Convert.ToBoolean(row["martes"]) : true;
+                    dr["miercoles"] = row.Table.Columns.Contains("miercoles") && row["miercoles"] != DBNull.Value ? Convert.ToBoolean(row["miercoles"]) : true;
+                    dr["jueves"] = row.Table.Columns.Contains("jueves") && row["jueves"] != DBNull.Value ? Convert.ToBoolean(row["jueves"]) : true;
+                    dr["viernes"] = row.Table.Columns.Contains("viernes") && row["viernes"] != DBNull.Value ? Convert.ToBoolean(row["viernes"]) : true;
+
+                    // ✅ ASIGNAR ACTIVO PADRE (solo si TipoExamen no está vacío, es decir, es un padre)
+                    bool esPadre = row.Table.Columns.Contains("TipoExamen") && !string.IsNullOrEmpty(row["TipoExamen"]?.ToString());
+                    if (esPadre)
+                    {
+                        if (row.Table.Columns.Contains("EstadoTipo") && row["EstadoTipo"] != DBNull.Value)
+                        {
+                            // ✅ Manejar todos los tipos posibles: int, string, bool
+                            object valEstadoTipo = row["EstadoTipo"];
+                            bool estadoPadreActivo = true; // Por defecto activo
+                            
+                            if (valEstadoTipo is int intVal)
+                                estadoPadreActivo = intVal == 1;
+                            else if (valEstadoTipo is string strVal)
+                                estadoPadreActivo = strVal == "1" || strVal.ToLower() == "true";
+                            else if (valEstadoTipo is bool boolVal)
+                                estadoPadreActivo = boolVal;
+                            else
+                                estadoPadreActivo = Convert.ToInt32(valEstadoTipo) == 1;
+                            
+                            dr["ActivoPadre"] = estadoPadreActivo;
+                        }
+                        else
+                            dr["ActivoPadre"] = true;
+                    }
+                    else
+                    {
+                        dr["ActivoPadre"] = false;
+                    }
+
+                    dtFinal.Rows.Add(dr);
+                }
+
+                // 3. Agregar solo los tipos y subtipos temporales (no guardados aún)
+                var tiposTemporales = listaTiposExamenes
+                    .Where(t => t.IdMotivoConsulta == idMotivo)
+                    .Where(t => dtFinal.Select($"id = '{t.Id}'").Length == 0) // Solo si no está en BD
+                    .ToList();
+
+                foreach (var tipo in tiposTemporales)
+                {
+                    DataRow dr = dtFinal.NewRow();
+                    dr["MotivoConsulta"] = cmbMotivoConsulta.Text;
+                    dr["TipoExamen"] = tipo.Padre ? tipo.Descripcion : "";
+                    dr["SubtipoExamen"] = tipo.Padre ? "" : tipo.Descripcion;
+                    dr["PrecioSubtipo"] = tipo.PrecioBase;
+                    dr["id"] = tipo.Id != null ? tipo.Id.ToString() : Guid.NewGuid().ToString();
+                    // ✅ INICIALIZAR DÍAS PARA TEMPORALES
+                    dr["lunes"] = true;
+                    dr["martes"] = true;
+                    dr["miercoles"] = true;
+                    dr["jueves"] = true;
+                    dr["viernes"] = true;
+                    // ✅ INICIALIZAR ACTIVO PADRE PARA TEMPORALES (true si es padre)
+                    dr["ActivoPadre"] = tipo.Padre ? true : false;
+                    dtFinal.Rows.Add(dr);
+                }
+
+                // Conversión correcta del estado
+                if (!dtFinal.Columns.Contains("EstadoTipo"))
+                    dtFinal.Columns.Add("EstadoTipo", typeof(bool));
+                foreach (DataRow row in dtFinal.Rows)
+                {
+                    object val = null;
+                    // Si es subtipo, usa EstadoSubtipo; si es tipo, usa EstadoTipo
+                    if (row.Table.Columns.Contains("EstadoSubtipo") && row["SubtipoExamen"] != DBNull.Value && !string.IsNullOrEmpty(row["SubtipoExamen"].ToString()))
+                        val = row["EstadoSubtipo"];
+                    else if (row.Table.Columns.Contains("EstadoTipo"))
+                        val = row["EstadoTipo"];
+
+                    string id = row.Table.Columns.Contains("id") ? row["id"].ToString() : "";
+
+                    bool estado = false;
+                    if (val != null && val != DBNull.Value)
+                    {
+                        if (val is int)
+                            estado = ((int)val) == 1;
+                        else if (val is string)
+                            estado = val.ToString() == "1";
+                        else if (val is bool)
+                            estado = (bool)val;
+                    }
+                    row["EstadoTipo"] = estado;
+                }
+                ConfigurarDataGridViews();
+
+                // Refuerzo: asegurar que todas las filas tengan un GUID válido en 'id'
+                foreach (DataRow row in dtFinal.Rows)
+                {
+                    if (string.IsNullOrEmpty(row["id"].ToString()))
+                        row["id"] = Guid.NewGuid().ToString();
+                }
+
+                // Guarda el DataTable original para el filtro
+                dtTiposExamenesOriginal = dtFinal.Copy();
+                dgvTiposExamenes.DataSource = dtFinal;
+                dgvTiposExamenes.AutoResizeColumns();
+                OcultarColumnaID(dgvTiposExamenes);
+
+                // Resaltar los elementos temporales nuevos
+                foreach (DataGridViewRow row in dgvTiposExamenes.Rows)
+                {
+                    string idReal = null;
+                    if (dtFinal.Columns.Contains("id"))
+                    {
+                        int idx = row.Index;
+                        if (idx >= 0 && idx < dtFinal.Rows.Count)
+                        {
+                            idReal = dtFinal.Rows[idx]["id"].ToString();
+                        }
+                    }
+                    bool esNuevo = false;
+                    if (!string.IsNullOrEmpty(idReal))
+                        esNuevo = tiposTemporales.Any(t => t.Id.ToString() == idReal);
+                    if (esNuevo)
+                    {
+                        row.DefaultCellStyle.BackColor = Color.LightGreen;
+                        row.DefaultCellStyle.SelectionBackColor = Color.GreenYellow;
+                    }
+                }
+
+                // Restaurar la selección de fila si existe
+                if (!string.IsNullOrEmpty(idSeleccionado))
+                {
+                    bool seleccionada = false;
+                    foreach (DataGridViewRow row in dgvTiposExamenes.Rows)
+                    {
+                        if (row.Cells["id"].Value != null && row.Cells["id"].Value.ToString() == idSeleccionado)
+                        {
+                            row.Selected = true;
+                            // Selecciona la primera columna visible y válida
+                            foreach (DataGridViewColumn col in dgvTiposExamenes.Columns)
+                            {
+                                if (col.Visible && col.Index < row.Cells.Count)
+                                {
+                                    dgvTiposExamenes.CurrentCell = row.Cells[col.Index];
+                                    break;
+                                }
+                            }
+                            dgvTiposExamenes.FirstDisplayedScrollingRowIndex = row.Index;
+                            seleccionada = true;
+                            break;
+                        }
+                    }
+                    // Si la fila ya no existe, selecciona la primera visible (opcional)
+                    if (!seleccionada && dgvTiposExamenes.Rows.Count > 0)
+                    {
+                        dgvTiposExamenes.Rows[0].Selected = true;
+                        foreach (DataGridViewColumn col in dgvTiposExamenes.Columns)
+                        {
+                            if (col.Visible && col.Index < dgvTiposExamenes.Rows[0].Cells.Count)
+                            {
+                                dgvTiposExamenes.CurrentCell = dgvTiposExamenes.Rows[0].Cells[col.Index];
+                                break;
+                            }
+                        }
+                        dgvTiposExamenes.FirstDisplayedScrollingRowIndex = 0;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al mostrar gestión: " + ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Guarda los items desde las grillas hacia un subtipo específico de la lista temporal.
+        /// Se usa para auto-guardar items cuando se cambia de subtipo seleccionado.
+        /// </summary>
+        private void GuardarEstadoItemsParaSubtipo(string idSubtipo)
+        {
+            if (string.IsNullOrEmpty(idSubtipo) || !Guid.TryParse(idSubtipo, out Guid guidSubtipo))
+                return;
+
+            try
+            {
+                System.Diagnostics.Debug.WriteLine($"\n► GuardarEstadoItemsParaSubtipo: {idSubtipo}");
+
+                // Buscar el subtipo en la lista temporal
+                var subtipo = listaTiposExamenes.FirstOrDefault(t => t.Id.ToString() == idSubtipo);
+                if (subtipo == null || subtipo.Clinico == null)
+                {
+                    System.Diagnostics.Debug.WriteLine($"⚠️ Subtipo no encontrado en listaTiposExamenes");
+                    return;
+                }
+
+                // Mapeo: OrdenFormulario -> Propiedad DataTable
+                Dictionary<int, DataTable> mapeoOrdenAPropiedad = new Dictionary<int, DataTable>
+                {
+                    { 1, subtipo.Clinico },
+                    { 2, subtipo.Hematologia },
+                    { 3, subtipo.QuimicaHematica },
+                    { 4, subtipo.Serologia },
+                    { 5, subtipo.PerfilLipidico },
+                    { 6, subtipo.Bacteriologia },
+                    { 7, subtipo.Orina },
+                    { 8, subtipo.LaboralesBasicas },
+                    { 9, subtipo.CraneoYMSuperior },
+                    { 10, subtipo.TroncoYPelvis },
+                    { 11, subtipo.MiembroInferior },
+                    { 12, subtipo.EstComplementarios }
+                };
+
+                // Limpiar todos los DataTables (mantener estructura de columnas)
+                int filasCleaneadas = 0;
+                foreach (var dt in mapeoOrdenAPropiedad.Values)
+                {
+                    if (dt != null)
+                    {
+                        filasCleaneadas += dt.Rows.Count;
+                        dt.Rows.Clear();
+                    }
+                }
+                System.Diagnostics.Debug.WriteLine($"  Limpiadas {filasCleaneadas} filas previas");
+
+                // Recolectar items de las 4 grillas principales
+                List<DataGridView> grillas = new List<DataGridView> { dgvClinico, dgvLaboratorio, dgvRadiologia, dgvCardiologia };
+                int itemsGuardados = 0;
+
+                foreach (DataGridView dgv in grillas)
+                {
+                    if (dgv == null || dgv.Rows.Count == 0)
+                        continue;
+
+                    System.Diagnostics.Debug.WriteLine($"  Procesando grilla: {dgv.Name} ({dgv.Rows.Count} filas)");
+
+                    foreach (DataGridViewRow row in dgv.Rows)
+                    {
+                        try
+                        {
+                            int codigo = int.TryParse(row.Cells[0].Value?.ToString(), out int c) ? c : 0;
+                            bool estado = Convert.ToBoolean(row.Cells[1].Value ?? false);
+                            string item = row.Cells[2].Value?.ToString() ?? "";
+                            int orden = int.TryParse(row.Cells[3].Value?.ToString(), out int o) ? o : 0;
+
+                            // Obtener la propiedad DataTable correspondiente al orden
+                            if (mapeoOrdenAPropiedad.TryGetValue(orden, out DataTable dtDestino))
+                            {
+                                if (dtDestino != null && estado)  // ✅ SOLO GUARDAR SI ESTADO = TRUE
+                                {
+                                    dtDestino.Rows.Add(Guid.NewGuid(), codigo, estado, item, orden);
+                                    itemsGuardados++;
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"❌ Error procesando fila: {ex.Message}");
+                        }
+                    }
+                }
+
+                System.Diagnostics.Debug.WriteLine($"✅ Guardados {itemsGuardados} items TRUE en subtipo {idSubtipo}");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"❌ ERROR en GuardarEstadoItemsParaSubtipo: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Guarda el estado (checked/unchecked) de todos los items desde las grillas de secciones
+        /// en las propiedades DataTable del subtipo según su orden de formulario
+        /// ESTRUCTURA ESPERADA: [0]=Id, [1]=Codigo, [2]=Estado, [3]=Item, [4]=OrdenFormulario
+        /// </summary>
+        private void GuardarEstadoItems()
+        {
+            try
+            {
+                // Obtener el último subtipo de la lista (es el que tiene los items cargados)
+                var ultimoSubtipo = listaTiposExamenes.LastOrDefault(t => !t.Padre);
+                if (ultimoSubtipo == null)
+                    return;
+
+                // ✅ RECOLECTAR ITEMS DESDE LAS GRILLAS DE SECCIONES Y DISTRIBUIRLAS
+                // Mapeo: OrdenFormulario -> Propiedad DataTable
+                Dictionary<int, DataTable> mapeoOrdenAPropiedad = new Dictionary<int, DataTable>
+                {
+                    { 1, ultimoSubtipo.Clinico },
+                    { 2, ultimoSubtipo.Hematologia },
+                    { 3, ultimoSubtipo.QuimicaHematica },
+                    { 4, ultimoSubtipo.Serologia },
+                    { 5, ultimoSubtipo.PerfilLipidico },
+                    { 6, ultimoSubtipo.Bacteriologia },
+                    { 7, ultimoSubtipo.Orina },
+                    { 8, ultimoSubtipo.LaboralesBasicas },
+                    { 9, ultimoSubtipo.CraneoYMSuperior },
+                    { 10, ultimoSubtipo.TroncoYPelvis },
+                    { 11, ultimoSubtipo.MiembroInferior },
+                    { 12, ultimoSubtipo.EstComplementarios }
+                };
+
+                // Limpiar todos los DataTables primero (excepto estructura de columnas)
+                foreach (var dt in mapeoOrdenAPropiedad.Values)
+                {
+                    dt.Rows.Clear();
+                }
+
+                // Recolectar items de las grillas
+                List<DataGridView> grillas = new List<DataGridView> { dgvClinico, dgvLaboratorio, dgvRadiologia, dgvCardiologia };
+                foreach (DataGridView dgv in grillas)
+                {
+                    if (dgv != null && dgv.Rows.Count > 0)
+                    {
+                        foreach (DataGridViewRow row in dgv.Rows)
+                        {
+                            try
+                            {
+                                int codigo = int.TryParse(row.Cells[0].Value?.ToString(), out int c) ? c : 0;
+                                bool estado = Convert.ToBoolean(row.Cells[1].Value ?? false);
+                                string item = row.Cells[2].Value?.ToString() ?? "";
+                                int orden = int.TryParse(row.Cells[3].Value?.ToString(), out int o) ? o : 0;
+
+                                // Obtener la propiedad DataTable correspondiente al orden
+                                if (mapeoOrdenAPropiedad.TryGetValue(orden, out DataTable dtDestino))
+                                {
+                                    // Estructura: [0]=Id, [1]=Codigo, [2]=Estado, [3]=Item, [4]=OrdenFormulario
+                                    dtDestino.Rows.Add(Guid.NewGuid(), codigo, estado, item, orden);
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                System.Diagnostics.Debug.WriteLine($"Error procesando fila: {ex.Message}");
+                            }
+                        }
+                    }
+                }
+
+                System.Diagnostics.Debug.WriteLine("✅ GuardarEstadoItems completado exitosamente");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al guardar estado de items: " + ex.Message);
+                System.Diagnostics.Debug.WriteLine($"ERROR en GuardarEstadoItems: {ex.Message}");
+            }
+        }
+
+        private void BtnCancelar_Click(object sender, EventArgs e)
+        {
+            DialogResult resultado = MessageBox.Show("¿Está seguro de cerrar sin guardar?", "Confirmación", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (resultado == DialogResult.Yes)
+            {
+                this.DialogResult = DialogResult.Cancel;
+                this.Close();
+            }
+        }
+        // Handler vacío para grpClinico.Enter
+        private void grpClinico_Enter(object sender, EventArgs e)
+        {
+            // Puede dejarse vacío o agregar lógica si es necesario
+        }
+
+        // Handler para btnNuevoMotivo
+        private void btnNuevoMotivo_Click(object sender, EventArgs e)
+        {
+            // TODO: Agregar lógica para nuevo motivo si es necesario
+        }
+
+        // Permite que el cambio de checkbox se registre inmediatamente al hacer click
+        private void DgvTiposExamenes_CurrentCellDirtyStateChanged(object sender, EventArgs e)
+        {
+            if (dgvTiposExamenes.IsCurrentCellDirty)
+            {
+                dgvTiposExamenes.CommitEdit(DataGridViewDataErrorContexts.Commit);
+            }
+        }
+
+        // Actualiza el estado en la lógica de negocio al cambiar el checkbox
+        // ...existing code...
+        private void DgvTiposExamenes_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0 && e.ColumnIndex >= 0)
+            {
+                var row = dgvTiposExamenes.Rows[e.RowIndex];
+                var idCell = row.Cells["id"];
+
+                if (idCell == null || string.IsNullOrEmpty(idCell.Value?.ToString()))
+                    return;
+
+                string idSubtipo = idCell.Value.ToString();
+                string columnName = dgvTiposExamenes.Columns[e.ColumnIndex].Name;
+
+                /*
+                // ✅ SI CAMBIÓ UN CHECKBOX DE DÍA
+                if (columnName.StartsWith("chk"))
+                {
+                    try
+                    {
+                        bool lunes = ConvertirABooleano(row.Cells["chkLunes"].Value);
+                        bool martes = ConvertirABooleano(row.Cells["chkMartes"].Value);
+                        bool miercoles = ConvertirABooleano(row.Cells["chkMiércoles"].Value);
+                        bool jueves = ConvertirABooleano(row.Cells["chkJueves"].Value);
+                        bool viernes = ConvertirABooleano(row.Cells["chkViernes"].Value);
+
+                        // Guardar en BD
+                        var resultado = negocioTipoExamen.actualizarDiasSubtipo(
+                            idSubtipo,
+                            lunes, martes, miercoles, jueves, viernes
+                        );
+
+                        if (resultado.Modo > 0)
+                        {
+                            // Actualización silenciosa, sin messageBox
+                            System.Diagnostics.Debug.WriteLine($"✅ Días actualizados para subtipo: {idSubtipo}");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"❌ Error al actualizar días: {ex.Message}");
+                    }
+                }
+                */
+                // ✅ SI CAMBIÓ ESTADO DE SUBTIPO (Activo/Inactivo)
+                if (columnName == "EstadoEspecialidad")
+                {
+                    if (mostrarMensajeEstado)
+                    {
+                        bool estado = Convert.ToBoolean(row.Cells["EstadoEspecialidad"]?.Value ?? false);
+                        if (Guid.TryParse(idSubtipo, out Guid guid))
+                        {
+                            negocioTipoExamen.ActualizarEstadoEspecialidad(idSubtipo, estado ? 1 : 0);
+                            
+                            // ✅ NUEVO: Si se DESACTIVA un subtipo, verificar si el padre debe desactivarse
+                            if (!estado)
+                            {
+                                // Buscar el tipo padre recorriendo las filas hacia arriba
+                                string tipoExamenPadre = null;
+                                string idPadre = null;
+                                int indicePadre = -1;
+                                
+                                for (int i = e.RowIndex - 1; i >= 0; i--)
+                                {
+                                    var rowPadre = dgvTiposExamenes.Rows[i];
+                                    string tipoPadre = rowPadre.Cells["TipoExamen"]?.Value?.ToString();
+                                    if (!string.IsNullOrEmpty(tipoPadre))
+                                    {
+                                        tipoExamenPadre = tipoPadre;
+                                        idPadre = rowPadre.Cells["id"]?.Value?.ToString();
+                                        indicePadre = i;
+                                        break;
+                                    }
+                                }
+                                
+                                // Verificar si quedan subtipos activos para este tipo padre
+                                if (!string.IsNullOrEmpty(tipoExamenPadre) && !string.IsNullOrEmpty(idPadre) && indicePadre >= 0)
+                                {
+                                    bool haySubtiposActivos = false;
+                                    
+                                    // Buscar subtipos desde la fila siguiente al padre hasta encontrar otro padre
+                                    for (int j = indicePadre + 1; j < dgvTiposExamenes.Rows.Count; j++)
+                                    {
+                                        DataGridViewRow subRow = dgvTiposExamenes.Rows[j];
+                                        string tipoEnFila = subRow.Cells["TipoExamen"]?.Value?.ToString();
+                                        string subtipoEnFila = subRow.Cells["SubtipoExamen"]?.Value?.ToString();
+                                        
+                                        // Si encontramos otro padre, terminamos de buscar
+                                        if (!string.IsNullOrEmpty(tipoEnFila))
+                                            break;
+                                        
+                                        // Si es un subtipo (TipoExamen vacío, SubtipoExamen con valor)
+                                        if (string.IsNullOrEmpty(tipoEnFila) && !string.IsNullOrEmpty(subtipoEnFila))
+                                        {
+                                            string idSubtipoFila = subRow.Cells["id"]?.Value?.ToString();
+                                            bool estadoSubtipo = Convert.ToBoolean(subRow.Cells["EstadoEspecialidad"]?.Value ?? false);
+                                            
+                                            // Si está activo y NO es el que acabamos de desactivar
+                                            if (estadoSubtipo && idSubtipoFila != idSubtipo)
+                                            {
+                                                haySubtiposActivos = true;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    
+                                    // ✅ Si NO hay subtipos activos, desactivar el tipo padre en BD y grilla
+                                    if (!haySubtiposActivos)
+                                    {
+                                        // ✅ GUARDAR EN BD
+                                        negocioTipoExamen.ActualizarEstadoEspecialidad(idPadre, 0);
+                                        
+                                        // ✅ Actualizar visualmente en la grilla (fila del padre)
+                                        dgvTiposExamenes.Rows[indicePadre].Cells["ActivoPadre"].Value = false;
+                                        
+                                        // ✅ Actualizar en el DataTable original para persistencia
+                                        if (dtTiposExamenesOriginal != null)
+                                        {
+                                            foreach (DataRow dr in dtTiposExamenesOriginal.Rows)
+                                            {
+                                                if (dr["id"]?.ToString() == idPadre)
+                                                {
+                                                    dr["ActivoPadre"] = false;
+                                                    dr["EstadoTipo"] = false;
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                        
+                                        MessageBox.Show(
+                                            $"Se desactivó el subtipo.\nComo no quedan subtipos activos, el tipo padre '{tipoExamenPadre}' también fue desactivado en la base de datos.",
+                                            "Estado actualizado",
+                                            MessageBoxButtons.OK,
+                                            MessageBoxIcon.Information
+                                        );
+                                    }
+                                    else
+                                    {
+                                        MessageBox.Show(
+                                            $"Se actualizó el estado del subtipo a Inactivo.",
+                                            "Estado actualizado",
+                                            MessageBoxButtons.OK,
+                                            MessageBoxIcon.Information
+                                        );
+                                    }
+                                }
+                                else
+                                {
+                                    MessageBox.Show(
+                                        $"Se actualizó el estado del subtipo a Inactivo.",
+                                        "Estado actualizado",
+                                        MessageBoxButtons.OK,
+                                        MessageBoxIcon.Information
+                                    );
+                                }
+                            }
+                            else
+                            {
+                                MessageBox.Show(
+                                    $"Se actualizó el estado del subtipo a Activo.",
+                                    "Estado actualizado",
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Information
+                                );
+                            }
+                        }
+                    }
+                    mostrarMensajeEstado = false;
+
+                    // ✅ RECARGAR COMBOS Y GRILLA
+                    var tipoSeleccionadoSub = cmbTipoExamen.SelectedValue?.ToString();
+                    var subtipoSeleccionadoSub = cmbSubtipo.SelectedValue?.ToString();
+
+                    this.BeginInvoke(new Action(() =>
+                    {
+                        CargarTiposExamen();
+                        CargarSubtipos();
+                        if (idMotivoConsultaSeleccionado > 0)
+                            MostrarGestionMotivoTipoSubtipo(idMotivoConsultaSeleccionado);
+
+                        // Volver a aplicar el filtro
+                        if (!string.IsNullOrEmpty(subtipoSeleccionadoSub))
+                        {
+                            cmbSubtipo.SelectedValue = subtipoSeleccionadoSub;
+                        }
+                        else if (!string.IsNullOrEmpty(tipoSeleccionadoSub))
+                        {
+                            cmbTipoExamen.SelectedValue = tipoSeleccionadoSub;
+                        }
+
+                        mostrarMensajeEstado = true;
+                    }));
+                }
+                // ✅ SI CAMBIÓ ESTADO DE PADRE (ActivoPadre)
+                else if (columnName == "ActivoPadre")
+                {
+                    if (mostrarMensajeEstado)
+                    {
+                        bool estadoPadre = Convert.ToBoolean(row.Cells["ActivoPadre"]?.Value ?? false);
+                        if (Guid.TryParse(idSubtipo, out Guid guid))
+                        {
+                            negocioTipoExamen.ActualizarEstadoEspecialidad(idSubtipo, estadoPadre ? 1 : 0);
+                            
+                            // ✅ Si se DESACTIVA el padre, desactivar todos sus subtipos
+                            if (!estadoPadre)
+                            {
+                                string nombrePadre = row.Cells["TipoExamen"]?.Value?.ToString();
+                                if (!string.IsNullOrEmpty(nombrePadre))
+                                {
+                                    foreach (DataGridViewRow subRow in dgvTiposExamenes.Rows)
+                                    {
+                                        // Buscar filas que sean subtipos de este padre
+                                        string tipoExamen = subRow.Cells["TipoExamen"]?.Value?.ToString();
+                                        string subtipoExamen = subRow.Cells["SubtipoExamen"]?.Value?.ToString();
+                                        
+                                        // Si TipoExamen está vacío y SubtipoExamen tiene valor, es un subtipo
+                                        if (string.IsNullOrEmpty(tipoExamen) && !string.IsNullOrEmpty(subtipoExamen))
+                                        {
+                                            string idSub = subRow.Cells["id"]?.Value?.ToString();
+                                            if (!string.IsNullOrEmpty(idSub) && Guid.TryParse(idSub, out Guid guidSub))
+                                            {
+                                                negocioTipoExamen.ActualizarEstadoEspecialidad(idSub, 0);
+                                                subRow.Cells["EstadoEspecialidad"].Value = false;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            
+                            MessageBox.Show(
+                                $"Se actualizó el estado del tipo padre a {(estadoPadre ? "Activo" : "Inactivo")}.",
+                                "Estado actualizado",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Information
+                            );
+                        }
+                    }
+                    mostrarMensajeEstado = false;
+
+                    // Guardar el filtro actual y recargar
+                    var tipoSeleccionadoPadre = cmbTipoExamen.SelectedValue?.ToString();
+                    var subtipoSeleccionadoPadre = cmbSubtipo.SelectedValue?.ToString();
+
+                    this.BeginInvoke(new Action(() =>
+                    {
+                        CargarTiposExamen();
+                        if (idMotivoConsultaSeleccionado > 0)
+                            MostrarGestionMotivoTipoSubtipo(idMotivoConsultaSeleccionado);
+
+                        // Volver a aplicar el filtro
+                        if (!string.IsNullOrEmpty(subtipoSeleccionadoPadre))
+                        {
+                            cmbSubtipo.SelectedValue = subtipoSeleccionadoPadre;
+                            CmbSubtipo_SelectedIndexChanged(cmbSubtipo, EventArgs.Empty);
+                        }
+                        else if (!string.IsNullOrEmpty(tipoSeleccionadoPadre))
+                        {
+                            cmbTipoExamen.SelectedValue = tipoSeleccionadoPadre;
+                            CmbTipoExamen_SelectedIndexChanged(cmbTipoExamen, EventArgs.Empty);
+                        }
+
+                        mostrarMensajeEstado = true;
+                    }));
+                }
+            }
+        }
+
+        private void btnEliminarSubtipo_Click_1(object sender, EventArgs e)
+        {
+
+        }
+
+        /// <summary>
+        /// Carga los datos del subtipo seleccionado en la pestaña pruena
+        /// </summary>
+        private void CargarDatosEnPruena(string idSubtipo)
+        {
+            StringBuilder diagnostico = new StringBuilder();
+            diagnostico.AppendLine("╔════════════════════════════════════════════════════╗");
+            diagnostico.AppendLine("║       DIAGNÓSTICO DE CARGA DE PRUENA               ║");
+            diagnostico.AppendLine("╚════════════════════════════════════════════════════╝\n");
+
+            try
+            {
+                diagnostico.AppendLine($"📍 ID SUBTIPO: {idSubtipo}\n");
+
+                if (string.IsNullOrEmpty(idSubtipo) || !Guid.TryParse(idSubtipo, out Guid guidSubtipo))
+                {
+                    diagnostico.AppendLine("❌ ERROR: ID inválido o no es GUID\n");
+                    //MostrarDiagnostico(diagnostico.ToString(), "Error");
+                    LimpiarGrillasPruena();
+                    return;
+                }
+
+                // PRIORITY 1: Buscar en lista temporal
+                diagnostico.AppendLine("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
+                diagnostico.AppendLine("INTENTO 1: Buscar en lista temporal (listaTiposExamenes)...\n");
+
+                Entidades.TipoExamen datosSubtipo = listaTiposExamenes.FirstOrDefault(t => t.Id == guidSubtipo && !t.Padre);
+
+                if (datosSubtipo != null)
+                {
+                    diagnostico.AppendLine($"✓ Subtipo TEMPORAL encontrado: {datosSubtipo.Descripcion}\n");
+                    diagnostico.AppendLine("Llenando grillas con DataTables temporales:\n");
+
+                    // Limpiar grillas
+                    LimpiarGrillasPruena();
+
+                    // Ex. Clínico
+                    diagnostico.AppendLine("  ✓ Procesando Ex. Clínico...");
+                    LlenarGrillaPruena(dgvPruenaClinico, datosSubtipo.Clinico);
+                    if (datosSubtipo.Clinico != null)
+                        diagnostico.AppendLine($"    └─ {datosSubtipo.Clinico.Rows.Count} items\n");
+
+                    // Ex. Laboratorio
+                    diagnostico.AppendLine("  ✓ Procesando Ex. Laboratorio...");
+                    dgvPruenaLaboratorio.Rows.Clear();
+                    AgregarSeccionConEncabezado(dgvPruenaLaboratorio, "HEMATOLOGÍA", datosSubtipo.Hematologia);
+                    AgregarSeccionConEncabezado(dgvPruenaLaboratorio, "QUÍMICA HEMATÍCA", datosSubtipo.QuimicaHematica);
+                    AgregarSeccionConEncabezado(dgvPruenaLaboratorio, "SEROLOGÍA", datosSubtipo.Serologia);
+                    AgregarSeccionConEncabezado(dgvPruenaLaboratorio, "PERFIL LIPÍDICO", datosSubtipo.PerfilLipidico);
+                    AgregarSeccionConEncabezado(dgvPruenaLaboratorio, "BACTERIOLOGÍA", datosSubtipo.Bacteriologia);
+                    AgregarSeccionConEncabezado(dgvPruenaLaboratorio, "ORINA", datosSubtipo.Orina);
+                    diagnostico.AppendLine($"    └─ {dgvPruenaLaboratorio.Rows.Count} filas (con encabezados)\n");
+
+                    // Rayos X
+                    diagnostico.AppendLine("  ✓ Procesando Rayos X...");
+                    dgvPruenaRayosX.Rows.Clear();
+                    AgregarSeccionConEncabezado(dgvPruenaRayosX, "LABORALES BÁSICAS", datosSubtipo.LaboralesBasicas);
+                    AgregarSeccionConEncabezado(dgvPruenaRayosX, "CRÁNEO Y M. SUPERIOR", datosSubtipo.CraneoYMSuperior);
+                    AgregarSeccionConEncabezado(dgvPruenaRayosX, "TRONCO Y PELVIS", datosSubtipo.TroncoYPelvis);
+                    AgregarSeccionConEncabezado(dgvPruenaRayosX, "MIEMBRO INFERIOR", datosSubtipo.MiembroInferior);
+                    diagnostico.AppendLine($"    └─ {dgvPruenaRayosX.Rows.Count} filas (con encabezados)\n");
+
+                    // Est. Complementarios
+                    diagnostico.AppendLine("  ✓ Procesando Est. Complementarios...");
+                    LlenarGrillaPruena(dgvPruenaComplementarios, datosSubtipo.EstComplementarios);
+                    if (datosSubtipo.EstComplementarios != null)
+                        diagnostico.AppendLine($"    └─ {datosSubtipo.EstComplementarios.Rows.Count} items\n");
+
+                    diagnostico.AppendLine("✅ ÉXITO: Grillas de Pruena llenadas correctamente");
+                    //MostrarDiagnostico(diagnostico.ToString(), "Éxito");
+                }
+                else
+                {
+                    diagnostico.AppendLine("⚠️  Subtipo NO está en lista temporal\n");
+
+                    // PRIORITY 2: Fallback a BD
+                    diagnostico.AppendLine("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
+                    diagnostico.AppendLine("INTENTO 2: Cargar desde BD...\n");
+
+                    datosSubtipo = negocioTipoExamen.cargarEntidad(idSubtipo);
+
+                    if (datosSubtipo != null)
+                    {
+                        diagnostico.AppendLine($"✓ Subtipo encontrado en BD: {datosSubtipo.Descripcion}\n");
+                        diagnostico.AppendLine("Llenando grillas con BD:\n");
+
+                        // Limpiar grillas
+                        LimpiarGrillasPruena();
+
+                        // Ex. Clínico
+                        diagnostico.AppendLine("  ✓ Procesando Ex. Clínico...");
+                        LlenarGrillaPruena(dgvPruenaClinico, datosSubtipo.Clinico);
+                        if (datosSubtipo.Clinico != null)
+                            diagnostico.AppendLine($"    └─ {datosSubtipo.Clinico.Rows.Count} items\n");
+
+                        // Ex. Laboratorio
+                        diagnostico.AppendLine("  ✓ Procesando Ex. Laboratorio...");
+                        dgvPruenaLaboratorio.Rows.Clear();
+                        AgregarSeccionConEncabezado(dgvPruenaLaboratorio, "HEMATOLOGÍA", datosSubtipo.Hematologia);
+                        AgregarSeccionConEncabezado(dgvPruenaLaboratorio, "QUÍMICA HEMATÍCA", datosSubtipo.QuimicaHematica);
+                        AgregarSeccionConEncabezado(dgvPruenaLaboratorio, "SEROLOGÍA", datosSubtipo.Serologia);
+                        AgregarSeccionConEncabezado(dgvPruenaLaboratorio, "PERFIL LIPÍDICO", datosSubtipo.PerfilLipidico);
+                        AgregarSeccionConEncabezado(dgvPruenaLaboratorio, "BACTERIOLOGÍA", datosSubtipo.Bacteriologia);
+                        AgregarSeccionConEncabezado(dgvPruenaLaboratorio, "ORINA", datosSubtipo.Orina);
+                        diagnostico.AppendLine($"    └─ {dgvPruenaLaboratorio.Rows.Count} filas (con encabezados)\n");
+
+                        // Rayos X
+                        diagnostico.AppendLine("  ✓ Procesando Rayos X...");
+                        dgvPruenaRayosX.Rows.Clear();
+                        AgregarSeccionConEncabezado(dgvPruenaRayosX, "LABORALES BÁSICAS", datosSubtipo.LaboralesBasicas);
+                        AgregarSeccionConEncabezado(dgvPruenaRayosX, "CRÁNEO Y M. SUPERIOR", datosSubtipo.CraneoYMSuperior);
+                        AgregarSeccionConEncabezado(dgvPruenaRayosX, "TRONCO Y PELVIS", datosSubtipo.TroncoYPelvis);
+                        AgregarSeccionConEncabezado(dgvPruenaRayosX, "MIEMBRO INFERIOR", datosSubtipo.MiembroInferior);
+                        diagnostico.AppendLine($"    └─ {dgvPruenaRayosX.Rows.Count} filas (con encabezados)\n");
+
+                        // Est. Complementarios
+                        diagnostico.AppendLine("  ✓ Procesando Est. Complementarios...");
+                        LlenarGrillaPruena(dgvPruenaComplementarios, datosSubtipo.EstComplementarios);
+                        if (datosSubtipo.EstComplementarios != null)
+                            diagnostico.AppendLine($"    └─ {datosSubtipo.EstComplementarios.Rows.Count} items\n");
+
+                        diagnostico.AppendLine("✅ ÉXITO: Grillas de Pruena llenadas desde BD");
+                        //MostrarDiagnostico(diagnostico.ToString(), "Éxito");
+                    }
+                    else
+                    {
+                        diagnostico.AppendLine("❌ ERROR: No se encontró el subtipo en BD\n");
+                        diagnostico.AppendLine("Limpiando grillas...");
+                        LimpiarGrillasPruena();
+                        //MostrarDiagnostico(diagnostico.ToString(), "Error");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                diagnostico.AppendLine($"\n❌ EXCEPCIÓN: {ex.Message}");
+                diagnostico.AppendLine($"\nStackTrace:\n{ex.StackTrace}");
+                //MostrarDiagnostico(diagnostico.ToString(), "Error");
+            }
+        }
+
+        /// <summary>
+        /// Agrega una sección con encabezado a una grilla
+        /// Estructura esperada del DataTable: [0]=Id, [1]=Codigo, [2]=Estado, [3]=Item, [4]=OrdenFormulario
+        /// </summary>
+        private void AgregarSeccionConEncabezado(DataGridView grilla, string nombreSeccion, DataTable tabla)
+        {
+            try
+            {
+                if (grilla == null)
+                {
+                    System.Diagnostics.Debug.WriteLine($"❌ Grilla NULL");
+                    return;
+                }
+
+                if (tabla == null || tabla.Rows.Count == 0)
+                {
+                    System.Diagnostics.Debug.WriteLine($"  ⚠️ {nombreSeccion}: VACÍO");
+                    return;
+                }
+
+                System.Diagnostics.Debug.WriteLine($"  ✓ Agregando {nombreSeccion}: {tabla.Rows.Count} items");
+
+                // Agregar encabezado de sección CONTRAÍDO (▶) con símbolo desplegable
+                int filaEncabezadoIdx = grilla.Rows.Add("▶", nombreSeccion);
+                DataGridViewRow filaEncabezado = grilla.Rows[filaEncabezadoIdx];
+                filaEncabezado.ReadOnly = true;
+                filaEncabezado.Height = 28;
+                filaEncabezado.Tag = new Dictionary<string, object>
+                {
+                    { "esEncabezado", true },
+                    { "nombreSeccion", nombreSeccion },
+                    { "estaExpandido", false }, // Inicialmente contraído
+                    { "indicesItems", new List<int>() }
+                };
+
+                // Estilo del encabezado: Azul oscuro con texto blanco
+                Color colorEncabezado = Color.FromArgb(70, 130, 180); // Azul acero
+                filaEncabezado.DefaultCellStyle.BackColor = colorEncabezado;
+                filaEncabezado.DefaultCellStyle.Font = new Font("Arial", 10, FontStyle.Bold);
+                filaEncabezado.DefaultCellStyle.ForeColor = Color.White;
+                filaEncabezado.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+
+                // ✅ CELDA [0]: SÍMBOLO DESPLEGABLE (▶ / ◀)
+                filaEncabezado.Cells[0].ReadOnly = true;
+                filaEncabezado.Cells[0].Style.BackColor = colorEncabezado;
+                filaEncabezado.Cells[0].Style.ForeColor = Color.White;
+                filaEncabezado.Cells[0].Style.Font = new Font("Arial", 12, FontStyle.Bold);
+                filaEncabezado.Cells[0].Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                filaEncabezado.Cells[0].Style.SelectionBackColor = colorEncabezado;
+                filaEncabezado.Cells[0].Style.SelectionForeColor = Color.White;
+
+                // ✅ CELDA [1]: NOMBRE DE LA SECCIÓN
+                filaEncabezado.Cells[1].ReadOnly = true;
+                filaEncabezado.Cells[1].Style.BackColor = colorEncabezado;
+                filaEncabezado.Cells[1].Style.ForeColor = Color.White;
+
+                // Lista para guardar índices de items
+                List<int> indicesItems = new List<int>();
+
+                // Agregar items de la sección (OCULTOS inicialmente)
+                foreach (DataRow fila in tabla.Rows)
+                {
+                    try
+                    {
+                        // Estructura: [0]=Id, [1]=Codigo, [2]=Estado, [3]=Item, [4]=OrdenFormulario
+                        bool estado = fila.ItemArray.Length > 2 ? Convert.ToBoolean(fila.ItemArray[2]) : false;
+                        string item = fila.ItemArray.Length > 3 ? fila.ItemArray[3].ToString() : "";
+
+                        if (!string.IsNullOrEmpty(item))
+                        {
+                            int filaItemIdx = grilla.Rows.Add(estado, "  • " + item);
+                            DataGridViewRow filaItem = grilla.Rows[filaItemIdx];
+                            filaItem.DefaultCellStyle.BackColor = Color.White;
+                            filaItem.DefaultCellStyle.ForeColor = Color.Black;
+                            filaItem.DefaultCellStyle.Font = new Font("Arial", 9);
+                            filaItem.Height = 22;
+                            filaItem.Visible = false; // Inicialmente oculto
+
+                            indicesItems.Add(filaItemIdx);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"    ✗ Error procesando item: {ex.Message}");
+                    }
+                }
+
+                // Guardar índices de items en el encabezado
+                var tagDict = filaEncabezado.Tag as Dictionary<string, object>;
+                if (tagDict != null)
+                {
+                    tagDict["indicesItems"] = indicesItems;
+                    filaEncabezado.Tag = tagDict;
+                }
+
+                // Agregar espaciador visual entre secciones
+                int filaEspaciadorIdx = grilla.Rows.Add();
+                DataGridViewRow filaEspaciador = grilla.Rows[filaEspaciadorIdx];
+                filaEspaciador.ReadOnly = true;
+                filaEspaciador.Height = 3;
+                filaEspaciador.DefaultCellStyle.BackColor = Color.LightGray;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"❌ ERROR en AgregarSeccionConEncabezado: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Expande o contrae una sección de items según su estado actual
+        /// </summary>
+        private void AlternarSeccion(DataGridView grilla, int filaEncabezado)
+        {
+            try
+            {
+                if (filaEncabezado < 0 || filaEncabezado >= grilla.Rows.Count)
+                    return;
+
+                DataGridViewRow fila = grilla.Rows[filaEncabezado];
+                var tagDict = fila.Tag as Dictionary<string, object>;
+
+                if (tagDict == null || !(bool)tagDict["esEncabezado"])
+                    return;
+
+                bool estaExpandido = (bool)tagDict["estaExpandido"];
+                List<int> indicesItems = tagDict["indicesItems"] as List<int> ?? new List<int>();
+                string nombreSeccion = tagDict["nombreSeccion"].ToString();
+
+                // Alternar visibilidad de items
+                foreach (int indiceItem in indicesItems)
+                {
+                    if (indiceItem < grilla.Rows.Count)
+                    {
+                        grilla.Rows[indiceItem].Visible = !estaExpandido;
+                    }
+                }
+
+                // ✅ ACTUALIZAR SÍMBOLO en la celda [0]: ▶ (contraído) ◀ (expandido)
+                string nuevoSimbolo = estaExpandido ? "▶" : "◀";
+                fila.Cells[0].Value = nuevoSimbolo;
+
+                // Actualizar estado
+                tagDict["estaExpandido"] = !estaExpandido;
+                fila.Tag = tagDict;
+
+                System.Diagnostics.Debug.WriteLine($"✓ Sección '{nombreSeccion}' {(!estaExpandido ? "expandida" : "contraída")}");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"ERROR en AlternarSeccion: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Llena una grilla con los items de un DataTable (sin encabezados)
+        /// Estructura esperada del DataTable: [0]=Id, [1]=Codigo, [2]=Estado, [3]=Item, [4]=OrdenFormulario
+        /// </summary>
+        private void LlenarGrillaPruena(DataGridView grilla, DataTable tabla)
+        {
+            try
+            {
+                if (grilla == null)
+                {
+                    System.Diagnostics.Debug.WriteLine($"❌ Grilla NULL");
+                    return;
+                }
+
+                grilla.Rows.Clear();
+
+                if (tabla == null || tabla.Rows.Count == 0)
+                {
+                    System.Diagnostics.Debug.WriteLine($"  ⚠️ Tabla vacía o NULL");
+                    return;
+                }
+
+                System.Diagnostics.Debug.WriteLine($"  ✓ Llenando grilla con {tabla.Rows.Count} items");
+
+                foreach (DataRow fila in tabla.Rows)
+                {
+                    try
+                    {
+                        // Estructura: [0]=Id, [1]=Codigo, [2]=Estado, [3]=Item, [4]=OrdenFormulario
+                        bool estado = fila.ItemArray.Length > 2 ? Convert.ToBoolean(fila.ItemArray[2]) : false;
+                        string item = fila.ItemArray.Length > 3 ? fila.ItemArray[3].ToString() : "";
+
+                        if (!string.IsNullOrEmpty(item))
+                        {
+                            grilla.Rows.Add(estado, item);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"    ✗ Error procesando fila: {ex.Message}");
+                    }
+                }
+
+                System.Diagnostics.Debug.WriteLine($"  ✓ Grilla poblada con {grilla.Rows.Count} filas");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"❌ ERROR en LlenarGrillaPruena: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Event handler para clicks en celdas de grillas desplegables
+        /// Detecta clics en encabezados y alterna su estado
+        /// </summary>
+        private void DgvPruena_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            try
+            {
+                if (e.RowIndex < 0 || e.RowIndex >= ((DataGridView)sender).Rows.Count)
+                    return;
+
+                DataGridView dgv = (DataGridView)sender;
+                DataGridViewRow fila = dgv.Rows[e.RowIndex];
+                var tagDict = fila.Tag as Dictionary<string, object>;
+
+                // Si es un encabezado desplegable, alternar
+                if (tagDict != null && tagDict.ContainsKey("esEncabezado") && (bool)tagDict["esEncabezado"])
+                {
+                    AlternarSeccion(dgv, e.RowIndex);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"ERROR en DgvPruena_CellClick: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Limpia todas las grillas de la pestaña pruena
+        /// </summary>
+        private void LimpiarGrillasPruena()
+        {
+            try
+            {
+                if (dgvPruenaClinico != null) dgvPruenaClinico.Rows.Clear();
+                if (dgvPruenaLaboratorio != null) dgvPruenaLaboratorio.Rows.Clear();
+                if (dgvPruenaRayosX != null) dgvPruenaRayosX.Rows.Clear();
+                if (dgvPruenaComplementarios != null) dgvPruenaComplementarios.Rows.Clear();
+
+                System.Diagnostics.Debug.WriteLine($"✓ Grillas de Pruena limpiadas");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"ERROR en LimpiarGrillasPruena: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Configura los DataGridViews de pruebas con estilos mejorados
+        /// </summary>
+        private void ConfigurarDataGridViewsPruebas()
+        {
+            try
+            {
+                ConfigurarGrillaPrueba(dgvPruenaClinico);
+                ConfigurarGrillaPrueba(dgvPruenaLaboratorio);
+                ConfigurarGrillaPrueba(dgvPruenaRayosX);
+                ConfigurarGrillaPrueba(dgvPruenaComplementarios);
+
+                System.Diagnostics.Debug.WriteLine("✓ DataGridViews de pruebas configurados");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"ERROR en ConfigurarDataGridViewsPruebas: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Configura una grilla individual de pruebas con estilos mejorados
+        /// </summary>
+        private void ConfigurarGrillaPrueba(DataGridView dgv)
+        {
+            try
+            {
+                if (dgv == null) return;
+
+                dgv.AllowUserToAddRows = false;
+                dgv.AllowUserToDeleteRows = false;
+                dgv.RowHeadersVisible = false;
+                dgv.BackgroundColor = Color.White;
+                dgv.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+                dgv.MultiSelect = false;
+
+                // Configurar encabezados
+                dgv.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(34, 139, 34); // Verde oscuro
+                dgv.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
+                dgv.ColumnHeadersDefaultCellStyle.Font = new Font("Arial", 10, FontStyle.Bold);
+                dgv.ColumnHeadersHeight = 30;
+
+                // Configurar altura por defecto de las filas
+                dgv.RowTemplate.Height = 22;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"ERROR en ConfigurarGrillaPrueba: {ex.Message}");
+            }
+        }
+
+        // ✅ NUEVO MÉTODO PÚBLICO: Cargar un subtipo específico desde frmLocalidadNacionalidad
+        public void CargarSubtipoEnTab(int idMotivo, string idTipo, string idSubtipo)
+        {
+            try
+            {
+                System.Diagnostics.Debug.WriteLine($"► CargarSubtipoEnTab: Motivo={idMotivo}, Tipo={idTipo}, Subtipo={idSubtipo}");
+
+                // 1. Establecer el ID del motivo seleccionado
+                idMotivoConsultaSeleccionado = idMotivo;
+
+                // 2. Cargar los motivos primero
+                CargarMotivosConsulta();
+
+                // 3. Seleccionar el motivo en cmbMotivoConsulta
+                if (cmbMotivoConsulta.Items.Count > 0)
+                {
+                    bool motivoEncontrado = false;
+                    for (int i = 0; i < cmbMotivoConsulta.Items.Count; i++)
+                    {
+                        DataRowView drv = cmbMotivoConsulta.Items[i] as DataRowView;
+                        if (drv != null && drv["id"].ToString() == idMotivo.ToString())
+                        {
+                            cmbMotivoConsulta.SelectedIndex = i;
+                            motivoEncontrado = true;
+                            System.Diagnostics.Debug.WriteLine($"✓ Motivo seleccionado: {drv["descripcion"].ToString()}");
+                            break;
+                        }
+                    }
+                    if (!motivoEncontrado)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"⚠ Motivo {idMotivo} no encontrado");
+                    }
+                }
+
+                // 4. Cargar tipos después de seleccionar motivo
+                if (idMotivoConsultaSeleccionado > 0)
+                {
+                    CargarTiposExamen();
+
+                    // 5. Seleccionar el tipo en cmbTipoExamen
+                    if (!string.IsNullOrEmpty(idTipo) && cmbTipoExamen.Items.Count > 0)
+                    {
+                        bool tipoEncontrado = false;
+                        for (int i = 0; i < cmbTipoExamen.Items.Count; i++)
+                        {
+                            DataRowView drv = cmbTipoExamen.Items[i] as DataRowView;
+                            if (drv != null && drv["id"].ToString() == idTipo)
+                            {
+                                cmbTipoExamen.SelectedIndex = i;
+                                idTipoExamenSeleccionado = idTipo;
+                                tipoEncontrado = true;
+                                System.Diagnostics.Debug.WriteLine($"✓ Tipo seleccionado: {drv["descripcion"].ToString()}");
+                                break;
+                            }
+                        }
+                        if (!tipoEncontrado)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"⚠ Tipo {idTipo} no encontrado");
+                        }
+                    }
+
+                    // 6. Cargar subtipos después de seleccionar tipo
+                    if (!string.IsNullOrEmpty(idTipoExamenSeleccionado))
+                    {
+                        CargarSubtipos();
+
+                        // 7. Seleccionar el subtipo en cmbSubtipo
+                        if (!string.IsNullOrEmpty(idSubtipo) && cmbSubtipo.Items.Count > 0)
+                        {
+                            bool subtipoEncontrado = false;
+                            for (int i = 0; i < cmbSubtipo.Items.Count; i++)
+                            {
+                                DataRowView drv = cmbSubtipo.Items[i] as DataRowView;
+                                if (drv != null && drv["id"].ToString() == idSubtipo)
+                                {
+                                    cmbSubtipo.SelectedIndex = i;
+                                    idSubtipoActualmenteCargado = idSubtipo;
+                                    subtipoEncontrado = true;
+                                    System.Diagnostics.Debug.WriteLine($"✓ Subtipo seleccionado: {drv["descripcion"].ToString()}");
+                                    break;
+                                }
+                            }
+                            if (!subtipoEncontrado)
+                            {
+                                System.Diagnostics.Debug.WriteLine($"⚠ Subtipo {idSubtipo} no encontrado");
+                            }
+                        }
+                    }
+                }
+
+                // 8. Navegar al tab "Tipo de Examen Médico"
+                TabControl tabCtrl = null;
+                foreach (Control ctrl in this.Controls)
+                {
+                    if (ctrl is TabControl)
+                    {
+                        tabCtrl = ctrl as TabControl;
+                        break;
+                    }
+                }
+
+                if (tabCtrl != null)
+                {
+                    foreach (TabPage tab in tabCtrl.TabPages)
+                    {
+                        if (tab.Name == "tabAgregar" || tab.Text == "Tipo de Examen Médico")
+                        {
+                            tabCtrl.SelectedTab = tab;
+                            System.Diagnostics.Debug.WriteLine("✅ Tab 'Tipo de Examen Médico' activado");
+                            break;
+                        }
+                    }
+                }
+
+                System.Diagnostics.Debug.WriteLine("✅ CargarSubtipoEnTab completado");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"❌ Error en CargarSubtipoEnTab: {ex.Message}\n{ex.StackTrace}");
+                MessageBox.Show($"Error al cargar el subtipo: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // ✅ Método para dibujar el tab con colores personalizados
+        private void TabControl_DrawItem(object sender, DrawItemEventArgs e)
+        {
+            TabPage tab = tabControl.TabPages[e.Index];
+
+            // Mismo color para todos los tabs (sin mostrar diferencia visual)
+            Color tabColor = Color.FromArgb(240, 240, 240); // Gris uniforme
+
+            e.Graphics.FillRectangle(new SolidBrush(tabColor), e.Bounds);
+
+            // Dibujar el texto del tab
+            StringFormat stringFormat = new StringFormat();
+            stringFormat.Alignment = StringAlignment.Center;
+            stringFormat.LineAlignment = StringAlignment.Center;
+            e.Graphics.DrawString(tab.Text, e.Font, Brushes.Black, e.Bounds, stringFormat);
+        }
+
+        private void label2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void cmbSubtipo_SelectedIndexChanged_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void cmbMotivoConsulta_SelectedIndexChanged_1(object sender, EventArgs e)
+        {
+
+        }
+    }
+}

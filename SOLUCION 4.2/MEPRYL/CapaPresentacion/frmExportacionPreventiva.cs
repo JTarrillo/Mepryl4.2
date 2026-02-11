@@ -1,0 +1,424 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Text;
+using System.Windows.Forms;
+using Comunes;
+using Excel = Microsoft.Office.Interop.Excel;
+using System.Data.OleDb;
+
+namespace CapaPresentacion
+{
+    public partial class frmExportacionPreventiva : DevExpress.XtraEditors.XtraForm
+    {
+        frmBusquedaExamen frmBusqueda;
+        DataTable validaciones;
+
+        public frmExportacionPreventiva(frmBusquedaExamen frm)
+        {
+            validaciones = SQLConnector.obtenerTablaSegunConsultaString("select * from dbo.Validaciones");
+            InitializeComponent();
+            frmBusqueda = frm;
+            tpHasta.Value = DateTime.Today;
+        }
+
+        private void frmExportacionPreventiva_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            frmBusqueda.Show();
+        }
+
+        private void botImpExcel_Click(object sender, EventArgs e)
+        {
+            abrirOpenFileDialog(1);
+        }
+
+        private void abrirOpenFileDialog(int modo)
+        {
+            int dia = tpHasta.Value.Day;
+            string day = dia.ToString();
+            if (dia <= 9) { day = "0" + dia.ToString();}
+            int mes = tpHasta.Value.Month;
+            string month = mes.ToString();
+            if (mes <= 9) { month = "0" + mes.ToString(); }
+            string anio = tpHasta.Value.Year.ToString();
+            if (modo == 1) { saveFileDialog.Filter = "Excel (*.xls)|*.xls"; saveFileDialog.FileName = "EXAMINADOS AL " + day + "-" + month + "-" + anio; }
+            if (modo == 2) { saveFileDialog.Filter = "DBF (*.dbf)|*.dbf"; saveFileDialog.FileName = "DATOS"; }
+            if (modo == 3) { saveFileDialog.Filter = "Excel (*.xls)|*.xls"; saveFileDialog.FileName = "LAFIJ AL " + day + "-" + month + "-" + anio; }
+            if (saveFileDialog.ShowDialog() == DialogResult.OK) 
+            {
+                if (modo == 1) { tbExcel.Text = saveFileDialog.FileName; }
+                if (modo == 2) { tbDBF.Text = saveFileDialog.FileName; }
+                if (modo == 3) { tbLafij.Text = saveFileDialog.FileName; }
+            }
+        }
+
+        private void botComenzarExcel_Click(object sender, EventArgs e)
+        {
+            if (tbExcel.Text != "")
+            {
+                if (tpDesde.Value <= tpHasta.Value){guardarExportacionExcel();}else{mostrarMensajeAtencion("¡El rango de fecha seleccionado no es válido!");}
+            }
+            else
+            {
+                mostrarMensajeAtencion("¡Seleccione un nombre y una ubicación para el archivo de exportación!");
+            }
+
+        }
+
+        private void mostrarMensajeAtencion(string mensaje)
+        {
+            MessageBox.Show(mensaje,"Atención",
+                    MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+        }
+
+        private void setearColorYBorde(Excel.Range rng)
+        {
+            rng.Font.Bold = true;
+            rng.Interior.Color = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.PowderBlue);
+            rng.BorderAround(Excel.XlLineStyle.xlContinuous, Excel.XlBorderWeight.xlMedium, 
+            Excel.XlColorIndex.xlColorIndexAutomatic, Excel.XlColorIndex.xlColorIndexAutomatic);
+            rng.HorizontalAlignment = Excel.XlHAlign.xlHAlignCenter;
+        }
+
+        private void guardarExportacionExcel()
+        {
+            Microsoft.Office.Interop.Excel.Application excel = new Microsoft.Office.Interop.Excel.Application();
+            Microsoft.Office.Interop.Excel.Workbook excelworkBook;
+            Microsoft.Office.Interop.Excel.Worksheet excelSheet;
+
+            excel.Visible = false;
+            excel.DisplayAlerts = false;
+            excel.SheetsInNewWorkbook = 1;
+            excelworkBook = (Microsoft.Office.Interop.Excel.Workbook)(excel.Workbooks.Add(Type.Missing));
+            excelSheet = (Microsoft.Office.Interop.Excel.Worksheet)excelworkBook.ActiveSheet;
+            excelSheet.Name = "Hoja 1";
+
+
+            excelSheet.Cells[1, 1] = "LIGA";
+            excelSheet.Cells[1, 2] = "CLUB";
+            excelSheet.Cells[1, 3] = "JUGADOR";
+            excelSheet.Cells[1, 4] = "CATEGORIA";
+            excelSheet.Cells[1, 5] = "NOMBRE";
+            excelSheet.Cells[1, 6] = "DICTAMEN";
+            excelSheet.Cells[1, 7] = "FECHA";
+
+
+            setearColorYBorde(excel.get_Range("A1", "A1"));
+            setearColorYBorde(excel.get_Range("B1", "B1"));
+            setearColorYBorde(excel.get_Range("C1", "C1"));
+            setearColorYBorde(excel.get_Range("D1", "D1"));
+            setearColorYBorde(excel.get_Range("E1", "E1"));
+            setearColorYBorde(excel.get_Range("F1", "F1"));
+            setearColorYBorde(excel.get_Range("G1", "G1"));
+
+
+
+            DataTable dt = cargarTablasExcel();
+
+            DataView dv = dt.DefaultView;
+            dv.Sort = "LIGA asc, CLUB asc, CATEGORIA asc, JUGADOR asc";
+            DataTable sortedDT = dv.ToTable();
+
+            progressBar.Visible = true;
+            progressBar.Minimum = 1;
+            progressBar.Maximum = dt.Rows.Count;
+            progressBar.Step = 1;
+
+            int i = 1;
+            int j = 0;
+            foreach (DataRow dr in sortedDT.Rows)
+            {
+                excelSheet.Cells[i + 1, j + 1] = dr.ItemArray[0].ToString();
+                j++;
+                excelSheet.Cells[i + 1, j + 1] = dr.ItemArray[1].ToString();
+                j++;
+                excelSheet.Cells[i + 1, j + 1] = dr.ItemArray[2].ToString();
+                j++;
+                excelSheet.Cells[i + 1, j + 1] = dr.ItemArray[3].ToString();
+                j++;
+                excelSheet.Cells[i + 1, j + 1] = dr.ItemArray[4].ToString();
+                j++;
+                excelSheet.Cells[i + 1, j + 1] = dr.ItemArray[5].ToString();
+                j++;
+                excelSheet.Cells[i + 1, j + 1] = dr.ItemArray[6].ToString();
+
+                if (dr.ItemArray[5].ToString() == "APTITUD PENDIENTE" ||
+                dr.ItemArray[5].ToString() == "APTO CONDICIONAL VENCIDO")
+                {
+                    setearColorRojoFuente(excel.get_Range("A" + j.ToString(), "G" + j.ToString()));
+                }
+                i++;
+                progressBar.PerformStep();
+                j = 0;
+            }
+            excel.get_Range("A1", "G1").EntireColumn.AutoFit();
+            excelworkBook.SaveAs(tbExcel.Text, Excel.XlFileFormat.xlAddIn,
+            Type.Missing, Type.Missing, Type.Missing, Type.Missing, Excel.XlSaveAsAccessMode.xlExclusive,
+            Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
+            excel.Quit();
+            progressBar.Visible = false;
+            MessageBox.Show("Exportación guardada correctamente en: \n" + tbExcel.Text, "Exportar", MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
+            this.Close();
+        }
+
+        private void setearColorRojoFuente(Excel.Range rng)
+        {
+            rng.Font.Color = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.Red);
+        }
+
+        private DataTable cargarTablasExcel()
+        {
+
+            DataTable retorno = new DataTable();
+            retorno.Columns.Add("LIGA");
+            retorno.Columns.Add("CLUB");
+            retorno.Columns.Add("JUGADOR");
+            retorno.Columns.Add("CATEGORIA");
+            retorno.Columns.Add("NOMBRE");
+            retorno.Columns.Add("DICTAMEN");
+            retorno.Columns.Add("FECHA");
+
+            DataTable tipoEx = SQLConnector.obtenerTablaSegunConsultaString(@"Select tep.id as Id, (p.apellido + ' ' + p.nombres) as Paciente,
+            p.dni as DNI, p.fechaNacimiento as Nacimiento, c.fecha as Fecha, ep.dictFinal
+            from dbo.TipoExamenDePaciente tep inner join dbo.Consulta c on tep.idConsulta
+            = c.id inner join dbo.Paciente p on c.pacienteID = p.id 
+            inner join dbo.ExamenPreventiva ep on tep.id = ep.idTipoExamen where convert(date,c.fecha) >= '" + tpDesde.Value.ToShortDateString() +
+            "' and convert(date,c.fecha) <= '" + tpHasta.Value.ToShortDateString() + "' and c.tipo = 'P'");
+            foreach (DataRow r in tipoEx.Rows)
+            {
+                string dictFinal = "NO CARGADO";
+                DataRow[] valid = validaciones.Select("id = " + r.ItemArray[5].ToString());
+                if (valid.Length > 0) { dictFinal = valid[0][3].ToString(); }
+                DataTable clubesPorEx = SQLConnector.obtenerTablaSegunConsultaString(@"select l.descripcion as Liga, c.descripcion as Club
+                from dbo.clubesPorTipoExamen cte inner join dbo.Club c
+                on cte.idClub = c.id inner join dbo.Liga l on c.ligaID = l.id
+                where cte.idTipoExamen = '" + r.ItemArray[0].ToString() + "'");
+
+                foreach (DataRow row in clubesPorEx.Rows)
+                {
+                    retorno.Rows.Add(row.ItemArray[0].ToString(), row.ItemArray[1].ToString(),
+                        r.ItemArray[2].ToString(), ((DateTime)r.ItemArray[3]).Year.ToString(),
+                        r.ItemArray[1].ToString(), dictFinal, ((DateTime)r.ItemArray[4]).ToShortDateString());
+                }
+
+            }
+            return retorno;
+        }
+
+        private void botImpDBF_Click(object sender, EventArgs e)
+        {
+            abrirOpenFileDialog(2);
+        }
+
+        private void botComenzarDBF_Click(object sender, EventArgs e)
+        {
+            int pos = -1;
+            char[] array = saveFileDialog.FileName.ToCharArray();
+            for (int i = 0; i <= array.Length - 1; i++)
+            {
+                if (array[i] == '\\')
+                {
+                    pos = i;
+                }
+            }
+            string texto = "";
+            for (int j = pos; j <= array.Length - 1; j++)
+            {
+                texto = texto + array[j].ToString();
+            }
+            try
+            {
+                string fileName = (texto.Trim('\\')).Replace(".DBF", "");
+                string connectionString = @"Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + (saveFileDialog.FileName).Replace("\\" + fileName, "") + ";Extended Properties=dBase IV";
+                OleDbConnection connection = new OleDbConnection(connectionString);
+                connection.Open();
+                OleDbCommand cmd = connection.CreateCommand();
+                cmd.CommandText = @"Create Table " + fileName + @" (LIGA varchar(200),
+            CLUB varchar(200), JUGADOR varchar(200), CATEGORIA varchar(200), NOMBRE varchar(200),
+            DICTAMEN varchar(200), DETALLE varchar(200), FECHA varchar(200))";
+                cmd.ExecuteNonQuery();
+
+
+                DataTable tipoEx = SQLConnector.obtenerTablaSegunConsultaString(@"Select tep.id as Id, (p.apellido + ' ' + p.nombres) as Paciente,
+                p.dni as DNI, p.fechaNacimiento as Nacimiento, c.fecha as Fecha, ep.dictFinal
+                from dbo.TipoExamenDePaciente tep inner join dbo.Consulta c on tep.idConsulta
+                = c.id inner join dbo.Paciente p on c.pacienteID = p.id
+                inner join dbo.ExamenPreventiva ep on tep.id = ep.idTipoExamen where convert(date,c.fecha) >= '" + tpDesde.Value.ToShortDateString() +
+                "' and convert(date,c.fecha) <= '" + tpHasta.Value.ToShortDateString() + "' and c.tipo = 'P'");
+                progressBar.Minimum = 1;
+                progressBar.Maximum = tipoEx.Rows.Count;
+                progressBar.Visible = true;
+                foreach (DataRow r in tipoEx.Rows)
+                {
+                    string dictFinal = "NO CARGADO";
+                    string codigoDict = "0";
+                    DataRow[] valid = validaciones.Select("id = " + r.ItemArray[5].ToString());
+                    if (valid.Length > 0) { dictFinal = valid[0][3].ToString(); codigoDict = valid[0][2].ToString(); }
+                    DataTable clubesPorEx = SQLConnector.obtenerTablaSegunConsultaString(@"select l.descripcion as Liga, c.descripcion as Club
+                    from dbo.clubesPorTipoExamen cte inner join dbo.Club c
+                    on cte.idClub = c.id inner join dbo.Liga l on c.ligaID = l.id
+                    where cte.idTipoExamen = '" + r.ItemArray[0].ToString() + "'");
+
+                    foreach (DataRow row in clubesPorEx.Rows)
+                    {
+                        OleDbCommand command = connection.CreateCommand();
+                        command.CommandText = @"Insert into " + fileName + " values ('" + row.ItemArray[0].ToString() + "','" +
+                            row.ItemArray[1].ToString() + "','" + r.ItemArray[2].ToString() + "','" + ((DateTime)r.ItemArray[3]).Year.ToString()
+                            + "','" + r.ItemArray[1].ToString() + "','" + codigoDict + "','" + dictFinal + "','" + ((DateTime)r.ItemArray[4]).ToShortDateString() + "')";
+                        command.ExecuteNonQuery();
+                        progressBar.PerformStep();
+
+                    }
+
+                }
+                connection.Close();
+                progressBar.Visible = false;
+                MessageBox.Show("Exportación guardada correctamente en: \n" + tbDBF.Text, "Exportar", MessageBoxButtons.OK,
+                  MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+         
+            
+
+        }
+
+        private void botImpLafij_Click(object sender, EventArgs e)
+        {
+            abrirOpenFileDialog(3);
+        }
+
+        private void botComenzarLafij_Click(object sender, EventArgs e)
+        {
+            if (tbLafij.Text != "")
+            {
+                if (tpDesde.Value <= tpHasta.Value) { guardarExportacionLafij(); } else { mostrarMensajeAtencion("¡El rango de fecha seleccionado no es válido!"); }
+            }
+            else
+            {
+                mostrarMensajeAtencion("¡Seleccione un nombre y una ubicación para el archivo de exportación!");
+            }
+        }
+
+        private void guardarExportacionLafij()
+        {
+            Microsoft.Office.Interop.Excel.Application excel = new Microsoft.Office.Interop.Excel.Application();
+            Microsoft.Office.Interop.Excel.Workbook excelworkBook;
+            Microsoft.Office.Interop.Excel.Worksheet excelSheet;
+
+            excel.Visible = false;
+            excel.DisplayAlerts = false;
+            excel.SheetsInNewWorkbook = 1;
+            excelworkBook = (Microsoft.Office.Interop.Excel.Workbook)(excel.Workbooks.Add(Type.Missing));
+            excelSheet = (Microsoft.Office.Interop.Excel.Worksheet)excelworkBook.ActiveSheet;
+            excelSheet.Name = "Hoja 1";
+
+
+            excelSheet.Cells[1, 1] = "LIGA";
+            excelSheet.Cells[1, 2] = "CLUB";
+            excelSheet.Cells[1, 3] = "CATEGORIA";
+            excelSheet.Cells[1, 4] = "APELLIDO";
+            excelSheet.Cells[1, 5] = "NOMBRE";
+            excelSheet.Cells[1, 6] = "FECHA DE VENC.";
+            excelSheet.Cells[1, 7] = "DNI";
+
+
+            setearColorYBorde(excel.get_Range("A1", "G1"));
+
+
+
+
+            DataTable dt = cargarTablaLafij();
+
+            DataView dv = dt.DefaultView;
+            dv.Sort = "LIGA asc, CLUB asc";
+            DataTable sortedDT = dv.ToTable();
+            DateTime dtFecha;
+
+            progressBar.Visible = true;
+            progressBar.Minimum = 1;
+            progressBar.Maximum = dt.Rows.Count;
+            progressBar.Step = 1;
+
+            int i = 1;
+            int j = 0;
+            foreach (DataRow dr in sortedDT.Rows)
+            {
+                dtFecha = Convert.ToDateTime(dr.ItemArray[5].ToString());
+
+                excelSheet.Cells[i + 1, j + 1] = dr.ItemArray[0].ToString();
+                j++;
+                excelSheet.Cells[i + 1, j + 1] = dr.ItemArray[1].ToString();
+                j++;
+                excelSheet.Cells[i + 1, j + 1] = dr.ItemArray[2].ToString();
+                j++;
+                excelSheet.Cells[i + 1, j + 1] = dr.ItemArray[3].ToString();
+                j++;
+                excelSheet.Cells[i + 1, j + 1] = dr.ItemArray[4].ToString();
+                j++;
+                //excelSheet.Cells[i + 1, j + 1] = dr.ItemArray[5].ToString();
+                excelSheet.Cells[i + 1, j + 1] = dtFecha;
+                j++;
+                excelSheet.Cells[i + 1, j + 1] = dr.ItemArray[6].ToString();
+
+                i++;
+                progressBar.PerformStep();
+                j = 0;
+            }
+            excel.get_Range("A1", "G1").EntireColumn.AutoFit();
+            excelworkBook.SaveAs(tbLafij.Text, Excel.XlFileFormat.xlAddIn,
+            Type.Missing, Type.Missing, Type.Missing, Type.Missing, Excel.XlSaveAsAccessMode.xlExclusive,
+            Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
+            excel.Quit();
+            progressBar.Visible = false;
+            MessageBox.Show("Exportación guardada correctamente en: \n" + tbLafij.Text, "Exportar", MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
+            this.Close();
+        }
+
+        private DataTable cargarTablaLafij()
+        {
+            DataTable retorno = new DataTable();
+            retorno.Columns.Add("LIGA");
+            retorno.Columns.Add("CLUB");
+            retorno.Columns.Add("CATEGORIA");
+            retorno.Columns.Add("APELLIDO");
+            retorno.Columns.Add("NOMBRE");
+            retorno.Columns.Add("F.VTO.");
+            retorno.Columns.Add("DNI");
+
+            DataTable tipoEx = SQLConnector.obtenerTablaSegunConsultaString(@"Select tep.id as Id, p.apellido as Apellido, p.nombres as Nombre,
+            p.dni as DNI, p.fechaNacimiento as Nacimiento, c.fecha as Fecha
+            from dbo.TipoExamenDePaciente tep inner join dbo.Consulta c on tep.idConsulta
+            = c.id inner join dbo.Paciente p on c.pacienteID = p.id where convert(date,c.fecha) >= '" + tpDesde.Value.ToShortDateString() +
+            "' and convert(date,c.fecha) <= '" + tpHasta.Value.ToShortDateString() + "' and c.tipo = 'P'");
+            foreach (DataRow r in tipoEx.Rows)
+            {
+                DataTable clubesPorEx = SQLConnector.obtenerTablaSegunConsultaString(@"select l.descripcion as Liga, c.descripcion as Club
+                from dbo.clubesPorTipoExamen cte inner join dbo.Club c
+                on cte.idClub = c.id inner join dbo.Liga l on c.ligaID = l.id
+                where cte.idTipoExamen = '" + r.ItemArray[0].ToString() + "' and l.descripcion = 'L.A.F.I.J.'");
+                foreach (DataRow row in clubesPorEx.Rows)
+                {
+                    retorno.Rows.Add(row.ItemArray[0].ToString(), row.ItemArray[1].ToString(),
+                        Convert.ToDateTime(r.ItemArray[4].ToString()).Year.ToString(),
+                        r.ItemArray[1].ToString(),r.ItemArray[2].ToString(),
+                        Convert.ToDateTime(r.ItemArray[5].ToString()).AddYears(1).ToShortDateString(),
+                        r.ItemArray[3].ToString());
+                }
+
+            }
+            return retorno;
+        }
+
+        private void btnIgualarFecha_Click(object sender, EventArgs e)
+        {
+            tpHasta.Value = tpDesde.Value;
+        }
+    }
+}

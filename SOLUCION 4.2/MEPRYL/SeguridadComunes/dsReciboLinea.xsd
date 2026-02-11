@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="dsReciboLinea" targetNamespace="http://tempuri.org/dsReciboLinea.xsd" xmlns:mstns="http://tempuri.org/dsReciboLinea.xsd" xmlns="http://tempuri.org/dsReciboLinea.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections>
+          <Connection AppSettingsObjectName="Settings" AppSettingsPropertyName="LigierConnectionString" ConnectionStringObject="" IsAppSettingsProperty="True" Modifier="Assembly" Name="LigierConnectionString (Settings)" ParameterPrefix="@" PropertyReference="ApplicationSettings.Comunes.Properties.Settings.GlobalReference.Default.LigierConnectionString" Provider="System.Data.SqlClient">
+          </Connection>
+        </Connections>
+        <Tables>
+          <TableAdapter BaseClass="System.ComponentModel.Component" DataAccessorModifier="AutoLayout, AnsiClass, Class, Public" DataAccessorName="v_ReciboLineaTableAdapter" GeneratorDataComponentClassName="v_ReciboLineaTableAdapter" Name="v_ReciboLinea" UserDataComponentName="v_ReciboLineaTableAdapter">
+            <MainSource>
+              <DbSource ConnectionRef="LigierConnectionString (Settings)" DbObjectName="Ligier.dbo.v_ReciboLinea" DbObjectType="View" FillMethodModifier="Public" FillMethodName="Fill" GenerateMethods="Both" GenerateShortCommands="False" GeneratorGetMethodName="GetData" GeneratorSourceName="Fill" GetMethodModifier="Public" GetMethodName="GetData" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="True" UserGetMethodName="GetData" UserSourceName="Fill">
+                <SelectCommand>
+                  <DbCommand CommandType="Text" ModifiedByUser="False">
+                    <CommandText>SELECT id, reciboID, conceptoID, facturaID, notaDebitoID, comprobanteSuc, comprobanteNro, descripcion, importe, Concepto, idConcepto, tipoComprobante FROM dbo.v_ReciboLinea</CommandText>
+                    <Parameters>
+                    </Parameters>
+                  </DbCommand>
+                </SelectCommand>
+              </DbSource>
+            </MainSource>
+            <Mappings>
+              <Mapping SourceColumn="id" DataSetColumn="id" />
+              <Mapping SourceColumn="reciboID" DataSetColumn="reciboID" />
+              <Mapping SourceColumn="conceptoID" DataSetColumn="conceptoID" />
+              <Mapping SourceColumn="facturaID" DataSetColumn="facturaID" />
+              <Mapping SourceColumn="notaDebitoID" DataSetColumn="notaDebitoID" />
+              <Mapping SourceColumn="comprobanteSuc" DataSetColumn="comprobanteSuc" />
+              <Mapping SourceColumn="comprobanteNro" DataSetColumn="comprobanteNro" />
+              <Mapping SourceColumn="descripcion" DataSetColumn="descripcion" />
+              <Mapping SourceColumn="importe" DataSetColumn="importe" />
+              <Mapping SourceColumn="Concepto" DataSetColumn="Concepto" />
+              <Mapping SourceColumn="idConcepto" DataSetColumn="idConcepto" />
+              <Mapping SourceColumn="tipoComprobante" DataSetColumn="tipoComprobante" />
+            </Mappings>
+            <Sources>
+            </Sources>
+          </TableAdapter>
+        </Tables>
+        <Sources>
+        </Sources>
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="dsReciboLinea" msdata:IsDataSet="true" msdata:Locale="en-US" msprop:Generator_UserDSName="dsReciboLinea" msprop:Generator_DataSetName="dsReciboLinea">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="v_ReciboLinea" msprop:Generator_UserTableName="v_ReciboLinea" msprop:Generator_RowDeletedName="v_ReciboLineaRowDeleted" msprop:Generator_RowChangedName="v_ReciboLineaRowChanged" msprop:Generator_RowClassName="v_ReciboLineaRow" msprop:Generator_RowChangingName="v_ReciboLineaRowChanging" msprop:Generator_RowEvArgName="v_ReciboLineaRowChangeEvent" msprop:Generator_RowEvHandlerName="v_ReciboLineaRowChangeEventHandler" msprop:Generator_TableClassName="v_ReciboLineaDataTable" msprop:Generator_TableVarName="tablev_ReciboLinea" msprop:Generator_RowDeletingName="v_ReciboLineaRowDeleting" msprop:Generator_TablePropName="v_ReciboLinea">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="id" msdata:DataType="System.Guid, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" msprop:Generator_UserColumnName="id" msprop:Generator_ColumnVarNameInTable="columnid" msprop:Generator_ColumnPropNameInRow="id" msprop:Generator_ColumnPropNameInTable="idColumn" type="xs:string" />
+              <xs:element name="reciboID" msdata:DataType="System.Guid, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" msprop:Generator_UserColumnName="reciboID" msprop:Generator_ColumnVarNameInTable="columnreciboID" msprop:Generator_ColumnPropNameInRow="reciboID" msprop:Generator_ColumnPropNameInTable="reciboIDColumn" type="xs:string" minOccurs="0" />
+              <xs:element name="conceptoID" msdata:DataType="System.Guid, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" msprop:Generator_UserColumnName="conceptoID" msprop:Generator_ColumnVarNameInTable="columnconceptoID" msprop:Generator_ColumnPropNameInRow="conceptoID" msprop:Generator_ColumnPropNameInTable="conceptoIDColumn" type="xs:string" minOccurs="0" />
+              <xs:element name="facturaID" msdata:DataType="System.Guid, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" msprop:Generator_UserColumnName="facturaID" msprop:Generator_ColumnVarNameInTable="columnfacturaID" msprop:Generator_ColumnPropNameInRow="facturaID" msprop:Generator_ColumnPropNameInTable="facturaIDColumn" type="xs:string" minOccurs="0" />
+              <xs:element name="notaDebitoID" msdata:DataType="System.Guid, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" msprop:Generator_UserColumnName="notaDebitoID" msprop:Generator_ColumnVarNameInTable="columnnotaDebitoID" msprop:Generator_ColumnPropNameInRow="notaDebitoID" msprop:Generator_ColumnPropNameInTable="notaDebitoIDColumn" type="xs:string" minOccurs="0" />
+              <xs:element name="comprobanteSuc" msprop:Generator_UserColumnName="comprobanteSuc" msprop:Generator_ColumnVarNameInTable="columncomprobanteSuc" msprop:Generator_ColumnPropNameInRow="comprobanteSuc" msprop:Generator_ColumnPropNameInTable="comprobanteSucColumn">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="5" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="comprobanteNro" msprop:Generator_UserColumnName="comprobanteNro" msprop:Generator_ColumnVarNameInTable="columncomprobanteNro" msprop:Generator_ColumnPropNameInRow="comprobanteNro" msprop:Generator_ColumnPropNameInTable="comprobanteNroColumn">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="10" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="descripcion" msprop:Generator_UserColumnName="descripcion" msprop:Generator_ColumnVarNameInTable="columndescripcion" msprop:Generator_ColumnPropNameInRow="descripcion" msprop:Generator_ColumnPropNameInTable="descripcionColumn">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="256" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="importe" msprop:Generator_UserColumnName="importe" msprop:Generator_ColumnVarNameInTable="columnimporte" msprop:Generator_ColumnPropNameInRow="importe" msprop:Generator_ColumnPropNameInTable="importeColumn" type="xs:decimal" />
+              <xs:element name="Concepto" msprop:Generator_UserColumnName="Concepto" msprop:Generator_ColumnVarNameInTable="columnConcepto" msprop:Generator_ColumnPropNameInRow="Concepto" msprop:Generator_ColumnPropNameInTable="ConceptoColumn" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="50" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="idConcepto" msprop:Generator_UserColumnName="idConcepto" msprop:Generator_ColumnVarNameInTable="columnidConcepto" msprop:Generator_ColumnPropNameInRow="idConcepto" msprop:Generator_ColumnPropNameInTable="idConceptoColumn" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="50" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="tipoComprobante" msprop:Generator_UserColumnName="tipoComprobante" msprop:Generator_ColumnVarNameInTable="columntipoComprobante" msprop:Generator_ColumnPropNameInRow="tipoComprobante" msprop:Generator_ColumnPropNameInTable="tipoComprobanteColumn">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="1" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

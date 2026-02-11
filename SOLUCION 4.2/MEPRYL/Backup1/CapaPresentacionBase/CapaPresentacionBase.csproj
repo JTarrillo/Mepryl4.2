@@ -1,0 +1,133 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{263F025D-F0F5-4690-9213-6F4487849644}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CapaPresentacionBase</RootNamespace>
+    <AssemblyName>CapaPresentacionBase</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\Release\</OutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="frmBaseBusqueda.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmBaseBusqueda.Designer.cs">
+      <DependentUpon>frmBaseBusqueda.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmBaseEntidadABM.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmBaseEntidadABM.Designer.cs">
+      <DependentUpon>frmBaseEntidadABM.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmBaseGrillaABM.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmBaseGrillaABM.Designer.cs">
+      <DependentUpon>frmBaseGrillaABM.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmBasePersonaABM.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmBasePersonaABM.Designer.cs">
+      <DependentUpon>frmBasePersonaABM.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmBasePrincipal.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmBasePrincipal.Designer.cs">
+      <DependentUpon>frmBasePrincipal.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NavegadorFormulario.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="frmBaseBusqueda.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>frmBaseBusqueda.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmBaseEntidadABM.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>frmBaseEntidadABM.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmBaseGrillaABM.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>frmBaseGrillaABM.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmBasePersonaABM.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>frmBasePersonaABM.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmBasePrincipal.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>frmBasePrincipal.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CapaNegocioBase\CapaNegocioBase.csproj">
+      <Project>{24B98E93-CAF3-4B54-A458-9A0FBF262B83}</Project>
+      <Name>CapaNegocioBase</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Comunes\Comunes.csproj">
+      <Project>{3A1AF435-5DB7-473C-9322-F0560A360E7F}</Project>
+      <Name>Comunes</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\UserControls\UserControls.csproj">
+      <Project>{3EFFEB97-EAED-44F6-AD9F-8F78AA504A57}</Project>
+      <Name>UserControls</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

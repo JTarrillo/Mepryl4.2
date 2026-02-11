@@ -1,0 +1,105 @@
+using System;//
+using System.Collections.Generic;
+using System.Text;
+using CapaNegocioBase;
+using Comunes;
+
+namespace CapaNegocio
+{
+    public class PacienteFactory : EntidadFactoryBase
+    {
+        public PacienteFactory(Configuracion conf, string entNombre)
+            : base(conf, entNombre)
+        { }
+
+        public override void crearDatEntidadFac()
+        {
+            this.datEntidadFac = new CapaDatos.PacienteFactory(this.configuracion, this.EntidadNombre);
+        }
+
+        protected override CapaNegocioBase.EntidadBase crearEntidadNegocio()
+        {
+            return new CapaNegocio.Paciente();
+        }
+
+
+        protected override EntidadBase convertirEnObjetoNegocio(CapaDatosBase.EntidadBase datEntidad)
+        {
+            CapaNegocio.Paciente negPaciente = new CapaNegocio.Paciente();
+            try
+            {
+                /*************************/
+                /* Copia las propiedades */
+                object origen = (object)datEntidad;
+                object destino = (object)negPaciente;
+
+                Utilidades.copiarAtributos(ref origen, ref destino);
+                negPaciente = (CapaNegocio.Paciente)destino;
+
+                origen = null;
+                destino = null;
+                /*************************/
+
+                //Obtiene el objeto Empresa y lo asigna a la propiedad
+                CapaDatos.Paciente datPaciente = (CapaDatos.Paciente)datEntidad;
+                negPaciente.empresa = (Empresa)(new EmpresaFactory(this.configuracion, "Empresa")).getById(datPaciente.empresa.id.ToString());
+                negPaciente.pacienteTipo = (PacienteTipo)(new PacienteTipoFactory(this.configuracion, "PacienteTipo")).getById(datPaciente.pacienteTipo.id.ToString());
+                datPaciente = null;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
+            }
+            return negPaciente;
+        }
+
+        //Da el alta recibiendo todos los datos en un objeto
+        public override Resultado alta(CapaNegocioBase.EntidadBase negEntidad)
+        {
+            Resultado resultado = new Resultado();
+            try
+            {
+                crearDatEntidadFac();
+
+                CapaDatos.Paciente datPaciente = (CapaDatos.Paciente)((CapaNegocio.Paciente)negEntidad).convertirEnObjetoDatos();
+
+                resultado = datEntidadFac.alta(datPaciente);
+                datPaciente = (CapaDatos.Paciente)resultado.objeto;
+                negEntidad = convertirEnObjetoNegocio(datPaciente);
+
+                resultado.objeto = (CapaNegocio.Paciente)negEntidad;
+            }
+            catch (Exception ex)
+            {
+                ManejadorErrores.escribirLog(ex, true, this.configuracion);
+                resultado.mensaje = ex.Message;
+            }
+            return resultado;
+        }
+
+        public override Resultado modificar(EntidadBase entidad)
+        {
+            Resultado resultado = new Resultado(entidad, "");
+
+            try
+            {
+                crearDatEntidadFac();
+
+                CapaDatos.Paciente datPaciente = (CapaDatos.Paciente)((CapaNegocio.Paciente)entidad).convertirEnObjetoDatos();
+                resultado = datEntidadFac.modificar(datPaciente);
+
+                datPaciente = (CapaDatos.Paciente)resultado.objeto;
+                entidad = convertirEnObjetoNegocio(datPaciente);
+
+                resultado.objeto = (CapaNegocio.Paciente)entidad;
+            }
+            catch (Exception ex)
+            {
+                ManejadorErrores.escribirLog(ex, true, this.configuracion);
+                resultado.mensaje = ex.Message;
+            }
+            return resultado;
+        }
+
+    }
+}

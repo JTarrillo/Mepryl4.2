@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<xs:schema id="dsPermisos" targetNamespace="http://tempuri.org/dsPermisos.xsd" elementFormDefault="qualified"
+	attributeFormDefault="qualified" xmlns="http://tempuri.org/dsPermisos.xsd" xmlns:mstns="http://tempuri.org/dsPermisos.xsd"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+	<xs:element name="dsPermisos" msdata:IsDataSet="true">
+		<xs:complexType>
+			<xs:choice maxOccurs="unbounded">
+				<xs:element name="v_Permisos">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="seguridadPerfilID" type="xs:string" />
+							<xs:element name="seguridadOperacionID" type="xs:string" />
+							<xs:element name="seguridadObjetoID" type="xs:string" />
+							<xs:element name="operacion_nombre" type="xs:string" />
+							<xs:element name="operacion_descripcion" type="xs:string" />
+							<xs:element name="moduloSistemaID" type="xs:string" />
+							<xs:element name="objeto_descripcion" type="xs:string" />
+							<xs:element name="objeto_identificador" type="xs:string" />
+							<xs:element name="objeto_nombre" type="xs:string" />
+							<xs:element name="modulo_nombre" type="xs:string" minOccurs="0" />
+							<xs:element name="id" type="xs:string" minOccurs="0" />
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:choice>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

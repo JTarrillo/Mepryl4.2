@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="dsPlanillaReparto" targetNamespace="http://tempuri.org/dsPlanillaReparto.xsd" xmlns:mstns="http://tempuri.org/dsPlanillaReparto.xsd" xmlns="http://tempuri.org/dsPlanillaReparto.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections>
+        </Connections>
+        <Tables>
+        </Tables>
+        <Sources>
+        </Sources>
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="dsPlanillaReparto" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:Generator_UserDSName="dsPlanillaReparto" msprop:Generator_DataSetName="dsPlanillaReparto">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="v_PlanillaRepartoLinea" msprop:Generator_UserTableName="v_PlanillaRepartoLinea" msprop:Generator_RowDeletedName="v_PlanillaRepartoLineaRowDeleted" msprop:Generator_TableClassName="v_PlanillaRepartoLineaDataTable" msprop:Generator_RowChangedName="v_PlanillaRepartoLineaRowChanged" msprop:Generator_RowClassName="v_PlanillaRepartoLineaRow" msprop:Generator_RowChangingName="v_PlanillaRepartoLineaRowChanging" msprop:Generator_RowEvArgName="v_PlanillaRepartoLineaRowChangeEvent" msprop:Generator_RowEvHandlerName="v_PlanillaRepartoLineaRowChangeEventHandler" msprop:Generator_TablePropName="v_PlanillaRepartoLinea" msprop:Generator_TableVarName="tablev_PlanillaRepartoLinea" msprop:Generator_RowDeletingName="v_PlanillaRepartoLineaRowDeleting">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="id" msdata:DataType="System.Guid, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" msprop:Generator_UserColumnName="id" msprop:Generator_ColumnPropNameInRow="id" msprop:Generator_ColumnVarNameInTable="columnid" msprop:Generator_ColumnPropNameInTable="idColumn" type="xs:string" minOccurs="0" />
+              <xs:element name="planillaRepartoID" msdata:DataType="System.Guid, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" msprop:Generator_UserColumnName="planillaRepartoID" msprop:Generator_ColumnPropNameInRow="planillaRepartoID" msprop:Generator_ColumnVarNameInTable="columnplanillaRepartoID" msprop:Generator_ColumnPropNameInTable="planillaRepartoIDColumn" type="xs:string" minOccurs="0" />
+              <xs:element name="articuloID" msdata:DataType="System.Guid, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" msprop:Generator_UserColumnName="articuloID" msprop:Generator_ColumnPropNameInRow="articuloID" msprop:Generator_ColumnVarNameInTable="columnarticuloID" msprop:Generator_ColumnPropNameInTable="articuloIDColumn" type="xs:string" minOccurs="0" />
+              <xs:element name="cantidad" msprop:Generator_UserColumnName="cantidad" msprop:Generator_ColumnPropNameInRow="cantidad" msprop:Generator_ColumnVarNameInTable="columncantidad" msprop:Generator_ColumnPropNameInTable="cantidadColumn" type="xs:short" minOccurs="0" />
+              <xs:element name="descripcion" msprop:Generator_UserColumnName="descripcion" msprop:Generator_ColumnPropNameInRow="descripcion" msprop:Generator_ColumnVarNameInTable="columndescripcion" msprop:Generator_ColumnPropNameInTable="descripcionColumn" type="xs:string" minOccurs="0" />
+              <xs:element name="remitosDescripcion" msprop:Generator_UserColumnName="remitosDescripcion" msprop:Generator_ColumnPropNameInRow="remitosDescripcion" msprop:Generator_ColumnVarNameInTable="columnremitosDescripcion" msprop:Generator_ColumnPropNameInTable="remitosDescripcionColumn" type="xs:string" minOccurs="0" />
+              <xs:element name="remitosIDs" msprop:Generator_UserColumnName="remitosIDs" msprop:Generator_ColumnPropNameInRow="remitosIDs" msprop:Generator_ColumnVarNameInTable="columnremitosIDs" msprop:Generator_ColumnPropNameInTable="remitosIDsColumn" type="xs:string" minOccurs="0" />
+              <xs:element name="codigo" msprop:Generator_UserColumnName="codigo" msprop:Generator_ColumnPropNameInRow="codigo" msprop:Generator_ColumnVarNameInTable="columncodigo" msprop:Generator_ColumnPropNameInTable="codigoColumn" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

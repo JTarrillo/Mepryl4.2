@@ -1,0 +1,145 @@
+Tablas
+------
+OK - tv_FacturaCuentaCorrienteEstado, 
+OK - tv_NotaCreditoEstadoCuentaCorriente, 
+OK - tv_ReciboCuentaCorrienteEstado: Se unficaron los identificadores de estado.
+OK - ClienteCtaCte: se agregó el campo comprobanteID.
+OK - NotaDebito: estadoCuentaCorrienteID, estadoNotaDebitoID.
+OK - tv_NotaDebitoCuentaCorrienteEstado
+OK - ReciboLinea: Se agregó el trigger ReciboLinea_ActualizarCuentaCorriente.
+OK - FormaPagoLinea: Se agregó el trigger FormaPagoLinea_ActualizarCuentaCorriente.
+OK - FormaPagoLinea: notaCreditoID, descripcion.
+OK - tv_TipoPagoDetalle: se sacó el registo con detalle vacío para Nota de Crédito.
+OK - tv_ClienteCtaCteEstado: se le quitó la "s" final.
+
+
+Procedimientos
+--------------
+OK - sp_CambiarEstadoFactura
+OK - sp_CambiarEstadoNotaCredito
+OK - sp_CambiarEstadoRecibo
+OK - sp_NuevaFactura
+OK - sp_NuevaNotaCredito
+OK - sp_NuevoRecibo
+OK - sp_InsertReciboLinea
+OK - sp_InsertFormaPagoLinea
+OK - sp_getAllFormaPagoLineas
+OK - sp_DeleteReciboLinea
+OK - sp_DeleteFormaPagoLinea
+
+
+Vistas
+------
+OK - v_FormaPagoLinea
+
+-------------------------------------------------------
+Procedimientos
+--------------
+OK - sp_CambiarEstadoFactura
+
+Tablas
+------
+OK - ComisionIndicador: Se agregaron A, B y C
+OK - SubRubro: verificar que no haya ningun registro con ID=0.
+
+
+
+Procedimientos
+--------------
+OK - sp_getFacturaByNumero
+OK - sp_getFacturaByID
+
+
+
+
+
+---------------------------------------------------------
+Procedimientos
+--------------
+OK - sp_getAllRemitoArticulosBase
+OK - sp_ModificarRemitoBase
+OK - sp_getItemsPerfil
+
+Tablas
+------
+OK - SeguridadOperacion: Se agrego el registo 'Borrar' y 'Alta'.
+OK - ts_ObjetoSistema: Se agregaron registros.
+
+
+---------------------------------------------------------
+
+Procedimientos
+--------------
+OK - sp_RemitoLineaPlanilla
+OK - sp_RemitoCabecera
+
+---------------------------------------------------------
+
+Procedimientos
+--------------
+OK - sp_BorrarRemitoActualizaCantidades
+
+
+---------------------------------------------------------
+Procedimientos
+--------------
+OK - sp_getAllFacturaLineas
+OK - sp_NuevoRemito
+
+Tablas
+------
+OK - Remito: facturaSuc, facturaNro
+
+---------------------------------------------------------
+OK - Tabla Remito: regaloEmpresario.
+OK - Tabla tv_FacturaEstado: Se agrega el estado 'Anulada'.
+OK - sp_getFacturaByID
+OK - sp_getAlltv_FacturaEstados
+OK - sp_getAllVendedors
+
+---------------------------------------------------------
+OK - sp_getAllFletesByZonaID
+OK - sp_getAllFletes
+OK - sp_ModificarRemitoDestinatario
+OK - sp_RemitoAsignarZonayFlete
+OK - v_Remito
+OK - v_RemitoConsulta
+
+---------------------------------------------------------
+OK - sp_getNewRemitoNro: Actualiza la fecha de creacion.
+OK - sp_NuevoFlete: nuevo.
+OK - sp_ModificarFlete: nuevo.
+OK - sp_getAllRemitoArticulosBase
+OK - sp_NuevoRemitoBase
+OK - Tabla Remito: Se agrego fleteID, zonaID, obsequiante, bultos.
+OK - Tabla RemitoBase: fleteID, zonaID, obsequiante, bultos, regaloEmpresario.
+OK - Tabla Flete: Nueva.
+OK - v_Remito: Nueva.
+OK - v_Fletes: Nueva.
+
+---------------------------------------------------------
+OK - ts_TipoPagoDetalle: se cambiaron los valores del campo ajuste y nombre (Naranja/Naranja).
+OK - sp_getArticuloByCodigoInterno: se agrego columna precioUnitarioIVA.
+OK - sp_getArticuloByCodigoBarras, sp_getArticuloByID: idem anterior.
+OK - sp_getAllArticuloComponentes: se agrego registroBLOB.
+
+---------------------------------------------------------
+OK - sp_getClienteByApellidoyNombre
+
+OK - ts_ParametrosLocales: INTERVALO_IMPRESION, PATH_SERVIDOR_IMPRESION_RECEPCION, C1, C2, NOTA_CREDITO_SUC, NOTA_CREDITO_NRO, otros.
+
+OK - v_NotaPedidoLineas: Se agrego el campo precioUnitario.
+
+OK - sp_getFacturaByNumero: Se agrego el campo dbo.IVA.identificador.
+
+OK - sp_NuevaNotaCredito: Se modifico para que devuelva un nuevo numero de nota de credito.
+
+OK - NotaCredito: notaCreditoSuc (4), notaCreditoNro (8)
+
+OK - ClienteCtaCte: Se agrego la tabla con todos sus indices, sus dos triggers y los valores default.
+
+OK - v_ClienteCtaCte
+
+OK - sp_getAllClienteCuentaCorriente
+
+OK - sp_NuevaFactura: Se modifico el nombre y tipo de parametro estadoCuentaCorriente.
