@@ -1518,7 +1518,7 @@ namespace CapaDatosMepryl
         {
             string str;
 
-            str = "select * from [MEPRYLv2.1].[dbo].[ConsultaLaboral] where [idConsultorioLaboral] = '" + idcons + "'";
+            str = "select * from ConsultaLaboral where idConsultorioLaboral = '" + idcons + "'";
 
             DataTable dt = SQLConnector.obtenerTablaSegunConsultaString(str);
 
