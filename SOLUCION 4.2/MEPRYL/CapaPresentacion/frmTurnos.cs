@@ -70,8 +70,12 @@ namespace CapaPresentacion
 
         private void inicializarDgv()
         {
+            dgv.AllowUserToResizeColumns = true;
+            dgv.AllowUserToResizeRows = false;
+            dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
             agregarColumnaDgv("Id", "Id", false);
-            agregarColumnaDgv("TipoExamen", "Subtipo de Examen", true);
+            agregarColumnaDgv("SubTipoExamen", "Subtipo de Examen", true);
             agregarColumnaDgv("Medico", "Médico", false);
             agregarColumnaDgv("Fecha", "Fecha", true);
             agregarColumnaDgv("Hora", "Hora", true);
@@ -88,6 +92,19 @@ namespace CapaPresentacion
             agregarColumnaDgv("Reservado", "Reservado", false);
             agregarColumnaDgv("IdTipoExamen", "IdTipoExamen", false);
             agregarColumnaDgv("Estado", "Estado", false);
+
+            // Permitir redimensionamiento en cada columna
+            foreach (DataGridViewColumn col in dgv.Columns)
+            {
+                col.Resizable = DataGridViewTriState.True;
+            }
+
+            // Establecer anchos personalizados para columnas específicas
+            dgv.Columns["SubTipoExamen"].Width = 230;  // Subtipo de Examen más ancho
+            dgv.Columns["Paciente"].Width = 220;    // Paciente más ancho
+            dgv.Columns["Fecha"].Width = 100;
+            dgv.Columns["Hora"].Width = 70;
+            dgv.Columns["DNI"].Width = 90;
         }
 
         private void agregarColumnaDgv(string nombreOculto, string nombreAMostrar, bool visible)
@@ -681,7 +698,7 @@ namespace CapaPresentacion
             tbIdTipoExamenLaboral.Text = tipoExamenActual.IdTipoExamenPaciente.ToString();
             tbImporteLaboral.Text = tipoExamenActual.PrecioBase.ToString();
             cbExamenModificadoLaboral.Checked = tipoExamenActual.Modificado;
-            tbExamenLaboral.Text = dgv.Rows[dgv.CurrentCell.RowIndex].Cells["TipoExamen"].Value?.ToString();
+            tbExamenLaboral.Text = dgv.Rows[dgv.CurrentCell.RowIndex].Cells["SubTipoExamen"].Value?.ToString();
             {
                 tbExamenLaboral.Text = tbExamenLaboral.Text + " MODIF.";
             }

@@ -107,7 +107,7 @@ namespace CapaPresentacion
             {
                 if (row["Ident."].ToString() == "L29")
                 {
-                    System.Diagnostics.Debugger.Break();
+                    //System.Diagnostics.Debugger.Break();
                     encontrado = true;
                     break;
                 }

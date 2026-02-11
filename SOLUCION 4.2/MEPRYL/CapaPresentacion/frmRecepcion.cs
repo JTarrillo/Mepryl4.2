@@ -19,12 +19,19 @@ namespace CapaPresentacion
         private bool blnEstadoOculta = false;
         private bool blnPrimerIngreso = true;
 
-
+        private void inicializarDgv()
+        {
+            dgv.AllowUserToResizeColumns = true;      // Permite redimensionar columnas manualmente
+            dgv.AllowUserToResizeRows = false;        // No permite redimensionar filas
+            dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;  // Ajusta altura del header automáticamente
+            dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;  // No auto-ajusta columnas (control manual)
+        }
         public frmRecepcion()
         {
             InitializeComponent();
             ventanilla = new CapaNegocioMepryl.Ventanilla();
             turno = new CapaNegocioMepryl.Turno();
+            inicializarDgv();  // ← Agregar aquí
             cargarDgv();
             this.ActiveControl = dgv;
         }
@@ -35,6 +42,7 @@ namespace CapaPresentacion
             this.MdiParent = parentForm;
             ventanilla = new CapaNegocioMepryl.Ventanilla();
             turno = new CapaNegocioMepryl.Turno();
+            inicializarDgv();  // ← Agregar aquí
             cargarDgv();
             this.ActiveControl = dgv;
         }
@@ -42,44 +50,29 @@ namespace CapaPresentacion
         private void cargarDgv()
         {
             DataView dv = null;
-            //int CantidadTurnos = 0;
-            //int CantidadTurnosOcultos = 0;
+
             if (tpHasta.Enabled)
             {
                 dv = new DataView(ventanilla.cargar(tpDesde.Value, tpHasta.Value, blnPrimerIngreso));
                 dgv.DataSource = dv;
-
-                //dgv.DataSource = ventanilla.cargar(tpDesde.Value, tpHasta.Value, blnPrimerIngreso);
-                //dgv.Sort(dgv.Columns[4], ListSortDirection.Ascending);
             }
 
             if (tpFecha.Enabled)
             {
                 dv = new DataView(ventanilla.cargar(tpFecha.Value, tpFecha.Value, blnPrimerIngreso));
                 dgv.DataSource = dv;
-                //dgv.DataSource = ventanilla.cargar(tpFecha.Value, tpFecha.Value, blnPrimerIngreso);                
             }
 
-            dv.Sort = "HORA, Nro, Paciente";
-            //dgv.Sort(dgv.Columns[4], ListSortDirection.Ascending);
+            dv.Sort = "Hora, Nro, Paciente";
 
             ocultarColumnasDgv();
-            //if (blnPrimerIngreso)
-            //    //lblResultado.Text = "Total Pacientes: " + ventanilla.TotalTurnosVentanilla(tpDesde.Value, tpHasta.Value).ToString();
-            //    CantidadTurnos = ventanilla.TotalTurnosVentanilla(tpDesde.Value, tpHasta.Value);
-            //else
-            //    //lblResultado.Text = "Total Pacientes: " + dgv.Rows.Count.ToString();
-            //    CantidadTurnos = dgv.Rows.Count;
+            establecerAnchosColumnasVentanilla();  // ← NUEVO
 
-            //lblResultado.Text = "Total Pacientes: " + CantidadTurnos.ToString();
-            //lblOcultos.Text = "Ocultos: " + (CantidadTurnos - ventanilla.TurnosNoOcultos()).ToString(); ;
             MostrarTotales();
-
             cambiarVisibilidadBotonEditarPaciente();
-            //ocultarFilasDgv();
             blnPrimerIngreso = false;
-            
-            MostrarExpIngreso(); // <-- Actualiza la suma de Importe
+
+            MostrarExpIngreso();
         }
 
         private void actualizarListadoManteniendoPosicion()
@@ -96,57 +89,68 @@ namespace CapaPresentacion
 
         private void buscar()
         {
-            DataView dv = null;            
+            DataView dv = null;
 
             if (tpHasta.Enabled)
             {
                 dv = new DataView(ventanilla.cargarConFiltro(tpDesde.Value, tpHasta.Value, tbBusqueda.Text));
                 dgv.DataSource = dv;
-                //dgv.DataSource = ventanilla.cargarConFiltro(tpDesde.Value, tpHasta.Value, tbBusqueda.Text);
-                
             }
 
             if (tpFecha.Enabled)
             {
                 dv = new DataView(ventanilla.cargarConFiltro(tpFecha.Value, tpFecha.Value, tbBusqueda.Text));
                 dgv.DataSource = dv;
-                //dgv.DataSource = ventanilla.cargarConFiltro(tpFecha.Value, tpFecha.Value, tbBusqueda.Text);
-
             }
 
-            dv.Sort = "HORA, Nro, Paciente";
-            //dgv.DataSource = ventanilla.cargarConFiltro(tpDesde.Value, tpHasta.Value, tbBusqueda.Text);
-            //dgv.Sort(dgv.Columns[4], ListSortDirection.Ascending);
-
+            dv.Sort = "Hora, Nro, Paciente";
             ocultarColumnasDgv();
-            //lblResultado.Text = "Total Pacientes: " + dgv.Rows.Count.ToString();
+            establecerAnchosColumnasVentanilla();  // ← NUEVO
+
             MostrarTotales();
             cambiarVisibilidadBotonEditarPaciente();
-
-            //rdbMostrarTodo.Checked = true;
-            //blnEstadoOculta = false;
-            //MostrarTodo();
             ocultarFilasDgv();
-            
-            MostrarExpIngreso(); // <-- Actualiza la suma de Importe
-        }
 
+            MostrarExpIngreso();
+        }
         private void botonRegistrar_Click(object sender, EventArgs e)
         {
             registrar();
         }
 
+        private void establecerAnchosColumnasVentanilla()
+        {
+            try
+            {
+                dgv.Columns[0].Width = 40;
+                dgv.Columns[1].Width = 40;
+                dgv.Columns[3].Width = 90;   // Fecha
+                dgv.Columns[4].Width = 70;   // Hora
+                dgv.Columns[5].Width = 50;   // Nro
+                dgv.Columns[6].Width = 230;  // Subtipo de Examen ← MÁS GRANDE
+                dgv.Columns[7].Width = 90;   // DNI
+                dgv.Columns[8].Width = 220;  // Paciente ← MÁS GRANDE
+                dgv.Columns[9].Width = 100;  // Importe
+                dgv.Columns[10].Width = 120; // Club/Empresa
+                dgv.Columns[11].Width = 150; // Observaciones
+                dgv.Columns[12].Width = 80;  // Codigo
+            }
+            catch (Exception ex)
+            {
+                // Log error si es necesario
+            }
+        }
         private void ocultarColumnasDgv()
         {
-            dgv.Columns[2].Visible = false;
-            dgv.Columns[13].Visible = false;
-            dgv.Columns[14].Visible = false;
-            dgv.Columns[15].Visible = false;
+            dgv.Columns[0].Visible = true;   // Asistio
+            dgv.Columns[1].Visible = true;   // Abono
+            dgv.Columns[2].Visible = false;  // IdTurno (oculta)
+            dgv.Columns[13].Visible = false; // IdPaciente (oculta)
+            dgv.Columns[14].Visible = false; // Reservado (oculta)
+            dgv.Columns[15].Visible = false; // IdEmpresa (oculta)
+            dgv.Columns[16].Visible = true;  // Ocultar
             dgv.Columns[10].HeaderText = "Club/Empresa";
-
-            //dgv.Refresh();
         }
-
         public void registrarIngreso()
         {
             string apellido, nombre, dni;
@@ -169,7 +173,7 @@ namespace CapaPresentacion
                     MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
         }
-        
+
         private void tbBusqueda_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == (char)Keys.Enter)
@@ -197,12 +201,12 @@ namespace CapaPresentacion
                 botonLimpiar.PerformClick();
             }
         }
-        
+
         private void actualizarListado()
         {
-            cargarDgv();               
+            cargarDgv();
         }
-        
+
         private void abrirVentanaPaciente()
         {
             char tipoTurno = ventanilla.verificarTipoTurno(new Guid(dgv.SelectedRows[0].Cells[2].Value.ToString()));
@@ -263,7 +267,7 @@ namespace CapaPresentacion
                 else
                 {
                     editarPacienteLaboral();
-                }              
+                }
             }
             else
             {
@@ -372,7 +376,8 @@ namespace CapaPresentacion
                     botEditarPaciente.Enabled = true;
                     botEditarExamen.Enabled = true;
                 }
-            }catch(System.ArgumentOutOfRangeException ex)
+            }
+            catch (System.ArgumentOutOfRangeException ex)
             {
 
             }
@@ -414,20 +419,20 @@ namespace CapaPresentacion
                 if (obtenerValorBooleano(e.RowIndex, 16))
                 {
                     if (rdbMostrarTodo.Checked)
-                    { 
+                    {
                         dgv.Rows[e.RowIndex].DefaultCellStyle.BackColor = Color.MistyRose;
                         dgv.Rows[e.RowIndex].Cells[16].Value = true;
                     }
                     else
                     {
-                        dgv.Rows[e.RowIndex].Visible = false;                        
-                    }                    
+                        dgv.Rows[e.RowIndex].Visible = false;
+                    }
                 }
                 else
                 {
                     dgv.Rows[e.RowIndex].Visible = true;
                     dgv.Rows[e.RowIndex].DefaultCellStyle.BackColor = Color.White;
-                    dgv.Rows[e.RowIndex].Cells[16].Value = false;                    
+                    dgv.Rows[e.RowIndex].Cells[16].Value = false;
                 }
 
                 MostrarTotales();
@@ -507,7 +512,7 @@ namespace CapaPresentacion
         private void btnSalir_Click(object sender, EventArgs e)
         {
             this.Close();
-        }        
+        }
 
         private void frmRecepcion_Load(object sender, EventArgs e)
         {
@@ -569,7 +574,7 @@ namespace CapaPresentacion
         private void rdbMostrarTodo_CheckedChanged(object sender, EventArgs e)
         {
             cargarDgv();
-            ocultarFilasDgv();            
+            ocultarFilasDgv();
         }
 
         private void rdbMostrarTodo_Click(object sender, EventArgs e)
@@ -637,7 +642,7 @@ namespace CapaPresentacion
             {
                 lblResultado.Text = "Total Pacientes: " + ventanilla.TurnosNoOcultos(tpFecha.Value, tpFecha.Value).ToString();
                 lblOcultos.Text = "Ocultos: " + ventanilla.TurnosOcultos(tpFecha.Value, tpFecha.Value).ToString();
-            }            
+            }
         }
 
         private void botonRango_Click(object sender, EventArgs e)
