@@ -75,6 +75,7 @@ namespace CapaPresentacion
             dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
             agregarColumnaDgv("Id", "Id", false);
+            agregarColumnaDgv("TipoPadre", "Tipo de Examen", true);        // ✅ NUEVO
             agregarColumnaDgv("SubTipoExamen", "Subtipo de Examen", true);
             agregarColumnaDgv("Medico", "Médico", false);
             agregarColumnaDgv("Fecha", "Fecha", true);
@@ -92,6 +93,8 @@ namespace CapaPresentacion
             agregarColumnaDgv("Reservado", "Reservado", false);
             agregarColumnaDgv("IdTipoExamen", "IdTipoExamen", false);
             agregarColumnaDgv("Estado", "Estado", false);
+            agregarColumnaDgv("IdPadre", "IdPadre", false);              // ✅ NUEVO
+            agregarColumnaDgv("IdSubtipo", "IdSubtipo", false);
 
             // Permitir redimensionamiento en cada columna
             foreach (DataGridViewColumn col in dgv.Columns)
@@ -100,6 +103,7 @@ namespace CapaPresentacion
             }
 
             // Establecer anchos personalizados para columnas específicas
+            dgv.Columns["TipoPadre"].Width = 180;
             dgv.Columns["SubTipoExamen"].Width = 230;  // Subtipo de Examen más ancho
             dgv.Columns["Paciente"].Width = 220;    // Paciente más ancho
             dgv.Columns["Fecha"].Width = 100;
@@ -281,7 +285,37 @@ namespace CapaPresentacion
         {
             llenarDgv(turno.cargarTurnos(obtenerTipoExamen(), obtenerFecha(), obtenerHora(), obtenerEstado()));
         }
+        private void colorearTodasLasFilas()
+        {
+            try
+            {
+                foreach (DataGridViewRow fila in dgv.Rows)
+                {
+                    object cellValue = fila.Cells[18].Value;  // ✅ Cambiar de 17 a 18
 
+                    if (cellValue == null || string.IsNullOrEmpty(cellValue.ToString()))
+                        continue;
+
+                    if (!int.TryParse(cellValue.ToString(), out int valor))
+                    {
+                        System.Diagnostics.Debug.WriteLine($"No se puede convertir '{cellValue}' a número");
+                        continue;
+                    }
+
+                    System.Diagnostics.Debug.WriteLine($"Estado: {valor}");
+
+                    if (valor == 2)
+                    {
+                        fila.DefaultCellStyle.BackColor = System.Drawing.Color.MistyRose;
+                        System.Diagnostics.Debug.WriteLine($"✅ Coloreada fila con estado 2");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error en colorearTodasLasFilas: {ex.Message}");
+            }
+        }
         private void llenarDgv(DataTable tabla)
         {
             int intTotalTurnosAsignados = 150;
@@ -311,9 +345,9 @@ namespace CapaPresentacion
                 foreach (DataRow r in tabla.Rows)
                 {
                     dgv.Rows.Add(r.ItemArray);
-                    colorearFila();
-                }
 
+                }
+                colorearTodasLasFilas();
                 try
                 {
                     if (dgv.Rows.Count > 0 && dgv.Rows[nroFila] != null &&
@@ -380,29 +414,50 @@ namespace CapaPresentacion
 
         private void colorearFila()
         {
-            int valor = Convert.ToInt16(dgv.Rows[dgv.Rows.Count - 1].Cells[17].Value.ToString());
-            prueba = Convert.ToInt16(dgv.Rows[dgv.Rows.Count - 1].Cells[17].Value.ToString());
-            prueba = Convert.ToInt16(dgv.Rows[dgv.Rows.Count - 1].Cells[17].Value.ToString());
-
-            System.Drawing.Color color = System.Drawing.Color.White;
-            switch (valor)
+            try
             {
-                case 2:
-                    color = System.Drawing.Color.MistyRose;
-                    break;
-                case 3:
-                    color = System.Drawing.Color.LightGray;
-                    break;
-                case 4:
-                    color = System.Drawing.Color.LightSteelBlue;
-                    break;
-                case 5:
-                    color = System.Drawing.Color.LightGray;
-                    break;
-            }
-            dgv.Rows[dgv.Rows.Count - 1].DefaultCellStyle.BackColor = color;
-        }
+                // Obtener el valor del estado (columna 17)
+                object cellValue = dgv.Rows[dgv.Rows.Count - 1].Cells[17].Value;
 
+                if (cellValue == null || string.IsNullOrEmpty(cellValue.ToString()))
+                    return;
+
+                // Intentar convertir a int
+                if (!int.TryParse(cellValue.ToString(), out int valor))
+                {
+                    System.Diagnostics.Debug.WriteLine($"No se puede convertir '{cellValue}' a número en colorearFila");
+                    return;
+                }
+
+                prueba = valor;
+                System.Drawing.Color color = System.Drawing.Color.White;
+
+                switch (valor)
+                {
+                    case 1:
+                        color = System.Drawing.Color.White;  // Libre
+                        break;
+                    case 2:
+                        color = System.Drawing.Color.MistyRose;  // Asignado
+                        break;
+                    case 3:
+                        color = System.Drawing.Color.LightGray;  // Bloqueado
+                        break;
+                    case 4:
+                        color = System.Drawing.Color.LightSteelBlue;  // Reservado
+                        break;
+                    case 5:
+                        color = System.Drawing.Color.LightGray;  // Otro estado
+                        break;
+                }
+
+                dgv.Rows[dgv.Rows.Count - 1].DefaultCellStyle.BackColor = color;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error en colorearFila: {ex.Message}");
+            }
+        }
         private Guid obtenerTipoExamen()
         {
             // PRIORIDAD: Si está seleccionado cboSubTipoExamen (y no es TODOS), usarlo
@@ -527,27 +582,24 @@ namespace CapaPresentacion
         }
 
         private void cargarTurnoSeleccionado()
-
         {
             if (dgv.CurrentCell != null && turnoAsignado(dgv.CurrentCell.RowIndex))
             {
-                char tipoPaciente = turno.verificarTipoPaciente(new Guid(dgv.Rows[dgv.CurrentCell.RowIndex].Cells[6].Value.ToString()));
+                // ✅ CAMBIAR de [6] a [7]
+                char tipoPaciente = turno.verificarTipoPaciente(new Guid(dgv.Rows[dgv.CurrentCell.RowIndex].Cells[7].Value.ToString()));
                 if (tipoPaciente == 'P')
                 {
                     cargarPanelPreventiva();
-                    //BotonesRibbon(tipoPaciente);
                 }
                 else
                 {
                     cargarPanelLaboral();
-                    //BotonesRibbon(tipoPaciente);                    
                 }
             }
             else
             {
                 panelPacientePreventiva.Visible = false;
                 panelLaboral.Visible = false;
-                //BotonesRibbon('*');
             }
             cambiarVisibilidadBotonesPrincipales();
         }
@@ -1233,9 +1285,9 @@ namespace CapaPresentacion
 
         private bool verificarEstado(int index, string codigo)
         {
-            test = dgv.Rows[index].Cells[17].Value.ToString();
-            test = dgv.Rows[index].Cells[17].Value.ToString();
-            if (dgv.Rows[index].Cells[17].Value.ToString() == codigo)
+            test = dgv.Rows[index].Cells[18].Value.ToString();  // ✅ Cambiar de 17 a 18
+            test = dgv.Rows[index].Cells[18].Value.ToString();
+            if (dgv.Rows[index].Cells[18].Value.ToString() == codigo)  // ✅ Cambiar de 17 a 18
             {
                 return true;
             }
@@ -1665,10 +1717,11 @@ namespace CapaPresentacion
         {
             for (int i = 0; i < dgv.Rows.Count; i++)
             {
-                if (idPaciente == dgv.Rows[i].Cells[6].Value.ToString())
+                // ✅ CAMBIAR de [6] a [7]
+                if (idPaciente == dgv.Rows[i].Cells[7].Value.ToString())
                 {
                     dgv.Rows[i].Selected = true;
-                    dgv.CurrentCell = this.dgv[7, i];
+                    dgv.CurrentCell = this.dgv[8, i];
                 }
             }
         }
@@ -1835,30 +1888,43 @@ namespace CapaPresentacion
             DataTable dtConsulta;
             string strMensaje = "";
 
-            dtConsulta = turno.VerificaIDTurnoLibre(dgv.Rows[dgv.CurrentCell.RowIndex].Cells[0].Value.ToString(), Convert.ToDateTime(dgv.Rows[dgv.CurrentCell.RowIndex].Cells[3].Value.ToString()), dgv.Rows[dgv.CurrentCell.RowIndex].Cells[6].Value.ToString());
-
-            if (dgv.Rows[dgv.CurrentCell.RowIndex].Cells[17].Value.ToString() == "1")
+            try
             {
-                if (dtConsulta.Rows[0][3].ToString() == "8f85032b-b03d-406d-a050-a9436aed0703")
+                DateTime fechaTurno;
+                if (!DateTime.TryParse(dgv.Rows[dgv.CurrentCell.RowIndex].Cells[3].Value.ToString(), out fechaTurno))
                 {
-                    //strMensaje = "El usuario, " + turno.NombreUsuario(dtConsulta.Rows[0][2].ToString()) + " ya ha asignado este turno para el paciente " + turno.NombreApellidoPaciente(dtConsulta.Rows[0][1].ToString()) + "\nPor favor seleccione otro turno.";
-                    //MessageBox.Show(strMensaje, "Asignar turnos", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                    //PacienteTieneTurno(dgv.Rows[dgv.CurrentCell.RowIndex].Cells[6].Value.ToString(), dgv.Rows[dgv.CurrentCell.RowIndex].Cells[8].Value.ToString(), dgv.Rows[dgv.CurrentCell.RowIndex].Cells[7].Value.ToString());                    
-                    blnLibre = true;
+                    fechaTurno = DateTime.Now;
                 }
 
-                if (!string.IsNullOrEmpty(strIdPaciente))
-                    blnLibre = PacienteTieneTurno(strIdPaciente, strApellido, strDNI);
+                dtConsulta = turno.VerificaIDTurnoLibre(
+                    dgv.Rows[dgv.CurrentCell.RowIndex].Cells[0].Value.ToString(),
+                    fechaTurno,
+                    dgv.Rows[dgv.CurrentCell.RowIndex].Cells[7].Value.ToString());  // ✅ CORRECTO [7]
+
+                if (dgv.Rows[dgv.CurrentCell.RowIndex].Cells[18].Value.ToString() == "1")
+                {
+                    if (dtConsulta.Rows.Count > 0 && dtConsulta.Rows[0][3].ToString() == "8f85032b-b03d-406d-a050-a9436aed0703")
+                    {
+                        blnLibre = true;
+                    }
+
+                    if (!string.IsNullOrEmpty(strIdPaciente))
+                        blnLibre = PacienteTieneTurno(strIdPaciente, strApellido, strDNI);
+                }
+
+                if (verificaTurnoReservado(dgv.Rows[dgv.CurrentCell.RowIndex].Cells[0].Value.ToString()))
+                    blnLibre = true;
+
+                LimpiaVariableDatos();
             }
-
-            if (verificaTurnoReservado(dgv.Rows[dgv.CurrentCell.RowIndex].Cells[0].Value.ToString()))
-                blnLibre = true;
-
-            LimpiaVariableDatos();
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error en VerificaIDTurnoLibre: {ex.Message}");
+                blnLibre = false;
+            }
 
             return blnLibre;
         }
-
         private bool VerificaCategoriaPacienteInicial(string strDNIpaciente)
         {
             bool blnCorresponde = false;
@@ -2218,8 +2284,8 @@ namespace CapaPresentacion
 
             if (btnMoverTurno.Text == "Mover\r\nTurno")
             {
-                strIdTurnoAntiguoMover = dgv.CurrentRow.Cells[0].Value.ToString(); // IdTurno Antiguo
-                strTipoExamenMover = dgv.CurrentRow.Cells[1].Value.ToString(); // IdTurno Antiguo
+                strIdTurnoAntiguoMover = dgv.CurrentRow.Cells[0].Value.ToString();
+                strTipoExamenMover = dgv.CurrentRow.Cells[2].Value.ToString(); // ✅ Cambiar índice de 1 a 2 (SubTipo)
 
                 btnMoverTurno.Text = "Pegar\r\nTurno";
                 btnMoverTurno.Image = Image.FromFile(@"P:\img-system\mPegar36x36.png");
@@ -2230,7 +2296,7 @@ namespace CapaPresentacion
             {
                 strTipoConsulta = turno.TipoConsulta(strIdTurnoAntiguoMover);
 
-                if (strTipoExamenMover == dgv.CurrentRow.Cells[1].Value.ToString())
+                if (strTipoExamenMover == dgv.CurrentRow.Cells[2].Value.ToString()) // ✅ Cambiar índice
                 {
                     blnPuedeAsignarTurno = true;
                 }

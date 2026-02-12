@@ -54,7 +54,11 @@ namespace CapaDatosMepryl
         public DataTable cargarTurnos(Guid tipoExamen, DateTime fecha, string hora, string estado)
         {
             string filtroTipoExamen = string.Empty;
-            if (tipoExamen != Guid.Empty) { filtroTipoExamen = " and te.id = '" + tipoExamen.ToString() + "'"; }
+            if (tipoExamen != Guid.Empty)
+            {
+                filtroTipoExamen = " and (te.id = '" + tipoExamen.ToString() + "' OR tePadre.id = '" + tipoExamen.ToString() + "')";
+            }
+
             string filtroHora = string.Empty;
             if (hora != string.Empty)
             {
@@ -62,40 +66,46 @@ namespace CapaDatosMepryl
                 string horaFin = Convert.ToDateTime(hora).AddHours(1).ToString("HH:mm");
                 filtroHora = " and (t.horaReferencia >= '" + horaInicio + "' and t.horaReferencia < '" + horaFin + "')";
             }
-            string filtroEstado = string.Empty;
 
+            string filtroEstado = string.Empty;
             if (estado != string.Empty)
             {
                 filtroEstado = " and e.descripcion = '" + estado + "'";
             }
+
             date = fecha.ToShortDateString();
 
             DataTable turnos = SQLConnector.obtenerTablaSegunConsultaString(@"
-                SELECT 
-                    t.id as Id,
-                    te.descripcion as TipoExamen,
-                    p.apellido + ' ' + p.nombres as Profesional,
-                    t.fecha as Fecha,
-                    t.horaReferencia as Hora,
-                    CONVERT(numeric, t.nroOrden) as Nro,
-                    t.pacienteID as idPaciente,
-                    t.codigo as Codigo,
-                    t.reserva as Reserva,
-                    t.usuarioID as Usuario,
-                    t.bloqueado as Bloqueado,
-                    t.asistio as Asistio,
-                    t.reservado as Reservado,
-                    tep.id as IdTipoExamen,
-                    t.habilitado as Habilitado,
-                    t.estadoID as IdEstado
-                FROM dbo.Turno t
-                INNER JOIN dbo.TurnoEstado e ON t.estadoID = e.id
-                INNER JOIN dbo.Horario h ON t.horarioID = h.id
-                INNER JOIN dbo.Profesional p ON h.profesionalID = p.id
-                LEFT JOIN dbo.TipoExamenDePaciente tep ON tep.idTurno = t.id
-                LEFT JOIN dbo.Especialidad te ON h.especialidadID = te.id
-                WHERE convert(date, t.fecha) = convert(date, '" + fecha.ToShortDateString() + "', 105) " + filtroTipoExamen + filtroHora + filtroEstado +
-                " AND te.Padre = 0 order by t.fecha, t.hora");
+        SELECT 
+            t.id as Id,
+            ISNULL(tePadre.descripcion, te.descripcion) as TipoPadre,
+            te.descripcion as SubTipo,
+            p.apellido + ' ' + p.nombres as Profesional,
+            t.fecha as Fecha,
+            t.horaReferencia as Hora,
+            CONVERT(numeric, t.nroOrden) as Nro,
+            t.pacienteID as idPaciente,
+            t.codigo as Codigo,
+            t.reserva as Reserva,
+            t.usuarioID as Usuario,
+            t.bloqueado as Bloqueado,
+            t.asistio as Asistio,
+            t.reservado as Reservado,
+            tep.id as IdTipoExamen,
+            t.habilitado as Habilitado,
+            t.estadoID as IdEstado,
+            te.id as IdSubtipo,
+            ISNULL(tePadre.id, te.id) as IdPadre
+        FROM dbo.Turno t
+        INNER JOIN dbo.TurnoEstado e ON t.estadoID = e.id
+        INNER JOIN dbo.Horario h ON t.horarioID = h.id
+        INNER JOIN dbo.Profesional p ON h.profesionalID = p.id
+        LEFT JOIN dbo.TipoExamenDePaciente tep ON tep.idTurno = t.id
+        LEFT JOIN dbo.Especialidad te ON h.especialidadID = te.id
+        LEFT JOIN dbo.Especialidad tePadre ON te.IdPadre = tePadre.id AND te.Padre = 0
+        WHERE convert(date, t.fecha) = convert(date, '" + fecha.ToShortDateString() + "', 105) "
+                + filtroTipoExamen + filtroHora + filtroEstado +
+                " ORDER BY t.fecha, t.hora");
 
             return generarTablaRetornoTurno(turnos);
         }
@@ -105,7 +115,8 @@ namespace CapaDatosMepryl
             {
                 DataTable retorno = new DataTable();
                 retorno.Columns.Add("Id");
-                retorno.Columns.Add("TipoExamen");
+                retorno.Columns.Add("TipoPadre");      // ✅ NUEVO
+                retorno.Columns.Add("SubTipo");        // ✅ NUEVO
                 retorno.Columns.Add("Profesional");
                 retorno.Columns.Add("Fecha");
                 retorno.Columns.Add("Hora");
@@ -122,6 +133,8 @@ namespace CapaDatosMepryl
                 retorno.Columns.Add("Reservado");
                 retorno.Columns.Add("IdTipoExamen");
                 retorno.Columns.Add("Estado");
+                retorno.Columns.Add("IdPadre");        // ✅ NUEVO
+                retorno.Columns.Add("IdSubtipo");      // ✅ NUEVO
 
                 foreach (DataRow r in turnos.Rows)
                 {
@@ -129,26 +142,27 @@ namespace CapaDatosMepryl
                     string dni = string.Empty;
                     string categoria = string.Empty;
                     string estado = string.Empty;
-                    if (r.ItemArray[15].ToString() == "8f85032b-b03d-406d-a050-a9436aed0703")
+
+                    if (r.ItemArray[16].ToString() == "8f85032b-b03d-406d-a050-a9436aed0703")
                     {
-                        if (r.ItemArray[6].ToString() != "00000000-0000-0000-0000-000000000000")
+                        if (r.ItemArray[7].ToString() != "00000000-0000-0000-0000-000000000000")
                         {
-                            DataRow dr = cargarDatoPaciente(r.ItemArray[6].ToString());
+                            DataRow dr = cargarDatoPaciente(r.ItemArray[7].ToString());
                             dni = dr.ItemArray[0].ToString();
                             paciente = dr.ItemArray[1].ToString();
                             if (dr.ItemArray.Length > 2) { categoria = dr.ItemArray[2].ToString(); }
                         }
                         estado = "2";
                     }
-                    else if (Convert.ToBoolean(r.ItemArray[10].ToString()))
+                    else if (Convert.ToBoolean(r.ItemArray[11].ToString()))
                     {
                         estado = "3";
                     }
-                    else if (r.ItemArray[12].ToString() == "1")
+                    else if (r.ItemArray[13].ToString() == "1")
                     {
                         estado = "4";
                     }
-                    else if (r.ItemArray[14].ToString() == "0")
+                    else if (r.ItemArray[15].ToString() == "0")
                     {
                         estado = "5";
                     }
@@ -156,11 +170,30 @@ namespace CapaDatosMepryl
                     {
                         estado = "1";
                     }
-                    retorno.Rows.Add(r.ItemArray[0].ToString(), r.ItemArray[1].ToString(), r.ItemArray[2].ToString(),
-                        Convert.ToDateTime(r.ItemArray[3].ToString()).ToShortDateString(), r.ItemArray[4].ToString(), r.ItemArray[5].ToString(),
-                        r.ItemArray[6].ToString(), dni, paciente, categoria, r.ItemArray[7].ToString(),
-                        r.ItemArray[8].ToString(), obtenerUsuario(r.ItemArray[9].ToString()), r.ItemArray[10].ToString(),
-                        r.ItemArray[11].ToString(), r.ItemArray[12].ToString(), r.ItemArray[13].ToString(), estado);
+
+                    retorno.Rows.Add(
+                        r.ItemArray[0].ToString(),      // Id
+                        r.ItemArray[1].ToString(),      // TipoPadre ✅
+                        r.ItemArray[2].ToString(),      // SubTipo ✅
+                        r.ItemArray[3].ToString(),      // Profesional
+                        Convert.ToDateTime(r.ItemArray[4].ToString()).ToShortDateString(), // Fecha
+                        r.ItemArray[5].ToString(),      // Hora
+                        r.ItemArray[6].ToString(),      // Nro
+                        r.ItemArray[7].ToString(),      // IdPaciente
+                        dni,
+                        paciente,
+                        categoria,
+                        r.ItemArray[8].ToString(),      // Codigo
+                        r.ItemArray[9].ToString(),      // Reserva
+                        obtenerUsuario(r.ItemArray[10].ToString()), // Usuario
+                        r.ItemArray[11].ToString(),     // Bloqueado
+                        r.ItemArray[12].ToString(),     // Asistio
+                        r.ItemArray[13].ToString(),     // Reservado
+                        r.ItemArray[14].ToString(),     // IdTipoExamen
+                        estado,
+                        r.ItemArray[18].ToString(),     // IdPadre ✅
+                        r.ItemArray[17].ToString()      // IdSubtipo ✅
+                    );
                 }
                 return retorno;
             }
@@ -170,7 +203,6 @@ namespace CapaDatosMepryl
                 return null;
             }
         }
-
         private DataRow cargarDatoPaciente(string idPaciente)
         {
             DataRow drFilaRetorno;
