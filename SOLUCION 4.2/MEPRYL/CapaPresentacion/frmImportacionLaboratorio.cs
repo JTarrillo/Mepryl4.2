@@ -59,7 +59,7 @@ namespace CapaPresentacion
                 valoresInvalidos.Columns.Add("Fila");
                 valoresInvalidos.Columns.Add("Columna");
                 string myexceldataquery = "select * from [Hoja1$]";
-                string excelConnectionString = @"Provider=Microsoft.ACE.OLEDB.12.0;data source=" + tbArchivo.Text + ";Extended Properties=\"Excel 12.0 Xml;HDR=YES;IMEX=1;Allow Formula=false;\"";
+                string excelConnectionString = @"Provider=Microsoft.ACE.OLEDB.16.0;data source=" + tbArchivo.Text + ";Extended Properties=\"Excel 12.0 Xml;HDR=YES;IMEX=1;Allow Formula=false;\"";
                 OleDbConnection oledbconn = new OleDbConnection(excelConnectionString);
                 OleDbDataAdapter da = new OleDbDataAdapter(myexceldataquery, oledbconn);
                 DataSet ds = new DataSet();
