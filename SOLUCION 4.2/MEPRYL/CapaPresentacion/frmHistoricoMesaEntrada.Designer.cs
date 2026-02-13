@@ -56,6 +56,13 @@
             this.tbBusqueda = new System.Windows.Forms.TextBox();
             this.cboTipoBusqueda = new System.Windows.Forms.ComboBox();
             this.dgv = new System.Windows.Forms.DataGridView();
+            this.tbTotal = new System.Windows.Forms.TextBox();
+            this.progressBar = new System.Windows.Forms.ProgressBar();
+            this.botonRango = new System.Windows.Forms.Button();
+            this.gbFecha = new System.Windows.Forms.GroupBox();
+            this.tpFecha = new System.Windows.Forms.DateTimePicker();
+            this.botonFecha = new System.Windows.Forms.Button();
+            this.panel1 = new System.Windows.Forms.Panel();
             this.idConsulta = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.idPaciente = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.idTipoExamen = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -73,13 +80,6 @@
             this.LigaDesc = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Tipo = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Estudios = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.tbTotal = new System.Windows.Forms.TextBox();
-            this.progressBar = new System.Windows.Forms.ProgressBar();
-            this.botonRango = new System.Windows.Forms.Button();
-            this.gbFecha = new System.Windows.Forms.GroupBox();
-            this.tpFecha = new System.Windows.Forms.DateTimePicker();
-            this.botonFecha = new System.Windows.Forms.Button();
-            this.panel1 = new System.Windows.Forms.Panel();
             this.botonLaboratorio.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.gbRango.SuspendLayout();
@@ -301,7 +301,7 @@
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.Location = new System.Drawing.Point(138, 23);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(44, 16);
+            this.label2.Size = new System.Drawing.Size(43, 16);
             this.label2.TabIndex = 3;
             this.label2.Text = "Hasta";
             // 
@@ -311,7 +311,7 @@
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.Location = new System.Drawing.Point(18, 23);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(49, 16);
+            this.label1.Size = new System.Drawing.Size(48, 16);
             this.label1.TabIndex = 2;
             this.label1.Text = "Desde";
             // 
@@ -417,7 +417,6 @@
             this.dgv.AllowUserToAddRows = false;
             this.dgv.AllowUserToDeleteRows = false;
             this.dgv.AllowUserToOrderColumns = true;
-            this.dgv.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
             this.dgv.BackgroundColor = System.Drawing.Color.Silver;
             this.dgv.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgv.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
@@ -450,137 +449,6 @@
             this.dgv.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgv.Size = new System.Drawing.Size(1137, 450);
             this.dgv.TabIndex = 270;
-            // 
-            // idConsulta
-            // 
-            this.idConsulta.HeaderText = "idConsulta";
-            this.idConsulta.Name = "idConsulta";
-            this.idConsulta.ReadOnly = true;
-            this.idConsulta.Visible = false;
-            this.idConsulta.Width = 62;
-            // 
-            // idPaciente
-            // 
-            this.idPaciente.HeaderText = "idPaciente";
-            this.idPaciente.Name = "idPaciente";
-            this.idPaciente.ReadOnly = true;
-            this.idPaciente.Visible = false;
-            this.idPaciente.Width = 63;
-            // 
-            // idTipoExamen
-            // 
-            this.idTipoExamen.HeaderText = "idTipoExamen";
-            this.idTipoExamen.Name = "idTipoExamen";
-            this.idTipoExamen.ReadOnly = true;
-            this.idTipoExamen.Visible = false;
-            this.idTipoExamen.Width = 80;
-            // 
-            // Fecha
-            // 
-            this.Fecha.HeaderText = "Fecha";
-            this.Fecha.Name = "Fecha";
-            this.Fecha.ReadOnly = true;
-            this.Fecha.Width = 61;
-            // 
-            // TipoExamen
-            // 
-            this.TipoExamen.HeaderText = "Examen";
-            this.TipoExamen.Name = "TipoExamen";
-            this.TipoExamen.ReadOnly = true;
-            this.TipoExamen.Width = 70;
-            // 
-            // Orden
-            // 
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.Orden.DefaultCellStyle = dataGridViewCellStyle1;
-            this.Orden.HeaderText = "Nº Orden";
-            this.Orden.Name = "Orden";
-            this.Orden.ReadOnly = true;
-            this.Orden.Width = 77;
-            // 
-            // Examen
-            // 
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.Examen.DefaultCellStyle = dataGridViewCellStyle2;
-            this.Examen.HeaderText = "Nº Examen";
-            this.Examen.Name = "Examen";
-            this.Examen.ReadOnly = true;
-            this.Examen.Width = 85;
-            // 
-            // Apellido
-            // 
-            this.Apellido.HeaderText = "Apellido";
-            this.Apellido.Name = "Apellido";
-            this.Apellido.ReadOnly = true;
-            this.Apellido.Width = 69;
-            // 
-            // Nombre
-            // 
-            this.Nombre.HeaderText = "Nombre";
-            this.Nombre.Name = "Nombre";
-            this.Nombre.ReadOnly = true;
-            this.Nombre.Width = 69;
-            // 
-            // DNI
-            // 
-            this.DNI.HeaderText = "DNI";
-            this.DNI.Name = "DNI";
-            this.DNI.ReadOnly = true;
-            this.DNI.Width = 50;
-            // 
-            // Categoria
-            // 
-            this.Categoria.HeaderText = "Categoria";
-            this.Categoria.Name = "Categoria";
-            this.Categoria.ReadOnly = true;
-            this.Categoria.Width = 79;
-            // 
-            // Liga
-            // 
-            this.Liga.HeaderText = "Liga";
-            this.Liga.Image = ((System.Drawing.Image)(resources.GetObject("Liga.Image")));
-            this.Liga.ImageLayout = System.Windows.Forms.DataGridViewImageCellLayout.Zoom;
-            this.Liga.Name = "Liga";
-            this.Liga.ReadOnly = true;
-            this.Liga.Width = 32;
-            // 
-            // Club
-            // 
-            this.Club.HeaderText = "Club";
-            this.Club.Name = "Club";
-            this.Club.ReadOnly = true;
-            this.Club.Width = 53;
-            // 
-            // Empresa
-            // 
-            this.Empresa.HeaderText = "Empresa";
-            this.Empresa.Name = "Empresa";
-            this.Empresa.ReadOnly = true;
-            this.Empresa.Width = 73;
-            // 
-            // LigaDesc
-            // 
-            this.LigaDesc.HeaderText = "LigaDesc";
-            this.LigaDesc.Name = "LigaDesc";
-            this.LigaDesc.ReadOnly = true;
-            this.LigaDesc.Visible = false;
-            this.LigaDesc.Width = 77;
-            // 
-            // Tipo
-            // 
-            this.Tipo.HeaderText = "Tipo";
-            this.Tipo.Name = "Tipo";
-            this.Tipo.ReadOnly = true;
-            this.Tipo.Visible = false;
-            this.Tipo.Width = 53;
-            // 
-            // Estudios
-            // 
-            this.Estudios.HeaderText = "Estudios";
-            this.Estudios.Name = "Estudios";
-            this.Estudios.ReadOnly = true;
-            this.Estudios.Visible = false;
-            this.Estudios.Width = 72;
             // 
             // tbTotal
             // 
@@ -674,6 +542,137 @@
             this.panel1.Size = new System.Drawing.Size(1282, 126);
             this.panel1.TabIndex = 277;
             // 
+            // idConsulta
+            // 
+            this.idConsulta.HeaderText = "idConsulta";
+            this.idConsulta.Name = "idConsulta";
+            this.idConsulta.ReadOnly = true;
+            this.idConsulta.Visible = false;
+            this.idConsulta.Width = 63;
+            // 
+            // idPaciente
+            // 
+            this.idPaciente.HeaderText = "idPaciente";
+            this.idPaciente.Name = "idPaciente";
+            this.idPaciente.ReadOnly = true;
+            this.idPaciente.Visible = false;
+            this.idPaciente.Width = 62;
+            // 
+            // idTipoExamen
+            // 
+            this.idTipoExamen.HeaderText = "idTipoExamen";
+            this.idTipoExamen.Name = "idTipoExamen";
+            this.idTipoExamen.ReadOnly = true;
+            this.idTipoExamen.Visible = false;
+            this.idTipoExamen.Width = 79;
+            // 
+            // Fecha
+            // 
+            this.Fecha.HeaderText = "Fecha";
+            this.Fecha.Name = "Fecha";
+            this.Fecha.ReadOnly = true;
+            this.Fecha.Width = 90;
+            // 
+            // TipoExamen
+            // 
+            this.TipoExamen.HeaderText = "Subtipo de Examen";
+            this.TipoExamen.Name = "TipoExamen";
+            this.TipoExamen.ReadOnly = true;
+            this.TipoExamen.Width = 200;
+            // 
+            // Orden
+            // 
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.Orden.DefaultCellStyle = dataGridViewCellStyle1;
+            this.Orden.HeaderText = "Nº Orden";
+            this.Orden.Name = "Orden";
+            this.Orden.ReadOnly = true;
+            this.Orden.Width = 71;
+            // 
+            // Examen
+            // 
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.Examen.DefaultCellStyle = dataGridViewCellStyle2;
+            this.Examen.HeaderText = "Nº Examen";
+            this.Examen.Name = "Examen";
+            this.Examen.ReadOnly = true;
+            this.Examen.Width = 79;
+            // 
+            // Apellido
+            // 
+            this.Apellido.HeaderText = "Apellido";
+            this.Apellido.Name = "Apellido";
+            this.Apellido.ReadOnly = true;
+            this.Apellido.Width = 150;
+            // 
+            // Nombre
+            // 
+            this.Nombre.HeaderText = "Nombre";
+            this.Nombre.Name = "Nombre";
+            this.Nombre.ReadOnly = true;
+            this.Nombre.Width = 150;
+            // 
+            // DNI
+            // 
+            this.DNI.HeaderText = "DNI";
+            this.DNI.Name = "DNI";
+            this.DNI.ReadOnly = true;
+            this.DNI.Width = 50;
+            // 
+            // Categoria
+            // 
+            this.Categoria.HeaderText = "Categoria";
+            this.Categoria.Name = "Categoria";
+            this.Categoria.ReadOnly = true;
+            this.Categoria.Width = 79;
+            // 
+            // Liga
+            // 
+            this.Liga.HeaderText = "Liga";
+            this.Liga.Image = ((System.Drawing.Image)(resources.GetObject("Liga.Image")));
+            this.Liga.ImageLayout = System.Windows.Forms.DataGridViewImageCellLayout.Zoom;
+            this.Liga.Name = "Liga";
+            this.Liga.ReadOnly = true;
+            this.Liga.Width = 32;
+            // 
+            // Club
+            // 
+            this.Club.HeaderText = "Club";
+            this.Club.Name = "Club";
+            this.Club.ReadOnly = true;
+            this.Club.Width = 150;
+            // 
+            // Empresa
+            // 
+            this.Empresa.HeaderText = "Empresa";
+            this.Empresa.Name = "Empresa";
+            this.Empresa.ReadOnly = true;
+            this.Empresa.Width = 150;
+            // 
+            // LigaDesc
+            // 
+            this.LigaDesc.HeaderText = "LigaDesc";
+            this.LigaDesc.Name = "LigaDesc";
+            this.LigaDesc.ReadOnly = true;
+            this.LigaDesc.Visible = false;
+            this.LigaDesc.Width = 74;
+            // 
+            // Tipo
+            // 
+            this.Tipo.HeaderText = "Tipo";
+            this.Tipo.Name = "Tipo";
+            this.Tipo.ReadOnly = true;
+            this.Tipo.Visible = false;
+            this.Tipo.Width = 52;
+            // 
+            // Estudios
+            // 
+            this.Estudios.HeaderText = "Estudios";
+            this.Estudios.Name = "Estudios";
+            this.Estudios.ReadOnly = true;
+            this.Estudios.Visible = false;
+            this.Estudios.Width = 72;
+            // 
             // frmHistoricoMesaEntrada
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -731,6 +730,13 @@
         protected System.Windows.Forms.Button botonBuscar;
         protected System.Windows.Forms.Button botonLimpiar;
         protected System.Windows.Forms.Button botMostrarEstudios;
+        private System.Windows.Forms.ProgressBar progressBar;
+        protected System.Windows.Forms.Button botBuscarFecha;
+        private System.Windows.Forms.Button botonRango;
+        private System.Windows.Forms.GroupBox gbFecha;
+        private System.Windows.Forms.DateTimePicker tpFecha;
+        private System.Windows.Forms.Button botonFecha;
+        private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.DataGridViewTextBoxColumn idConsulta;
         private System.Windows.Forms.DataGridViewTextBoxColumn idPaciente;
         private System.Windows.Forms.DataGridViewTextBoxColumn idTipoExamen;
@@ -748,12 +754,5 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn LigaDesc;
         private System.Windows.Forms.DataGridViewTextBoxColumn Tipo;
         private System.Windows.Forms.DataGridViewTextBoxColumn Estudios;
-        private System.Windows.Forms.ProgressBar progressBar;
-        protected System.Windows.Forms.Button botBuscarFecha;
-        private System.Windows.Forms.Button botonRango;
-        private System.Windows.Forms.GroupBox gbFecha;
-        private System.Windows.Forms.DateTimePicker tpFecha;
-        private System.Windows.Forms.Button botonFecha;
-        private System.Windows.Forms.Panel panel1;
     }
 }

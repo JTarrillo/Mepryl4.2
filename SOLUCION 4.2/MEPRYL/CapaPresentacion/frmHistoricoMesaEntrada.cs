@@ -21,6 +21,7 @@ namespace CapaPresentacion
             tipoEx = new CapaNegocioMepryl.TipoExamen();
             fechaDesde = DateTime.Today.ToShortDateString();
             fechaHasta = DateTime.Today.ToShortDateString();
+           
             cargarSinFiltro();
             cboTipoBusqueda.SelectedIndex = 0;
         }
@@ -33,9 +34,13 @@ namespace CapaPresentacion
             tipoEx = new CapaNegocioMepryl.TipoExamen();
             fechaDesde = DateTime.Today.ToShortDateString();
             fechaHasta = DateTime.Today.ToShortDateString();
+
+            
             cargarSinFiltro();
             cboTipoBusqueda.SelectedIndex = 0;
         }
+
+       
 
         private void cargarSinFiltro()
         {
