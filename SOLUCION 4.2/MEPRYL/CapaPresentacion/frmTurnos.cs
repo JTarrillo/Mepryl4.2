@@ -1110,8 +1110,11 @@ namespace CapaPresentacion
         {
             if (dgv.Rows[dgv.CurrentCell.RowIndex].Cells[8].Value.ToString() == "")
             {
-                SQLConnector.EjecutarConsulta("update [MEPRYLv2.1].[dbo].[Turno] set estadoID = '1737e61f-b256-40f5-8b57-63369638536d' where id = '" + dgv.Rows[dgv.CurrentCell.RowIndex].Cells[0].Value.ToString() + "'");
-                cargarGrillaTurnosSinFiltro();
+                SQLConnector.EjecutarConsulta(
+                    "UPDATE [dbo].[Turno] " +
+                    "SET estadoID = '1737e61f-b256-40f5-8b57-63369638536d' " +
+                    "WHERE id = '" + dgv.Rows[dgv.CurrentCell.RowIndex].Cells[0].Value.ToString() + "'"
+                ); cargarGrillaTurnosSinFiltro();
             }
             cancelar();
         }
@@ -1179,7 +1182,11 @@ namespace CapaPresentacion
         {
             if (dgv.Rows[dgv.CurrentCell.RowIndex].Cells[8].Value.ToString() == "")
             {
-                SQLConnector.EjecutarConsulta("update [MEPRYLv2.1].[dbo].[Turno] set estadoID = '1737e61f-b256-40f5-8b57-63369638536d' where id = '" + dgv.Rows[dgv.CurrentCell.RowIndex].Cells[0].Value.ToString() + "'");
+                SQLConnector.EjecutarConsulta(
+                    "UPDATE [dbo].[Turno] " +
+                    "SET estadoID = '1737e61f-b256-40f5-8b57-63369638536d' " +
+                    "WHERE id = '" + dgv.Rows[dgv.CurrentCell.RowIndex].Cells[0].Value.ToString() + "'"
+                );
                 cargarGrillaTurnosSinFiltro();
             }
             else
@@ -1562,7 +1569,11 @@ namespace CapaPresentacion
             if (!VerificaIDTurnoLibre())
             {
                 int index = dgv.CurrentCell.RowIndex;
-                SQLConnector.EjecutarConsulta("update [MEPRYLv2.1].[dbo].[Turno] set estadoID = '8f85032b-b03d-406d-a050-a9436aed0703' where id = '" + dgv.Rows[dgv.CurrentCell.RowIndex].Cells[0].Value.ToString() + "'");
+                SQLConnector.EjecutarConsulta(
+                    "UPDATE [dbo].[Turno] " +
+                    "SET estadoID = '8f85032b-b03d-406d-a050-a9436aed0703' " +
+                    "WHERE id = '" + dgv.Rows[dgv.CurrentCell.RowIndex].Cells[0].Value.ToString() + "'"
+                );
                 dgv.Rows[index].DefaultCellStyle.BackColor = System.Drawing.Color.MistyRose;
                 asignar();
 
