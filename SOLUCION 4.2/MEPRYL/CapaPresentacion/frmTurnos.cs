@@ -1,13 +1,14 @@
-﻿using System;
+﻿using CapaNegocioMepryl;
+using CapaPresentacionBase;
+using Comunes;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using CapaNegocioMepryl;
-using Comunes;
-using CapaPresentacionBase;
 
 namespace CapaPresentacion
 {
@@ -1540,17 +1541,112 @@ namespace CapaPresentacion
 
         private void botBuscar_Click(object sender, EventArgs e)
         {
+            if (tbFiltro.Text.Trim() == string.Empty)
+            {
+                MessageBox.Show("Por favor ingrese un DNI o nombre", "Búsqueda Vacía",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             Cursor.Current = Cursors.WaitCursor;
-            cargarGrillaTurnoConFiltro();
-            Cursor.Current = Cursors.Default;
+            try
+            {
+                cargarGrillaTurnoConFiltro();
+            }
+            finally
+            {
+                Cursor.Current = Cursors.Default;
+            }
         }
 
         private void cargarGrillaTurnoConFiltro()
         {
-            if (tbFiltro.Text != string.Empty)
+            string filtro = tbFiltro.Text.Trim();
+
+            if (EsDNI(filtro))
             {
-                llenarDgv(turno.cargarTurnosConFiltro(tbFiltro.Text));
+                // Buscar por DNI
+                llenarDgv(turno.buscarTurnosPorDNI(filtro));
             }
+            else
+            {
+                // Buscar por Nombre
+                llenarDgv(turno.buscarTurnosPorNombre(filtro));
+            }
+        }
+        /// <summary>
+        /// Método mejorado para buscar turnos por DNI o Nombre
+        /// Identifica automáticamente el tipo de búsqueda según el criterio
+        /// </summary>
+        private void buscarTurnosPorDNIONombre()
+        {
+            if (tbFiltro.Text.Trim() == string.Empty)
+            {
+                MessageBox.Show("Por favor ingrese un DNI o nombre para buscar", "Búsqueda Vacía",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            Cursor.Current = Cursors.WaitCursor;
+            try
+            {
+                string filtro = tbFiltro.Text.Trim();
+                DataTable resultado = null;
+
+                // Validar si es DNI (solo números) o Nombre
+                if (EsDNI(filtro))
+                {
+                    // Buscar por DNI
+                    resultado = turno.buscarTurnosPorDNI(filtro);
+                    if (resultado == null || resultado.Rows.Count == 0)
+                    {
+                        MessageBox.Show($"No se encontraron turnos para el DNI: {filtro}", "Sin Resultados",
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+                else
+                {
+                    // Buscar por Nombre
+                    resultado = turno.buscarTurnosPorNombre(filtro);
+                    if (resultado == null || resultado.Rows.Count == 0)
+                    {
+                        MessageBox.Show($"No se encontraron turnos para el nombre: {filtro}", "Sin Resultados",
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+
+                if (resultado != null && resultado.Rows.Count > 0)
+                {
+                    llenarDgv(resultado);
+                }
+                else
+                {
+                    llenarDgv(new DataTable()); // Mostrar grilla vacía
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error en la búsqueda: " + ex.Message, "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                Cursor.Current = Cursors.Default;
+            }
+        }
+
+        /// <summary>
+        /// Valida si el string es un DNI válido (solo dígitos)
+        /// </summary>
+
+        private bool EsDNI(string valor)
+        {
+            valor = valor.Replace(" ", "");
+            if (valor.Length >= 7 && valor.Length <= 8)
+            {
+                return valor.All(char.IsDigit);
+            }
+            return false;
         }
 
         private void botLimpiar_Click(object sender, EventArgs e)
@@ -1638,7 +1734,7 @@ namespace CapaPresentacion
         {
             if (e.KeyChar == (char)Keys.Enter)
             {
-                botBuscar.PerformClick();
+                buscarTurnosPorDNIONombre();
             }
         }
 
@@ -2296,7 +2392,7 @@ namespace CapaPresentacion
             if (btnMoverTurno.Text == "Mover\r\nTurno")
             {
                 strIdTurnoAntiguoMover = dgv.CurrentRow.Cells[0].Value.ToString();
-                strTipoExamenMover = dgv.CurrentRow.Cells[2].Value.ToString(); // ✅ Cambiar índice de 1 a 2 (SubTipo)
+                strTipoExamenMover = dgv.CurrentRow.Cells[2].Value.ToString(); // SubTipo (correcto ✅)
 
                 btnMoverTurno.Text = "Pegar\r\nTurno";
                 btnMoverTurno.Image = Image.FromFile(@"P:\img-system\mPegar36x36.png");
@@ -2307,21 +2403,17 @@ namespace CapaPresentacion
             {
                 strTipoConsulta = turno.TipoConsulta(strIdTurnoAntiguoMover);
 
-                if (strTipoExamenMover == dgv.CurrentRow.Cells[2].Value.ToString()) // ✅ Cambiar índice
+                if (strTipoExamenMover == dgv.CurrentRow.Cells[2].Value.ToString())
                 {
                     blnPuedeAsignarTurno = true;
                 }
 
                 if (strTipoConsulta == "LABORAL" && blnPuedeAsignarTurno == false)
                 {
-                    switch (dgv.CurrentRow.Cells[1].Value.ToString())
+                    switch (dgv.CurrentRow.Cells[1].Value.ToString()) // TipoPadre
                     {
                         case "PRE-OCUPACIONAL":
-                            blnPuedeAsignarTurno = true;
-                            break;
                         case "PERIODICOS":
-                            blnPuedeAsignarTurno = true;
-                            break;
                         case "EGRESO":
                             blnPuedeAsignarTurno = true;
                             break;
@@ -2332,14 +2424,10 @@ namespace CapaPresentacion
                 }
                 else if (strTipoConsulta == "PREVENTIVA" && blnPuedeAsignarTurno == false)
                 {
-                    switch (dgv.CurrentRow.Cells[1].Value.ToString())
+                    switch (dgv.CurrentRow.Cells[1].Value.ToString()) // TipoPadre
                     {
                         case "FUTBOL AFA":
-                            blnPuedeAsignarTurno = true;
-                            break;
                         case "FUTBOL LAFIJ":
-                            blnPuedeAsignarTurno = true;
-                            break;
                         case "FUTBOL METRO":
                             blnPuedeAsignarTurno = true;
                             break;
@@ -2349,22 +2437,30 @@ namespace CapaPresentacion
                     }
                 }
 
-                //if (strTipoExamenMover == dgv.CurrentRow.Cells[1].Value.ToString()) // Comprueba que sea el mismo tipo de examen
-                if (blnPuedeAsignarTurno) // Comprueba que sea el mismo tipo de examen
+                if (blnPuedeAsignarTurno)
                 {
-
-                    if (string.IsNullOrEmpty(dgv.CurrentRow.Cells[7].Value.ToString())) // Verifica si paciente con DNI esta asignado
+                    // ✅ CORRECCIÓN: Cambiar [7] a [8] para verificar DNI
+                    if (string.IsNullOrEmpty(dgv.CurrentRow.Cells[8].Value.ToString()))
                     {
-                        strIdTurnoNuevoMover = dgv.CurrentRow.Cells[0].Value.ToString(); // IdTurno Nuevo
+                        strIdTurnoNuevoMover = dgv.CurrentRow.Cells[0].Value.ToString();
 
                         if (!string.IsNullOrEmpty(strIdTurnoNuevoMover))
                         {
-                            DialogResult result01 = MessageBox.Show("El turno de " + strTipoExamenMover + " va hacer movido a la fecha " + dgv.CurrentRow.Cells[3].Value.ToString() + " con el tipo de examen " + dgv.CurrentRow.Cells[1].Value.ToString() + ".\n\n¿Desea continuar?", "Mover turno", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+                            DialogResult result01 = MessageBox.Show(
+                                "El turno de " + strTipoExamenMover +
+                                " va hacer movido a la fecha " + dgv.CurrentRow.Cells[4].Value.ToString() +
+                                " con el tipo de examen " + dgv.CurrentRow.Cells[1].Value.ToString() +
+                                ".\n\n¿Desea continuar?",
+                                "Mover turno", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+
                             if (result01 == DialogResult.Yes)
                             {
-                                turno.MoverTurno(strIdTurnoAntiguoMover, strIdTurnoNuevoMover, dgv.CurrentRow.Cells[1].Value.ToString());
+                                turno.MoverTurno(strIdTurnoAntiguoMover, strIdTurnoNuevoMover,
+                                    dgv.CurrentRow.Cells[1].Value.ToString());
 
-                                MessageBox.Show("¡Turno movido correctamente a la fecha " + dgv.CurrentRow.Cells[3].Value.ToString() + "!", "Mover turnos", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                MessageBox.Show("¡Turno movido correctamente a la fecha " +
+                                    dgv.CurrentRow.Cells[4].Value.ToString() + "!",
+                                    "Mover turnos", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                                 strIdTurnoAntiguoMover = "";
                                 strIdTurnoNuevoMover = "";
@@ -2377,29 +2473,27 @@ namespace CapaPresentacion
                                 cargarGrillaTurnosSinFiltro();
                                 dgv.Rows[FilaIndex].Selected = true;
                                 dgv.CurrentCell = dgv.Rows[FilaIndex].Cells[1];
-                                FilaIndex = 1;
                             }
                         }
                         else
                         {
-                            MessageBox.Show("¡Debe seleccionar un turno en una fecha diferente!", "Mover turnos", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                            MessageBox.Show("¡Debe seleccionar un turno en una fecha diferente!",
+                                "Mover turnos", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                         }
                     }
                     else
                     {
-                        MessageBox.Show("¡Debe seleccionar un turno libre!", "Mover turnos", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show("¡Debe seleccionar un turno libre!",
+                            "Mover turnos", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
                 else
                 {
-                    if (strTipoConsulta == "LABORAL")
-                    {
-                        MessageBox.Show("¡Se puede mover el turno al mismo tipo de examen ó a los siguientes tipos de examen!\n\nTipo de examen:\n\n  * PRE-OCUPACIONAL\n  * PERIODICOS\n  * EGRESO ", "Mover turnos", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                    }
-                    else
-                    {
-                        MessageBox.Show("¡Se puede mover el turno al mismo tipo de examen ó a los siguientes tipos de examen!\n\nTipo de examen:\n\n* FUTBOL AFA\n* FUTBOL LAFIJ\n* FUTBOL METRO ", "Mover turnos", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                    }
+                    string mensaje = strTipoConsulta == "LABORAL"
+                        ? "¡Se puede mover el turno al mismo tipo de examen ó a los siguientes tipos de examen!\n\nTipo de examen:\n\n  * PRE-OCUPACIONAL\n  * PERIODICOS\n  * EGRESO "
+                        : "¡Se puede mover el turno al mismo tipo de examen ó a los siguientes tipos de examen!\n\nTipo de examen:\n\n* FUTBOL AFA\n* FUTBOL LAFIJ\n* FUTBOL METRO ";
+
+                    MessageBox.Show(mensaje, "Mover turnos", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 }
             }
         }
@@ -2499,6 +2593,11 @@ namespace CapaPresentacion
         }
 
         private void lblAsignados_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void tbFiltro_TextChanged(object sender, EventArgs e)
         {
 
         }

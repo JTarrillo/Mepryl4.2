@@ -197,5 +197,16 @@ namespace CapaNegocioMepryl
         {
             return turno.TipoConsulta(IdTurno);
         }
+
+        public DataTable buscarTurnosPorDNI(string dni)
+        {
+            return turno.buscarTurnosPorDNI(dni);
+        }
+
+        public DataTable buscarTurnosPorNombre(string nombre)
+        {
+            return turno.buscarTurnosPorNombre(nombre);
+        }
     }
 }
+

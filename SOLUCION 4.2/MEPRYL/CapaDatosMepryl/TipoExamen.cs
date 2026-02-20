@@ -185,41 +185,58 @@ namespace CapaDatosMepryl
             return resultado;
         }
 
-
         public Entidades.Resultado DesactivarSubtiposPorTipoYMotivo(string idPadre, int idMotivoConsulta)
         {
             var resultado = new Entidades.Resultado();
             try
             {
-                // Desactivar todos los subtipos (Padre = 0) para el tipo y motivo indicados
+                // PASO 1: Desactiva los subtipos
                 string sql = $@"UPDATE dbo.Especialidad 
-                        SET estado = 0 
-                        WHERE Padre = 0 
-                          AND IdPadre = '{idPadre}' 
-                          AND idMotivoConsulta = {idMotivoConsulta}
-                          AND id NOT IN (SELECT id FROM dbo.EspecialidadesEliminadas)";
+                SET estado = 0 
+                WHERE Padre = 0 
+                  AND IdPadre = '{idPadre}' 
+                  AND idMotivoConsulta = {idMotivoConsulta}
+                  AND id NOT IN (SELECT id FROM dbo.EspecialidadesEliminadas)";
                 SQLConnector.EjecutarConsulta(sql);
 
-                // Desactivar el tipo de examen padre (Padre = 1) si corresponde
-                string sqlPadre = $@"UPDATE dbo.Especialidad 
-                             SET estado = 0 
-                             WHERE id = '{idPadre}' 
-                               AND Padre = 1 
-                               AND idMotivoConsulta = {idMotivoConsulta}
-                               AND id NOT IN (SELECT id FROM dbo.EspecialidadesEliminadas)";
-                SQLConnector.EjecutarConsulta(sqlPadre);
+                // ✅ PASO 2: Validar si el PADRE tiene OTROS subtipos ACTIVOS
+                string verificarOtrosSubtipos = $@"
+            SELECT COUNT(*) as total FROM dbo.Especialidad
+            WHERE IdPadre = '{idPadre}'
+              AND Padre = 0
+              AND estado = 1
+              AND id NOT IN (SELECT id FROM dbo.EspecialidadesEliminadas)";
+
+                DataTable dtVerificar = SQLConnector.obtenerTablaSegunConsultaString(verificarOtrosSubtipos);
+                int TieneOtrosSubtiposActivos = Convert.ToInt32(dtVerificar.Rows[0]["total"]);
+
+                // ✅ PASO 3: Solo desactivar PADRE si NO tiene otros subtipos activos
+                if (TieneOtrosSubtiposActivos == 0)
+                {
+                    string sqlPadre = $@"UPDATE dbo.Especialidad 
+                         SET estado = 0 
+                         WHERE id = '{idPadre}' 
+                           AND Padre = 1 
+                           AND idMotivoConsulta = {idMotivoConsulta}
+                           AND id NOT IN (SELECT id FROM dbo.EspecialidadesEliminadas)";
+                    SQLConnector.EjecutarConsulta(sqlPadre);
+
+                    resultado.Mensaje = "Subtipos desactivados. El Tipo de Examen PADRE también se desactivó (no tenía otros subtipos activos).";
+                }
+                else
+                {
+                    resultado.Mensaje = $"Subtipos desactivados. El Tipo de Examen PADRE sigue ACTIVO ({TieneOtrosSubtiposActivos} otros subtipos activos).";
+                }
 
                 resultado.Modo = 1;
-                resultado.Mensaje = "Subtipos y tipo de examen padre desactivados correctamente para el tipo y motivo indicados.";
             }
             catch (Exception ex)
             {
                 resultado.Modo = -1;
-                resultado.Mensaje = "Error al desactivar subtipos y tipo padre: " + ex.Message;
+                resultado.Mensaje = "Error al desactivar subtipos: " + ex.Message;
             }
             return resultado;
         }
-
         public Entidades.Resultado ActivarTodosLosSubtiposGlobal()
         {
             var resultado = new Entidades.Resultado();
@@ -485,19 +502,32 @@ namespace CapaDatosMepryl
         /// NIVEL 1: Devuelve las Especialidades padre (Padre=1) para un MotivoDeConsulta
         /// Ej: CARDIOLOGÍA, NEUMOLOGÍA, etc. dentro de PREVENTIVA/LABORAL
         /// </summary>
+        /// <summary>
+        /// NIVEL 1: Devuelve las Especialidades padre (Padre=1) para un MotivoDeConsulta
+        /// ✅ MEJORADO: Solo retorna PADRES que tengan SUBTIPOS ACTIVOS
+        /// Ej: CARDIOLOGÍA, NEUMOLOGÍA, etc. dentro de PREVENTIVA/LABORAL
+        /// </summary>
         public DataTable cargarNivel1Especialidad(string idMotivoConsulta)
         {
             if (!int.TryParse(idMotivoConsulta, out int id))
                 return new DataTable();
 
             return SQLConnector.obtenerTablaSegunConsultaString(
-                @"SELECT * FROM dbo.Especialidad
-          WHERE descripcion <> 'VISITAS'
-            AND idMotivoConsulta = " + id + @"
-            AND Padre = 1
-            AND estado = 1
-            AND id NOT IN (SELECT id FROM dbo.EspecialidadesEliminadas)
-          ORDER BY LOWER(descripcion)");
+                @"SELECT e.* FROM dbo.Especialidad e
+          WHERE e.descripcion <> 'VISITAS'
+            AND e.idMotivoConsulta = " + id + @"
+            AND e.Padre = 1
+            AND e.estado = 1
+            AND e.id NOT IN (SELECT id FROM dbo.EspecialidadesEliminadas)
+            -- ✅ NUEVO: Solo PADRES que tienen SUBTIPOS ACTIVOS
+            AND EXISTS (
+                SELECT 1 FROM dbo.Especialidad s
+                WHERE s.IdPadre = e.id 
+                  AND s.Padre = 0 
+                  AND s.estado = 1
+                  AND s.id NOT IN (SELECT id FROM dbo.EspecialidadesEliminadas)
+            )
+          ORDER BY LOWER(e.descripcion)");
         }
         /// <summary>
         /// Verifica si un ID de especialidad tiene hijos (sub-elementos)

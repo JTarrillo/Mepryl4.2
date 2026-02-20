@@ -150,7 +150,7 @@ namespace CapaPresentacion
             // 
             // tabPage1
             // 
-            this.tabPage1.Size = new System.Drawing.Size(693, 266);
+            this.tabPage1.Size = new System.Drawing.Size(1134, 266);
             // 
             // panBusqueda
             // 
@@ -159,7 +159,7 @@ namespace CapaPresentacion
             this.panBusqueda.Controls.Add(this.cboSubtipo);
             this.panBusqueda.Controls.Add(this.cboProfesional);
             this.panBusqueda.Controls.Add(this.label3);
-            this.panBusqueda.Size = new System.Drawing.Size(693, 266);
+            this.panBusqueda.Size = new System.Drawing.Size(1134, 266);
             this.panBusqueda.Controls.SetChildIndex(this.label3, 0);
             this.panBusqueda.Controls.SetChildIndex(this.cboProfesional, 0);
             this.panBusqueda.Controls.SetChildIndex(this.gbControles, 0);
@@ -217,7 +217,7 @@ namespace CapaPresentacion
             // 
             // panBotones
             // 
-            this.panBotones.Location = new System.Drawing.Point(688, 0);
+            this.panBotones.Location = new System.Drawing.Point(1129, 0);
             this.panBotones.Size = new System.Drawing.Size(5, 266);
             // 
             // tabPage2
@@ -590,6 +590,7 @@ namespace CapaPresentacion
             this.cboEspecialidad.Name = "cboEspecialidad";
             this.cboEspecialidad.Size = new System.Drawing.Size(352, 24);
             this.cboEspecialidad.TabIndex = 66;
+            this.cboEspecialidad.SelectedIndexChanged += new System.EventHandler(this.cboEspecialidad_SelectedIndexChanged);
             this.cboEspecialidad.SelectionChangeCommitted += new System.EventHandler(this.cboEspecialidad_SelectionChangeCommitted);
             // 
             // label12

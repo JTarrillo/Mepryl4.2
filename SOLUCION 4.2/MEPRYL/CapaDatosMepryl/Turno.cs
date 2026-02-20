@@ -1421,6 +1421,8 @@ namespace CapaDatosMepryl
             return blnRetorno;
         }
 
+
+
         public string TipoConsulta(string IdTurno)
         {
             string strRespuesta = "";
@@ -1436,6 +1438,106 @@ namespace CapaDatosMepryl
             }
 
             return strRespuesta;
+        }
+
+        public DataTable buscarTurnosPorDNI(string dni)
+        {
+            try
+            {
+                string strSQL = @"
+                    SELECT t.id as Id, 
+                        ISNULL(tePadre.descripcion, te.descripcion) as TipoPadre,
+                        te.descripcion as SubTipo,
+                        p.apellido + ' ' + p.nombres as Profesional,
+                        t.fecha as Fecha,
+                        t.horaReferencia as Hora,
+                        CONVERT(numeric, t.nroOrden) as Nro,
+                        t.pacienteID as idPaciente,
+                        t.codigo as Codigo,
+                        t.reserva as Reserva,
+                        t.usuarioID as Usuario,
+                        t.bloqueado as Bloqueado,
+                        t.asistio as Asistio,
+                        t.reservado as Reservado,
+                        tep.id as IdTipoExamen,
+                        t.habilitado as Habilitado,
+                        t.estadoID as IdEstado,
+                        te.id as IdSubtipo,
+                        ISNULL(tePadre.id, te.id) as IdPadre
+                    FROM dbo.Turno t
+                    INNER JOIN dbo.TurnoEstado e ON t.estadoID = e.id
+                    INNER JOIN dbo.Horario h ON t.horarioID = h.id
+                    INNER JOIN dbo.Profesional p ON h.profesionalID = p.id
+                    LEFT JOIN dbo.TipoExamenDePaciente tep ON tep.idTurno = t.id
+                    LEFT JOIN dbo.Especialidad te ON h.especialidadID = te.id
+                    LEFT JOIN dbo.Especialidad tePadre ON te.IdPadre = tePadre.id AND te.Padre = 0
+                    WHERE t.codigo = '" + dni + @"'
+                    OR (t.pacienteID IN (
+                        SELECT id FROM dbo.Paciente WHERE dni LIKE '" + dni + @"%'
+                        UNION
+                        SELECT id FROM dbo.PacienteLaboral WHERE dni LIKE '" + dni + @"%'
+                    ))
+                    ORDER BY t.fecha DESC, t.horaReferencia DESC";
+
+                DataTable turnos = SQLConnector.obtenerTablaSegunConsultaString(strSQL);
+                return generarTablaRetornoTurno(turnos);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error en buscarTurnosPorDNI: {ex.Message}");
+                return new DataTable();
+            }
+        }
+
+        /// <summary>
+        /// Busca turnos por NOMBRE del paciente (búsqueda LIKE)
+        /// </summary>
+        public DataTable buscarTurnosPorNombre(string nombre)
+        {
+            try
+            {
+                string strSQL = @"
+                    SELECT t.id as Id, 
+                        ISNULL(tePadre.descripcion, te.descripcion) as TipoPadre,
+                        te.descripcion as SubTipo,
+                        p.apellido + ' ' + p.nombres as Profesional,
+                        t.fecha as Fecha,
+                        t.horaReferencia as Hora,
+                        CONVERT(numeric, t.nroOrden) as Nro,
+                        t.pacienteID as idPaciente,
+                        t.codigo as Codigo,
+                        t.reserva as Reserva,
+                        t.usuarioID as Usuario,
+                        t.bloqueado as Bloqueado,
+                        t.asistio as Asistio,
+                        t.reservado as Reservado,
+                        tep.id as IdTipoExamen,
+                        t.habilitado as Habilitado,
+                        t.estadoID as IdEstado,
+                        te.id as IdSubtipo,
+                        ISNULL(tePadre.id, te.id) as IdPadre
+                    FROM dbo.Turno t
+                    INNER JOIN dbo.TurnoEstado e ON t.estadoID = e.id
+                    INNER JOIN dbo.Horario h ON t.horarioID = h.id
+                    INNER JOIN dbo.Profesional p ON h.profesionalID = p.id
+                    LEFT JOIN dbo.TipoExamenDePaciente tep ON tep.idTurno = t.id
+                    LEFT JOIN dbo.Especialidad te ON h.especialidadID = te.id
+                    LEFT JOIN dbo.Especialidad tePadre ON te.IdPadre = tePadre.id AND te.Padre = 0
+                    WHERE t.pacienteID IN (
+                        SELECT id FROM dbo.Paciente WHERE (apellido + ' ' + nombres) LIKE '" + nombre + @"%'
+                        UNION
+                        SELECT id FROM dbo.PacienteLaboral WHERE (apellido + ' ' + nombres) LIKE '" + nombre + @"%'
+                    )
+                    ORDER BY t.fecha DESC, t.horaReferencia DESC";
+
+                DataTable turnos = SQLConnector.obtenerTablaSegunConsultaString(strSQL);
+                return generarTablaRetornoTurno(turnos);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error en buscarTurnosPorNombre: {ex.Message}");
+                return new DataTable();
+            }
         }
 
         public string ObtenerIdEspecialidad(string NombreEspecialidad)

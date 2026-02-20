@@ -944,7 +944,7 @@ namespace CapaPresentacion
                             // SOLO GUARDAR LOS QUE ESTÁN MARCADOS COMO TRUE
                             if (estado)
                             {
-                                int codigo = Convert.ToInt32(row[0]);
+                                int codigo = Convert.ToInt32(row[1]);
                                 string item = row[3]?.ToString() ?? "";
 
                                 // ✅ INSERTAR EN BD

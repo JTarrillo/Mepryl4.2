@@ -2355,12 +2355,22 @@ namespace CapaPresentacion
                 {
                     string idSubtipo = cboTipoExamen.SelectedValue.ToString();
 
+                    // ✅ DEBUG: Verificar que el ítem seleccionado es el mismo
+                    System.Diagnostics.Debug.WriteLine($"[DEBUG][cboTipoExamen_SelectionChangeCommitted] SelectedIndex: {cboTipoExamen.SelectedIndex}");
+                    System.Diagnostics.Debug.WriteLine($"[DEBUG][cboTipoExamen_SelectionChangeCommitted] SelectedValue: {idSubtipo}");
+                    System.Diagnostics.Debug.WriteLine($"[DEBUG][cboTipoExamen_SelectionChangeCommitted] SelectedText: {cboTipoExamen.SelectedText}");
+                    System.Diagnostics.Debug.WriteLine($"[DEBUG][cboTipoExamen_SelectionChangeCommitted] SelectedItem: {cboTipoExamen.SelectedItem}");
+
                     // Cargar la entidad (especialidad) del Subtipo seleccionado
                     Entidades.TipoExamen entidad = tipoExamen.cargarEntidad(idSubtipo);
+
+                    // ✅ DEBUG: Verificar que la entidad se cargó correctamente
+                    System.Diagnostics.Debug.WriteLine($"[DEBUG][cboTipoExamen_SelectionChangeCommitted] Entidad cargada - ID: {entidad?.Id}, Descripcion: {entidad?.Descripcion}");
 
                     // Validar que la entidad tiene datos
                     if (entidad == null || string.IsNullOrEmpty(entidad.Descripcion))
                     {
+                        System.Diagnostics.Debug.WriteLine($"[DEBUG][cboTipoExamen_SelectionChangeCommitted] ERROR: Entidad nula o sin descripción");
                         MessageBox.Show("No se pudieron cargar los datos del subtipo seleccionado",
                             "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         return;
@@ -2381,18 +2391,31 @@ namespace CapaPresentacion
 
                     strIdEspecialidadViejo = cboTipoExamen.SelectedValue.ToString();
 
+                    // ✅ DEBUG: Verificar que se guardó el ID anterior
+                    System.Diagnostics.Debug.WriteLine($"[DEBUG][cboTipoExamen_SelectionChangeCommitted] strIdEspecialidadViejo guardado: {strIdEspecialidadViejo}");
+
                     // Habilitar controles y scroll automáticamente al seleccionar los 3 combos
                     cambiarHabilitacionControles(true);
+
+                    // ✅ DEBUG: Confirmación final
+                    System.Diagnostics.Debug.WriteLine($"[DEBUG][cboTipoExamen_SelectionChangeCommitted] ✅ COMPLETADO: Formulario cargado para subtipo {idSubtipo}");
                 }
                 catch (Exception ex)
                 {
+                    // ✅ DEBUG: Capturar excepciones
+                    System.Diagnostics.Debug.WriteLine($"[DEBUG][cboTipoExamen_SelectionChangeCommitted] ❌ EXCEPCIÓN: {ex.Message}");
+                    System.Diagnostics.Debug.WriteLine($"[DEBUG][cboTipoExamen_SelectionChangeCommitted] Stack Trace: {ex.StackTrace}");
+
                     MessageBox.Show($"Error al cargar los datos: {ex.Message}", "Error",
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                     limpiarPanelPrincipal();
                 }
             }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine($"[DEBUG][cboTipoExamen_SelectionChangeCommitted] SelectedIndex es -1, no hay selección");
+            }
         }
-
         private void limpiarPanelPrincipal()
         {
             tbId7.Clear();
@@ -3797,7 +3820,7 @@ namespace CapaPresentacion
             {
                 frm = frmGestionarEspecialidadInstance;
             }
-          
+
             if (frm != null)
             {
                 System.Diagnostics.Debug.WriteLine("[DEBUG] btnguardarsubtipos_Click: Guardando cambios de subtipos.");
@@ -3842,6 +3865,6 @@ namespace CapaPresentacion
             }
         }
 
-      
+
     }
 }

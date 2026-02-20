@@ -282,36 +282,36 @@ namespace CapaPresentacion
         {
             InitializeComponent();
 
-            //Verifica los permisos
-            Solucion = 0;
-            Seguridad seguridad = new Seguridad(this.configuracion);
-            this.permisoAlta = seguridad.verificarPermiso("Administracion.Horarios", "ALTA");
-            this.permisoModificacion = seguridad.verificarPermiso("Administracion.Horarios", "MODIFICAR");
-            this.permisoBaja = seguridad.verificarPermiso("Administracion.Horarios", "BORRAR");
-            seguridad = null;
-
-            base.inicializarComponentes();
-
             DataTable dt = new DataTable();
             dt = SQLConnector.obtenerTablaSegunConsultaString("select id as ID, (apellido + ' ' + nombres) as NOMBRE from dbo.Profesional WHERE TieneHorario = 1 order by NOMBRE");
-            // Eliminado cboProfesional.Items.Clear() para evitar error con DataSource
             cboProfesional.DataSource = dt;
             cboProfesional.ValueMember = "ID";
             cboProfesional.DisplayMember = "NOMBRE";
             cboProfesional.SelectedIndex = -1;
 
-            //******************            
-
             DataTable dt1 = new DataTable();
-            dt1 = SQLConnector.obtenerTablaSegunConsultaString("select id as ID, descripcion as NOMBRE from dbo.Especialidad WHERE Padre = 1 order by NOMBRE");
-            // Eliminado cboEspecialidad.Items.Clear() para evitar error con DataSource
+            dt1 = SQLConnector.obtenerTablaSegunConsultaString(@"
+        SELECT DISTINCT e.id AS ID, e.descripcion AS NOMBRE 
+        FROM dbo.Especialidad e
+        WHERE e.Padre = 1 
+          AND e.estado = 1
+          AND e.id NOT IN (SELECT id FROM dbo.EspecialidadesEliminadas)
+          -- ✅ FALTA AQUI: Solo padres con SUBTIPOS ACTIVOS
+          AND EXISTS (
+              SELECT 1 FROM dbo.Especialidad s
+              WHERE s.IdPadre = e.id 
+                AND s.Padre = 0 
+                AND s.estado = 1
+                AND s.id NOT IN (SELECT id FROM dbo.EspecialidadesEliminadas)
+          )
+        ORDER BY e.descripcion");
+
             cboEspecialidad.DataSource = dt1;
             cboEspecialidad.ValueMember = "ID";
             cboEspecialidad.DisplayMember = "NOMBRE";
             cboEspecialidad.SelectedIndex = -1;
 
             cargarMotivoConsulta();
-
             inicializarEntidad();
         }
 
@@ -1193,20 +1193,29 @@ namespace CapaPresentacion
                 FROM dbo.Especialidad
                 WHERE id = '{idPadre}'
                   AND id NOT IN (SELECT id FROM dbo.EspecialidadesEliminadas)
-                ORDER BY NOMBRE";
+                ORDER BY descripcion";
                 System.Diagnostics.Debug.WriteLine($"[DEBUG][cargarEspecialidad] SQL para tipo padre: {sql}");
             }
             else
             {
-                // Todos los tipos padre del motivo
+                // ✅ MEJORADO: Solo tipos padre CON SUBTIPOS ACTIVOS
                 sql = $@"
-                SELECT id AS ID, descripcion AS NOMBRE
-                FROM dbo.Especialidad
-                WHERE Padre = 1
-                  AND idMotivoConsulta = '{idMotivo}'
-                  AND id NOT IN (SELECT id FROM dbo.EspecialidadesEliminadas)
-                ORDER BY NOMBRE";
-                System.Diagnostics.Debug.WriteLine($"[DEBUG][cargarEspecialidad] SQL para tipos del motivo: {sql}");
+                SELECT DISTINCT e.id AS ID, e.descripcion AS NOMBRE
+                FROM dbo.Especialidad e
+                WHERE e.Padre = 1
+                  AND e.idMotivoConsulta = '{idMotivo}'
+                  AND e.estado = 1
+                  AND e.id NOT IN (SELECT id FROM dbo.EspecialidadesEliminadas)
+                  -- ✅ Solo padres que tienen SUBTIPOS ACTIVOS
+                  AND EXISTS (
+                      SELECT 1 FROM dbo.Especialidad s
+                      WHERE s.IdPadre = e.id 
+                        AND s.Padre = 0 
+                        AND s.estado = 1
+                        AND s.id NOT IN (SELECT id FROM dbo.EspecialidadesEliminadas)
+                  )
+                ORDER BY e.descripcion";
+                System.Diagnostics.Debug.WriteLine($"[DEBUG][cargarEspecialidad] SQL para tipos del motivo (con subtipos activos): {sql}");
             }
 
             DataTable dt1 = SQLConnector.obtenerTablaSegunConsultaString(sql);
@@ -1355,10 +1364,8 @@ namespace CapaPresentacion
             string idMotivo = cboMotivo.SelectedValue?.ToString() ?? "NULL";
             string idPadre = "";
 
-            // DEBUG: Estado inicial del combo motivo
             System.Diagnostics.Debug.WriteLine($"[DEBUG][cargarEspecialidad] cboMotivo.SelectedIndex={cboMotivo.SelectedIndex}, SelectedValue={cboMotivo.SelectedValue}, idMotivo={idMotivo}");
 
-            // Chequeo: Si no hay motivo seleccionado, limpiar y salir
             if (cboMotivo.SelectedIndex == -1 || cboMotivo.SelectedValue == null || cboMotivo.SelectedValue.ToString() == "")
             {
                 System.Diagnostics.Debug.WriteLine("[DEBUG][cargarEspecialidad] No hay motivo seleccionado. Limpiando combos y saliendo.");
@@ -1367,7 +1374,6 @@ namespace CapaPresentacion
                 return;
             }
 
-            // Solo buscar el padre si hay una especialidad seleccionada y NO estamos agregando
             if (rglEntidad != null && rglEntidad.especialidadID != Guid.Empty && edicion != ModoEdicion.AGREGANDO)
             {
                 DataTable dtPadre = SQLConnector.obtenerTablaSegunConsultaString(
@@ -1380,31 +1386,36 @@ namespace CapaPresentacion
             string sql;
             if (!string.IsNullOrEmpty(idPadre))
             {
-                // Solo el tipo padre relacionado
                 sql = $@"
-                        SELECT id AS ID, descripcion AS NOMBRE
-                        FROM dbo.Especialidad
-                        WHERE id = '{idPadre}'
-                          AND id NOT IN (SELECT id FROM dbo.EspecialidadesEliminadas)
-                        ORDER BY NOMBRE";
+                SELECT id AS ID, descripcion AS NOMBRE
+                FROM dbo.Especialidad
+                WHERE id = '{idPadre}'
+                  AND id NOT IN (SELECT id FROM dbo.EspecialidadesEliminadas)
+                ORDER BY descripcion";
                 System.Diagnostics.Debug.WriteLine($"[DEBUG][cargarEspecialidad] SQL para tipo padre: {sql}");
             }
             else
             {
-                // Todos los tipos padre del motivo
                 sql = $@"
-                        SELECT id AS ID, descripcion AS NOMBRE
-                        FROM dbo.Especialidad
-                        WHERE Padre = 1
-                          AND idMotivoConsulta = '{idMotivo}'
-                          AND id NOT IN (SELECT id FROM dbo.EspecialidadesEliminadas)
-                        ORDER BY NOMBRE";
-                System.Diagnostics.Debug.WriteLine($"[DEBUG][cargarEspecialidad] SQL para tipos del motivo: {sql}");
+            SELECT DISTINCT e.id AS ID, e.descripcion AS NOMBRE
+            FROM dbo.Especialidad e
+            WHERE e.Padre = 1
+              AND e.idMotivoConsulta = '{idMotivo}'
+              AND e.estado = 1
+              AND e.id NOT IN (SELECT id FROM dbo.EspecialidadesEliminadas)
+              AND EXISTS (
+                  SELECT 1 FROM dbo.Especialidad s
+                  WHERE s.IdPadre = e.id 
+                    AND s.Padre = 0 
+                    AND s.estado = 1
+                    AND s.id NOT IN (SELECT id FROM dbo.EspecialidadesEliminadas)
+              )
+            ORDER BY e.descripcion";
+                System.Diagnostics.Debug.WriteLine($"[DEBUG][cargarEspecialidad] SQL para tipos del motivo (con subtipos activos): {sql}");
             }
 
             DataTable dt1 = SQLConnector.obtenerTablaSegunConsultaString(sql);
 
-            // DEBUG: Mostrar cantidad de filas obtenidas y sus valores
             System.Diagnostics.Debug.WriteLine($"[DEBUG][cargarEspecialidad] dt1.Rows.Count={(dt1 != null ? dt1.Rows.Count : 0)}");
             if (dt1 != null)
             {
@@ -1422,24 +1433,45 @@ namespace CapaPresentacion
             cboEspecialidad.ValueMember = "ID";
             cboEspecialidad.DisplayMember = "NOMBRE";
             cboEspecialidad.SelectedIndex = -1;
-            cboSubtipo.DataSource = null; // Limpia subtipos al cambiar motivo
+            cboSubtipo.DataSource = null;
         }
+
         private void CargarMotivoPorEspecialidad()
         {
+            // Si no hay especialidad seleccionada, limpiar combo
+            if (string.IsNullOrEmpty(strNombreEspecialidad) || cboEspecialidad.SelectedValue == null)
+            {
+                cboEspecialidad.DataSource = null;
+                cboEspecialidad.SelectedIndex = -1;
+                return;
+            }
+
+            string idEspecialidad = cboEspecialidad.SelectedValue.ToString();
+
             DataTable dt1 = new DataTable();
+            dt1 = SQLConnector.obtenerTablaSegunConsultaString($@"
+        SELECT DISTINCT e.id AS ID, e.descripcion AS NOMBRE 
+        FROM dbo.Especialidad e
+        WHERE e.Padre = 1 
+          AND e.estado = 1
+          AND e.id NOT IN (SELECT id FROM dbo.EspecialidadesEliminadas)
+          AND e.idMotivoConsulta = (SELECT idMotivoConsulta FROM dbo.Especialidad WHERE id = '{idEspecialidad}')
+          -- ✅ Solo padres que tienen SUBTIPOS ACTIVOS
+          AND EXISTS (
+              SELECT 1 FROM dbo.Especialidad s
+              WHERE s.IdPadre = e.id 
+                AND s.Padre = 0 
+                AND s.estado = 1
+                AND s.id NOT IN (SELECT id FROM dbo.EspecialidadesEliminadas)
+          )
+        ORDER BY e.descripcion");
 
-
-            dt1 = SQLConnector.obtenerTablaSegunConsultaString(
-                "select id as ID, descripcion as NOMBRE from dbo.Especialidad WHERE Padre = 1 AND id NOT IN (SELECT id FROM dbo.EspecialidadesEliminadas) order by NOMBRE");
-
-            // DEBUG: Mostrar los valores de dt1 en la salida de depuración
             if (dt1 != null)
             {
-                System.Diagnostics.Debug.WriteLine("[DEBUG] Filas de dt1:");
+                System.Diagnostics.Debug.WriteLine("[DEBUG] CargarMotivoPorEspecialidad - Filas de dt1:");
                 foreach (DataRow row in dt1.Rows)
                 {
-                    var valores = string.Join(", ", row.ItemArray);
-                    System.Diagnostics.Debug.WriteLine($"[DEBUG] {valores}");
+                    System.Diagnostics.Debug.WriteLine($"[DEBUG] ID={row["ID"]}, NOMBRE={row["NOMBRE"]}");
                 }
             }
 
@@ -1448,9 +1480,9 @@ namespace CapaPresentacion
             cboEspecialidad.DisplayMember = "NOMBRE";
             cboEspecialidad.SelectedIndex = -1;
 
+            // Restaurar la selección anterior
             cboEspecialidad.Text = strNombreEspecialidad;
 
-            // --- Solución: Chequear null antes de usar SelectedValue ---
             if (cboEspecialidad.SelectedValue != null)
             {
                 DataTable dt = tipoExamen.FiltrarMotivoConsulta(tipoExamen.ObtenerMotivoConsulta(cboEspecialidad.SelectedValue.ToString()));
@@ -1464,8 +1496,6 @@ namespace CapaPresentacion
                 }
             }
         }
-
-
 
         private void butCancelar_Click_1(object sender, EventArgs e)
         {
@@ -1506,5 +1536,9 @@ namespace CapaPresentacion
             frm.ShowDialog();
         }
 
+        private void cboEspecialidad_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }
