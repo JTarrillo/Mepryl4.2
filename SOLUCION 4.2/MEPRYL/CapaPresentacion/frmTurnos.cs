@@ -2221,11 +2221,11 @@ namespace CapaPresentacion
             DateTime dtDiaSemana;
 
             strPrecio = tbImportePreventiva.Text;
-            strHorario = dgv.Rows[dgv.CurrentCell.RowIndex].Cells[4].Value.ToString();
-            strFechaTurno = dgv.Rows[dgv.CurrentCell.RowIndex].Cells[3].Value.ToString();
-            strCodSeg = dgv.Rows[dgv.CurrentCell.RowIndex].Cells[10].Value.ToString();
-            strPaciente = dgv.Rows[dgv.CurrentCell.RowIndex].Cells[8].Value.ToString();
-            strTipoExamen = dgv.Rows[dgv.CurrentCell.RowIndex].Cells[1].Value.ToString();
+            strHorario = dgv.Rows[dgv.CurrentCell.RowIndex].Cells[5].Value.ToString();    // ✅ HORA [5]
+            strFechaTurno = dgv.Rows[dgv.CurrentCell.RowIndex].Cells[4].Value.ToString(); // ✅ FECHA [4]
+            strCodSeg = dgv.Rows[dgv.CurrentCell.RowIndex].Cells[11].Value.ToString();    // ✅ CODIGO [11]
+            strPaciente = dgv.Rows[dgv.CurrentCell.RowIndex].Cells[9].Value.ToString();   // ✅ PACIENTE [9]
+            strTipoExamen = dgv.Rows[dgv.CurrentCell.RowIndex].Cells[1].Value.ToString(); // ✅ TIPOPADRE [1]
 
             dtDiaSemana = Convert.ToDateTime(strFechaTurno);
 

@@ -398,45 +398,65 @@ namespace CapaDatosMepryl
 
         public char verificarTipoTurno(Guid idTurno)
         {
-            DataTable motivoConsulta = SQLConnector.obtenerTablaSegunConsultaString(@"select mc.nombre from dbo.Turno t 
-            inner join dbo.Horario h on t.horarioID = h.id
-            inner join dbo.Especialidad e on h.especialidadID = e.id 
-            inner join dbo.MotivoDeConsulta mc on e.idMotivoConsulta = mc.id
-            where t.id = '" + idTurno.ToString() + "'");
-            if (motivoConsulta.Rows.Count > 0)
+            try
             {
-                if (motivoConsulta.Rows[0].ItemArray[0].ToString() == "LABORAL")
+                // PRIMERA CONSULTA
+                DataTable motivoConsulta = SQLConnector.obtenerTablaSegunConsultaString(@"select mc.nombre from dbo.Turno t 
+        inner join dbo.Horario h on t.horarioID = h.id
+        inner join dbo.Especialidad e on h.especialidadID = e.id 
+        inner join dbo.MotivoDeConsulta mc on e.idMotivoConsulta = mc.id
+        where t.id = '" + idTurno.ToString() + "'");
+
+                System.Diagnostics.Debug.WriteLine($"✅ Query 1 - IdTurno: {idTurno}");
+                System.Diagnostics.Debug.WriteLine($"✅ Query 1 - Rows: {motivoConsulta.Rows.Count}");
+
+                if (motivoConsulta.Rows.Count > 0)
                 {
-                    return 'L';
+                    string motivoValue = motivoConsulta.Rows[0].ItemArray[0].ToString();
+                    System.Diagnostics.Debug.WriteLine($"✅ Query 1 - MotivoConsulta: '{motivoValue}'");
+
+                    if (motivoValue == "LABORAL")
+                    {
+                        return 'L';
+                    }
+                    if (motivoValue == "PREVENTIVA")
+                    {
+                        return 'P';
+                    }
                 }
-                if (motivoConsulta.Rows[0].ItemArray[0].ToString() == "PREVENTIVA")
+
+                // SEGUNDA CONSULTA
+                DataTable motivoConsulta01 = SQLConnector.obtenerTablaSegunConsultaString(@"select t.consulta from dbo.Turno t 
+        inner join dbo.Horario h on t.horarioID = h.id
+        inner join dbo.Especialidad e on h.especialidadID = e.id 
+        inner join dbo.MotivoDeConsulta mc on e.idMotivoConsulta = mc.id
+        where t.id = '" + idTurno.ToString() + "'");
+
+                System.Diagnostics.Debug.WriteLine($"✅ Query 2 - Rows: {motivoConsulta01.Rows.Count}");
+
+                if (motivoConsulta01.Rows.Count > 0)
                 {
-                    return 'P';
+                    string consulta = motivoConsulta01.Rows[0].ItemArray[0].ToString();
+                    System.Diagnostics.Debug.WriteLine($"✅ Query 2 - Consulta: '{consulta}'");
+
+                    if (consulta == "LABORAL")
+                    {
+                        return 'L';
+                    }
+                    if (consulta == "PREVENTIVA")
+                    {
+                        return 'P';
+                    }
                 }
+
+                System.Diagnostics.Debug.WriteLine($"❌ Retorna '*' - No encontró tipo");
+                return '*';
             }
-
-            // INICIO GRV - Ramírez - verificar la tabla EmpresasPorPaciente, si el idPaciente existe en esta tabla es laboral
-
-            DataTable motivoConsulta01 = SQLConnector.obtenerTablaSegunConsultaString(@"select t.consulta from dbo.Turno t 
-            inner join dbo.Horario h on t.horarioID = h.id
-            inner join dbo.Especialidad e on h.especialidadID = e.id 
-            inner join dbo.MotivoDeConsulta mc on e.idMotivoConsulta = mc.id
-            where t.id = '" + idTurno.ToString() + "'");
-
-            if (motivoConsulta01.Rows.Count > 0)
+            catch (Exception ex)
             {
-                if (motivoConsulta01.Rows[0].ItemArray[0].ToString() == "LABORAL")
-                {
-                    return 'L';
-                }
-                if (motivoConsulta01.Rows[0].ItemArray[0].ToString() == "PREVENTIVA")
-                {
-                    return 'P';
-                }
+                System.Diagnostics.Debug.WriteLine($"❌ Error en verificarTipoTurno: {ex.Message}");
+                return '*';
             }
-            // FIN
-
-            return '*';
         }
 
         public Entidades.TurnoPreventiva nuevoTurnoPacientePreventiva(string idPaciente, string idTurno)
