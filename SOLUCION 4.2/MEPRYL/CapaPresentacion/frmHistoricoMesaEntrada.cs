@@ -560,8 +560,18 @@ namespace CapaPresentacion
 
         private void botMostrarEstudios_Click(object sender, EventArgs e)
         {
-            if (dgv.Columns["Estudios"].Visible) { dgv.Columns["Estudios"].Visible = false; }
-            else { dgv.Columns["Estudios"].Visible = true; }
+            if (dgv.Columns["Estudios"].Visible)
+            {
+                dgv.Columns["Estudios"].Visible = false;
+            }
+            else
+            {
+                dgv.Columns["Estudios"].Visible = true;
+                // Permitir scroll horizontal y auto-ajuste de ancho
+                dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
+                dgv.Columns["Estudios"].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                dgv.ScrollBars = ScrollBars.Both;
+            }
         }
 
         private void botonRango_Click(object sender, EventArgs e)
@@ -592,6 +602,11 @@ namespace CapaPresentacion
         private void bbiImprimirListado_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             butImprimirListado_Click(sender, e);
+        }
+
+        private void dgv_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
         }
 
         private void tpFecha_ValueChanged(object sender, EventArgs e)

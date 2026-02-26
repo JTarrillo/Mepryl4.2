@@ -30,12 +30,12 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmPacienteLaboral));
-            DevExpress.Utils.SuperToolTip superToolTip3 = new DevExpress.Utils.SuperToolTip();
-            DevExpress.Utils.ToolTipTitleItem toolTipTitleItem3 = new DevExpress.Utils.ToolTipTitleItem();
-            DevExpress.Utils.SuperToolTip superToolTip4 = new DevExpress.Utils.SuperToolTip();
-            DevExpress.Utils.ToolTipTitleItem toolTipTitleItem4 = new DevExpress.Utils.ToolTipTitleItem();
-            DevExpress.Utils.ToolTipItem toolTipItem2 = new DevExpress.Utils.ToolTipItem();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            DevExpress.Utils.SuperToolTip superToolTip5 = new DevExpress.Utils.SuperToolTip();
+            DevExpress.Utils.ToolTipTitleItem toolTipTitleItem5 = new DevExpress.Utils.ToolTipTitleItem();
+            DevExpress.Utils.SuperToolTip superToolTip6 = new DevExpress.Utils.SuperToolTip();
+            DevExpress.Utils.ToolTipTitleItem toolTipTitleItem6 = new DevExpress.Utils.ToolTipTitleItem();
+            DevExpress.Utils.ToolTipItem toolTipItem3 = new DevExpress.Utils.ToolTipItem();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.lbTitulo = new System.Windows.Forms.Label();
             this.botonLaboratorio = new System.Windows.Forms.Panel();
             this.btnEliminarPaciente = new System.Windows.Forms.Button();
@@ -438,9 +438,9 @@
             this.bbiAnadirEmpresa.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("bbiAnadirEmpresa.ImageOptions.Image")));
             this.bbiAnadirEmpresa.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("bbiAnadirEmpresa.ImageOptions.LargeImage")));
             this.bbiAnadirEmpresa.Name = "bbiAnadirEmpresa";
-            toolTipTitleItem3.Text = "Permite agregar una empresa a la lista";
-            superToolTip3.Items.Add(toolTipTitleItem3);
-            this.bbiAnadirEmpresa.SuperTip = superToolTip3;
+            toolTipTitleItem5.Text = "Permite agregar una empresa a la lista";
+            superToolTip5.Items.Add(toolTipTitleItem5);
+            this.bbiAnadirEmpresa.SuperTip = superToolTip5;
             this.bbiAnadirEmpresa.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.bbiAnadirEmpresa_ItemClick);
             // 
             // bbiBuscarPaciente
@@ -450,12 +450,12 @@
             this.bbiBuscarPaciente.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("bbiBuscarPaciente.ImageOptions.Image")));
             this.bbiBuscarPaciente.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("bbiBuscarPaciente.ImageOptions.LargeImage")));
             this.bbiBuscarPaciente.Name = "bbiBuscarPaciente";
-            toolTipTitleItem4.Text = "Buscar Paciente";
-            toolTipItem2.LeftIndent = 6;
-            toolTipItem2.Text = "Permite buscar un paciente por DNI, nombre o empresa.";
-            superToolTip4.Items.Add(toolTipTitleItem4);
-            superToolTip4.Items.Add(toolTipItem2);
-            this.bbiBuscarPaciente.SuperTip = superToolTip4;
+            toolTipTitleItem6.Text = "Buscar Paciente";
+            toolTipItem3.LeftIndent = 6;
+            toolTipItem3.Text = "Permite buscar un paciente por DNI, nombre o empresa.";
+            superToolTip6.Items.Add(toolTipTitleItem6);
+            superToolTip6.Items.Add(toolTipItem3);
+            this.bbiBuscarPaciente.SuperTip = superToolTip6;
             this.bbiBuscarPaciente.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.bbiBuscarPaciente_ItemClick);
             // 
             // ribbonPage1
@@ -469,8 +469,6 @@
             // 
             this.rpgOpciones.Name = "rpgOpciones";
             this.rpgOpciones.ShowCaptionButton = false;
-            this.rpgOpciones.ItemLinks.Add(this.bbiAnadirEmpresa);
-            this.rpgOpciones.ItemLinks.Add(this.bbiBuscarPaciente);
             // 
             // panelBusqueda
             // 
@@ -511,8 +509,8 @@
             this.dgvBusqueda.Name = "dgvBusqueda";
             this.dgvBusqueda.ReadOnly = true;
             this.dgvBusqueda.RowHeadersVisible = false;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.dgvBusqueda.RowsDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dgvBusqueda.RowsDefaultCellStyle = dataGridViewCellStyle3;
             this.dgvBusqueda.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvBusqueda.Size = new System.Drawing.Size(485, 91);
             this.dgvBusqueda.TabIndex = 1;

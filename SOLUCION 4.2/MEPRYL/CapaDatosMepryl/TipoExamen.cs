@@ -2319,6 +2319,16 @@ LEFT JOIN
                 System.Diagnostics.Debug.WriteLine($"ERROR en insertarEstudioPorSubtipo: {ex.Message}");
                 throw;
             }
+
+
+        }
+
+        public void EliminarTipoExamenConDependencias(Guid idTipoExamen)
+        {
+            // Elimina los estudios asociados primero
+            SQLConnector.EjecutarConsulta("DELETE FROM EstudiosPorExamenItem WHERE idTipoExamen = '" + idTipoExamen + "'");
+            // Luego elimina el tipo de examen
+            SQLConnector.EjecutarConsulta("DELETE FROM TipoExamen WHERE id = '" + idTipoExamen + "'");
         }
     }
 

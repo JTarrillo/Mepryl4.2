@@ -1225,26 +1225,23 @@ namespace CapaPresentacion
             else
             {
                 // Verifica si el turno tiene exámenes asociados
-                string idTurno = dgv.Rows[dgv.CurrentCell.RowIndex].Cells[0].Value.ToString();
-                bool blnTieneExamenes = turno.TurnoTieneAsociadoExamen(idTurno);
+                bool blnTieneExamenes = turno.TurnoTieneAsociadoExamen(dgv.Rows[dgv.CurrentCell.RowIndex].Cells[0].Value.ToString());
                 if (blnTieneExamenes)
                 {
-                    // Busca todos los exámenes de paciente asociados a este turno
-                    DataTable dt = SQLConnector.obtenerTablaSegunConsultaString(
-                        "SELECT id FROM dbo.TipoExamenDePaciente WHERE idTurno = '" + idTurno + "'"
-                    );
-                    foreach (DataRow row in dt.Rows)
+                    var cellValue = dgv.Rows[dgv.CurrentCell.RowIndex].Cells["IdTipoExamen"].Value;
+                    Guid idTipoExamen;
+                    if (cellValue != null && Guid.TryParse(cellValue.ToString(), out idTipoExamen) && idTipoExamen != Guid.Empty)
                     {
-                        Guid idTipoExamenDePaciente = new Guid(row["id"].ToString());
-                        // Elimina los ítems asociados
-                        SQLConnector.EjecutarConsulta("DELETE FROM EstudiosPorExamenItem WHERE idTipoExamen = '" + idTipoExamenDePaciente + "'");
-                        // Elimina el examen de paciente
-                        SQLConnector.EjecutarConsulta("DELETE FROM TipoExamenDePaciente WHERE id = '" + idTipoExamenDePaciente + "'");
+                        // Muestra el valor para depuración
+                        MessageBox.Show("idTipoExamen: " + idTipoExamen.ToString());
+                        // Elimina primero los hijos y luego el padre
+                        tipoEx.EliminarTipoExamenConDependencias(idTipoExamen);
                     }
                 }
                 liberarTurno();
             }
         }
+
         private void liberarTurno()
         {
             if (dgv.CurrentCell != null && turnoAsignado(dgv.CurrentCell.RowIndex))

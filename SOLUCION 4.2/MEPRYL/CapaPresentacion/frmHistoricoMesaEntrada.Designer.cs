@@ -449,6 +449,7 @@
             this.dgv.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgv.Size = new System.Drawing.Size(1137, 450);
             this.dgv.TabIndex = 270;
+            this.dgv.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgv_CellContentClick);
             // 
             // tbTotal
             // 
@@ -548,7 +549,7 @@
             this.idConsulta.Name = "idConsulta";
             this.idConsulta.ReadOnly = true;
             this.idConsulta.Visible = false;
-            this.idConsulta.Width = 63;
+            this.idConsulta.Width = 20;
             // 
             // idPaciente
             // 
@@ -556,7 +557,7 @@
             this.idPaciente.Name = "idPaciente";
             this.idPaciente.ReadOnly = true;
             this.idPaciente.Visible = false;
-            this.idPaciente.Width = 62;
+            this.idPaciente.Width = 20;
             // 
             // idTipoExamen
             // 
@@ -564,21 +565,21 @@
             this.idTipoExamen.Name = "idTipoExamen";
             this.idTipoExamen.ReadOnly = true;
             this.idTipoExamen.Visible = false;
-            this.idTipoExamen.Width = 79;
+            this.idTipoExamen.Width = 20;
             // 
             // Fecha
             // 
             this.Fecha.HeaderText = "Fecha";
             this.Fecha.Name = "Fecha";
             this.Fecha.ReadOnly = true;
-            this.Fecha.Width = 90;
+            this.Fecha.Width = 80;
             // 
             // TipoExamen
             // 
             this.TipoExamen.HeaderText = "Subtipo de Examen";
             this.TipoExamen.Name = "TipoExamen";
             this.TipoExamen.ReadOnly = true;
-            this.TipoExamen.Width = 200;
+            this.TipoExamen.Width = 150;
             // 
             // Orden
             // 
@@ -587,7 +588,7 @@
             this.Orden.HeaderText = "Nº Orden";
             this.Orden.Name = "Orden";
             this.Orden.ReadOnly = true;
-            this.Orden.Width = 71;
+            this.Orden.Width = 50;
             // 
             // Examen
             // 
@@ -596,7 +597,7 @@
             this.Examen.HeaderText = "Nº Examen";
             this.Examen.Name = "Examen";
             this.Examen.ReadOnly = true;
-            this.Examen.Width = 79;
+            this.Examen.Width = 50;
             // 
             // Apellido
             // 
@@ -624,7 +625,7 @@
             this.Categoria.HeaderText = "Categoria";
             this.Categoria.Name = "Categoria";
             this.Categoria.ReadOnly = true;
-            this.Categoria.Width = 79;
+            this.Categoria.Width = 50;
             // 
             // Liga
             // 
@@ -647,7 +648,6 @@
             this.Empresa.HeaderText = "Empresa";
             this.Empresa.Name = "Empresa";
             this.Empresa.ReadOnly = true;
-            this.Empresa.Width = 150;
             // 
             // LigaDesc
             // 
@@ -671,7 +671,7 @@
             this.Estudios.Name = "Estudios";
             this.Estudios.ReadOnly = true;
             this.Estudios.Visible = false;
-            this.Estudios.Width = 72;
+            this.Estudios.Width = 150;
             // 
             // frmHistoricoMesaEntrada
             // 

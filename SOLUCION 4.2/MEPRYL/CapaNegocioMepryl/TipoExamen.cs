@@ -67,6 +67,13 @@ namespace CapaNegocioMepryl
             return tipoExamen.cargarMotivosDeConsulta();
         }
 
+        public void EliminarTipoExamenConDependencias(Guid idTipoExamen)
+        {
+            // Usa la instancia tipoExamen correctamente
+            tipoExamen.EliminarTipoExamenConDependencias(idTipoExamen);
+        }
+
+
         public Entidades.Resultado ActivarTodosLosSubtipos(string idPadre)
         {
             return tipoExamen.ActivarTodosLosSubtipos(idPadre);

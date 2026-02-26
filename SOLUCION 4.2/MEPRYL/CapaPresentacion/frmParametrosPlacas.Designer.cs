@@ -29,12 +29,12 @@ namespace CapaPresentacion
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmParametrosPlacas));
-            DevExpress.Utils.SuperToolTip superToolTip1 = new DevExpress.Utils.SuperToolTip();
-            DevExpress.Utils.ToolTipTitleItem toolTipTitleItem1 = new DevExpress.Utils.ToolTipTitleItem();
-            DevExpress.Utils.ToolTipItem toolTipItem1 = new DevExpress.Utils.ToolTipItem();
-            DevExpress.Utils.SuperToolTip superToolTip2 = new DevExpress.Utils.SuperToolTip();
-            DevExpress.Utils.ToolTipTitleItem toolTipTitleItem2 = new DevExpress.Utils.ToolTipTitleItem();
-            DevExpress.Utils.ToolTipItem toolTipItem2 = new DevExpress.Utils.ToolTipItem();
+            DevExpress.Utils.SuperToolTip superToolTip7 = new DevExpress.Utils.SuperToolTip();
+            DevExpress.Utils.ToolTipTitleItem toolTipTitleItem7 = new DevExpress.Utils.ToolTipTitleItem();
+            DevExpress.Utils.ToolTipItem toolTipItem7 = new DevExpress.Utils.ToolTipItem();
+            DevExpress.Utils.SuperToolTip superToolTip8 = new DevExpress.Utils.SuperToolTip();
+            DevExpress.Utils.ToolTipTitleItem toolTipTitleItem8 = new DevExpress.Utils.ToolTipTitleItem();
+            DevExpress.Utils.ToolTipItem toolTipItem8 = new DevExpress.Utils.ToolTipItem();
             this.rbcMenu = new DevExpress.XtraBars.Ribbon.RibbonControl();
             this.bbiAgregarClub = new DevExpress.XtraBars.BarButtonItem();
             this.bbiBuscarPaciente = new DevExpress.XtraBars.BarButtonItem();
@@ -99,8 +99,8 @@ namespace CapaPresentacion
             // panDerecha
             // 
             this.panDerecha.Controls.Add(this.button1);
-            this.panDerecha.Location = new System.Drawing.Point(757, 139);
-            this.panDerecha.Size = new System.Drawing.Size(128, 377);
+            this.panDerecha.Location = new System.Drawing.Point(757, 164);
+            this.panDerecha.Size = new System.Drawing.Size(128, 352);
             this.panDerecha.Controls.SetChildIndex(this.button1, 0);
             this.panDerecha.Controls.SetChildIndex(this.butModificar, 0);
             this.panDerecha.Controls.SetChildIndex(this.butAgregar, 0);
@@ -159,7 +159,7 @@ namespace CapaPresentacion
             this.bbiEnviarCorreo,
             this.bbiCambiarClub,
             this.bbiUbicarConsolidado});
-            this.rbcMenu.Location = new System.Drawing.Point(0, 0);
+            this.rbcMenu.Location = new System.Drawing.Point(0, 25);
             this.rbcMenu.MaxItemId = 7;
             this.rbcMenu.Name = "rbcMenu";
             this.rbcMenu.Size = new System.Drawing.Size(885, 139);
@@ -171,13 +171,13 @@ namespace CapaPresentacion
             this.bbiAgregarClub.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("bbiAgregarClub.ImageOptions.Image")));
             this.bbiAgregarClub.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("bbiAgregarClub.ImageOptions.LargeImage")));
             this.bbiAgregarClub.Name = "bbiAgregarClub";
-            toolTipTitleItem1.Text = "Agregar un club";
-            toolTipItem1.LeftIndent = 6;
-            toolTipItem1.Text = "Permite agregar un club de futbol a una liga previamente existente.\r\nEsto abre un" +
+            toolTipTitleItem7.Text = "Agregar un club";
+            toolTipItem7.LeftIndent = 6;
+            toolTipItem7.Text = "Permite agregar un club de futbol a una liga previamente existente.\r\nEsto abre un" +
     "a ventana en la cual podemos “Agregar, modificar o eliminar” un club.\r\n";
-            superToolTip1.Items.Add(toolTipTitleItem1);
-            superToolTip1.Items.Add(toolTipItem1);
-            this.bbiAgregarClub.SuperTip = superToolTip1;
+            superToolTip7.Items.Add(toolTipTitleItem7);
+            superToolTip7.Items.Add(toolTipItem7);
+            this.bbiAgregarClub.SuperTip = superToolTip7;
             // 
             // bbiBuscarPaciente
             // 
@@ -186,12 +186,12 @@ namespace CapaPresentacion
             this.bbiBuscarPaciente.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("bbiBuscarPaciente.ImageOptions.Image")));
             this.bbiBuscarPaciente.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("bbiBuscarPaciente.ImageOptions.LargeImage")));
             this.bbiBuscarPaciente.Name = "bbiBuscarPaciente";
-            toolTipTitleItem2.Text = "Buscar paciente de preventiva";
-            toolTipItem2.LeftIndent = 6;
-            toolTipItem2.Text = "Permite buscar un paciente previamente ingresado por nombre o DNI.";
-            superToolTip2.Items.Add(toolTipTitleItem2);
-            superToolTip2.Items.Add(toolTipItem2);
-            this.bbiBuscarPaciente.SuperTip = superToolTip2;
+            toolTipTitleItem8.Text = "Buscar paciente de preventiva";
+            toolTipItem8.LeftIndent = 6;
+            toolTipItem8.Text = "Permite buscar un paciente previamente ingresado por nombre o DNI.";
+            superToolTip8.Items.Add(toolTipTitleItem8);
+            superToolTip8.Items.Add(toolTipItem8);
+            this.bbiBuscarPaciente.SuperTip = superToolTip8;
             // 
             // bbiImprimir
             // 
@@ -349,7 +349,7 @@ namespace CapaPresentacion
             this.tabPage2.Controls.Add(this.label4);
             this.tabPage2.Location = new System.Drawing.Point(4, 25);
             this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Size = new System.Drawing.Size(749, 414);
+            this.tabPage2.Size = new System.Drawing.Size(749, 323);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Importar Archivo RX";
             this.tabPage2.UseVisualStyleBackColor = true;
