@@ -29,12 +29,12 @@ namespace CapaPresentacion
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmParametrosPlacas));
-            DevExpress.Utils.SuperToolTip superToolTip11 = new DevExpress.Utils.SuperToolTip();
-            DevExpress.Utils.ToolTipTitleItem toolTipTitleItem11 = new DevExpress.Utils.ToolTipTitleItem();
-            DevExpress.Utils.ToolTipItem toolTipItem11 = new DevExpress.Utils.ToolTipItem();
-            DevExpress.Utils.SuperToolTip superToolTip12 = new DevExpress.Utils.SuperToolTip();
-            DevExpress.Utils.ToolTipTitleItem toolTipTitleItem12 = new DevExpress.Utils.ToolTipTitleItem();
-            DevExpress.Utils.ToolTipItem toolTipItem12 = new DevExpress.Utils.ToolTipItem();
+            DevExpress.Utils.SuperToolTip superToolTip15 = new DevExpress.Utils.SuperToolTip();
+            DevExpress.Utils.ToolTipTitleItem toolTipTitleItem15 = new DevExpress.Utils.ToolTipTitleItem();
+            DevExpress.Utils.ToolTipItem toolTipItem15 = new DevExpress.Utils.ToolTipItem();
+            DevExpress.Utils.SuperToolTip superToolTip16 = new DevExpress.Utils.SuperToolTip();
+            DevExpress.Utils.ToolTipTitleItem toolTipTitleItem16 = new DevExpress.Utils.ToolTipTitleItem();
+            DevExpress.Utils.ToolTipItem toolTipItem16 = new DevExpress.Utils.ToolTipItem();
             this.rbcMenu = new DevExpress.XtraBars.Ribbon.RibbonControl();
             this.bbiAgregarClub = new DevExpress.XtraBars.BarButtonItem();
             this.bbiBuscarPaciente = new DevExpress.XtraBars.BarButtonItem();
@@ -171,13 +171,13 @@ namespace CapaPresentacion
             this.bbiAgregarClub.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("bbiAgregarClub.ImageOptions.Image")));
             this.bbiAgregarClub.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("bbiAgregarClub.ImageOptions.LargeImage")));
             this.bbiAgregarClub.Name = "bbiAgregarClub";
-            toolTipTitleItem11.Text = "Agregar un club";
-            toolTipItem11.LeftIndent = 6;
-            toolTipItem11.Text = "Permite agregar un club de futbol a una liga previamente existente.\r\nEsto abre un" +
+            toolTipTitleItem15.Text = "Agregar un club";
+            toolTipItem15.LeftIndent = 6;
+            toolTipItem15.Text = "Permite agregar un club de futbol a una liga previamente existente.\r\nEsto abre un" +
     "a ventana en la cual podemos “Agregar, modificar o eliminar” un club.\r\n";
-            superToolTip11.Items.Add(toolTipTitleItem11);
-            superToolTip11.Items.Add(toolTipItem11);
-            this.bbiAgregarClub.SuperTip = superToolTip11;
+            superToolTip15.Items.Add(toolTipTitleItem15);
+            superToolTip15.Items.Add(toolTipItem15);
+            this.bbiAgregarClub.SuperTip = superToolTip15;
             // 
             // bbiBuscarPaciente
             // 
@@ -186,12 +186,12 @@ namespace CapaPresentacion
             this.bbiBuscarPaciente.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("bbiBuscarPaciente.ImageOptions.Image")));
             this.bbiBuscarPaciente.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("bbiBuscarPaciente.ImageOptions.LargeImage")));
             this.bbiBuscarPaciente.Name = "bbiBuscarPaciente";
-            toolTipTitleItem12.Text = "Buscar paciente de preventiva";
-            toolTipItem12.LeftIndent = 6;
-            toolTipItem12.Text = "Permite buscar un paciente previamente ingresado por nombre o DNI.";
-            superToolTip12.Items.Add(toolTipTitleItem12);
-            superToolTip12.Items.Add(toolTipItem12);
-            this.bbiBuscarPaciente.SuperTip = superToolTip12;
+            toolTipTitleItem16.Text = "Buscar paciente de preventiva";
+            toolTipItem16.LeftIndent = 6;
+            toolTipItem16.Text = "Permite buscar un paciente previamente ingresado por nombre o DNI.";
+            superToolTip16.Items.Add(toolTipTitleItem16);
+            superToolTip16.Items.Add(toolTipItem16);
+            this.bbiBuscarPaciente.SuperTip = superToolTip16;
             // 
             // bbiImprimir
             // 
