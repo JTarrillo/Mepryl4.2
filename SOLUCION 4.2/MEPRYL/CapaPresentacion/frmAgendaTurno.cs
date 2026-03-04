@@ -10,6 +10,11 @@ using Comunes;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.Data.OleDb;
 using CapaPresentacionBase;
+using Google.Apis.Sheets.v4;
+using Google.Apis.Sheets.v4.Data;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Services;
+using System.Threading.Tasks;
 
 namespace CapaPresentacion
 {
@@ -385,6 +390,8 @@ namespace CapaPresentacion
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
                 comenzarExportacion();
+                // También exportar a Google Sheets
+                ExportarAGoogleSheets();
             }
         }
 
@@ -487,6 +494,66 @@ namespace CapaPresentacion
             rng.BorderAround(Excel.XlLineStyle.xlContinuous, Excel.XlBorderWeight.xlMedium,
             Excel.XlColorIndex.xlColorIndexAutomatic, Excel.XlColorIndex.xlColorIndexAutomatic);
             rng.HorizontalAlignment = Excel.XlHAlign.xlHAlignCenter;
+        }
+
+        private async void ExportarAGoogleSheets()
+        {
+            try
+            {
+                string spreadsheetId = "1_uyFFJD9oxf0cArt7Vo4dT18-v1c-o3nDXjalJDlCUk"; // Tu ID de Google Sheet
+                string credentialsPath = AppDomain.CurrentDomain.BaseDirectory + "credentials.json";
+
+                if (!System.IO.File.Exists(credentialsPath))
+                {
+                    MessageBox.Show("❌ Archivo credentials.json no encontrado en: " + credentialsPath,
+                        "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                GoogleCredential credential;
+                using (var stream = new System.IO.FileStream(credentialsPath, System.IO.FileMode.Open, System.IO.FileAccess.Read))
+                {
+                    credential = GoogleCredential.FromStream(stream)
+                        .CreateScoped(SheetsService.Scope.Spreadsheets);
+                }
+
+                var service = new SheetsService(new BaseClientService.Initializer()
+                {
+                    HttpClientInitializer = credential,
+                    ApplicationName = "MEPRYL"
+                });
+
+                var values = new List<IList<object>>();
+                values.Add(new List<object>
+                {
+                    "FECHA", "HORA", "TIPO DE EXAMEN", "DNI", "PACIENTE",
+                    "CATEGORIA", "LIGA/EMPRESA", "CLUB", "EX. CLINICO",
+                    "LABORATORIO", "RX", "EST. COMPLEMENTARIO"
+                });
+
+                DataTable grilla = (DataTable)dgv.DataSource;
+                foreach (DataRow dr in grilla.Rows)
+                {
+                    values.Add(new List<object>
+                    {
+                        dr.ItemArray[1], dr.ItemArray[2], dr.ItemArray[3], dr.ItemArray[5],
+                        dr.ItemArray[6], dr.ItemArray[7], dr.ItemArray[8], dr.ItemArray[9],
+                        dr.ItemArray[10], dr.ItemArray[11], dr.ItemArray[12], dr.ItemArray[13]
+                    });
+                }
+
+                var body = new ValueRange { Values = values };
+                var request = service.Spreadsheets.Values.Update(body, spreadsheetId, "Hoja 1!A1");
+                request.ValueInputOption = SpreadsheetsResource.ValuesResource.UpdateRequest.ValueInputOptionEnum.USERENTERED;
+                await request.ExecuteAsync();
+
+                MessageBox.Show("✅ Datos exportados a Google Sheets correctamente", "Éxito",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("❌ Error: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
 
