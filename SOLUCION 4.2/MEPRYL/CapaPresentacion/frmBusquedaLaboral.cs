@@ -1,15 +1,16 @@
-﻿using System;
+﻿using CapaNegocioMepryl;
+using CapaPresentacionBase;
+using Comunes;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
-using CapaNegocioMepryl;
 using System.IO;
+using System.Linq;
+using System.Text;
 using System.Threading;
-using Comunes;
-using CapaPresentacionBase;
+using System.Windows.Forms;
 
 namespace CapaPresentacion
 {
@@ -57,6 +58,7 @@ namespace CapaPresentacion
         //private string strAudioNroOrden = "";
         //private DateTime dtFechaAudio;
         private Thread demoThread;
+        private string strLogConsolidacion = "";  // LOG CONSOLIDACIÓN
         //private FileStream streamArchivo;
 
         public frmBusquedaLaboral()
@@ -102,21 +104,22 @@ namespace CapaPresentacion
         {
             DataTable laborales = laboral.cargarListadoSinFiltro(desde, hasta, filtro);
 
-            bool encontrado = false;
-            foreach (DataRow row in laborales.Rows)
-            {
-                if (row["Ident."].ToString() == "L29")
-                {
-                    //System.Diagnostics.Debugger.Break();
-                    encontrado = true;
-                    break;
-                }
-            }
+            // COMENTADO: Verificación de L29 para propósitos de debugging (no es requerida)
+            //bool encontrado = false;
+            //foreach (DataRow row in laborales.Rows)
+            //{
+            //    if (row["Ident."].ToString() == "L29")
+            //    {
+            //        //System.Diagnostics.Debugger.Break();
+            //        encontrado = true;
+            //        break;
+            //    }
+            //}
 
-            if (!encontrado)
-            {
-                System.Diagnostics.Debug.WriteLine("No se encontró el registro L29");
-            }
+            //if (!encontrado)
+            //{
+            //    System.Diagnostics.Debug.WriteLine("No se encontró el registro L29");
+            //}
 
             llenarDgv(laborales);
         }
@@ -142,22 +145,22 @@ namespace CapaPresentacion
                 imgCli = Image.FromFile("P:\\img-system\\blanco.png");
                 imgLab = Image.FromFile("P:\\img-system\\blanco.png");
                 imgCons = Image.FromFile("P:\\img-system\\blanco.png");
-                imgEnv = Image.FromFile("P:\\img-system\\blanco.png"); 
-                
+                imgEnv = Image.FromFile("P:\\img-system\\blanco.png");
+
                 if (!(string.IsNullOrEmpty(r.ItemArray[21].ToString())))
                 {
                     if (r.ItemArray[21].ToString() == "1")
-                        imgCli = Image.FromFile("P:\\img-system\\tick.png");                    
+                        imgCli = Image.FromFile("P:\\img-system\\tick.png");
                 }
                 if (!(string.IsNullOrEmpty(r.ItemArray[22].ToString())))
                 {
-                    if (r.ItemArray[22].ToString()== "1")
-                        imgLab = Image.FromFile("P:\\img-system\\tick.png");                    
+                    if (r.ItemArray[22].ToString() == "1")
+                        imgLab = Image.FromFile("P:\\img-system\\tick.png");
                 }
                 if (!(string.IsNullOrEmpty(r.ItemArray[23].ToString())))
                 {
                     if (r.ItemArray[23].ToString() == "1")
-                        imgCons = Image.FromFile("P:\\img-system\\tick.png");                    
+                        imgCons = Image.FromFile("P:\\img-system\\tick.png");
                 }
                 if (!(string.IsNullOrEmpty(r.ItemArray[24].ToString())))
                 {
@@ -183,7 +186,7 @@ namespace CapaPresentacion
                 else
                 {
                     dgv.Rows[dgv.Rows.Count - 1].Cells[14].Style.BackColor = Color.DarkSeaGreen;
-                }                
+                }
             }
             cambiarVisibilidadColumnas();
             if (dgv.Rows.Count > 0) { seleccionarCelda(); }
@@ -242,7 +245,8 @@ namespace CapaPresentacion
                 {
                     dgv.Rows[0].Cells[1].Selected = true;
                 }
-            }catch(System.ArgumentOutOfRangeException ex)
+            }
+            catch (System.ArgumentOutOfRangeException ex)
             {
                 if (dgv.Rows.Count > 0)
                 {
@@ -266,7 +270,7 @@ namespace CapaPresentacion
             else
             {
                 cargarExamenesSinFiltro(tpDesde.Value, tpHasta.Value, obtenerFiltro());
-            }            
+            }
         }
 
         private void cambiarEnabled(bool estPanel1, bool estPanel2)
@@ -274,7 +278,7 @@ namespace CapaPresentacion
             panel1.Enabled = estPanel1;
             panel2.Enabled = estPanel2;
         }
-        
+
         private void abrirVentanaCarga(DataGridViewCellEventArgs c)
         {
             intFilaSelecc = dgv.CurrentCell.RowIndex; // GRV - Modificado
@@ -289,7 +293,7 @@ namespace CapaPresentacion
 
             // GRV - Modificado
             //dgv.Rows[intFilaSelecc].Selected = true;
-            
+
         }
 
         private void abrirVentana(DataGridViewCell c)
@@ -300,7 +304,7 @@ namespace CapaPresentacion
                 //Utilidades.abrirFormulario(this.MdiParent, frm, new Configuracion());                
                 AbrirForm(frm);
                 frm.setearLabelTitulo(dgv.Rows[c.RowIndex].Cells[4].Value.ToString());
-                frm.setearValores(dgv.Rows[c.RowIndex].Cells[18].Value.ToString());                
+                frm.setearValores(dgv.Rows[c.RowIndex].Cells[18].Value.ToString());
             }
             else if (dgv.Rows[c.RowIndex].Cells[12].Value.ToString() == "1")
             {
@@ -319,7 +323,7 @@ namespace CapaPresentacion
                 else if (dgv.Rows[c.RowIndex].Cells[3].Value.ToString().Contains("EC"))
                 {
                     frm.setearValoresEstudioComplementario(dgv.Rows[c.RowIndex].Cells[20].Value.ToString(), dgv.Rows[c.RowIndex].Cells[5].Value.ToString());
-                }                
+                }
             }
 
             puntero = c.RowIndex;
@@ -454,7 +458,7 @@ namespace CapaPresentacion
                     MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
         }
-        
+
         private void mailExAptitud()
         {
             List<string> archivos = new List<string>();
@@ -558,7 +562,7 @@ namespace CapaPresentacion
         {
             if (dgv.SelectedCells != null && dgv.SelectedCells.Count > 0)
             {
-                frmCambioEmpresa frm = new frmCambioEmpresa(dgv.Rows[dgv.SelectedCells[0].RowIndex].Cells[20].Value.ToString(),this);
+                frmCambioEmpresa frm = new frmCambioEmpresa(dgv.Rows[dgv.SelectedCells[0].RowIndex].Cells[20].Value.ToString(), this);
                 frm.ShowDialog();
             }
         }
@@ -652,10 +656,53 @@ namespace CapaPresentacion
                 progressBar.Invoke(mi);
             }
         }
-        
+
+        private bool EsValorValido(object valor)
+        {
+            if (valor == null)
+            {
+                System.Diagnostics.Debug.WriteLine($"    [Validación] Valor nulo");
+                return false;
+            }
+            string strValor = valor.ToString().Trim();
+            if (string.IsNullOrEmpty(strValor) || strValor == "0")
+            {
+                System.Diagnostics.Debug.WriteLine($"    [Validación] Valor vacío o '0': '{strValor}'");
+                return false;
+            }
+            System.Diagnostics.Debug.WriteLine($"    [Validación] ✓ Valor válido: '{strValor}'");
+            return true;
+        }
+
+        private bool EsFilaValida(DataGridViewRow row)
+        {
+            System.Diagnostics.Debug.WriteLine($"  Validando fila {row.Index}:");
+            System.Diagnostics.Debug.WriteLine($"    [9] {row.Cells[9].Value?.ToString() ?? "NULL"}");
+            bool valid9 = EsValorValido(row.Cells[9].Value);
+
+            System.Diagnostics.Debug.WriteLine($"    [11] {row.Cells[11].Value?.ToString() ?? "NULL"}");
+            bool valid11 = EsValorValido(row.Cells[11].Value);
+
+            // CAMBIO: Celdas 13 y 15 NO son requeridas (pueden estar vacías)
+            System.Diagnostics.Debug.WriteLine($"    [13] {row.Cells[13].Value?.ToString() ?? "NULL"} (Opcional)");
+            System.Diagnostics.Debug.WriteLine($"    [15] {row.Cells[15].Value?.ToString() ?? "NULL"} (Opcional)");
+
+            System.Diagnostics.Debug.WriteLine($"    [17] {row.Cells[17].Value?.ToString() ?? "NULL"}");
+            bool valid17 = EsValorValido(row.Cells[17].Value);
+
+            // Solo validamos 9, 11 y 17 (requeridas)
+            bool resultado = valid9 && valid11 && valid17;
+            System.Diagnostics.Debug.WriteLine($"  Resultado: {(resultado ? "✓ VÁLIDA" : "✗ NO VÁLIDA")}");
+            return resultado;
+        }
+
         private void ExportarExamPDF()
         {
             int intCont = 0;
+            System.Diagnostics.Debug.WriteLine("=== INICIANDO ExportarExamPDF ===");
+            System.Diagnostics.Debug.WriteLine($"Total de filas en DGV: {dgv.Rows.Count}");
+            System.Diagnostics.Debug.WriteLine($"Opción seleccionada: {resultExamen01}");
+
             if (dgv.Rows.Count > 0)
             {
                 //MsgBoxUtil.HackMessageBox("Todos", "Seleccionados", "Cancelar");
@@ -664,6 +711,7 @@ namespace CapaPresentacion
 
                 if (resultExamen01 == DialogResult.Yes)
                 {
+                    System.Diagnostics.Debug.WriteLine(">>> EXPORTANDO TODOS LOS ESTUDIOS <<<");
                     //progressBar.Visible = true;
                     //progressBar.Minimum = 1;                    
                     //progressBar.Maximum = dgv.Rows.Count;
@@ -671,14 +719,25 @@ namespace CapaPresentacion
 
                     foreach (DataGridViewRow row in dgv.Rows)
                     {
-                        if (row.Cells[9].Value.ToString() != "0" && row.Cells[11].Value.ToString() != "0" &&
-                                row.Cells[13].Value.ToString() != "0" && row.Cells[15].Value.ToString() != "0"
-                                && row.Cells[17].Value.ToString() != "0")
+                        System.Diagnostics.Debug.WriteLine($"--- Fila {row.Index} ---");
+                        System.Diagnostics.Debug.WriteLine($"  Cells[9]: {row.Cells[9].Value?.ToString() ?? "NULL"}");
+                        System.Diagnostics.Debug.WriteLine($"  Cells[11]: {row.Cells[11].Value?.ToString() ?? "NULL"}");
+                        System.Diagnostics.Debug.WriteLine($"  Cells[13]: {row.Cells[13].Value?.ToString() ?? "NULL"}");
+                        System.Diagnostics.Debug.WriteLine($"  Cells[15]: {row.Cells[15].Value?.ToString() ?? "NULL"}");
+                        System.Diagnostics.Debug.WriteLine($"  Cells[17]: {row.Cells[17].Value?.ToString() ?? "NULL"}");
+
+                        if (EsFilaValida(row))
                         {
+                            System.Diagnostics.Debug.WriteLine($"  ✓ Fila válida, exportando...");
+                            System.Diagnostics.Debug.WriteLine($"  Orden: {row.Cells[3].Value} | DNI: {row.Cells[8].Value}");
                             ExportarClincoPDF(row);
                             ExportarProtocoloPDF(row, 2, false);
                             //progressBar.PerformStep();
                             IncreProcesoBarra(++intCont);
+                        }
+                        else
+                        {
+                            System.Diagnostics.Debug.WriteLine($"  ✗ Fila descartada");
                         }
                     }
 
@@ -688,6 +747,9 @@ namespace CapaPresentacion
                 }
                 else if (resultExamen01 == DialogResult.No)
                 {
+                    System.Diagnostics.Debug.WriteLine(">>> EXPORTANDO ESTUDIOS SELECCIONADOS <<<");
+                    System.Diagnostics.Debug.WriteLine($"Celdas seleccionadas: {dgv.SelectedCells.Count}");
+
                     if (dgv.SelectedCells.Count > 0)
                     {
                         //progressBar.Visible = true;
@@ -702,18 +764,29 @@ namespace CapaPresentacion
                             if (celda == cell.ColumnIndex)
                             {
                                 DataGridViewRow row = dgv.Rows[cell.RowIndex];
-                                if (row.Cells[9].Value.ToString() != "0" && row.Cells[11].Value.ToString() != "0" &&
-                                    row.Cells[13].Value.ToString() != "0" && row.Cells[15].Value.ToString() != "0"
-                                    && row.Cells[17].Value.ToString() != "0")
+                                System.Diagnostics.Debug.WriteLine($"--- Fila seleccionada {row.Index} ---");
+                                System.Diagnostics.Debug.WriteLine($"  Cells[9]: {row.Cells[9].Value?.ToString() ?? "NULL"}");
+                                System.Diagnostics.Debug.WriteLine($"  Cells[11]: {row.Cells[11].Value?.ToString() ?? "NULL"}");
+                                System.Diagnostics.Debug.WriteLine($"  Cells[13]: {row.Cells[13].Value?.ToString() ?? "NULL"}");
+                                System.Diagnostics.Debug.WriteLine($"  Cells[15]: {row.Cells[15].Value?.ToString() ?? "NULL"}");
+                                System.Diagnostics.Debug.WriteLine($"  Cells[17]: {row.Cells[17].Value?.ToString() ?? "NULL"}");
+
+                                if (EsFilaValida(row))
                                 {
+                                    System.Diagnostics.Debug.WriteLine($"  ✓ Fila válida, exportando...");
+                                    System.Diagnostics.Debug.WriteLine($"  Orden: {row.Cells[3].Value} | DNI: {row.Cells[8].Value}");
                                     ExportarClincoPDF(row);
                                     ExportarProtocoloPDF(row, 2, false);
                                     //progressBar.PerformStep();
                                     IncreProcesoBarra(++intCont);
                                 }
+                                else
+                                {
+                                    System.Diagnostics.Debug.WriteLine($"  ✗ Fila descartada");
+                                }
                             }
                         }
-                                                
+
                         //SubProceso02 = new Thread(Exportacion_A02);
                         //SubProceso02.Start();
 
@@ -722,19 +795,22 @@ namespace CapaPresentacion
                 }
             }
 
+            System.Diagnostics.Debug.WriteLine($"Total de estudios exportados: {intCont}");
+            System.Diagnostics.Debug.WriteLine("=== FINALIZANDO ExportarExamPDF ===");
+
             if (!ListaErrorEpirometria())
             {
                 MessageBox.Show("El proceso de exportación ha finalizado.", "Laboral", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                
+
             }
-            
+
             OcultarProgresoBarra();
-            blnActualizaLista = true;            
+            blnActualizaLista = true;
             SubProceso02.Join();
             //
             //ProcesoRefrescarLista();
         }
-        
+
         private void botImprimirEx_Click(object sender, EventArgs e)
         {
 
@@ -755,21 +831,40 @@ namespace CapaPresentacion
             strNombreArchivo = r.Cells[3].Value.ToString() + " - " + r.Cells[8].Value.ToString() + " - " + ConvertirFechaString(r.Cells[1].Value.ToString()) + " - " + r.Cells[9].Value.ToString() + " - C.pdf";
             strNombreArchivoEspirometria = r.Cells[3].Value.ToString() + " - " + r.Cells[8].Value.ToString() + " - " + ConvertirFechaString(r.Cells[1].Value.ToString()) + " - " + r.Cells[9].Value.ToString() + ".pdf";
 
+            System.Diagnostics.Debug.WriteLine("=== EXPORTAR CLÍNICO PDF ===");
+            System.Diagnostics.Debug.WriteLine($"  Orden: {r.Cells[3].Value}");
+            System.Diagnostics.Debug.WriteLine($"  DNI: {strDNI}");
+            System.Diagnostics.Debug.WriteLine($"  ID Examen: {strIdExamenLaboral}");
+            System.Diagnostics.Debug.WriteLine($"  Archivo: {strNombreArchivo}");
+            System.Diagnostics.Debug.WriteLine($"  Archivo Espiro: {strNombreArchivoEspirometria}");
+
             //rpt.ClinicoLaboral(examenLaboral.cargarParametrosExamen(strIdExamenLaboral, false), strNombreArchivo, Convert.ToDateTime(r.Cells[1].Value.ToString()));
             //Reportes report = new Reportes(new rptExamenLaboral());
             //report.exportarAPDF(examenLaboral.cargarParametrosExamen(strIdExamenLaboral, false),
             //new dsMedicinaLaboral(), examenLaboral.cargarDataSourceExamen(imageToArray(strDNI), "3"),
             //UtilMepryl.CreaDirectorioPorFecha(Convert.ToDateTime(r.Cells[1].Value.ToString()), 3, "CLINICOS Y LABORATORIOS") + strNombreArchivo);
-            Reportes report = new Reportes(new rptExamenLaboral());
-            report.exportarAPDF(examenLaboral.cargarParametrosExamen(strIdExamenLaboral, false),
-            new dsMedicinaLaboral(), examenLaboral.cargarDataSourceExamen(imageToArray(strDNI), "3"),
-            rpt.ReporteSalida("CLINICO-LABORAL", false, Convert.ToDateTime(r.Cells[1].Value.ToString()), strNombreArchivo));
+            try
+            {
+                Reportes report = new Reportes(new rptExamenLaboral());
+                string rutaExportacion = rpt.ReporteSalida("CLINICO-LABORAL", false, Convert.ToDateTime(r.Cells[1].Value.ToString()), strNombreArchivo);
+                System.Diagnostics.Debug.WriteLine($"  Ruta salida: {rutaExportacion}");
+                report.exportarAPDF(examenLaboral.cargarParametrosExamen(strIdExamenLaboral, false),
+                new dsMedicinaLaboral(), examenLaboral.cargarDataSourceExamen(imageToArray(strDNI), "3"),
+                rutaExportacion);
+                System.Diagnostics.Debug.WriteLine($"  ✓ PDF Clínico exportado correctamente");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"  ✗ Error exportando PDF Clínico: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"  Stack: {ex.StackTrace}");
+            }
 
             //GenerarReporteEspirometria(strDNI, strIdExamenLaboral, r.Cells[1].Value.ToString(), r.Cells[3].Value.ToString(), UtilMepryl.CreaDirectorioPorFecha(Convert.ToDateTime(r.Cells[1].Value.ToString()), 3, "ESPIROMETRIA") + strNombreArchivoEspirometria, false);
             //GenerarReporteEspirometria(strDNI, strIdExamenLaboral, r.Cells[1].Value.ToString(), r.Cells[3].Value.ToString(), rpt.ReporteSalida("ESPIROMETRIA",false, Convert.ToDateTime(r.Cells[1].Value.ToString()),strNombreArchivoEspirometria), false);
             GenerarReporteEspirometria(strDNI, strIdExamenLaboral, r.Cells[1].Value.ToString(), r.Cells[3].Value.ToString(), strNombreArchivoEspirometria, false);
 
             preventiva.actualizarImpresionExamen(strIdTipoExamenDePaciente);
+            System.Diagnostics.Debug.WriteLine("=== FIN EXPORTAR CLÍNICO PDF ===");
         }
 
         private string ConvertirFechaString(string Fecha)
@@ -797,7 +892,7 @@ namespace CapaPresentacion
 
             string strIdExamenLaboral = r.Cells[17].Value.ToString();
             string strIdTipoExamenDePaciente = r.Cells[20].Value.ToString();
-            string strNombreArchivo = "";            
+            string strNombreArchivo = "";
 
             DataTable dtConsulta = examenLaboral.cargarParametrosLaboratorio(strIdExamenLaboral, tipoReporte);
             Reportes report = new Reportes(new rptProtocoloLaboratorioLaboral());
@@ -806,13 +901,13 @@ namespace CapaPresentacion
             strNombreArchivo = r.Cells[3].Value.ToString() + " - " + r.Cells[8].Value.ToString() + " - " + ConvertirFechaString(r.Cells[1].Value.ToString()) + " - " + r.Cells[9].Value.ToString() + " - L.pdf";
 
             if (dtConsulta.Rows.Count > 0)
-            {                
+            {
                 bool blnPerfilLipidico01 = string.IsNullOrEmpty(dtConsulta.Rows[0].ItemArray[31].ToString());
                 bool blnPerfilLipidico02 = string.IsNullOrEmpty(dtConsulta.Rows[0].ItemArray[32].ToString());
                 bool blnCreatininaArbitro = string.IsNullOrEmpty(dtConsulta.Rows[0].ItemArray[66].ToString());
                 bool blnTieneOrina = string.IsNullOrEmpty(dtConsulta.Rows[0].ItemArray[48].ToString());
 
-                if (dtConsulta.Rows[0].ItemArray[31].ToString() != "0" && dtConsulta.Rows[0].ItemArray[31].ToString() != "0") 
+                if (dtConsulta.Rows[0].ItemArray[31].ToString() != "0" && dtConsulta.Rows[0].ItemArray[31].ToString() != "0")
                 {
                     if (blnPerfilLipidico01 && blnPerfilLipidico02)
                     {
@@ -822,7 +917,7 @@ namespace CapaPresentacion
                     }
                 }
 
-                if (!blnCreatininaArbitro) 
+                if (!blnCreatininaArbitro)
                 {
                     if (dtConsulta.Rows[0].ItemArray[66].ToString() != "0")
                     {
@@ -834,17 +929,17 @@ namespace CapaPresentacion
 
                 if (blnTieneOrina)
                 {
-                    
-                        strTipoLaboratorio = "LIBRETA";
-                        //report = null;
-                        //report = new Reportes(new rptProtocoloLaboratorioLaboral02());
-                    
+
+                    strTipoLaboratorio = "LIBRETA";
+                    //report = null;
+                    //report = new Reportes(new rptProtocoloLaboratorioLaboral02());
+
                 }
             }
 
             //report.ExportarLaboratorio(dtConsulta, 
             //    UtilMepryl.CreaDirectorioPorFecha(Convert.ToDateTime(r.Cells[1].Value.ToString()), 4, "CLINICOS Y LABORATORIOS") + strNombreArchivo);
-            
+
             //report.ExportarLaboratorio(dtConsulta,
             //    rpt.ReporteSalida("LABORATORIO-LABORAL", false, Convert.ToDateTime(r.Cells[1].Value.ToString()), strNombreArchivo));
             rpt.LaboratorioLaboral(dtConsulta, strNombreArchivo, Convert.ToDateTime(r.Cells[1].Value.ToString()), strTipoLaboratorio, blnImprimir);
@@ -862,9 +957,9 @@ namespace CapaPresentacion
         }
 
         private void LanzarReporteAudiometria(string strNroOrden, DateTime dtFecha)
-        {               
-            ReporteAudiometria repAudio = new ReporteAudiometria();            
-            repAudio.GeneraAutoReporteAudiometria(dtFecha, strNroOrden); 
+        {
+            ReporteAudiometria repAudio = new ReporteAudiometria();
+            repAudio.GeneraAutoReporteAudiometria(dtFecha, strNroOrden);
         }
 
         private byte[] imageToArray(string DNI)
@@ -882,7 +977,7 @@ namespace CapaPresentacion
                 if (pbFoto.Image != null) { pbFoto.Image.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg); }
                 return ms.ToArray();
             }
-            catch (System.IO.FileNotFoundException ex) 
+            catch (System.IO.FileNotFoundException ex)
             {
                 return null;
             }
@@ -908,7 +1003,7 @@ namespace CapaPresentacion
             int intCont = 0;
 
             if (dgv.Rows.Count > 0)
-            {                
+            {
                 if (resultExamen02 == DialogResult.Yes)
                 {
                     foreach (DataGridViewRow row in dgv.Rows)
@@ -918,10 +1013,10 @@ namespace CapaPresentacion
                                 && row.Cells[17].Value.ToString() != "0")
                         {
                             ExportarOliveraPDF(row);
-                            ExportarProtocoloPDF(row, 2, false);                            
+                            ExportarProtocoloPDF(row, 2, false);
                             IncreProcesoBarra(++intCont);
                         }
-                    }                                            
+                    }
                 }
                 else if (resultExamen02 == DialogResult.No)
                 {
@@ -938,19 +1033,19 @@ namespace CapaPresentacion
                                     && row.Cells[17].Value.ToString() != "0")
                                 {
                                     ExportarOliveraPDF(row);
-                                    ExportarProtocoloPDF(row, 2, false);                                    
+                                    ExportarProtocoloPDF(row, 2, false);
                                     IncreProcesoBarra(++intCont);
                                 }
                             }
-                        }                        
+                        }
                     }
                 }
             }
 
             MessageBox.Show("El proceso de exportación ha finalizado.", "Laboral", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            
+
             OcultarProgresoBarra();
-            blnActualizaLista = true;            
+            blnActualizaLista = true;
             SubProceso02.Join();
             //
             //ProcesoRefrescarLista();
@@ -1101,12 +1196,12 @@ namespace CapaPresentacion
             frm.ShowDialog();
         }
 
-        private void GenerarReporteEspirometria(string strDNI, string strIdExamenLaboral, string strFecha, string strIdentificador, string strArchivoSalida, bool blnOlivera )
+        private void GenerarReporteEspirometria(string strDNI, string strIdExamenLaboral, string strFecha, string strIdentificador, string strArchivoSalida, bool blnOlivera)
         {
             ReporteEspirometria reporte = new ReporteEspirometria();
             CapaNegocioMepryl.Reportes resultado = new CapaNegocioMepryl.Reportes();
             DataTable dt = null;
-            dt = resultado.ReporteEspirometria(strIdExamenLaboral, strDNI);            
+            dt = resultado.ReporteEspirometria(strIdExamenLaboral, strDNI);
             bool blnTieneInforme = false;
             bool blnTieneImagen = false;
 
@@ -1114,13 +1209,13 @@ namespace CapaPresentacion
             {
                 blnTieneInforme = (!string.IsNullOrEmpty(r.ItemArray[4].ToString()));
             }
-            
+
             if (blnTieneInforme)
             {
                 blnTieneImagen = reporte.CargarEtiquetas(strDNI, strIdExamenLaboral, strFecha, strIdentificador, strArchivoSalida, blnOlivera);
-                
+
                 if (!blnTieneImagen)
-                    RegistrarError(strFecha, strIdentificador, strDNI, "No hay imagen de espirometría");                
+                    RegistrarError(strFecha, strIdentificador, strDNI, "No hay imagen de espirometría");
             }
         }
 
@@ -1128,7 +1223,7 @@ namespace CapaPresentacion
         {
             dtMensajeError = new DataTable();
 
-            dtMensajeError.Columns.Add("Fecha",typeof(System.String));
+            dtMensajeError.Columns.Add("Fecha", typeof(System.String));
             dtMensajeError.Columns.Add("Orden", typeof(System.String));
             dtMensajeError.Columns.Add("DNI", typeof(System.String));
             dtMensajeError.Columns.Add("Mensaje", typeof(System.String));
@@ -1218,6 +1313,7 @@ namespace CapaPresentacion
             CargarDirectorios();
             EstablecerColumnas();
             iniciaProcesoBarra();
+            InicializarLogConsolidacion();  // INICIAR LOG
             SubProceso01 = new Thread(ListarArchivosBase);
             SubProceso01.Start();
             blnActualizaLista = false;
@@ -1233,18 +1329,18 @@ namespace CapaPresentacion
             if (dt.Rows.Count > 0)
             {
                 foreach (DataRow r in dt.Rows)
-                {                    
+                {
                     strDirectorioClinico = r.ItemArray[0].ToString();
                     strDirectorioLaboratorio = r.ItemArray[1].ToString();
                     strDirectorioRX = r.ItemArray[2].ToString();
-                    strDirectorioECG = r.ItemArray[3].ToString();                    
+                    strDirectorioECG = r.ItemArray[3].ToString();
                     strDirectorioEspirometria = r.ItemArray[4].ToString();
                     strDirectorioEEG = r.ItemArray[5].ToString();
                     strDirectorioEcodoppler = r.ItemArray[6].ToString();
                     strDirectorioAudioMetria = r.ItemArray[7].ToString();
                     strDirectorioPsicotecnico = r.ItemArray[8].ToString();
                     strDirectorioErgometria = r.ItemArray[9].ToString();
-                    strDirectorioConsolidar = r.ItemArray[10].ToString();                    
+                    strDirectorioConsolidar = r.ItemArray[10].ToString();
                 }
             }
         }
@@ -1357,7 +1453,7 @@ namespace CapaPresentacion
 
             string strError = "";
             string strUltimaFecha = "";
-            
+
             dt = dtTempConsolidar;
             dtTempConsolidar = null;
 
@@ -1391,7 +1487,13 @@ namespace CapaPresentacion
                                            strAnio,
                                            r.ItemArray[1].ToString(), // NroOrden
                                            r.ItemArray[2].ToString(), // DNI
-                                           r.ItemArray[3].ToString()); // Nombre                   
+                                           r.ItemArray[3].ToString()); // Nombre
+
+                    // LOG CONSOLIDACIÓN: INFORMACIÓN DEL PACIENTE
+                    RegistrarEnLogLinea($"\n{'=' * 60}");
+                    RegistrarEnLogLinea($"PACIENTE: {r.ItemArray[3]} | DNI: {r.ItemArray[2]} | ORDEN: {r.ItemArray[1]}");
+                    RegistrarEnLogLinea($"FECHA: {strFechaCorta}");
+                    RegistrarEnLogLinea($"TIPO: {(Int32.Parse(r.ItemArray[4].ToString()) != 502 ? "LABORAL COMPLETO" : "INFANTIL INICIAL")}");
 
                     if (!string.IsNullOrEmpty(r.ItemArray[4].ToString()))
                     {
@@ -1404,7 +1506,7 @@ namespace CapaPresentacion
                             CargarArchivoAudiometria(strDia, strMes, r.ItemArray[1].ToString(), strNombreMes, 10, strAnio, r.ItemArray[2].ToString(), Boolean.Parse(r.ItemArray[11].ToString()));
                             CargarArchivoOtoscopia(strDia, strMes, r.ItemArray[1].ToString(), strNombreMes, 11, strAnio, r.ItemArray[2].ToString(), Boolean.Parse(r.ItemArray[14].ToString()));
                             CargarArchivoErgometria(strDia, strMes, r.ItemArray[1].ToString(), strNombreMes, 12, strAnio, r.ItemArray[2].ToString(), Boolean.Parse(r.ItemArray[12].ToString()));
-                            CargarArchivoEspirometria(strDia, strMes, strAnio, r.ItemArray[1].ToString(), strNombreMes, 13, r.ItemArray[2].ToString(), Boolean.Parse(r.ItemArray[15].ToString()));                            
+                            CargarArchivoEspirometria(strDia, strMes, strAnio, r.ItemArray[1].ToString(), strNombreMes, 13, r.ItemArray[2].ToString(), Boolean.Parse(r.ItemArray[15].ToString()));
                             CargarArchivoPsicotecnico(strDia, strMes, r.ItemArray[1].ToString(), strNombreMes, 14, strAnio, r.ItemArray[2].ToString(), Boolean.Parse(r.ItemArray[10].ToString()));
                             CargarArchivoEEG(strDia, strMes, r.ItemArray[1].ToString(), strNombreMes, 15, strAnio, r.ItemArray[2].ToString(), Boolean.Parse(r.ItemArray[9].ToString()));
                             CargarArchivoEcoDoppler(r.ItemArray[2].ToString(), strMes, strDia, strNombreMes, r.ItemArray[1].ToString(), 16, strAnio, Boolean.Parse(r.ItemArray[13].ToString()));
@@ -1413,20 +1515,65 @@ namespace CapaPresentacion
                         {
                             CargarArchivoLaboratorio(r.ItemArray[2].ToString(), strMes, strDia, strNombreMes, r.ItemArray[1].ToString(), 6, strAnio, Boolean.Parse(r.ItemArray[6].ToString()));
                             CargarArchivoRX(strDia, strMes, strAnio, r.ItemArray[1].ToString(), strNombreMes, 7, r.ItemArray[2].ToString(), Boolean.Parse(r.ItemArray[8].ToString()));
-                            
+
                         }
 
                         //if (Int32.Parse(r.ItemArray[1].ToString()) < 200 || Int32.Parse(r.ItemArray[1].ToString()) > 399)
                         //    strError = UtilMepryl.ConcatenarPDFs(dtArchivosPDF, strDirecConsolTemp + "MOVIL");
                         //else
                         //strError = UtilMepryl.ConcatenarPDFsLaboral(dtArchivosPDF, strDirecConsolTemp + "CLINICA", ListaArchivosPdf);
-                        strError = UtilMepryl.ConcatenarPDFsLaboral(dtArchivosPDF, strDirecConsolTemp, ListaArchivosPdf);
+
+                        // CAMBIO: Validar que ListaArchivosPdf tenga archivos válidos antes de consolidar
+                        try
+                        {
+                            // LOG: Registrar cantidad y contenido de archivos
+                            RegistrarEnLogLinea($"ARCHIVOS A CONSOLIDAR: {ListaArchivosPdf.Count}");
+                            foreach (var archivo in ListaArchivosPdf)
+                            {
+                                RegistrarEnLogLinea($"  - {Path.GetFileName(archivo)}");
+                            }
+
+                            if (ListaArchivosPdf != null && ListaArchivosPdf.Count > 0)
+                            {
+                                var archivosValidos = ListaArchivosPdf.Where(a => !string.IsNullOrEmpty(a) && System.IO.File.Exists(a)).ToList();
+                                if (archivosValidos.Count > 0)
+                                {
+                                    RegistrarEnLogLinea($"ARCHIVOS VÁLIDOS: {archivosValidos.Count}");
+                                    System.Diagnostics.Debug.WriteLine($"  Consolidando {archivosValidos.Count} archivos válidos");
+                                    strError = UtilMepryl.ConcatenarPDFsLaboral(dtArchivosPDF, strDirecConsolTemp, archivosValidos);
+                                    RegistrarEnLogLinea($"RESULTADO CONSOLIDACIÓN: {(string.IsNullOrEmpty(strError) ? "✓ EXITOSO" : "✗ ERROR: " + strError)}");
+                                }
+                                else
+                                {
+                                    RegistrarEnLogLinea($"⚠ No hay archivos válidos para consolidar (todos nulos o no existen)");
+                                    System.Diagnostics.Debug.WriteLine($"  ⚠ No hay archivos válidos para consolidar (todos nulos o no existen)");
+                                    strError = "No se encontraron archivos válidos para consolidar";
+                                }
+                            }
+                            else
+                            {
+                                RegistrarEnLogLinea($"⚠ ListaArchivosPdf está vacía o nula");
+                                System.Diagnostics.Debug.WriteLine($"  ⚠ ListaArchivosPdf está vacía o nula");
+                                strError = "No hay archivos para consolidar";
+                            }
+                        }
+                        catch (Exception exConsolidar)
+                        {
+                            RegistrarEnLogLinea($"✗ EXCEPCIÓN CONSOLIDANDO: {exConsolidar.GetType().Name}");
+                            RegistrarEnLogLinea($"   Mensaje: {exConsolidar.Message}");
+                            RegistrarEnLogLinea($"   Stack: {exConsolidar.StackTrace}");
+                            System.Diagnostics.Debug.WriteLine($"  ✗ Error consolidando PDF: {exConsolidar.GetType().Name} - {exConsolidar.Message}");
+                            System.Diagnostics.Debug.WriteLine($"    Stack: {exConsolidar.StackTrace}");
+                            strError = exConsolidar.Message;
+                        }
+
                         ListaArchivosPdf.Clear();
                         //---
                         //VerificaEstudiosComplementarios(r, r.ItemArray[1].ToString(), r.ItemArray[2].ToString());
 
                         if (!string.IsNullOrEmpty(strError))
                         {
+                            RegistrarEnLogLinea($"⚠ ERROR: {strError}");
                             DialogResult result = MessageBox.Show("Proceso de consolidación incompleto.\n" + intContador + " de " + dt.Rows.Count.ToString() + " archivos creados.\n¡El sistema ha experimentado un error.!\n\nDesea continuar con el proceso...\n\nDetalles:\n---\n" + strError, "Proceso incompleto", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
                             if (result == DialogResult.No)
                             {
@@ -1452,10 +1599,21 @@ namespace CapaPresentacion
                         if (string.IsNullOrEmpty(strUltimaFecha))
                             strUltimaFecha = Convert.ToDateTime(r.ItemArray[0]).ToShortDateString();
                     }
-                }                
-            }            
+                }
+            }
             OcultarProgresoBarra();
-            
+
+            RegistrarEnLogLinea($"\n{'=' * 60}");
+            RegistrarEnLogLinea($"CONSOLIDACIÓN FINALIZADA - {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
+            RegistrarEnLogLinea($"Archivo de LOG guardado en: {strLogConsolidacion}");
+            RegistrarEnLogLinea($"{'=' * 60}\n");
+
+            // Mostrar el archivo de log al usuario
+            if (MessageBox.Show($"Consolidación completada.\n\n¿Desea abrir el archivo de LOG?", "Proceso completado", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
+            {
+                MostrarArchivoLog();
+            }
+
             blnActualizaLista = true;
             SubProceso01.Join();
         }
@@ -1648,7 +1806,7 @@ namespace CapaPresentacion
         private void CargarArchivoAudiometria(string Dia, string Mes, string NroOrden, string NombreMes, int Posicion, string Anio, string DNI, bool Requerido)
         {
             string strDirectorioBase = "";
-            
+
             //string strFecha = Dia + "/" + Mes + "/" + Anio;
             string strFecha = Dia + Mes + Anio;
             string strFiltro = NroOrden + "-" + strFecha + "-*.pdf";
@@ -1706,7 +1864,7 @@ namespace CapaPresentacion
             string strFecha = Dia + Mes + Anio;
             string strFiltro = NroOrden + "_" + strFecha + "_*.pdf";
             bool blnVeri01 = false;
-                        
+
             strArchivoOtoscop = strDirectorioAudioMetria + "\\" + Anio + "\\" + "OTOSCOPIA.pdf";
 
             if (Requerido)
@@ -1748,7 +1906,7 @@ namespace CapaPresentacion
 
         private void CargarArchivoEEG(string Dia, string Mes, string NroOrden, string NombreMes, int Posicion, string Anio, string DNI, bool Requerido)
         {
-            string strDirectorioBase = "";            
+            string strDirectorioBase = "";
             //string strFecha = Dia + "/" + Mes + "/" + Anio;
             string strFecha = Dia + Mes + Anio;
             string strFiltro = NroOrden + "-" + strFecha + "-*.pdf";
@@ -1799,7 +1957,7 @@ namespace CapaPresentacion
 
         private void CargarArchivoPsicotecnico(string Dia, string Mes, string NroOrden, string NombreMes, int Posicion, string Anio, string DNI, bool Requerido)
         {
-            string strDirectorioBase = "";            
+            string strDirectorioBase = "";
             //string strFecha = Dia + "/" + Mes + "/" + Anio;
             string strFecha = Dia + Mes + Anio;
             string strFiltro = NroOrden + "-" + strFecha + "-*.pdf";
@@ -1850,9 +2008,9 @@ namespace CapaPresentacion
 
         private void CargarArchivoErgometria(string Dia, string Mes, string NroOrden, string NombreMes, int Posicion, string Anio, string DNI, bool Requerido)
         {
-            string strDirectorioBase = "";            
+            string strDirectorioBase = "";
             //string strFecha = Dia + "/" + Mes + "/" + Anio;
-            string strFecha = Dia + "_" + Mes+ "_" + Anio;
+            string strFecha = Dia + "_" + Mes + "_" + Anio;
             string strFiltro = NroOrden + "_*_" + strFecha + ".pdf";
             bool blnVeri01 = false;
 
@@ -1978,51 +2136,70 @@ namespace CapaPresentacion
             //strFiltro = strFecha + "*_" + NroOrden + "_*.jpg";            
             strFiltro = strFecha + "*_" + NroOrden + " *_?????_*.jpg";
 
+            System.Diagnostics.Debug.WriteLine("=== CARGAR ARCHIVO RX ===");
+            System.Diagnostics.Debug.WriteLine($"  Orden: {NroOrden}");
+            System.Diagnostics.Debug.WriteLine($"  DNI: {DNI}");
+            System.Diagnostics.Debug.WriteLine($"  Requerido: {Requerido}");
+            System.Diagnostics.Debug.WriteLine($"  Directorio Base: {strDirectorioBase}");
+            System.Diagnostics.Debug.WriteLine($"  Filtro Búsqueda: {strFiltro}");
+            System.Diagnostics.Debug.WriteLine($"  Fecha: {strFecha01}");
+
             if (Requerido)
             {
                 try
                 {
                     System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(strDirectorioBase);
+                    System.Diagnostics.Debug.WriteLine($"  Directorio existe: {di.Exists}");
 
-                    foreach (var fi in di.GetFiles(strFiltro, System.IO.SearchOption.AllDirectories))
+                    if (di.Exists)
                     {
-                        blnVeri01 = true;
-
-                        if (dtArchivosPDF.Rows.Count > 0)
+                        foreach (var fi in di.GetFiles(strFiltro, System.IO.SearchOption.AllDirectories))
                         {
+                            // CAMBIO: Validar que el archivo realmente exista antes de agregarlo
                             if (System.IO.File.Exists(fi.FullName))
                             {
-                                strDirRXTemp = fi.FullName;
-                                //dtArchivosPDF.Rows[dtArchivosPDF.Rows.Count - 1][Posicion] = fi.FullName;
-                                //Posicion++;
-                                ListaArchivosPdf.Add(fi.FullName);
+                                blnVeri01 = true;
+                                System.Diagnostics.Debug.WriteLine($"  ✓ RX encontrado y válido: {fi.Name}");
+
+                                if (dtArchivosPDF.Rows.Count > 0)
+                                {
+                                    strDirRXTemp = fi.FullName;
+                                    ListaArchivosPdf.Add(fi.FullName);
+                                    System.Diagnostics.Debug.WriteLine($"  Archivo agregado: {fi.FullName}");
+                                }
                             }
                             else
                             {
-                                //dtArchivosPDF.Rows[dtArchivosPDF.Rows.Count - 1][Posicion] = "";
-                                ListaArchivosPdf.Add("");
-                                if (Requerido)
-                                    RegistrarError(strFecha, NroOrden, DNI, "RX"); Posicion++;
+                                System.Diagnostics.Debug.WriteLine($"  ⚠ Archivo referenciado pero no existe: {fi.FullName}");
                             }
                         }
                     }
-
-                    if (!blnVeri01)
+                    else
                     {
-                        if (Requerido)
-                            RegistrarError(strFecha01, NroOrden, DNI, "RX");
+                        System.Diagnostics.Debug.WriteLine($"  ✗ Directorio no existe: {strDirectorioBase}");
                     }
+
+                    if (!blnVeri01 && Requerido)
+                    {
+                        RegistrarError(strFecha01, NroOrden, DNI, "RX");
+                        System.Diagnostics.Debug.WriteLine($"  ✗ NO se encontraron archivos RX válidos para {NroOrden}");
+                    }
+
+                    System.Diagnostics.Debug.WriteLine($"  Resultado: {(blnVeri01 ? "✓ ARCHIVOS ENCONTRADOS" : "✗ NO ENCONTRADOS")}");
                 }
                 catch (System.IO.DirectoryNotFoundException ex)
                 {
-                    //ErrorGenerararchivo("No se ha exportado el PDF para ECG.\n" + ex.Message + "\n" + ex.Source, strFecha);
-                    if (!blnVeri01)
-                    {
-                        if (Requerido)
-                            RegistrarError(strFecha01, NroOrden, DNI, "RX");
-                    }
+                    if (Requerido)
+                        RegistrarError(strFecha01, NroOrden, DNI, "RX");
+                    System.Diagnostics.Debug.WriteLine($"  ✗ Excepción: DirectoryNotFound - {ex.Message}");
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"  ✗ Excepción general: {ex.GetType().Name} - {ex.Message}");
+                    System.Diagnostics.Debug.WriteLine($"  Stack: {ex.StackTrace}");
                 }
             }
+            System.Diagnostics.Debug.WriteLine("=== FIN CARGAR ARCHIVO RX ===");
         }
 
         private void CargarArchivoEcoDoppler(string DNI, string Mes, string Dia, string NombreMes, string NroOrden, int Posicion, string Anio, bool Requerido)
@@ -2096,7 +2273,7 @@ namespace CapaPresentacion
                     if (intProcesoActivo == 1)
                     {
                         bbiConsolidarEstudios.Enabled = true;
-                        MessageBox.Show("¡El proceso ha finalizado!.", "Laboral", MessageBoxButtons.OK, MessageBoxIcon.Information);                        
+                        MessageBox.Show("¡El proceso ha finalizado!.", "Laboral", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     else if (intProcesoActivo == 2)
                     {
@@ -2298,12 +2475,12 @@ namespace CapaPresentacion
             CapaNegocioMepryl.ExamenPreventiva preventiva = new CapaNegocioMepryl.ExamenPreventiva();
 
             DataTable dt = null;
-            string strMail = ""; 
+            string strMail = "";
             string strBody = "";
             string strAsunto = "";
             string strArchivo = "";
-            string strNombreEmpresa = "";            
-            string strNombrePaciente = "";            
+            string strNombreEmpresa = "";
+            string strNombrePaciente = "";
             bool blnEnviado = false;
             int intValor = 0;
             string strIdPaciente = "";
@@ -2313,7 +2490,7 @@ namespace CapaPresentacion
             dt = Paciente.MailPacientePorEmpresa(strIdPaciente, strIdEmpresa);
 
             foreach (DataRow fila in dt.Rows)
-            {                
+            {
                 strNombreEmpresa = fila["razonSocial"].ToString();
                 strNombrePaciente = fila["Apellido"].ToString() + " " + fila["Nombres"].ToString();
 
@@ -2324,7 +2501,7 @@ namespace CapaPresentacion
                 else
                 {
                     strMail = fila["Email"].ToString();
-                }                
+                }
             }
             dt = null;
 
@@ -2381,7 +2558,7 @@ namespace CapaPresentacion
             if (blnEnviado)
                 preventiva.actualizarEnvioMail(strIDTipoExamen);
 
-            
+
             actualizar();
         }
 
@@ -2451,7 +2628,7 @@ namespace CapaPresentacion
                                 && row.Cells[17].Value.ToString() != "0")
                         {
                             ExportarAudioPDF(row);
-                            
+
                             // Comentar
                             progressBar.PerformStep();
                             // Comentar
@@ -2486,7 +2663,7 @@ namespace CapaPresentacion
                                     && row.Cells[17].Value.ToString() != "0")
                                 {
                                     ExportarAudioPDF(row);
-                                    
+
                                     // Comentar
                                     progressBar.PerformStep();
                                     // Comentar
@@ -2543,6 +2720,52 @@ namespace CapaPresentacion
                 {
                     dgv.Rows[0].Cells[1].Selected = true;
                 }
+            }
+        }
+
+        // ======== MÉTODOS DE LOGGING PARA CONSOLIDACIÓN ========
+        private void InicializarLogConsolidacion()
+        {
+            strLogConsolidacion = Path.Combine(Path.GetTempPath(), $"LOG_CONSOLIDACION_{DateTime.Now:yyyyMMdd_HHmmss}.txt");
+            try
+            {
+                using (StreamWriter sw = new StreamWriter(strLogConsolidacion, true, Encoding.UTF8))
+                {
+                    sw.WriteLine("===============================================");
+                    sw.WriteLine($"LOG DE CONSOLIDACIÓN - {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
+                    sw.WriteLine("===============================================");
+                    sw.WriteLine("");
+                }
+            }
+            catch { }
+        }
+
+        private void RegistrarEnLog(string mensaje)
+        {
+            if (string.IsNullOrEmpty(strLogConsolidacion))
+                return;
+
+            try
+            {
+                using (StreamWriter sw = new StreamWriter(strLogConsolidacion, true, Encoding.UTF8))
+                {
+                    sw.WriteLine($"[{DateTime.Now:HH:mm:ss.fff}] {mensaje}");
+                }
+            }
+            catch { }
+        }
+
+        private void RegistrarEnLogLinea(string linea)
+        {
+            RegistrarEnLog(linea);
+            System.Diagnostics.Debug.WriteLine(linea);
+        }
+
+        private void MostrarArchivoLog()
+        {
+            if (File.Exists(strLogConsolidacion))
+            {
+                System.Diagnostics.Process.Start(strLogConsolidacion);
             }
         }
     }

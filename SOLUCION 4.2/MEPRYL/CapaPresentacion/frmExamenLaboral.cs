@@ -689,16 +689,25 @@ namespace CapaPresentacion
             foreach (TextBox t in textBoxsPlacas) { t.Text = ""; }
             foreach (TextBox t in textBoxsPlacasId) { t.Text = ""; }
 
+            System.Diagnostics.Debug.WriteLine("[cambiarVisibilidadPlacas] Cargando todos los Rayos X (Laborales Básicas, Craneales, Tronco, M.Inferior)");
 
             DataRow[] dr = items.Select("ordenFormulario = 8 or ordenFormulario = 9" +
             " or ordenFormulario = 10 or ordenFormulario = 11");
+
+            System.Diagnostics.Debug.WriteLine($"  Total RX encontrados: {dr.Length}");
+
             foreach (DataRow r in dr)
             {
                 if (panelesPlacas.Count > 0)
                 {
+                    string idRx = r.ItemArray[0].ToString();
+                    string descripcion = r[1].ToString();
+
+                    System.Diagnostics.Debug.WriteLine($"  Agregando RX: ID={idRx}, Desc={descripcion}");
+
                     panelesPlacas[0].Visible = true;
-                    labelsPlacas[0].Text = "RX. " + r[1].ToString();
-                    textBoxsPlacasId[0].Text = r.ItemArray[0].ToString();
+                    labelsPlacas[0].Text = "RX. " + descripcion;
+                    textBoxsPlacasId[0].Text = idRx;
 
                     labelsUsados.Add(labelsPlacas[0]);
                     textBoxsUsados.Add(textBoxsPlacas[0]);
@@ -710,6 +719,8 @@ namespace CapaPresentacion
                     textBoxsPlacasId.RemoveAt(0);
                 }
             }
+
+            System.Diagnostics.Debug.WriteLine($"  Total RX cargados: {textBoxsIdUsados.Count}");
 
 
 
@@ -1084,7 +1095,7 @@ namespace CapaPresentacion
             examen.HombrosF = obtenerValorTb("45");
             examen.RodillasF = obtenerValorTb("46");
             examen.CaderasF = obtenerValorTb("80");
-            examen.TobillosF = obtenerValorTb("81");
+            examen.TobillosF = obtenerValorTb("65");
             examen.CraneoFyP = obtenerValorTb("47");
             examen.HombroF = obtenerValorTb("48");
             examen.HombroVP = obtenerValorTb("49");
@@ -1103,7 +1114,7 @@ namespace CapaPresentacion
             examen.RodillaF = obtenerValorTb("62");
             examen.RodillaP = obtenerValorTb("63");
             examen.PiernaFyP = obtenerValorTb("64");
-            examen.TobilloFyP = obtenerValorTb("65");
+            examen.TobilloFyP = obtenerValorTb("63");
             examen.AxialDeCalcaneo = obtenerValorTb("66");
             examen.PieFyP = obtenerValorTb("67");
             examen.Audio = obtenerValorTb("68");
@@ -1141,7 +1152,35 @@ namespace CapaPresentacion
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
-
+            // DEBUG - Rayos X
+            System.Diagnostics.Debug.WriteLine("=== GUARDANDO EXAMEN LABORAL ===");
+            System.Diagnostics.Debug.WriteLine($"ID Examen: {idExamenLaboral}");
+            System.Diagnostics.Debug.WriteLine($"DNI: {tbDni.Text}");
+            System.Diagnostics.Debug.WriteLine("--- RAYOS X GUARDADOS ---");
+            System.Diagnostics.Debug.WriteLine($"  ToraxF (38): {examen.ToraxF}");
+            System.Diagnostics.Debug.WriteLine($"  LumbarF (39): {examen.LumbarF}");
+            System.Diagnostics.Debug.WriteLine($"  LumbarP (40): {examen.LumbarP}");
+            System.Diagnostics.Debug.WriteLine($"  CervicalF (41): {examen.CervicalF}");
+            System.Diagnostics.Debug.WriteLine($"  CervicalP (42): {examen.CervicalP}");
+            System.Diagnostics.Debug.WriteLine($"  Fnp (43): {examen.Fnp}");
+            System.Diagnostics.Debug.WriteLine($"  Mnp (44): {examen.Mnp}");
+            System.Diagnostics.Debug.WriteLine($"  HombrosF (45): {examen.HombrosF}");
+            System.Diagnostics.Debug.WriteLine($"  RodillasF (46): {examen.RodillasF}");
+            System.Diagnostics.Debug.WriteLine($"  PelvisF (58): {examen.PelvisF}");
+            System.Diagnostics.Debug.WriteLine($"  CaderaF (59): {examen.CaderaF}");
+            System.Diagnostics.Debug.WriteLine($"  CaderaP (60): {examen.CaderaP}");
+            System.Diagnostics.Debug.WriteLine($"  FemurFyP (61): {examen.FemurFyP}");
+            System.Diagnostics.Debug.WriteLine($"  RodillaP (63): {examen.RodillaP}");
+            System.Diagnostics.Debug.WriteLine($"  TobilloFyP (63): {examen.TobilloFyP}");
+            System.Diagnostics.Debug.WriteLine("--- LABORALES BÁSICAS ---");
+            System.Diagnostics.Debug.WriteLine($"  CaderasF (80): {examen.CaderasF}");
+            System.Diagnostics.Debug.WriteLine($"  TobillosF (65): {examen.TobillosF}");
+            System.Diagnostics.Debug.WriteLine("--- OTROS ESTUDIOS ---");
+            System.Diagnostics.Debug.WriteLine($"  ECG (78): {examen.Ecg}");
+            System.Diagnostics.Debug.WriteLine($"  Audio (68): {examen.Audio}");
+            System.Diagnostics.Debug.WriteLine($"  Espiro (75): {examen.Espiro}");
+            System.Diagnostics.Debug.WriteLine($"Resultado: {(resultado.Modo == 0 ? "✓ OK" : "✗ ERROR")}");
+            System.Diagnostics.Debug.WriteLine("=== FIN GUARDANDO EXAMEN ===");
         }
 
         private string obtenerValorTb(string id)
@@ -1149,46 +1188,78 @@ namespace CapaPresentacion
             if (string.IsNullOrWhiteSpace(id)) return "";
 
             string idTrim = id.Trim();
+            System.Diagnostics.Debug.WriteLine($"[obtenerValorTb] Buscando ID: '{idTrim}'");
 
-            // 1) Intento con las listas dinámicas (modo actual)
-            if (textBoxsIdUsados != null && textBoxsUsados != null)
+            // 1) PRIMERO: Buscar en listas dinámicas (donde están todos los RX cargados)
+            if (textBoxsIdUsados != null && textBoxsUsados != null && textBoxsIdUsados.Count > 0)
             {
-                int index = textBoxsIdUsados.FindIndex(x => x != null && !string.IsNullOrEmpty(x.Text) &&
-                                                           x.Text.Trim().Equals(idTrim, StringComparison.OrdinalIgnoreCase));
-                if (index != -1 && index < textBoxsUsados.Count && textBoxsUsados[index] != null)
+                System.Diagnostics.Debug.WriteLine($"  [Dinámicos] Total items: {textBoxsIdUsados.Count}");
+                for (int i = 0; i < textBoxsIdUsados.Count; i++)
                 {
-                    return textBoxsUsados[index].Text ?? "";
+                    if (textBoxsIdUsados[i] != null && !string.IsNullOrEmpty(textBoxsIdUsados[i].Text))
+                    {
+                        string idActual = textBoxsIdUsados[i].Text.Trim();
+                        System.Diagnostics.Debug.WriteLine($"    [{i}] Comparando '{idActual}' con '{idTrim}'");
+
+                        if (idActual.Equals(idTrim, StringComparison.OrdinalIgnoreCase))
+                        {
+                            if (i < textBoxsUsados.Count && textBoxsUsados[i] != null)
+                            {
+                                string valor = textBoxsUsados[i].Text ?? "";
+                                System.Diagnostics.Debug.WriteLine($"  ✓ ENCONTRADO en dinámicos[{i}]: '{valor}'");
+                                return valor;
+                            }
+                        }
+                    }
                 }
             }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine($"  [Dinámicos] Lista vacía o nula");
+            }
 
-            // 2) Fallback sobre los controles fijos de Rayos X (si existen en el diseñador)
+            // 2) Fallback: Buscar en controles fijos (si no se encontró en dinámicos)
+            System.Diagnostics.Debug.WriteLine($"  [Fallback] Buscando en controles fijos...");
             try
             {
                 TextBox[] idControls = new TextBox[] {
-            tbIdPlaca1, tbIdPlaca2, tbIdPlaca3, tbIdPlaca4, tbIdPlaca5, tbIdPlaca6, tbIdPlaca7, tbIdPlaca8, tbIdPlaca9
-        };
+                    tbIdPlaca1, tbIdPlaca2, tbIdPlaca3, tbIdPlaca4, tbIdPlaca5,
+                    tbIdPlaca6, tbIdPlaca7, tbIdPlaca8, tbIdPlaca9
+                };
 
                 TextBox[] valueControls = new TextBox[] {
-            tbPanelRx1, tbPanelRx2, tbPanelRx3, tbPanelRx4, tbPanelRx5, tbPanelRx6, tbPanelRx7, tbPanelRx8, tbPanelRx9
-        };
+                    tbPanelRx1, tbPanelRx2, tbPanelRx3, tbPanelRx4, tbPanelRx5,
+                    tbPanelRx6, tbPanelRx7, tbPanelRx8, tbPanelRx9
+                };
 
                 for (int i = 0; i < idControls.Length; i++)
                 {
                     var idCtrl = idControls[i];
                     if (idCtrl == null) continue;
-                    if (!string.IsNullOrEmpty(idCtrl.Text) && idCtrl.Text.Trim().Equals(idTrim, StringComparison.OrdinalIgnoreCase))
+
+                    if (!string.IsNullOrEmpty(idCtrl.Text))
                     {
-                        var valCtrl = (i < valueControls.Length) ? valueControls[i] : null;
-                        if (valCtrl != null) return valCtrl.Text ?? "";
+                        string idActual = idCtrl.Text.Trim();
+                        if (idActual.Equals(idTrim, StringComparison.OrdinalIgnoreCase))
+                        {
+                            var valCtrl = (i < valueControls.Length) ? valueControls[i] : null;
+                            if (valCtrl != null)
+                            {
+                                string valor = valCtrl.Text ?? "";
+                                System.Diagnostics.Debug.WriteLine($"  ✓ ENCONTRADO en fijos[{i}]: '{valor}'");
+                                return valor;
+                            }
+                        }
                     }
                 }
             }
-            catch
+            catch (Exception exFallback)
             {
-                // no hacer nada: si los controles no existen, seguimos y devolvemos ""
+                System.Diagnostics.Debug.WriteLine($"  ✗ Excepción en fallback: {exFallback.Message}");
             }
 
-            // 3) nada encontrado
+            // 3) No encontrado
+            System.Diagnostics.Debug.WriteLine($"  ✗ ID '{idTrim}' NO ENCONTRADO - retornando vacío");
             return "";
         }
 
@@ -1463,7 +1534,7 @@ namespace CapaPresentacion
             setearTbSegunId("45", examen.HombrosF, "SIN PARTICULARIDADES");
             setearTbSegunId("46", examen.RodillasF, "SIN PARTICULARIDADES");
             setearTbSegunId("80", examen.CaderasF, "SIN PARTICULARIDADES");
-            setearTbSegunId("81", examen.TobillosF, "SIN PARTICULARIDADES");
+            setearTbSegunId("65", examen.TobillosF, "SIN PARTICULARIDADES");
             setearTbSegunId("47", examen.CraneoFyP, "");
             setearTbSegunId("48", examen.HombroF, "");
             setearTbSegunId("49", examen.HombroVP, "");
@@ -1482,7 +1553,7 @@ namespace CapaPresentacion
             setearTbSegunId("62", examen.RodillaF, "");
             setearTbSegunId("63", examen.RodillaP, "");
             setearTbSegunId("64", examen.PiernaFyP, "");
-            setearTbSegunId("65", examen.TobilloFyP, "");
+            setearTbSegunId("63", examen.TobilloFyP, "");
             setearTbSegunId("66", examen.AxialDeCalcaneo, "");
             setearTbSegunId("67", examen.PieFyP, "");
             setearTbSegunId("68", examen.Audio, "");

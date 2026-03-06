@@ -16,11 +16,11 @@ namespace CapaDatosMepryl
         private DataTable validaciones;
         int puntEncabez;
         int puntTxtEncab;
-        
+
         public Laboral()
         {
             // GRV - Modificado
-            validaciones = SQLConnector.obtenerTablaSegunConsultaString("select * from dbo.Validaciones");   
+            validaciones = SQLConnector.obtenerTablaSegunConsultaString("select * from dbo.Validaciones");
         }
 
         public DataTable consultasConFiltro(string filtro)
@@ -34,7 +34,7 @@ namespace CapaDatosMepryl
                                 inner join dbo.ConsultaLaboral cl on tep.id = cl.idTipoExamen
                 where c.tipo != 'P' and p.dni = '" + filtro + @"' and c.tipo != 'R' 
                 order by CONVERT(VARCHAR(10),c.fecha,101), convert(int,REPLACE(REPLACE(REPLACE(REPLACE(c.identificador, 'L', ''),'CO',''),'EC',''),'R',''))");
-            return cargarConsultas(tablaLaborales);   
+            return cargarConsultas(tablaLaborales);
         }
 
         public DataTable consultasSinFiltro(string desde, string hasta, List<string> listaFiltro)
@@ -148,109 +148,109 @@ namespace CapaDatosMepryl
             retorno.Columns.Add("Enviado");
 
             foreach (DataRow r in tablaLaborales.Rows)
-                {
-                    DataTable empresaPorTipoExamen = SQLConnector.obtenerTablaSegunConsultaString(@"select e.id, e.razonSocial, ete.tarea 
+            {
+                DataTable empresaPorTipoExamen = SQLConnector.obtenerTablaSegunConsultaString(@"select e.id, e.razonSocial, ete.tarea 
                 from dbo.empresaPorTipoDeExamen ete inner join dbo.Empresa e on ete.idEmpresa = e.id
                 where ete.idTipoExamen = '" + r.ItemArray[6].ToString() + "'");
-                    string idEmp = "";
-                    string emp = "";
-                    string tarea = "";
-                    if (empresaPorTipoExamen.Rows.Count > 0)
+                string idEmp = "";
+                string emp = "";
+                string tarea = "";
+                if (empresaPorTipoExamen.Rows.Count > 0)
+                {
+                    idEmp = empresaPorTipoExamen.Rows[0].ItemArray[0].ToString();
+                    emp = empresaPorTipoExamen.Rows[0].ItemArray[1].ToString();
+                    tarea = empresaPorTipoExamen.Rows[0].ItemArray[2].ToString();
+
+                    if (r.ItemArray[11].ToString() == "")
                     {
-                        idEmp = empresaPorTipoExamen.Rows[0].ItemArray[0].ToString();
-                        emp = empresaPorTipoExamen.Rows[0].ItemArray[1].ToString();
-                        tarea = empresaPorTipoExamen.Rows[0].ItemArray[2].ToString();
-
-                        if (r.ItemArray[11].ToString() == "")
-                        {
-                            r.BeginEdit();
-                            r[11] = Guid.Empty.ToString();
-                            r.AcceptChanges();
-                            test = r.ItemArray[11].ToString();
-                            test = r.ItemArray[11].ToString();
-                            r.EndEdit();
+                        r.BeginEdit();
+                        r[11] = Guid.Empty.ToString();
+                        r.AcceptChanges();
+                        test = r.ItemArray[11].ToString();
+                        test = r.ItemArray[11].ToString();
+                        r.EndEdit();
                     }
-                        if (Guid.Parse(r.ItemArray[11].ToString()) != Guid.Empty)
-                        {
-                            //CONSULTORIO
-                            DataTable consultorioLaboral = SQLConnector.obtenerTablaSegunConsultaString(@"select * from dbo.ConsultorioLaboral
+                    if (Guid.Parse(r.ItemArray[11].ToString()) != Guid.Empty)
+                    {
+                        //CONSULTORIO
+                        DataTable consultorioLaboral = SQLConnector.obtenerTablaSegunConsultaString(@"select * from dbo.ConsultorioLaboral
                             where id = '" + r.ItemArray[11].ToString() + "'");
-                            string estAtenc = "";
-                            if (consultorioLaboral.Rows[0].ItemArray[4].ToString() != string.Empty)
-                            {
-                                DataTable estadoAtencion = SQLConnector.obtenerTablaSegunConsultaString("select * from dbo.EstadoAtencion where id = '" +
-                                    consultorioLaboral.Rows[0].ItemArray[4].ToString() + "'");
-                                estAtenc = estadoAtencion.Rows[0].ItemArray[2].ToString();
-                            }
-
-                            string fechaAltaCitacion = "";
-                            if (consultorioLaboral.Rows[0].ItemArray[8].ToString() != string.Empty)
-                            {
-                                fechaAltaCitacion = ((DateTime)consultorioLaboral.Rows[0].ItemArray[8]).ToShortDateString();
-                            }
-                            retorno.Rows.Add(r.ItemArray[0], Convert.ToDateTime(r.ItemArray[1]).ToShortDateString(),
-                            Convert.ToDateTime(r.ItemArray[1]).ToString("HH:mm"), r.ItemArray[2], r.ItemArray[7].ToString(),
-                            idEmp, emp, tarea, r.ItemArray[4], r.ItemArray[5], r.ItemArray[6],
-                            r.ItemArray[8], r.ItemArray[9], estAtenc, "", fechaAltaCitacion, "",
-                            r.ItemArray[10], r.ItemArray[11], "", r.ItemArray[6], r.ItemArray[12], r.ItemArray[13], r.ItemArray[14]);
-                        }
-                        else
+                        string estAtenc = "";
+                        if (consultorioLaboral.Rows[0].ItemArray[4].ToString() != string.Empty)
                         {
-                            string dictamen = "";
-                            string dictamenClinico = "";
-                            DataTable examen = SQLConnector.obtenerTablaSegunConsultaString("select dictamen, dictamenCli from dbo.ExamenLaboral where id = '" + r.ItemArray[10].ToString() + "'");
-                            if (examen.Rows.Count > 0)
+                            DataTable estadoAtencion = SQLConnector.obtenerTablaSegunConsultaString("select * from dbo.EstadoAtencion where id = '" +
+                                consultorioLaboral.Rows[0].ItemArray[4].ToString() + "'");
+                            estAtenc = estadoAtencion.Rows[0].ItemArray[2].ToString();
+                        }
+
+                        string fechaAltaCitacion = "";
+                        if (consultorioLaboral.Rows[0].ItemArray[8].ToString() != string.Empty)
+                        {
+                            fechaAltaCitacion = ((DateTime)consultorioLaboral.Rows[0].ItemArray[8]).ToShortDateString();
+                        }
+                        retorno.Rows.Add(r.ItemArray[0], Convert.ToDateTime(r.ItemArray[1]).ToShortDateString(),
+                        Convert.ToDateTime(r.ItemArray[1]).ToString("HH:mm"), r.ItemArray[2], r.ItemArray[7].ToString(),
+                        idEmp, emp, tarea, r.ItemArray[4], r.ItemArray[5], r.ItemArray[6],
+                        r.ItemArray[8], r.ItemArray[9], estAtenc, "", fechaAltaCitacion, "",
+                        r.ItemArray[10], r.ItemArray[11], "", r.ItemArray[6], r.ItemArray[12], r.ItemArray[13], r.ItemArray[14]);
+                    }
+                    else
+                    {
+                        string dictamen = "";
+                        string dictamenClinico = "";
+                        DataTable examen = SQLConnector.obtenerTablaSegunConsultaString("select dictamen, dictamenCli from dbo.ExamenLaboral where id = '" + r.ItemArray[10].ToString() + "'");
+                        if (examen.Rows.Count > 0)
+                        {
+                            if (examen.Rows[0].ItemArray[0].ToString() == "") { dictamen = "A DESIGNAR"; }
+                            else
                             {
-                                if (examen.Rows[0].ItemArray[0].ToString() == "") { dictamen = "A DESIGNAR"; }
-                                else
-                                {
-                                    DataTable t0 = SQLConnector.obtenerTablaSegunConsultaString(@"select descripcion from dbo.DictamenesLaboral
+                                DataTable t0 = SQLConnector.obtenerTablaSegunConsultaString(@"select descripcion from dbo.DictamenesLaboral
                                     where id = '" + examen.Rows[0].ItemArray[0].ToString() + "'");
-                                    dictamen = t0.Rows[0].ItemArray[0].ToString();
-                                }
-                                if (examen.Rows[0].ItemArray[1].ToString() == "") { dictamenClinico = ""; }
-                                else
-                                {
-                                    DataTable t1 = SQLConnector.obtenerTablaSegunConsultaString(@"select descripcion from dbo.DictamenesLaboral
+                                dictamen = t0.Rows[0].ItemArray[0].ToString();
+                            }
+                            if (examen.Rows[0].ItemArray[1].ToString() == "") { dictamenClinico = ""; }
+                            else
+                            {
+                                DataTable t1 = SQLConnector.obtenerTablaSegunConsultaString(@"select descripcion from dbo.DictamenesLaboral
                                     where id = '" + examen.Rows[0].ItemArray[1].ToString() + "'");
-                                    if ("A DESIGNAR" != t1.Rows[0].ItemArray[0].ToString())
-                                    {
-                                        dictamenClinico = examen.Rows[0].ItemArray[1].ToString();
-                                    }
+                                if ("A DESIGNAR" != t1.Rows[0].ItemArray[0].ToString())
+                                {
+                                    dictamenClinico = examen.Rows[0].ItemArray[1].ToString();
                                 }
                             }
-                            string fechaAltaCitacion = "";
-                            retorno.Rows.Add(r.ItemArray[0], Convert.ToDateTime(r.ItemArray[1]).ToShortDateString(),
-                            Convert.ToDateTime(r.ItemArray[1]).ToString("HH:mm"), r.ItemArray[2], r.ItemArray[7].ToString(),
-                            idEmp, emp, tarea, r.ItemArray[4], r.ItemArray[5], r.ItemArray[6],
-                            r.ItemArray[8], r.ItemArray[9], "", "", fechaAltaCitacion, dictamen,
-                            r.ItemArray[10], r.ItemArray[11], dictamenClinico, r.ItemArray[6], r.ItemArray[12], r.ItemArray[13], r.ItemArray[14], r.ItemArray[15]);
                         }
+                        string fechaAltaCitacion = "";
+                        retorno.Rows.Add(r.ItemArray[0], Convert.ToDateTime(r.ItemArray[1]).ToShortDateString(),
+                        Convert.ToDateTime(r.ItemArray[1]).ToString("HH:mm"), r.ItemArray[2], r.ItemArray[7].ToString(),
+                        idEmp, emp, tarea, r.ItemArray[4], r.ItemArray[5], r.ItemArray[6],
+                        r.ItemArray[8], r.ItemArray[9], "", "", fechaAltaCitacion, dictamen,
+                        r.ItemArray[10], r.ItemArray[11], dictamenClinico, r.ItemArray[6], r.ItemArray[12], r.ItemArray[13], r.ItemArray[14], r.ItemArray[15]);
                     }
+                }
 
 
-             
+
             }
             return retorno;
         }
 
         public DataTable consulta(string consulta)
-        { 
+        {
             return SQLConnector.obtenerTablaSegunConsultaString(consulta);
         }
 
         public Entidades.Consultorio cargarConsultorio(string id)
         {
             //GRV - modificado para reservar turno de consulta
-//            DataTable consultorio = SQLConnector.obtenerTablaSegunConsultaString(@"select cl.*, c.pacienteID, p.dni,
-//            (p.apellido + ' ' + p.nombres) as paciente, e.razonSocial, ete.tarea, c.identificador
-//            from ConsultorioLaboral cl inner join dbo.ConsultaLaboral consL on cl.id = consL.idConsultorioLaboral
-//            inner join dbo.TipoExamenDePaciente tep on consL.idTipoExamen = tep.id
-//            inner join dbo.Consulta c on c.id = tep.idConsulta
-//            inner join dbo.empresaPorTipoDeExamen ete on ete.idTipoExamen = tep.id
-//            inner join dbo.PacienteLaboral p on c.pacienteID = p.id
-//            inner join dbo.Empresa e on ete.idEmpresa = e.id
-//            where cl.id = '" + id + "'");
+            //            DataTable consultorio = SQLConnector.obtenerTablaSegunConsultaString(@"select cl.*, c.pacienteID, p.dni,
+            //            (p.apellido + ' ' + p.nombres) as paciente, e.razonSocial, ete.tarea, c.identificador
+            //            from ConsultorioLaboral cl inner join dbo.ConsultaLaboral consL on cl.id = consL.idConsultorioLaboral
+            //            inner join dbo.TipoExamenDePaciente tep on consL.idTipoExamen = tep.id
+            //            inner join dbo.Consulta c on c.id = tep.idConsulta
+            //            inner join dbo.empresaPorTipoDeExamen ete on ete.idTipoExamen = tep.id
+            //            inner join dbo.PacienteLaboral p on c.pacienteID = p.id
+            //            inner join dbo.Empresa e on ete.idEmpresa = e.id
+            //            where cl.id = '" + id + "'");
 
             DataTable consultorio = SQLConnector.obtenerTablaSegunConsultaString(@"select cl.*, c.pacienteID, p.dni,
             (p.apellido + ' ' + p.nombres) as paciente, e.razonSocial, ete.tarea, c.identificador, e.id
@@ -293,8 +293,8 @@ namespace CapaDatosMepryl
                entidad.IdConsultorio, entidad.FechaHora, entidad.IdMotivo, entidad.IdEstadoAtencion, entidad.IdPatologia,
                entidad.Diagnostico, entidad.IdCondicionLaboral, Convert.ToDateTime(entidad.FechaAltaCitacion), entidad.IdMedico, entidad.FacturaPrestacion);
             }
-           
-           
+
+
         }
 
         public Entidades.Consultorio cargarConsultorio(string fecha, string idPaciente, string comparador, string idEmpresa)
@@ -305,16 +305,16 @@ namespace CapaDatosMepryl
             //if (idEmpresa != string.Empty) { empresa = " and ete.idEmpresa = '" + idEmpresa + "'"; }
             if (!(string.IsNullOrEmpty(idEmpresa))) { empresa = " and ete.idEmpresa = CONVERT(uniqueidentifier,'" + idEmpresa + "')"; }
             if (comparador == ">") { tipoOrden = "asc"; }
-//            DataTable consultorio = SQLConnector.obtenerTablaSegunConsultaString(@"select top(1) cl.*, c.pacienteID, p.dni,
-//            (p.apellido + ' ' + p.nombres) as paciente, e.razonSocial, ete.tarea, c.identificador
-//            from ConsultorioLaboral cl inner join dbo.ConsultaLaboral consL on cl.id = consL.idConsultorioLaboral
-//            inner join dbo.TipoExamenDePaciente tep on consL.idTipoExamen = tep.id
-//            inner join dbo.Consulta c on c.id = tep.idConsulta
-//            inner join dbo.empresaPorTipoDeExamen ete on ete.idTipoExamen = tep.id
-//            inner join dbo.PacienteLaboral p on c.pacienteID = p.id
-//            inner join dbo.Empresa e on ete.idEmpresa = e.id
-//            where c.pacienteID = '" + idPaciente + "'" + empresa + " and convert(date,c.fecha) " + comparador + " '" + fecha + @"'
-//            order by c.fecha " + tipoOrden);
+            //            DataTable consultorio = SQLConnector.obtenerTablaSegunConsultaString(@"select top(1) cl.*, c.pacienteID, p.dni,
+            //            (p.apellido + ' ' + p.nombres) as paciente, e.razonSocial, ete.tarea, c.identificador
+            //            from ConsultorioLaboral cl inner join dbo.ConsultaLaboral consL on cl.id = consL.idConsultorioLaboral
+            //            inner join dbo.TipoExamenDePaciente tep on consL.idTipoExamen = tep.id
+            //            inner join dbo.Consulta c on c.id = tep.idConsulta
+            //            inner join dbo.empresaPorTipoDeExamen ete on ete.idTipoExamen = tep.id
+            //            inner join dbo.PacienteLaboral p on c.pacienteID = p.id
+            //            inner join dbo.Empresa e on ete.idEmpresa = e.id
+            //            where c.pacienteID = '" + idPaciente + "'" + empresa + " and convert(date,c.fecha) " + comparador + " '" + fecha + @"'
+            //            order by c.fecha " + tipoOrden);
 
             DataTable consultorio = SQLConnector.obtenerTablaSegunConsultaString(@"select top(1) cl.*, c.pacienteID, p.dni,
             (p.apellido + ' ' + p.nombres) as paciente, e.razonSocial, ete.tarea, c.identificador
@@ -326,7 +326,7 @@ namespace CapaDatosMepryl
             inner join dbo.Empresa e on ete.idEmpresa = e.id
             where c.pacienteID = CONVERT(uniqueidentifier,'" + idPaciente + "')" + empresa + " and convert(date,c.fecha) " + comparador + " '" + fecha + @"'
             order by c.fecha " + tipoOrden);
-            return cargarEntidad(consultorio);            
+            return cargarEntidad(consultorio);
         }
 
         private Entidades.Consultorio cargarEntidad(DataTable consultorio)
@@ -345,7 +345,7 @@ namespace CapaDatosMepryl
                 if (consultorio.Rows[0].ItemArray[4].ToString() != string.Empty)
                 {
                     entidad.IdEstadoAtencion = new Guid(consultorio.Rows[0].ItemArray[4].ToString());
-                }             
+                }
                 if (consultorio.Rows[0].ItemArray[5].ToString() != string.Empty)
                 {
                     entidad.IdPatologia = new Guid(consultorio.Rows[0].ItemArray[5].ToString());
@@ -374,7 +374,7 @@ namespace CapaDatosMepryl
                 entidad.Identificador = consultorio.Rows[0].ItemArray[16].ToString();
                 entidad.Dni = consultorio.Rows[0].ItemArray[12].ToString();
                 entidad.IdEmpresa = new Guid(consultorio.Rows[0].ItemArray[17].ToString()); //GRV - Ramírez 
-          
+
             }
             return entidad;
         }
@@ -409,7 +409,7 @@ namespace CapaDatosMepryl
             retorno.Columns[2].DataType = System.Type.GetType("System.Int32");
 
             int posicionColumna = 0;
-            foreach(object dc in estudiosPorExamen.Rows[0].ItemArray)
+            foreach (object dc in estudiosPorExamen.Rows[0].ItemArray)
             {
                 if (posicionColumna >= 2 && dc.ToString() == "True")
                 {
@@ -442,7 +442,7 @@ namespace CapaDatosMepryl
                 "@rodillasF", "@caderasF", "@tobillosF", "@craneoFyP", "@hombroF", "@hombroVP", "@humeroFyP", "@codoFyP", "@antebrazoFyP",
                 "@munecaFyP", "@manoFyP", "@toraxP", "@pCostalFyO", "@colDorsalFyP", "@pelvisF", "@caderaF", "@caderaP", "@femurFyP",
                 "@rodillaF", "@rodillaP", "@piernaFyP", "@tobilloFyP", "@axialDeCalcaneo", "@pieFyP", "@audio", "@ergo", "@eco", "@psico",
-                "@espiro", "@eeg", "@iTorg", "@ecg", "@observaciones", "@dictamen", "@na", "@k", "@protTotal", "@albumina", "@alfa1", "@alfa2", "@beta1", "@beta2", "@gammaglob", 
+                "@espiro", "@eeg", "@iTorg", "@ecg", "@observaciones", "@dictamen", "@na", "@k", "@protTotal", "@albumina", "@alfa1", "@alfa2", "@beta1", "@beta2", "@gammaglob",
                 "@relacAlbGlob", "@creat");
 
                 SQLConnector.executeProcedure("sp_ExamenLaboral_Update", update, examen.Id, examen.AntCli, examen.AntQui,
@@ -566,8 +566,8 @@ namespace CapaDatosMepryl
                 retorno.HombrosF = examen.Rows[0].ItemArray[80].ToString();
                 retorno.RodillasF = examen.Rows[0].ItemArray[81].ToString();
                 retorno.CaderasF = examen.Rows[0].ItemArray[82].ToString();
-                retorno.TobillosF = examen.Rows[0].ItemArray[83].ToString();
-                retorno.CraneoFyP = examen.Rows[0].ItemArray[84].ToString();
+                retorno.TobillosF = examen.Rows[0].ItemArray[84].ToString();
+                retorno.CraneoFyP = examen.Rows[0].ItemArray[85].ToString();
                 retorno.HombroF = examen.Rows[0].ItemArray[85].ToString();
                 retorno.HombroVP = examen.Rows[0].ItemArray[86].ToString();
                 retorno.HumeroFyP = examen.Rows[0].ItemArray[87].ToString();
@@ -625,7 +625,7 @@ namespace CapaDatosMepryl
                 retorno.AntQui = examen.Rows[0].ItemArray[2].ToString();
                 retorno.AntTrau = examen.Rows[0].ItemArray[3].ToString();
             }
-            
+
 
 
 
@@ -729,6 +729,20 @@ namespace CapaDatosMepryl
             inner join dbo.Empresa emp on ete.idEmpresa = emp.id
             where el.id = '" + idExamen + "'");
 
+            // LOGGING: Mapeo completo de ItemArray
+            System.Diagnostics.Debug.WriteLine("\n========== MAPEO COMPLETO DE ITEMARRAY ==========");
+            if (consulta.Rows.Count > 0)
+            {
+                System.Diagnostics.Debug.WriteLine($"Total de columnas: {consulta.Rows[0].ItemArray.Length}");
+                for (int i = 0; i < consulta.Rows[0].ItemArray.Length; i++)
+                {
+                    string valor = consulta.Rows[0].ItemArray[i].ToString();
+                    if (valor.Length > 50) valor = valor.Substring(0, 50) + "...";
+                    System.Diagnostics.Debug.WriteLine($"  [ItemArray[{i}]] = '{valor}'");
+                }
+            }
+            System.Diagnostics.Debug.WriteLine("========== FIN MAPEO ==========\n");
+
             string nacionalidad = "";
             if (consulta.Rows[0].ItemArray[7].ToString() != "")
             {
@@ -740,7 +754,7 @@ namespace CapaDatosMepryl
 
             string localidad = "";
             if (consulta.Rows[0].ItemArray[9].ToString() != "")
-            {               
+            {
                 DataTable pres = SQLConnector.obtenerTablaSegunConsultaString(@"select pres from dbo.Prestaciones
                 where id = '" + consulta.Rows[0].ItemArray[9].ToString() + "'");
                 if (pres.Rows.Count > 0) { localidad = pres.Rows[0].ItemArray[0].ToString(); }
@@ -748,184 +762,196 @@ namespace CapaDatosMepryl
             }
 
 
-            if(consulta.Rows.Count > 0)
+            if (consulta.Rows.Count > 0)
             {
-            string medico = "";
-            if (consulta.Rows[0].ItemArray[40].ToString() != string.Empty)
-            {
-                DataTable medicos = SQLConnector.obtenerTablaSegunConsultaString(@"select (apellido + ' ' + nombres), tipo, nroMatricula from
-            Profesional where id = '" + consulta.Rows[0].ItemArray[40].ToString() + "'");
-                if (medicos.Rows.Count > 0)
+                string medico = "";
+                if (consulta.Rows[0].ItemArray[40].ToString() != string.Empty)
                 {
-                    medico = medicos.Rows[0].ItemArray[1].ToString() + " " + medicos.Rows[0].ItemArray[0].ToString()
-                        + " M.N: " + medicos.Rows[0].ItemArray[2].ToString();
+                    DataTable medicos = SQLConnector.obtenerTablaSegunConsultaString(@"select (apellido + ' ' + nombres), tipo, nroMatricula from
+            Profesional where id = '" + consulta.Rows[0].ItemArray[40].ToString() + "'");
+                    if (medicos.Rows.Count > 0)
+                    {
+                        medico = medicos.Rows[0].ItemArray[1].ToString() + " " + medicos.Rows[0].ItemArray[0].ToString()
+                            + " M.N: " + medicos.Rows[0].ItemArray[2].ToString();
+                    }
                 }
-            }
-            string dictCli = "";
-            DataTable dictamenes = SQLConnector.obtenerTablaSegunConsultaString(@"select * from dbo.DictamenesLaboral");
-            if (dictamenes.Select("id = '" + consulta.Rows[0].ItemArray[41].ToString() + "'").Length > 0)
-            {
-                dictCli = dictamenes.Select("id = '" + consulta.Rows[0].ItemArray[41].ToString() + "'")[0][2].ToString();
-            }
-            string dictFinal = "";
-            if (dictamenes.Select("id = '" + consulta.Rows[0].ItemArray[126].ToString() + "'").Length > 0)
-            {
-                dictFinal = dictamenes.Select("id = '" + consulta.Rows[0].ItemArray[126].ToString() + "'")[0][2].ToString();
-            }
+                string dictCli = "";
+                DataTable dictamenes = SQLConnector.obtenerTablaSegunConsultaString(@"select * from dbo.DictamenesLaboral");
+                if (dictamenes.Select("id = '" + consulta.Rows[0].ItemArray[41].ToString() + "'").Length > 0)
+                {
+                    dictCli = dictamenes.Select("id = '" + consulta.Rows[0].ItemArray[41].ToString() + "'")[0][2].ToString();
+                }
+                string dictFinal = "";
+                if (dictamenes.Select("id = '" + consulta.Rows[0].ItemArray[126].ToString() + "'").Length > 0)
+                {
+                    dictFinal = dictamenes.Select("id = '" + consulta.Rows[0].ItemArray[126].ToString() + "'")[0][2].ToString();
+                }
 
 
-            List<string> encabezados = new List<string>();
-            for (int i = 1; i <= 17; i++) { encabezados.Add(""); }
-            List<string> txtencabezados = new List<string>();
-            for (int i = 1; i <= 17; i++) { txtencabezados.Add(""); }
-            puntEncabez = 0;
-            puntTxtEncab = 0;
+                List<string> encabezados = new List<string>();
+                for (int i = 1; i <= 17; i++) { encabezados.Add(""); }
+                List<string> txtencabezados = new List<string>();
+                for (int i = 1; i <= 17; i++) { txtencabezados.Add(""); }
+                puntEncabez = 0;
+                puntTxtEncab = 0;
 
-            TipoExamen te = new TipoExamen();
-            Entidades.TipoExamen entidad = te.cargarEstudiosPorExamen(consulta.Rows[0].ItemArray[140].ToString());
-
-
-            if (entidad.Clinico.Select("Id = 1 and Estado = true").Length > 0)
-            {
-                encabezados[puntEncabez] = "DICTAMEN CLINICO";
-                puntEncabez++;
-                txtencabezados[puntTxtEncab] = dictCli;
-                puntTxtEncab++;
-            }
+                TipoExamen te = new TipoExamen();
+                Entidades.TipoExamen entidad = te.cargarEstudiosPorExamen(consulta.Rows[0].ItemArray[140].ToString());
 
 
-            if (entidad.Hematologia.Select("Estado = true").Length > 0 ||
-                entidad.QuimicaHematica.Select("Estado = true").Length > 0 ||
-                entidad.Serologia.Select("Estado = true").Length > 0 ||
-                entidad.PerfilLipidico.Select("Estado = true").Length > 0 ||
-                entidad.Bacteriologia.Select("Estado = true").Length > 0 ||
-                entidad.Orina.Select("Estado = true").Length > 0)
-            {
-                encabezados[puntEncabez] = "LABORATORIO";
-                puntEncabez++;
-                txtencabezados[puntTxtEncab] = consulta.Rows[0].ItemArray[84].ToString();
-                puntTxtEncab++;
-            }
+                if (entidad.Clinico.Select("Id = 1 and Estado = true").Length > 0)
+                {
+                    encabezados[puntEncabez] = "DICTAMEN CLINICO";
+                    puntEncabez++;
+                    txtencabezados[puntTxtEncab] = dictCli;
+                    puntTxtEncab++;
+                }
 
-            setearValoresDinamicos(entidad.EstComplementarios, "Id = 78", encabezados, txtencabezados, 
-            consulta.Rows[0].ItemArray[124].ToString(), "");
-            setearValoresDinamicos(entidad.LaboralesBasicas, "Id = 38", encabezados, txtencabezados, 
-            consulta.Rows[0].ItemArray[85].ToString(), "RX. ");
-            setearValoresDinamicos(entidad.LaboralesBasicas, "Id = 39", encabezados, txtencabezados,
-            consulta.Rows[0].ItemArray[86].ToString(), "RX. ");
-            setearValoresDinamicos(entidad.LaboralesBasicas, "Id = 40", encabezados, txtencabezados, 
-            consulta.Rows[0].ItemArray[87].ToString(), "RX. ");
-            setearValoresDinamicos(entidad.LaboralesBasicas, "Id = 41", encabezados, txtencabezados,
-            consulta.Rows[0].ItemArray[88].ToString(), "RX. ");
-            setearValoresDinamicos(entidad.LaboralesBasicas, "Id = 42", encabezados, txtencabezados, 
-            consulta.Rows[0].ItemArray[89].ToString(), "RX. ");
-            setearValoresDinamicos(entidad.LaboralesBasicas, "Id = 43", encabezados, txtencabezados,
-            consulta.Rows[0].ItemArray[90].ToString(), "RX. ");
-            setearValoresDinamicos(entidad.LaboralesBasicas, "Id = 44", encabezados, txtencabezados,
-            consulta.Rows[0].ItemArray[91].ToString(), "RX. ");
-            setearValoresDinamicos(entidad.LaboralesBasicas, "Id = 45", encabezados, txtencabezados,
-            consulta.Rows[0].ItemArray[92].ToString(), "RX. ");
-            setearValoresDinamicos(entidad.LaboralesBasicas, "Id = 46", encabezados, txtencabezados,
-            consulta.Rows[0].ItemArray[93].ToString(), "RX. ");
-            setearValoresDinamicos(entidad.LaboralesBasicas, "Id = 80", encabezados, txtencabezados,
-            consulta.Rows[0].ItemArray[94].ToString(), "RX. ");
-            setearValoresDinamicos(entidad.LaboralesBasicas, "Id = 81", encabezados, txtencabezados,
-            consulta.Rows[0].ItemArray[95].ToString(), "RX. ");
-            setearValoresDinamicos(entidad.CraneoYMSuperior, "Id = 47", encabezados, txtencabezados,
-            consulta.Rows[0].ItemArray[96].ToString(), "RX. ");
-            setearValoresDinamicos(entidad.CraneoYMSuperior, "Id = 48", encabezados, txtencabezados,
-            consulta.Rows[0].ItemArray[97].ToString(), "RX. ");
-            setearValoresDinamicos(entidad.CraneoYMSuperior, "Id = 49", encabezados, txtencabezados,
-            consulta.Rows[0].ItemArray[98].ToString(), "RX. ");
-            setearValoresDinamicos(entidad.CraneoYMSuperior, "Id = 50", encabezados, txtencabezados,
-            consulta.Rows[0].ItemArray[99].ToString(), "RX. ");
-            setearValoresDinamicos(entidad.CraneoYMSuperior, "Id = 51", encabezados, txtencabezados,
-            consulta.Rows[0].ItemArray[100].ToString(), "RX. ");
-            setearValoresDinamicos(entidad.CraneoYMSuperior, "Id = 52", encabezados, txtencabezados,
-            consulta.Rows[0].ItemArray[101].ToString(), "RX. ");
-            setearValoresDinamicos(entidad.CraneoYMSuperior, "Id = 53", encabezados, txtencabezados,
-            consulta.Rows[0].ItemArray[102].ToString(), "RX. ");
-            setearValoresDinamicos(entidad.CraneoYMSuperior, "Id = 54", encabezados, txtencabezados,
-            consulta.Rows[0].ItemArray[103].ToString(), "RX. ");
-            setearValoresDinamicos(entidad.TroncoYPelvis, "Id = 55", encabezados, txtencabezados, 
-            consulta.Rows[0].ItemArray[104].ToString(), "RX. ");
-            setearValoresDinamicos(entidad.TroncoYPelvis, "Id = 56", encabezados, txtencabezados, 
-            consulta.Rows[0].ItemArray[105].ToString(), "RX. ");
-            setearValoresDinamicos(entidad.TroncoYPelvis, "Id = 57", encabezados, txtencabezados, 
-            consulta.Rows[0].ItemArray[106].ToString(), "RX. ");
-            setearValoresDinamicos(entidad.TroncoYPelvis, "Id = 58", encabezados, txtencabezados, 
-            consulta.Rows[0].ItemArray[107].ToString(), "RX. ");
-            setearValoresDinamicos(entidad.TroncoYPelvis, "Id = 59", encabezados, txtencabezados, 
-            consulta.Rows[0].ItemArray[108].ToString(), "RX. ");
-            setearValoresDinamicos(entidad.TroncoYPelvis, "Id = 60", encabezados, txtencabezados,
-            consulta.Rows[0].ItemArray[109].ToString(), "RX. ");
-            setearValoresDinamicos(entidad.MiembroInferior, "Id = 61", encabezados, txtencabezados, 
-            consulta.Rows[0].ItemArray[110].ToString(), "RX. ");
-            setearValoresDinamicos(entidad.MiembroInferior, "Id = 62", encabezados, txtencabezados, 
-            consulta.Rows[0].ItemArray[111].ToString(), "RX. ");
-            setearValoresDinamicos(entidad.MiembroInferior, "Id = 63", encabezados, txtencabezados, 
-            consulta.Rows[0].ItemArray[112].ToString(), "RX. ");
-            setearValoresDinamicos(entidad.MiembroInferior, "Id = 64", encabezados, txtencabezados, 
-            consulta.Rows[0].ItemArray[113].ToString(), "RX. ");
-            setearValoresDinamicos(entidad.MiembroInferior, "Id = 65", encabezados, txtencabezados, 
-            consulta.Rows[0].ItemArray[114].ToString(), "RX. ");
-            setearValoresDinamicos(entidad.MiembroInferior, "Id = 66", encabezados, txtencabezados, 
-            consulta.Rows[0].ItemArray[115].ToString(), "RX. ");
-            setearValoresDinamicos(entidad.MiembroInferior, "Id = 67", encabezados, txtencabezados,
-            consulta.Rows[0].ItemArray[116].ToString(), "RX. ");
 
-            setearValoresDinamicos(entidad.EstComplementarios, "Id = 68", encabezados, txtencabezados, 
-            consulta.Rows[0].ItemArray[117].ToString(), "");
-            setearValoresDinamicos(entidad.EstComplementarios, "Id = 70", encabezados, txtencabezados, 
-            consulta.Rows[0].ItemArray[118].ToString(), "");
-            setearValoresDinamicos(entidad.EstComplementarios, "Id = 72", encabezados, txtencabezados, 
-            consulta.Rows[0].ItemArray[119].ToString(), "");
-            setearValoresDinamicos(entidad.EstComplementarios, "Id = 73", encabezados, txtencabezados,
-            consulta.Rows[0].ItemArray[120].ToString(), "");
-            setearValoresDinamicos(entidad.EstComplementarios, "Id = 75", encabezados, txtencabezados, 
-            consulta.Rows[0].ItemArray[121].ToString(), "");
-            setearValoresDinamicos(entidad.EstComplementarios, "Id = 76", encabezados, txtencabezados, 
-            consulta.Rows[0].ItemArray[122].ToString(), "");
-            setearValoresDinamicos(entidad.EstComplementarios, "Id = 77", encabezados, txtencabezados, 
-            consulta.Rows[0].ItemArray[123].ToString(), "");
+                if (entidad.Hematologia.Select("Estado = true").Length > 0 ||
+                    entidad.QuimicaHematica.Select("Estado = true").Length > 0 ||
+                    entidad.Serologia.Select("Estado = true").Length > 0 ||
+                    entidad.PerfilLipidico.Select("Estado = true").Length > 0 ||
+                    entidad.Bacteriologia.Select("Estado = true").Length > 0 ||
+                    entidad.Orina.Select("Estado = true").Length > 0)
+                {
+                    encabezados[puntEncabez] = "LABORATORIO";
+                    puntEncabez++;
+                    txtencabezados[puntTxtEncab] = consulta.Rows[0].ItemArray[84].ToString();
+                    puntTxtEncab++;
+                }
 
-            string encabezadoEquilibriometrico = "";
-            string resultadoEquilibriometrico = "";
-            if (entidad.Clinico.Select("Id = 69 and Estado = true").Length > 0)
-            {
-                encabezadoEquilibriometrico = "Equilibriometrico";
-                resultadoEquilibriometrico = consulta.Rows[0].ItemArray[38].ToString();
-            }
+                setearValoresDinamicos(entidad.EstComplementarios, "Id = 78", encabezados, txtencabezados,
+                consulta.Rows[0].ItemArray[124].ToString(), "");
+                setearValoresDinamicos(entidad.LaboralesBasicas, "Id = 38", encabezados, txtencabezados,
+                consulta.Rows[0].ItemArray[85].ToString(), "RX. ");
+                setearValoresDinamicos(entidad.LaboralesBasicas, "Id = 39", encabezados, txtencabezados,
+                consulta.Rows[0].ItemArray[86].ToString(), "RX. ");
+                setearValoresDinamicos(entidad.LaboralesBasicas, "Id = 40", encabezados, txtencabezados,
+                consulta.Rows[0].ItemArray[87].ToString(), "RX. ");
 
-            string encabezado = "DEPARTAMENTO DE MEDICINA LABORAL";
-            if (oliv) { encabezado = consulta.Rows[0].ItemArray[0].ToString(); }
-            string tipoEx = consulta.Rows[0].ItemArray[0].ToString();
-            if (oliv) {tipoEx = "";}
+                System.Diagnostics.Debug.WriteLine("=== RAYOS X - LABORALES BÁSICAS ===");
+                System.Diagnostics.Debug.WriteLine($"[ID=38] TORAX (F): ItemArray[85] = {consulta.Rows[0].ItemArray[85].ToString()}");
+                System.Diagnostics.Debug.WriteLine($"[ID=39] LUMBAR (F): ItemArray[86] = {consulta.Rows[0].ItemArray[86].ToString()}");
+                System.Diagnostics.Debug.WriteLine($"[ID=40] LUMBAR (P): ItemArray[87] = {consulta.Rows[0].ItemArray[87].ToString()}");
+                System.Diagnostics.Debug.WriteLine($"[ID=80] CADERAS (F): ItemArray[95] = {consulta.Rows[0].ItemArray[95].ToString()}");
+                System.Diagnostics.Debug.WriteLine($"[ID=65] TOBILLOS (F): ItemArray[84] = {consulta.Rows[0].ItemArray[84].ToString()}");
+                System.Diagnostics.Debug.WriteLine("=== FIN RAYOS X BÁSICAS ===\n");
 
-            retorno.Rows.Add(tipoEx,consulta.Rows[0].ItemArray[1].ToString(),
-            consulta.Rows[0].ItemArray[2].ToString(),consulta.Rows[0].ItemArray[3].ToString(),consulta.Rows[0].ItemArray[4].ToString(),
-            consulta.Rows[0].ItemArray[5].ToString(),consulta.Rows[0].ItemArray[6].ToString(),nacionalidad,consulta.Rows[0].ItemArray[8].ToString(),
-            localidad,consulta.Rows[0].ItemArray[10].ToString(),consulta.Rows[0].ItemArray[11].ToString(),
-            consulta.Rows[0].ItemArray[13].ToString(),consulta.Rows[0].ItemArray[14].ToString(),consulta.Rows[0].ItemArray[15].ToString(),  
-            consulta.Rows[0].ItemArray[16].ToString() + " m.",consulta.Rows[0].ItemArray[17].ToString() + " kg.",
-            calcularImc(consulta.Rows[0].ItemArray[16].ToString(), consulta.Rows[0].ItemArray[17].ToString()),
-            consulta.Rows[0].ItemArray[18].ToString(), consulta.Rows[0].ItemArray[19].ToString(),
-            consulta.Rows[0].ItemArray[20].ToString(), consulta.Rows[0].ItemArray[21].ToString(),
-            consulta.Rows[0].ItemArray[22].ToString(), consulta.Rows[0].ItemArray[23].ToString(),
-            consulta.Rows[0].ItemArray[24].ToString() + " x min", consulta.Rows[0].ItemArray[25].ToString(),
-            consulta.Rows[0].ItemArray[26].ToString(), consulta.Rows[0].ItemArray[27].ToString(),
-            consulta.Rows[0].ItemArray[28].ToString(), consulta.Rows[0].ItemArray[29].ToString(),
-            consulta.Rows[0].ItemArray[30].ToString(), consulta.Rows[0].ItemArray[31].ToString(),
-            consulta.Rows[0].ItemArray[32].ToString(), consulta.Rows[0].ItemArray[33].ToString(),
-            consulta.Rows[0].ItemArray[34].ToString(), consulta.Rows[0].ItemArray[35].ToString(),
-            consulta.Rows[0].ItemArray[36].ToString(), consulta.Rows[0].ItemArray[37].ToString(),
-            encabezadoEquilibriometrico, resultadoEquilibriometrico, medico, consulta.Rows[0].ItemArray[39].ToString(),
-            encabezados[0],txtencabezados[0],encabezados[1],txtencabezados[1],encabezados[2],txtencabezados[2],
-            encabezados[3],txtencabezados[3],encabezados[4],txtencabezados[4],encabezados[5],txtencabezados[5],
-            encabezados[6],txtencabezados[6],encabezados[7],txtencabezados[7],encabezados[8],txtencabezados[8],
-            encabezados[9], txtencabezados[9],encabezados[10], txtencabezados[10],encabezados[11], txtencabezados[11],
-            encabezados[12], txtencabezados[12],encabezados[13], txtencabezados[13],encabezados[14], txtencabezados[14],
-            dictFinal, consulta.Rows[0].ItemArray[125].ToString(), encabezado);
+                setearValoresDinamicos(entidad.LaboralesBasicas, "Id = 41", encabezados, txtencabezados,
+                consulta.Rows[0].ItemArray[88].ToString(), "RX. ");
+                setearValoresDinamicos(entidad.LaboralesBasicas, "Id = 42", encabezados, txtencabezados,
+                consulta.Rows[0].ItemArray[89].ToString(), "RX. ");
+                setearValoresDinamicos(entidad.LaboralesBasicas, "Id = 43", encabezados, txtencabezados,
+                consulta.Rows[0].ItemArray[90].ToString(), "RX. ");
+                setearValoresDinamicos(entidad.LaboralesBasicas, "Id = 44", encabezados, txtencabezados,
+                consulta.Rows[0].ItemArray[91].ToString(), "RX. ");
+                setearValoresDinamicos(entidad.LaboralesBasicas, "Id = 45", encabezados, txtencabezados,
+                consulta.Rows[0].ItemArray[92].ToString(), "RX. ");
+                setearValoresDinamicos(entidad.LaboralesBasicas, "Id = 46", encabezados, txtencabezados,
+                consulta.Rows[0].ItemArray[93].ToString(), "RX. ");
+                setearValoresDinamicos(entidad.LaboralesBasicas, "Id = 80", encabezados, txtencabezados,
+                consulta.Rows[0].ItemArray[95].ToString(), "RX. ");
+                setearValoresDinamicos(entidad.CraneoYMSuperior, "Id = 47", encabezados, txtencabezados,
+                consulta.Rows[0].ItemArray[96].ToString(), "RX. ");
+                setearValoresDinamicos(entidad.CraneoYMSuperior, "Id = 48", encabezados, txtencabezados,
+                consulta.Rows[0].ItemArray[97].ToString(), "RX. ");
+                setearValoresDinamicos(entidad.CraneoYMSuperior, "Id = 49", encabezados, txtencabezados,
+                consulta.Rows[0].ItemArray[98].ToString(), "RX. ");
+                setearValoresDinamicos(entidad.CraneoYMSuperior, "Id = 50", encabezados, txtencabezados,
+                consulta.Rows[0].ItemArray[99].ToString(), "RX. ");
+                setearValoresDinamicos(entidad.CraneoYMSuperior, "Id = 51", encabezados, txtencabezados,
+                consulta.Rows[0].ItemArray[100].ToString(), "RX. ");
+                setearValoresDinamicos(entidad.CraneoYMSuperior, "Id = 52", encabezados, txtencabezados,
+                consulta.Rows[0].ItemArray[101].ToString(), "RX. ");
+                setearValoresDinamicos(entidad.CraneoYMSuperior, "Id = 53", encabezados, txtencabezados,
+                consulta.Rows[0].ItemArray[102].ToString(), "RX. ");
+                setearValoresDinamicos(entidad.CraneoYMSuperior, "Id = 54", encabezados, txtencabezados,
+                consulta.Rows[0].ItemArray[103].ToString(), "RX. ");
+                setearValoresDinamicos(entidad.TroncoYPelvis, "Id = 55", encabezados, txtencabezados,
+                consulta.Rows[0].ItemArray[104].ToString(), "RX. ");
+                setearValoresDinamicos(entidad.TroncoYPelvis, "Id = 56", encabezados, txtencabezados,
+                consulta.Rows[0].ItemArray[105].ToString(), "RX. ");
+                setearValoresDinamicos(entidad.TroncoYPelvis, "Id = 57", encabezados, txtencabezados,
+                consulta.Rows[0].ItemArray[106].ToString(), "RX. ");
+                setearValoresDinamicos(entidad.TroncoYPelvis, "Id = 58", encabezados, txtencabezados,
+                consulta.Rows[0].ItemArray[107].ToString(), "RX. ");
+                setearValoresDinamicos(entidad.TroncoYPelvis, "Id = 59", encabezados, txtencabezados,
+                consulta.Rows[0].ItemArray[108].ToString(), "RX. ");
+                setearValoresDinamicos(entidad.TroncoYPelvis, "Id = 60", encabezados, txtencabezados,
+                consulta.Rows[0].ItemArray[109].ToString(), "RX. ");
+                setearValoresDinamicos(entidad.MiembroInferior, "Id = 61", encabezados, txtencabezados,
+                consulta.Rows[0].ItemArray[110].ToString(), "RX. ");
+                setearValoresDinamicos(entidad.MiembroInferior, "Id = 62", encabezados, txtencabezados,
+                consulta.Rows[0].ItemArray[111].ToString(), "RX. ");
+                setearValoresDinamicos(entidad.MiembroInferior, "Id = 63", encabezados, txtencabezados,
+                consulta.Rows[0].ItemArray[112].ToString(), "RX. ");
+                setearValoresDinamicos(entidad.MiembroInferior, "Id = 64", encabezados, txtencabezados,
+                consulta.Rows[0].ItemArray[113].ToString(), "RX. ");
+
+                // LOGGING: TOBILLOS (F)
+                string tobillosFValor = consulta.Rows[0].ItemArray[84].ToString();
+                System.Diagnostics.Debug.WriteLine($"[CARGAR PARÁMETROS] TOBILLOS (F) - ID=65 | ItemArray[84]='{tobillosFValor}'");
+
+                setearValoresDinamicos(entidad.LaboralesBasicas, "Id = 65", encabezados, txtencabezados,
+    consulta.Rows[0].ItemArray[84].ToString(), "RX. ");  // ← TOBILLOS (F) EN LABORALES BÁSICAS [84]
+                setearValoresDinamicos(entidad.MiembroInferior, "Id = 66", encabezados, txtencabezados,
+                consulta.Rows[0].ItemArray[115].ToString(), "RX. ");
+                setearValoresDinamicos(entidad.MiembroInferior, "Id = 67", encabezados, txtencabezados,
+                consulta.Rows[0].ItemArray[116].ToString(), "RX. ");
+
+                setearValoresDinamicos(entidad.EstComplementarios, "Id = 68", encabezados, txtencabezados,
+                consulta.Rows[0].ItemArray[117].ToString(), "");
+                setearValoresDinamicos(entidad.EstComplementarios, "Id = 70", encabezados, txtencabezados,
+                consulta.Rows[0].ItemArray[118].ToString(), "");
+                setearValoresDinamicos(entidad.EstComplementarios, "Id = 72", encabezados, txtencabezados,
+                consulta.Rows[0].ItemArray[119].ToString(), "");
+                setearValoresDinamicos(entidad.EstComplementarios, "Id = 73", encabezados, txtencabezados,
+                consulta.Rows[0].ItemArray[120].ToString(), "");
+                setearValoresDinamicos(entidad.EstComplementarios, "Id = 75", encabezados, txtencabezados,
+                consulta.Rows[0].ItemArray[121].ToString(), "");
+                setearValoresDinamicos(entidad.EstComplementarios, "Id = 76", encabezados, txtencabezados,
+                consulta.Rows[0].ItemArray[122].ToString(), "");
+                setearValoresDinamicos(entidad.EstComplementarios, "Id = 77", encabezados, txtencabezados,
+                consulta.Rows[0].ItemArray[123].ToString(), "");
+
+                string encabezadoEquilibriometrico = "";
+                string resultadoEquilibriometrico = "";
+                if (entidad.Clinico.Select("Id = 69 and Estado = true").Length > 0)
+                {
+                    encabezadoEquilibriometrico = "Equilibriometrico";
+                    resultadoEquilibriometrico = consulta.Rows[0].ItemArray[38].ToString();
+                }
+
+                string encabezado = "DEPARTAMENTO DE MEDICINA LABORAL";
+                if (oliv) { encabezado = consulta.Rows[0].ItemArray[0].ToString(); }
+                string tipoEx = consulta.Rows[0].ItemArray[0].ToString();
+                if (oliv) { tipoEx = ""; }
+
+                retorno.Rows.Add(tipoEx, consulta.Rows[0].ItemArray[1].ToString(),
+                consulta.Rows[0].ItemArray[2].ToString(), consulta.Rows[0].ItemArray[3].ToString(), consulta.Rows[0].ItemArray[4].ToString(),
+                consulta.Rows[0].ItemArray[5].ToString(), consulta.Rows[0].ItemArray[6].ToString(), nacionalidad, consulta.Rows[0].ItemArray[8].ToString(),
+                localidad, consulta.Rows[0].ItemArray[10].ToString(), consulta.Rows[0].ItemArray[11].ToString(),
+                consulta.Rows[0].ItemArray[13].ToString(), consulta.Rows[0].ItemArray[14].ToString(), consulta.Rows[0].ItemArray[15].ToString(),
+                consulta.Rows[0].ItemArray[16].ToString() + " m.", consulta.Rows[0].ItemArray[17].ToString() + " kg.",
+                calcularImc(consulta.Rows[0].ItemArray[16].ToString(), consulta.Rows[0].ItemArray[17].ToString()),
+                consulta.Rows[0].ItemArray[18].ToString(), consulta.Rows[0].ItemArray[19].ToString(),
+                consulta.Rows[0].ItemArray[20].ToString(), consulta.Rows[0].ItemArray[21].ToString(),
+                consulta.Rows[0].ItemArray[22].ToString(), consulta.Rows[0].ItemArray[23].ToString(),
+                consulta.Rows[0].ItemArray[24].ToString() + " x min", consulta.Rows[0].ItemArray[25].ToString(),
+                consulta.Rows[0].ItemArray[26].ToString(), consulta.Rows[0].ItemArray[27].ToString(),
+                consulta.Rows[0].ItemArray[28].ToString(), consulta.Rows[0].ItemArray[29].ToString(),
+                consulta.Rows[0].ItemArray[30].ToString(), consulta.Rows[0].ItemArray[31].ToString(),
+                consulta.Rows[0].ItemArray[32].ToString(), consulta.Rows[0].ItemArray[33].ToString(),
+                consulta.Rows[0].ItemArray[34].ToString(), consulta.Rows[0].ItemArray[35].ToString(),
+                consulta.Rows[0].ItemArray[36].ToString(), consulta.Rows[0].ItemArray[37].ToString(),
+                encabezadoEquilibriometrico, resultadoEquilibriometrico, medico, consulta.Rows[0].ItemArray[39].ToString(),
+                encabezados[0], txtencabezados[0], encabezados[1], txtencabezados[1], encabezados[2], txtencabezados[2],
+                encabezados[3], txtencabezados[3], encabezados[4], txtencabezados[4], encabezados[5], txtencabezados[5],
+                encabezados[6], txtencabezados[6], encabezados[7], txtencabezados[7], encabezados[8], txtencabezados[8],
+                encabezados[9], txtencabezados[9], encabezados[10], txtencabezados[10], encabezados[11], txtencabezados[11],
+                encabezados[12], txtencabezados[12], encabezados[13], txtencabezados[13], encabezados[14], txtencabezados[14],
+                dictFinal, consulta.Rows[0].ItemArray[125].ToString(), encabezado);
             }
 
             return retorno;
@@ -937,14 +963,14 @@ namespace CapaDatosMepryl
         {
             //try
             //{
-                DataRow[] r = items.Select(filtro + " and Estado = true");
-                if (r.Length > 0)
-                {
-                    enc[puntEncabez] = encabezAdic + r[0][4].ToString();
-                    puntEncabez++;
-                    txtEnc[puntTxtEncab] = valorTxt;
-                    puntTxtEncab++;
-                }
+            DataRow[] r = items.Select(filtro + " and Estado = true");
+            if (r.Length > 0)
+            {
+                enc[puntEncabez] = encabezAdic + r[0][4].ToString();
+                puntEncabez++;
+                txtEnc[puntTxtEncab] = valorTxt;
+                puntTxtEncab++;
+            }
             //}
             //catch (System.ArgumentOutOfRangeException ex)
             //{
@@ -960,7 +986,7 @@ namespace CapaDatosMepryl
             {
                 decimal m = Convert.ToDecimal(talla.Replace('.', ','));
                 decimal p = Convert.ToDecimal(peso);
-                IMC = decimal.Round((p / (m * m)), 0);                
+                IMC = decimal.Round((p / (m * m)), 0);
             }
             catch (System.FormatException ex)
             {
@@ -1086,14 +1112,14 @@ namespace CapaDatosMepryl
                 string fechaAltaCitacion = "";
                 DataTable condLab = SQLConnector.obtenerTablaSegunConsultaString(@"select fechaAlta,fechaCitacion, descripcion from dbo.CondicionLaboral
                 where id = '" + consulta.Rows[0].ItemArray[8].ToString() + "'");
-                if (condLab.Rows.Count > 0) 
+                if (condLab.Rows.Count > 0)
                 {
                     condLaboral = condLab.Rows[0][2].ToString();
                     if (condLab.Rows[0][0].ToString() == "SI" || condLab.Rows[0][1].ToString() == "SI")
                     {
                         txtFechaAltaCitacion = "FECHA:";
                         fechaAltaCitacion = ((DateTime)consulta.Rows[0].ItemArray[9]).ToShortDateString();
-           
+
                     }
                 }
 
@@ -1110,7 +1136,7 @@ namespace CapaDatosMepryl
                 retorno.Rows.Add(lugarAtencion, ((DateTime)consulta.Rows[0].ItemArray[1]).ToShortDateString(),
                     consulta.Rows[0].ItemArray[2].ToString(), consulta.Rows[0].ItemArray[3].ToString(),
                     consulta.Rows[0].ItemArray[4].ToString(), "", "", "", "", consulta.Rows[0].ItemArray[7].ToString(),
-                    condLaboral, txtFechaAltaCitacion,fechaAltaCitacion,
+                    condLaboral, txtFechaAltaCitacion, fechaAltaCitacion,
                     motivo, estado);
 
             }
@@ -1251,10 +1277,10 @@ namespace CapaDatosMepryl
             DataTable dtConsulta;
 
             strSQL = "SELECT TOP 1 C.fecha, C.identificador, E.razonSocial, P.DNI, P.fechaNacimiento, (P.Apellido + ' ' + P.Nombres) as 'nombre', P.Telefonos, " +
-	                        "P.Celular, EL.gRojos, EL.gBlancos, EL.hemoglobina, EL.hematocrito, EL.eritro, EL.plaquetas, EL.obsSerieRoja, " +
-	                        "EL.cayado, EL.segmentado, EL.eosinof, EL.basof, EL.linfoc, EL.monoc, EL.obsSerieBlanca, EL.glucemia, EL.uremia, " +
-	                        "EL.chagas, EL.vdrl, EL.grupo, EL.factor, EL.uricemia, EL.te, EL.otrosQuimicaHemat, EL.colTotal, EL.hdl, " +
-	                        "EL.ldl, EL.trig, EL.otrosPerfilLipidico, EL.color, EL.aspecto, EL.celulas, EL.leuco, EL.hematies, EL.gluc, " +
+                            "P.Celular, EL.gRojos, EL.gBlancos, EL.hemoglobina, EL.hematocrito, EL.eritro, EL.plaquetas, EL.obsSerieRoja, " +
+                            "EL.cayado, EL.segmentado, EL.eosinof, EL.basof, EL.linfoc, EL.monoc, EL.obsSerieBlanca, EL.glucemia, EL.uremia, " +
+                            "EL.chagas, EL.vdrl, EL.grupo, EL.factor, EL.uricemia, EL.te, EL.otrosQuimicaHemat, EL.colTotal, EL.hdl, " +
+                            "EL.ldl, EL.trig, EL.otrosPerfilLipidico, EL.color, EL.aspecto, EL.celulas, EL.leuco, EL.hematies, EL.gluc, " +
                             "EL.hemogOrina, EL.prot, EL.cetonas, EL.bilirrubina, EL.otrosOrina, EL.dictamenLab, EL.densidad, EL.ph, CR.piePagina, " +
                             "CR.profesional, CR.matricula, CR.cargo, CR.logo AS Path, EL.observacionesLab, EL.na, EL.k, EL.protTotal, EL.albumina, EL.alfa1, EL.alfa2, EL.beta1, EL.beta2, EL.gammaglob, EL.relacAlbGlob, EL.creat " +
                         "FROM dbo.PacienteLaboral P " +
@@ -1264,15 +1290,15 @@ namespace CapaDatosMepryl
                         "INNER JOIN dbo.ExamenLaboral EL ON CL.idExamenLaboral = EL.id " +
                         //"INNER JOIN dbo.EmpresasPorPaciente EPP ON EPP.idPaciente = C.pacienteID " +
                         "INNER JOIN dbo.empresaPorTipoDeExamen EPL ON EPL.idTipoExamen = CL.idTipoExamen " +
-						"INNER JOIN dbo.EmpresasPorPaciente EPP ON EPP.idPaciente = C.pacienteID " +                        
+                        "INNER JOIN dbo.EmpresasPorPaciente EPP ON EPP.idPaciente = C.pacienteID " +
                         "INNER JOIN dbo.Empresa E ON E.id = EPL.idEmpresa " +
                         //
                         "INNER JOIN dbo.ConfigReportes CR ON CR.tipoReporte = " + tipoReporte.ToString() + " " +
                         "WHERE EL.id = '" + idExamenLaboratorio + "' ORDER BY EPP.ingreso DESC";
 
             dtConsulta = SQLConnector.obtenerTablaSegunConsultaString(strSQL);
-            
-            return cargarImagenDT(dtConsulta); 
+
+            return cargarImagenDT(dtConsulta);
         }
 
         private DataTable cargarImagenDT(DataTable dt)
@@ -1310,7 +1336,7 @@ namespace CapaDatosMepryl
                      "INNER JOIN dbo.ConsultaLaboral CL ON CL.idTipoExamen = TEP.id " +
                      "INNER JOIN dbo.ExamenLaboral EL ON CL.idExamenLaboral = EL.id " +
                      "WHERE C.identificador = '" + Identificador + "' AND Convert(date, C.fecha) = '" + Convert.ToDateTime(Fecha).ToShortDateString() + "'";
-            
+
             dtConsulta = SQLConnector.obtenerTablaSegunConsultaString(strSQL);
 
             if (dtConsulta.Rows.Count > 0)
@@ -1326,7 +1352,7 @@ namespace CapaDatosMepryl
             string strSQL;
             string strObservaciones = "";
             string strObsGeneral = "";
-        //    DateTime dtFecha;
+            //    DateTime dtFecha;
             DataTable dtConsulta;
             string strConsulta = "";
             string strHemoglobina = "";
@@ -1394,7 +1420,7 @@ namespace CapaDatosMepryl
                  "eosinof = '" + valores[7].ToString() + "', " +
                  "basof = '" + valores[8].ToString() + "', " +
                  "linfoc = '" + valores[9].ToString() + "', " +
-                 "monoc = '" + valores[10].ToString() + "', " +                         
+                 "monoc = '" + valores[10].ToString() + "', " +
                  "obsSerieRoja = 'NORMOCITICA NORMOCRONICA', " +
                  "obsSerieBlanca = 'NO SE OBSERVAN ATIPIAS', " +
                  "glucemia = '" + valores[11].ToString() + "', " +
@@ -1405,7 +1431,7 @@ namespace CapaDatosMepryl
                  "densidad = '" + valores[16].ToString() + "', " +
                  "ph = '" + valores[17].ToString() + "', " +
                  "gluc = '" + valores[18].ToString() + "', " +
-                 "prot = '" + valores[19].ToString() + "', " +                         
+                 "prot = '" + valores[19].ToString() + "', " +
                  "hemogOrina = '" + valores[20].ToString() + "', " +
                  "cetonas = '" + valores[21].ToString() + "', " +
                  "bilirrubina = '" + valores[22].ToString() + "', " +
@@ -1413,7 +1439,7 @@ namespace CapaDatosMepryl
                  "leuco = '" + valores[24].ToString() + "', " +
                  "hematies = '" + valores[25].ToString() + "', " +
                  "hdl = '" + valores[28].ToString() + "', " +
-                 "colTotal = '" + valores[29].ToString() + "', " +                         
+                 "colTotal = '" + valores[29].ToString() + "', " +
                  "trig = '" + valores[30].ToString() + "', " +
                  "ldl = '" + strLDL + "', " +
                  "grupo = '" + valores[32].ToString() + "', " +
@@ -1435,15 +1461,15 @@ namespace CapaDatosMepryl
         }
 
         public DataTable ComprobarEstudioPorExamen(string idTipoExamen)
-        {            
+        {
             DataTable dtConsulta;
             string strSQL = "";
 
-            strSQL = "SELECT Item4 AS HGB, item5 AS ERI, item6 AS 'GS-HR', item9 AS GLUCE, item10 AS URE, item22 AS CHA, item23 AS VDRL, " + 
-	                 "item28 AS TE, item30 AS COL, item31 AS LDL, item32 AS HDL, item33 AS TGL, item37 AS ORINA " +
+            strSQL = "SELECT Item4 AS HGB, item5 AS ERI, item6 AS 'GS-HR', item9 AS GLUCE, item10 AS URE, item22 AS CHA, item23 AS VDRL, " +
+                     "item28 AS TE, item30 AS COL, item31 AS LDL, item32 AS HDL, item33 AS TGL, item37 AS ORINA " +
                      "FROM dbo.EstudiosPorExamen WHERE idTipoExamen = '" + idTipoExamen + "'";
             dtConsulta = SQLConnector.obtenerTablaSegunConsultaString(strSQL);
-            
+
             return dtConsulta;
         }
 
@@ -1454,7 +1480,8 @@ namespace CapaDatosMepryl
             string strMotivo = "";
             string strEmpresa = "";
 
-            if ((Empresa == "") || (Empresa == "TODAS")){
+            if ((Empresa == "") || (Empresa == "TODAS"))
+            {
                 strEmpresa = "EMP.razonSocial like '%'";
             }
             else
@@ -1470,7 +1497,7 @@ namespace CapaDatosMepryl
             {
                 strMotivo = "e.descripcion = '" + Motivo + "'";
             }
-            
+
             strSQL = "Select CONVERT(VARCHAR(10), c.fecha, 103) as fecha, c.identificador, EMP.razonSocial, e.descripcion AS 'MotivoConsulta', " +
                      "p.dni,(p.apellido + ' ' + p.nombres) AS 'Nombre', DL.descripcion AS 'Dictamen', EL.observaciones " +
                      "FROM dbo.Consulta c inner join dbo.PacienteLaboral p on c.pacienteID = p.id " +
@@ -1481,7 +1508,7 @@ namespace CapaDatosMepryl
                      "INNER JOIN dbo.DictamenesLaboral DL ON DL.id = EL.dictamen " +
                      "INNER JOIN dbo.empresaPorTipoDeExamen ete ON ete.idTipoExamen = tep.id " +
                      "INNER JOIN dbo.Empresa EMP ON EMP.id = ete.idEmpresa " +
-                     "where c.tipo != 'P'  and c.tipo = 'L' and convert(date, c.fecha) >= '"+ desde + "' and convert(date, c.fecha) " +
+                     "where c.tipo != 'P'  and c.tipo = 'L' and convert(date, c.fecha) >= '" + desde + "' and convert(date, c.fecha) " +
                      "<= '" + hasta + "' AND " + strMotivo + " AND " + strEmpresa + " " +
                      "order by CONVERT(VARCHAR(10), c.fecha, 101), convert(int, REPLACE(REPLACE(c.identificador, 'L', ''), 'CO', '')), EMP.razonSocial";
 
@@ -1531,5 +1558,5 @@ namespace CapaDatosMepryl
                 return null;
             }
         }
-    }    
+    }
 }
