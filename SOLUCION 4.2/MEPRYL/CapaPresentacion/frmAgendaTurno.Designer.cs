@@ -53,6 +53,7 @@
             this.tbTotal = new System.Windows.Forms.TextBox();
             this.botonLaboratorio = new System.Windows.Forms.Panel();
             this.butExportarListado = new System.Windows.Forms.Button();
+            this.butExportarGoogleSheet = new FontAwesome.Sharp.IconButton();
             this.dgv = new System.Windows.Forms.DataGridView();
             this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.progressBar = new System.Windows.Forms.ProgressBar();
@@ -306,6 +307,7 @@
             // botonLaboratorio
             // 
             this.botonLaboratorio.BackColor = System.Drawing.SystemColors.Control;
+            this.botonLaboratorio.Controls.Add(this.butExportarGoogleSheet);
             this.botonLaboratorio.Controls.Add(this.butExportarListado);
             this.botonLaboratorio.Dock = System.Windows.Forms.DockStyle.Right;
             this.botonLaboratorio.Location = new System.Drawing.Point(1101, 194);
@@ -323,10 +325,29 @@
             this.butExportarListado.Name = "butExportarListado";
             this.butExportarListado.Size = new System.Drawing.Size(121, 45);
             this.butExportarListado.TabIndex = 262;
-            this.butExportarListado.Text = "Exportar\r\nListado";
+            this.butExportarListado.Text = "Exportar\r\nExcel";
             this.butExportarListado.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.butExportarListado.UseVisualStyleBackColor = true;
             this.butExportarListado.Click += new System.EventHandler(this.butExportarListado_Click);
+            // 
+            // butExportarGoogleSheet
+            // 
+            this.butExportarGoogleSheet.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.butExportarGoogleSheet.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.butExportarGoogleSheet.IconChar = FontAwesome.Sharp.IconChar.GoogleDrive;
+            this.butExportarGoogleSheet.IconColor = System.Drawing.Color.Black;
+            this.butExportarGoogleSheet.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            this.butExportarGoogleSheet.IconSize = 20;
+            this.butExportarGoogleSheet.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.butExportarGoogleSheet.Location = new System.Drawing.Point(10, 92);
+            this.butExportarGoogleSheet.Name = "butExportarGoogleSheet";
+            this.butExportarGoogleSheet.Size = new System.Drawing.Size(121, 45);
+            this.butExportarGoogleSheet.TabIndex = 276;
+            this.butExportarGoogleSheet.Text = "Google\r\nSheet";
+            this.butExportarGoogleSheet.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.butExportarGoogleSheet.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butExportarGoogleSheet.UseVisualStyleBackColor = true;
+            this.butExportarGoogleSheet.Click += new System.EventHandler(this.butExportarGoogleSheet_Click);
             // 
             // dgv
             // 
@@ -407,6 +428,7 @@
         private System.Windows.Forms.TextBox tbTotal;
         protected System.Windows.Forms.Panel botonLaboratorio;
         protected System.Windows.Forms.Button butExportarListado;
+        protected FontAwesome.Sharp.IconButton butExportarGoogleSheet;
         private System.Windows.Forms.TextBox tbCategoria;
         private System.Windows.Forms.DataGridView dgv;
         private System.Windows.Forms.Label label8;

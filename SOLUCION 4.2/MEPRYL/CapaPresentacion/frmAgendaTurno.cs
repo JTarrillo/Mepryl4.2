@@ -1,20 +1,21 @@
-﻿using System;
+﻿using CapaPresentacionBase;
+using Comunes;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Services;
+using Google.Apis.Sheets.v4;
+using Google.Apis.Sheets.v4.Data;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
 using System.Data;
-using Comunes;
-using Excel = Microsoft.Office.Interop.Excel;
 using System.Data.OleDb;
-using CapaPresentacionBase;
-using Google.Apis.Sheets.v4;
-using Google.Apis.Sheets.v4.Data;
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.Services;
+using System.Drawing;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
+using Excel = Microsoft.Office.Interop.Excel;
 
 namespace CapaPresentacion
 {
@@ -83,9 +84,10 @@ namespace CapaPresentacion
             tabla.Columns.Add("Laboratorio");
             tabla.Columns.Add("RX");
             tabla.Columns.Add("EstComplementario");
-            DataTable consulta = SQLConnector.obtenerTablaSegunConsultaString(@"select t.id,t.fecha,t.horaReferencia,e.descripcion, 
-            t.pacienteID, t.reservado, t.reserva from dbo.Turno t inner join dbo.Horario h on t.horarioID = h.id inner join 
-            dbo.Especialidad e on h.especialidadID = e.id
+            DataTable consulta = SQLConnector.obtenerTablaSegunConsultaString(@"select t.id, t.fecha, t.horaReferencia, e.descripcion, 
+            t.pacienteID, t.reservado, t.reserva, h.especialidadID from dbo.Turno t 
+            inner join dbo.Horario h on t.horarioID = h.id 
+            inner join dbo.Especialidad e on h.especialidadID = e.id
             where convert(date,t.fecha) >= '" + tpDesde.Value.ToShortDateString() + @"' and
             convert (date,t.fecha) <= '" + tpHasta.Value.ToShortDateString() + @"' and t.habilitado = 1 order by t.fecha asc, t.hora asc");
             progressBar.Visible = true;
@@ -134,7 +136,7 @@ namespace CapaPresentacion
                             paciente.Rows[0][4] = Convert.ToDateTime("01/01/1900");
 
                         string exClinico = "", laboratorio = "", rx = "", estComplementario = "";
-                        cargarEstudiosPorTurno(r.ItemArray[0].ToString(), out exClinico, out laboratorio, out rx, out estComplementario);
+                        cargarEstudiosPorTurno(r.ItemArray[0].ToString(), r.ItemArray[7].ToString(), out exClinico, out laboratorio, out rx, out estComplementario);
 
                         tabla.Rows.Add(r.ItemArray[0].ToString(), ((DateTime)r.ItemArray[1]).ToShortDateString(), r.ItemArray[2].ToString(),
                             r.ItemArray[3].ToString(), paciente.Rows[0].ItemArray[0].ToString(), paciente.Rows[0].ItemArray[1].ToString(), paciente.Rows[0].ItemArray[2].ToString() + " " + paciente.Rows[0].ItemArray[3].ToString(),
@@ -264,8 +266,8 @@ namespace CapaPresentacion
             return cadena;
         }
 
-        // ✅ Método para cargar estudios por turno categorizados en 4 columnas
-        private void cargarEstudiosPorTurno(string idTurno, out string exClinico, out string laboratorio, out string rx, out string estComplementario)
+        // ✅ Método para cargar estudios por turno USANDO el método correcto de TipoExamen
+        private void cargarEstudiosPorTurno(string idTurno, string idEspecialidad, out string exClinico, out string laboratorio, out string rx, out string estComplementario)
         {
             exClinico = "";
             laboratorio = "";
@@ -274,88 +276,53 @@ namespace CapaPresentacion
 
             try
             {
-                // Obtener TipoExamenDePaciente asociado al Turno
-                DataTable tipoExamen = SQLConnector.obtenerTablaSegunConsultaString(@"
-                    SELECT TOP 1 id FROM dbo.TipoExamenDePaciente 
-                    WHERE idTurno = '" + idTurno + "'");
+                System.Diagnostics.Debug.WriteLine($"🔍 Procesando idTurno: {idTurno}, idEspecialidad: {idEspecialidad}");
 
-                if (tipoExamen.Rows.Count <= 0)
-                    return;
-
-                string idTipoExamen = tipoExamen.Rows[0].ItemArray[0].ToString();
-
-                // Obtener EstudiosPorExamen para ese TipoExamenDePaciente
-                DataTable estudiosExamen = SQLConnector.obtenerTablaSegunConsultaString(@"
-                    SELECT * FROM dbo.EstudiosPorExamen 
-                    WHERE idTipoExamen = '" + idTipoExamen + "'");
-
-                if (estudiosExamen.Rows.Count <= 0)
-                    return;
-
-                DataRow estudios = estudiosExamen.Rows[0];
-
-                // Recorrer columnas item1 a item207 (booleanos representados como bit)
-                for (int i = 1; i <= 207; i++)
+                // Validar que idEspecialidad sea válido
+                if (string.IsNullOrEmpty(idEspecialidad) || idEspecialidad == "00000000-0000-0000-0000-000000000000")
                 {
-                    string columnName = "item" + i;
-                    if (estudios.Table.Columns.Contains(columnName))
-                    {
-                        object valor = estudios[columnName];
-                        // Verificar si el bit está activado (true / 1)
-                        int estaActivo = 0;
-                        if (valor != DBNull.Value)
-                        {
-                            estaActivo = Convert.ToInt32(valor);
-                        }
-
-                        if (estaActivo == 1)
-                        {
-                            // Obtener la descripción del item y su categoría desde tabla Items
-                            DataTable item = SQLConnector.obtenerTablaSegunConsultaString(@"
-                                SELECT nombreInformes, ordenFormulario FROM dbo.Items WHERE id = " + i);
-
-                            if (item.Rows.Count > 0)
-                            {
-                                string descripcion = item.Rows[0].ItemArray[0].ToString();
-                                int ordenFormulario = Convert.ToInt32(item.Rows[0].ItemArray[1]);
-
-                                // Categorizar según ordenFormulario
-                                if (ordenFormulario == 1)
-                                {
-                                    if (exClinico == "")
-                                        exClinico = descripcion;
-                                    else
-                                        exClinico += " - " + descripcion;
-                                }
-                                else if (ordenFormulario >= 2 && ordenFormulario <= 7)
-                                {
-                                    if (laboratorio == "")
-                                        laboratorio = descripcion;
-                                    else
-                                        laboratorio += " - " + descripcion;
-                                }
-                                else if (ordenFormulario == 8)
-                                {
-                                    if (rx == "")
-                                        rx = descripcion;
-                                    else
-                                        rx += " - " + descripcion;
-                                }
-                                else if (ordenFormulario >= 9)
-                                {
-                                    if (estComplementario == "")
-                                        estComplementario = descripcion;
-                                    else
-                                        estComplementario += " - " + descripcion;
-                                }
-                            }
-                        }
-                    }
+                    System.Diagnostics.Debug.WriteLine($"   ❌ idEspecialidad inválido o vacío");
+                    return;
                 }
+
+                // ✅ PASO 1: Obtener idTipoExamen desde TipoExamenDePaciente
+                // NO desde EstudiosPorTipoExamen como estaba mal
+                DataTable tipoExamenTable = SQLConnector.obtenerTablaSegunConsultaString(@"
+                    SELECT TOP 1 tep.id
+                    FROM dbo.TipoExamenDePaciente tep
+                    WHERE tep.idEspecialidad = '" + idEspecialidad + @"'
+                    AND tep.id IS NOT NULL
+                    AND tep.id != '00000000-0000-0000-0000-000000000000'");
+
+                if (tipoExamenTable.Rows.Count <= 0)
+                {
+                    System.Diagnostics.Debug.WriteLine($"   ⚠️ No se encontró TipoExamenDePaciente para idEspecialidad: {idEspecialidad}");
+                    return;
+                }
+
+                string idTipoExamen = tipoExamenTable.Rows[0].ItemArray[0].ToString();
+                System.Diagnostics.Debug.WriteLine($"   ✅ idTipoExamen encontrado: {idTipoExamen}");
+
+                // ✅ PASO 2: Usar el MISMO método que funciona correctamente en frmHistoricoMesaEntrada
+                CapaNegocioMepryl.TipoExamen tipoEx = new CapaNegocioMepryl.TipoExamen();
+                Entidades.TipoExamen entidad = tipoEx.cargarEstudiosPorExamen(idTipoExamen);
+
+                // ✅ PASO 3: Asignar los valores ya procesados por el método correcto
+                exClinico = entidad.TextoClinico ?? "";
+                laboratorio = entidad.TextoLaboratorio ?? "";
+                rx = entidad.TextoRx ?? "";
+                estComplementario = entidad.TextoEstComplement ?? "";
+
+                System.Diagnostics.Debug.WriteLine($"   ✅ Estudios cargados correctamente desde TipoExamen.cargarEstudiosPorExamen()");
+                System.Diagnostics.Debug.WriteLine($"   📝 Clínico: {(string.IsNullOrEmpty(exClinico) ? "VACÍO" : exClinico.Substring(0, Math.Min(50, exClinico.Length)) + "...")}");
+                System.Diagnostics.Debug.WriteLine($"   📝 Lab: {(string.IsNullOrEmpty(laboratorio) ? "VACÍO" : laboratorio.Substring(0, Math.Min(50, laboratorio.Length)) + "...")}");
+                System.Diagnostics.Debug.WriteLine($"   📝 RX: {(string.IsNullOrEmpty(rx) ? "VACÍO" : rx.Substring(0, Math.Min(50, rx.Length)) + "...")}");
+                System.Diagnostics.Debug.WriteLine($"   📝 Est.Comp: {(string.IsNullOrEmpty(estComplementario) ? "VACÍO" : estComplementario.Substring(0, Math.Min(50, estComplementario.Length)) + "...")}");
             }
             catch (Exception ex)
             {
-                exClinico = "Error: " + ex.Message;
+                System.Diagnostics.Debug.WriteLine($"   ❌ Error: {ex.Message}\n{ex.StackTrace}");
+                exClinico = $"Error: {ex.Message}";
             }
         }
 
@@ -494,6 +461,17 @@ namespace CapaPresentacion
             rng.BorderAround(Excel.XlLineStyle.xlContinuous, Excel.XlBorderWeight.xlMedium,
             Excel.XlColorIndex.xlColorIndexAutomatic, Excel.XlColorIndex.xlColorIndexAutomatic);
             rng.HorizontalAlignment = Excel.XlHAlign.xlHAlignCenter;
+        }
+
+        private void butExportarGoogleSheet_Click(object sender, EventArgs e)
+        {
+            if (dgv.Rows.Count == 0)
+            {
+                MessageBox.Show("No hay datos para exportar.", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            ExportarAGoogleSheets();
         }
 
         private async void ExportarAGoogleSheets()
