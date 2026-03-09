@@ -21,6 +21,8 @@ namespace CapaPresentacion
 {
     public partial class frmAgendaTurno : DevExpress.XtraEditors.XtraForm
     {
+        private DataTable tablaOriginal; // Almacena la tabla sin filtros para búsqueda
+
         public frmAgendaTurno()
         {
             InitializeComponent();
@@ -70,11 +72,11 @@ namespace CapaPresentacion
         private void cargarAgenda()
         {
             DataTable tabla = new DataTable();
-            tabla.Columns.Add("IdTurno");
-            tabla.Columns.Add("Fecha");
-            tabla.Columns.Add("Hora");
-            tabla.Columns.Add("TipoExamen");
+            tabla.Columns.Add("IdConsulta");
             tabla.Columns.Add("IdPaciente");
+            tabla.Columns.Add("IdTipoExamen");
+            tabla.Columns.Add("Fecha");
+            tabla.Columns.Add("TipoExamen");
             tabla.Columns.Add("Dni");
             tabla.Columns.Add("Paciente");
             tabla.Columns.Add("Categoria");
@@ -84,122 +86,124 @@ namespace CapaPresentacion
             tabla.Columns.Add("Laboratorio");
             tabla.Columns.Add("RX");
             tabla.Columns.Add("EstComplementario");
-            DataTable consulta = SQLConnector.obtenerTablaSegunConsultaString(@"select t.id, t.fecha, t.horaReferencia, e.descripcion, 
-            t.pacienteID, t.reservado, t.reserva, h.especialidadID from dbo.Turno t 
-            inner join dbo.Horario h on t.horarioID = h.id 
-            inner join dbo.Especialidad e on h.especialidadID = e.id
-            where convert(date,t.fecha) >= '" + tpDesde.Value.ToShortDateString() + @"' and
-            convert (date,t.fecha) <= '" + tpHasta.Value.ToShortDateString() + @"' and t.habilitado = 1 order by t.fecha asc, t.hora asc");
+
+            // ✅ IGUAL QUE frmHistoricoMesaEntrada: Consulta + TipoExamenDePaciente (sin Turno)
+            DataTable consulta = SQLConnector.obtenerTablaSegunConsultaString(@"select c.id, c.pacienteID, tep.id, CONVERT(date, c.fecha), 
+            e.descripcion, c.nroOrden, c.identificador,
+            c.tipo, tep.modificado from dbo.Consulta c inner join
+            dbo.TipoExamenDePaciente tep on tep.idConsulta = c.id inner join dbo.Especialidad e on tep.idEspecialidad
+            = e.id inner join dbo.MotivoDeConsulta mc on e.idMotivoConsulta = mc.id 
+            where Convert(Date,c.fecha) >= '" + tpDesde.Value.ToShortDateString() + @"' 
+            and Convert(Date,c.fecha) <= '" + tpHasta.Value.ToShortDateString() + @"' 
+            and c.nroOrden > 0 order by c.fecha asc, convert(int,c.nroOrden)");
+
+            // ✅ Validar que consulta no sea null
+            if (consulta == null || consulta.Rows.Count == 0)
+            {
+                filtrarTablaYCargarDataGrid(tabla);
+                MessageBox.Show("⚠️ No hay consultas para las fechas seleccionadas.", "Información",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
             progressBar.Visible = true;
             progressBar.Minimum = 1;
             progressBar.Maximum = consulta.Rows.Count;
+
+            CapaNegocioMepryl.TipoExamen tipoEx = new CapaNegocioMepryl.TipoExamen();
+
             foreach (DataRow r in consulta.Rows)
             {
-                try // GRV - Ramírez - controlar filas vacias en la posición 0
+                try
                 {
-                    string liga = "";
-                    string club = "";
-
-                    if (r.ItemArray[4].ToString() != "00000000-0000-0000-0000-000000000000"
-                        && comboEstado.SelectedIndex == 0)
+                    // Cargar datos del paciente
+                    object drPaciente = cargarDatoPaciente(r.ItemArray[1].ToString());
+                    if (drPaciente != null)
                     {
-                        DataTable paciente = SQLConnector.obtenerTablaSegunConsultaString(@"select p.id, p.dni, p.apellido, p.nombres, p.fechaNacimiento, p.empresaID from 
-                        dbo.Paciente p where p.id = '" + r.ItemArray[4].ToString() + "'");
-
-                        if (paciente.Rows.Count <= 0)
+                        // Cargar estudios
+                        string exClinico = "", laboratorio = "", rx = "", estComplementario = "";
+                        Entidades.TipoExamen entidad = tipoEx.cargarEstudiosPorExamen(r.ItemArray[2].ToString());
+                        if (entidad != null)
                         {
-                            paciente = SQLConnector.obtenerTablaSegunConsultaString(@"select top 1 p.id, p.dni, p.apellido, p.nombres, p.fechaNacimiento, EPP.idEmpresa 
-                                            FROM dbo.PacienteLaboral p 
-                                            INNER JOIN dbo.EmpresasPorPaciente EPP ON p.id = EPP.idPaciente
-                                            where p.id = '" + r.ItemArray[4].ToString() + "'");
+                            agregarCadenaString(ref exClinico, entidad.TextoClinico);
+                            agregarCadenaString(ref laboratorio, entidad.TextoLaboratorio);
+                            agregarCadenaString(ref rx, entidad.TextoRx);
+                            agregarCadenaString(ref estComplementario, entidad.TextoEstComplement);
                         }
 
+                        // Cargar liga/club o empresa
+                        string liga = "", club = "";
                         DataTable ligaYClub = SQLConnector.obtenerTablaSegunConsultaString(@"select l.descripcion, c.descripcion from dbo.clubesPorPaciente 
-                    cpp inner join dbo.Club c on cpp.club = c.id inner join dbo.Liga l on c.ligaID = l.id where cpp.paciente = '" +
-                               r.ItemArray[4].ToString() + "'");
+                            cpp inner join dbo.Club c on cpp.club = c.id inner join dbo.Liga l on c.ligaID = l.id where cpp.paciente = '" +
+                            r.ItemArray[1].ToString() + "'");
                         if (ligaYClub.Rows.Count > 0)
                         {
                             liga = ligaYClub.Rows[0].ItemArray[0].ToString();
                             club = ligaYClub.Rows[0].ItemArray[1].ToString();
                         }
-                        else
+
+                        string nacimiento = "";
+                        try
                         {
-                            DataTable empresa = SQLConnector.obtenerTablaSegunConsultaString(@"select e.razonSocial from dbo.Empresa e
-                                where id = '" + paciente.Rows[0].ItemArray[5].ToString() + "'");
-                            if (empresa.Rows.Count > 0)
-                            {
-                                liga = empresa.Rows[0].ItemArray[0].ToString();
-                            }
+                            nacimiento = Convert.ToDateTime(((DataRow)drPaciente).ItemArray[3].ToString()).Year.ToString();
                         }
+                        catch { }
 
-                        if (string.IsNullOrEmpty(paciente.Rows[0].ItemArray[4].ToString()))
-                            paciente.Rows[0][4] = Convert.ToDateTime("01/01/1900");
-
-                        string exClinico = "", laboratorio = "", rx = "", estComplementario = "";
-                        cargarEstudiosPorTurno(r.ItemArray[0].ToString(), r.ItemArray[7].ToString(), out exClinico, out laboratorio, out rx, out estComplementario);
-
-                        tabla.Rows.Add(r.ItemArray[0].ToString(), ((DateTime)r.ItemArray[1]).ToShortDateString(), r.ItemArray[2].ToString(),
-                            r.ItemArray[3].ToString(), paciente.Rows[0].ItemArray[0].ToString(), paciente.Rows[0].ItemArray[1].ToString(), paciente.Rows[0].ItemArray[2].ToString() + " " + paciente.Rows[0].ItemArray[3].ToString(),
-                           ((DateTime)paciente.Rows[0].ItemArray[4]).Year.ToString(), liga, club, exClinico, laboratorio, rx, estComplementario);
+                        tabla.Rows.Add(r.ItemArray[0].ToString(), r.ItemArray[1].ToString(), r.ItemArray[2].ToString(),
+                            r.ItemArray[3].ToString(), r.ItemArray[4].ToString(),
+                            ((DataRow)drPaciente).ItemArray[0], ((DataRow)drPaciente).ItemArray[2] + " " + ((DataRow)drPaciente).ItemArray[1],
+                            nacimiento, liga, club, exClinico, laboratorio, rx, estComplementario);
                     }
-                    else
-                    {
-                        if (r.ItemArray[5].ToString() == "1" && comboEstado.SelectedIndex == 0)
-                        {
-                            club = r.ItemArray[6].ToString();
-                            tabla.Rows.Add(r.ItemArray[0].ToString(), ((DateTime)r.ItemArray[1]).ToShortDateString(), r.ItemArray[2].ToString(),
-                            r.ItemArray[3].ToString(), "", "", "RESERVA", "", liga, club, "", "", "", "");
-                        }
-                        if (comboEstado.SelectedIndex == 1 && r.ItemArray[4].ToString() == "00000000-0000-0000-0000-000000000000"
-                            && r.ItemArray[5].ToString() != "1")
-                        {
-                            tabla.Rows.Add(r.ItemArray[0].ToString(), ((DateTime)r.ItemArray[1]).ToShortDateString(), r.ItemArray[2].ToString(),
-                            r.ItemArray[3].ToString(), "", "", "", "", "", "", "", "", "", "");
-                        }
-                    }
-
                     progressBar.PerformStep();
                 }
-                catch (IndexOutOfRangeException ex)
+                catch (Exception ex)
                 {
-
+                    System.Diagnostics.Debug.WriteLine($"❌ Error en cargarAgenda: {ex.Message}");
+                    progressBar.PerformStep();
                 }
             }
 
+            // ✅ Guardar la tabla original para búsqueda
+            tablaOriginal = tabla.Copy();
+
             filtrarTablaYCargarDataGrid(tabla);
 
-            //string strSQL = "";
-            //DateTime dtFecha;
-            //dtFecha = tpDesde.Value;
+            // Limpiar el campo de búsqueda
+            tbBusquedaPaciente.Clear();
+        }
 
-            //strSQL = @"select TOP 200 c.id as IdConsulta, c.pacienteID as IdPaciente, 
-            //            te.id as IdTipoExamen, te.idTurno as IdTurno, CONVERT(date, c.fecha) as Fecha, c.identificador as 'Nº Orden',
-            //            e.descripcion as 'Tipo de Exámen', PA.Apellidos + ' ' + PA.Nombres as Nombre, te.modificado, c.observaciones as Observaciones
-            //            from Consulta c
-            //            inner
-            //            join dbo.TipoExamenDePaciente te on te.idConsulta = c.id
-            //            inner
-            //            join dbo.Especialidad e on te.idEspecialidad = e.id
-            //            INNER JOIN dbo.vwConsultarPacientes PA ON PA.id = c.pacienteID
-            //            where convert(Date, c.fecha) = '" + dtFecha.ToString() + @"' and c.valido = '1' and c.nroOrden != '0' and c.tipo != 'V' order by c.nroOrden";
-
-            //DataTable paciente = SQLConnector.obtenerTablaSegunConsultaString(strSQL);
-            //dgv.DataSource = paciente;
-            //dgv.Columns[0].Visible = false;
-            //dgv.Columns[1].Visible = false;
-            //dgv.Columns[2].Visible = false;
-            //dgv.Columns[3].Visible = false;
-
+        private object cargarDatoPaciente(string idPaciente)
+        {
+            DataTable pacientePreventiva = SQLConnector.obtenerTablaSegunConsultaString(@"
+                    select p.dni, p.apellido, p.nombres, p.fechaNacimiento
+                    from dbo.Paciente p
+                    where p.id = '" + idPaciente + "'");
+            if (pacientePreventiva.Rows.Count > 0)
+            {
+                return pacientePreventiva.Rows[0];
+            }
+            else
+            {
+                DataTable pacienteLaboral = SQLConnector.obtenerTablaSegunConsultaString(@"
+                        select p.dni, p.apellido, p.nombres, p.fechaNacimiento
+                        from dbo.PacienteLaboral p
+                        where p.id = '" + idPaciente + "'");
+                if (pacienteLaboral.Rows.Count > 0)
+                {
+                    return pacienteLaboral.Rows[0];
+                }
+            }
+            return null;
         }
 
         private void filtrarTablaYCargarDataGrid(DataTable tabla)
         {
             DataTable tablaFiltrada = new DataTable();
-            tablaFiltrada.Columns.Add("IdTurno");
-            tablaFiltrada.Columns.Add("Fecha");
-            tablaFiltrada.Columns.Add("Hora");
-            tablaFiltrada.Columns.Add("TipoExamen");
+            tablaFiltrada.Columns.Add("IdConsulta");
             tablaFiltrada.Columns.Add("IdPaciente");
+            tablaFiltrada.Columns.Add("IdTipoExamen");
+            tablaFiltrada.Columns.Add("Fecha");
+            tablaFiltrada.Columns.Add("TipoExamen");
             tablaFiltrada.Columns.Add("Dni");
             tablaFiltrada.Columns.Add("Paciente");
             tablaFiltrada.Columns.Add("Categoria");
@@ -215,17 +219,20 @@ namespace CapaPresentacion
             cadenaFiltro = setearCadena(cadenaFiltro, cboLiga, "[Liga/Empresa]");
             cadenaFiltro = setearCadena(cadenaFiltro, cboClub, "Club");
             cadenaFiltro = filtrarCategoria(cadenaFiltro, tbCategoria.Text, tbCategoriaHasta.Text);
+            cadenaFiltro = filtrarPorPaciente(cadenaFiltro, tbBusquedaPaciente.Text);
+
             DataRow[] rows = tabla.Select(cadenaFiltro);
             foreach (DataRow r in rows)
             {
-                tablaFiltrada.Rows.Add(r.ItemArray[0], r.ItemArray[1],
-                    r.ItemArray[2], r.ItemArray[3], r.ItemArray[4], r.ItemArray[5],
-                    r.ItemArray[6], r.ItemArray[7], r.ItemArray[8], r.ItemArray[9], r.ItemArray[10], r.ItemArray[11], r.ItemArray[12], r.ItemArray[13]);
+                tablaFiltrada.Rows.Add(r.ItemArray[0], r.ItemArray[1], r.ItemArray[2], r.ItemArray[3],
+                    r.ItemArray[4], r.ItemArray[5], r.ItemArray[6], r.ItemArray[7], r.ItemArray[8], r.ItemArray[9],
+                    r.ItemArray[10], r.ItemArray[11], r.ItemArray[12], r.ItemArray[13]);
             }
             dgv.DataSource = null;
             dgv.DataSource = tablaFiltrada;
             dgv.Columns[0].Visible = false;
-            dgv.Columns[4].Visible = false;
+            dgv.Columns[1].Visible = false;
+            dgv.Columns[2].Visible = false;
             tbTotal.Text = "Total Registros: " + dgv.Rows.Count.ToString();
             progressBar.Visible = false;
         }
@@ -266,73 +273,70 @@ namespace CapaPresentacion
             return cadena;
         }
 
-        // ✅ Método para cargar estudios por turno USANDO el método correcto de TipoExamen
-        private void cargarEstudiosPorTurno(string idTurno, string idEspecialidad, out string exClinico, out string laboratorio, out string rx, out string estComplementario)
+        // ✅ Método para filtrar por nombre o DNI del paciente
+        private string filtrarPorPaciente(string cadena, string textoBusqueda)
         {
-            exClinico = "";
-            laboratorio = "";
-            rx = "";
-            estComplementario = "";
+            if (string.IsNullOrWhiteSpace(textoBusqueda))
+                return cadena;
 
-            try
+            // Buscar parcial en nombre (Paciente) o DNI
+            string filtro = "(Paciente LIKE '%" + textoBusqueda + "%' OR Dni LIKE '%" + textoBusqueda + "%')";
+
+            if (cadena == "")
             {
-                System.Diagnostics.Debug.WriteLine($"🔍 Procesando idTurno: {idTurno}, idEspecialidad: {idEspecialidad}");
-
-                // Validar que idEspecialidad sea válido
-                if (string.IsNullOrEmpty(idEspecialidad) || idEspecialidad == "00000000-0000-0000-0000-000000000000")
-                {
-                    System.Diagnostics.Debug.WriteLine($"   ❌ idEspecialidad inválido o vacío");
-                    return;
-                }
-
-                // ✅ PASO 1: Obtener idTipoExamen desde TipoExamenDePaciente
-                // NO desde EstudiosPorTipoExamen como estaba mal
-                DataTable tipoExamenTable = SQLConnector.obtenerTablaSegunConsultaString(@"
-                    SELECT TOP 1 tep.id
-                    FROM dbo.TipoExamenDePaciente tep
-                    WHERE tep.idEspecialidad = '" + idEspecialidad + @"'
-                    AND tep.id IS NOT NULL
-                    AND tep.id != '00000000-0000-0000-0000-000000000000'");
-
-                if (tipoExamenTable.Rows.Count <= 0)
-                {
-                    System.Diagnostics.Debug.WriteLine($"   ⚠️ No se encontró TipoExamenDePaciente para idEspecialidad: {idEspecialidad}");
-                    return;
-                }
-
-                string idTipoExamen = tipoExamenTable.Rows[0].ItemArray[0].ToString();
-                System.Diagnostics.Debug.WriteLine($"   ✅ idTipoExamen encontrado: {idTipoExamen}");
-
-                // ✅ PASO 2: Usar el MISMO método que funciona correctamente en frmHistoricoMesaEntrada
-                CapaNegocioMepryl.TipoExamen tipoEx = new CapaNegocioMepryl.TipoExamen();
-                Entidades.TipoExamen entidad = tipoEx.cargarEstudiosPorExamen(idTipoExamen);
-
-                // ✅ PASO 3: Asignar los valores ya procesados por el método correcto
-                exClinico = entidad.TextoClinico ?? "";
-                laboratorio = entidad.TextoLaboratorio ?? "";
-                rx = entidad.TextoRx ?? "";
-                estComplementario = entidad.TextoEstComplement ?? "";
-
-                System.Diagnostics.Debug.WriteLine($"   ✅ Estudios cargados correctamente desde TipoExamen.cargarEstudiosPorExamen()");
-                System.Diagnostics.Debug.WriteLine($"   📝 Clínico: {(string.IsNullOrEmpty(exClinico) ? "VACÍO" : exClinico.Substring(0, Math.Min(50, exClinico.Length)) + "...")}");
-                System.Diagnostics.Debug.WriteLine($"   📝 Lab: {(string.IsNullOrEmpty(laboratorio) ? "VACÍO" : laboratorio.Substring(0, Math.Min(50, laboratorio.Length)) + "...")}");
-                System.Diagnostics.Debug.WriteLine($"   📝 RX: {(string.IsNullOrEmpty(rx) ? "VACÍO" : rx.Substring(0, Math.Min(50, rx.Length)) + "...")}");
-                System.Diagnostics.Debug.WriteLine($"   📝 Est.Comp: {(string.IsNullOrEmpty(estComplementario) ? "VACÍO" : estComplementario.Substring(0, Math.Min(50, estComplementario.Length)) + "...")}");
+                return filtro;
             }
-            catch (Exception ex)
+            else
             {
-                System.Diagnostics.Debug.WriteLine($"   ❌ Error: {ex.Message}\n{ex.StackTrace}");
-                exClinico = $"Error: {ex.Message}";
+                return cadena + " AND " + filtro;
+            }
+        }
+
+        // ✅ Evento del botón Buscar Paciente
+        private void butBuscarPaciente_Click(object sender, EventArgs e)
+        {
+            if (tablaOriginal == null || tablaOriginal.Rows.Count == 0)
+            {
+                MessageBox.Show("⚠️ Por favor, realice una búsqueda de agenda primero.", "Información",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            filtrarTablaYCargarDataGrid(tablaOriginal);
+        }
+
+        // ✅ MÉTODO AUXILIAR: Agregar cadena como en frmHistoricoMesaEntrada
+        private void agregarCadenaString(ref string retorno, string texto)
+        {
+            if (!string.IsNullOrEmpty(texto))
+            {
+                if (!string.IsNullOrEmpty(retorno))
+                {
+                    retorno = retorno + " - " + texto;
+                }
+                else
+                {
+                    retorno = texto;
+                }
             }
         }
 
         private void botBuscarFecha_Click(object sender, EventArgs e)
         {
-            //if (tpHasta.Value > DateTime.Now)
-            //    MessageBox.Show("¡Fecha de búsqueda "+ tpHasta.Value.ToString("dd/MM/yyyy") + " no puede ser mayor a la fecha actual!", "Atención",
-            //    MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            //else
-            cargarAgenda();
+            try
+            {
+                //if (tpHasta.Value > DateTime.Now)
+                //    MessageBox.Show("¡Fecha de búsqueda "+ tpHasta.Value.ToString("dd/MM/yyyy") + " no puede ser mayor a la fecha actual!", "Atención",
+                //    MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                //else
+                cargarAgenda();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("❌ Error al cargar agenda: " + ex.Message, "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                System.Diagnostics.Debug.WriteLine($"❌ Exception: {ex}");
+            }
         }
 
         private void cboLiga_SelectedValueChanged(object sender, EventArgs e)
@@ -375,33 +379,20 @@ namespace CapaPresentacion
             excelSheet = (Microsoft.Office.Interop.Excel.Worksheet)excelworkBook.ActiveSheet;
             excelSheet.Name = "Hoja 1";
 
-
+            // ✅ ACTUALIZADO: Sin HORA (que no existe ahora)
             excelSheet.Cells[1, 1] = "FECHA";
-            excelSheet.Cells[1, 2] = "HORA";
-            excelSheet.Cells[1, 3] = "TIPO DE EXAMEN";
-            excelSheet.Cells[1, 4] = "DNI";
-            excelSheet.Cells[1, 5] = "PACIENTE";
-            excelSheet.Cells[1, 6] = "CATEGORIA";
-            excelSheet.Cells[1, 7] = "LIGA/EMPRESA";
-            excelSheet.Cells[1, 8] = "CLUB";
-            excelSheet.Cells[1, 9] = "EX. CLINICO";
-            excelSheet.Cells[1, 10] = "LABORATORIO";
-            excelSheet.Cells[1, 11] = "RX";
-            excelSheet.Cells[1, 12] = "EST. COMPLEMENTARIO";
+            excelSheet.Cells[1, 2] = "TIPO DE EXAMEN";
+            excelSheet.Cells[1, 3] = "DNI";
+            excelSheet.Cells[1, 4] = "PACIENTE";
+            excelSheet.Cells[1, 5] = "CATEGORIA";
+            excelSheet.Cells[1, 6] = "LIGA/EMPRESA";
+            excelSheet.Cells[1, 7] = "CLUB";
+            excelSheet.Cells[1, 8] = "EX. CLINICO";
+            excelSheet.Cells[1, 9] = "LABORATORIO";
+            excelSheet.Cells[1, 10] = "RX";
+            excelSheet.Cells[1, 11] = "EST. COMPLEMENTARIO";
 
-
-            setearColorYBorde(excel.get_Range("A1", "A1"));
-            setearColorYBorde(excel.get_Range("B1", "B1"));
-            setearColorYBorde(excel.get_Range("C1", "C1"));
-            setearColorYBorde(excel.get_Range("D1", "D1"));
-            setearColorYBorde(excel.get_Range("E1", "E1"));
-            setearColorYBorde(excel.get_Range("F1", "F1"));
-            setearColorYBorde(excel.get_Range("G1", "G1"));
-            setearColorYBorde(excel.get_Range("H1", "H1"));
-            setearColorYBorde(excel.get_Range("I1", "I1"));
-            setearColorYBorde(excel.get_Range("J1", "J1"));
-            setearColorYBorde(excel.get_Range("K1", "K1"));
-            setearColorYBorde(excel.get_Range("L1", "L1"));
+            setearColorYBorde(excel.get_Range("A1", "K1"));
 
             DataTable grilla = (DataTable)dgv.DataSource;
 
@@ -411,39 +402,27 @@ namespace CapaPresentacion
             progressBar.Step = 1;
 
             int i = 1;
-            int j = 0;
 
             foreach (DataRow dr in grilla.Rows)
             {
-                excelSheet.Cells[i + 1, j + 1] = dr.ItemArray[1].ToString();
-                j++;
-                excelSheet.Cells[i + 1, j + 1] = dr.ItemArray[2].ToString();
-                j++;
-                excelSheet.Cells[i + 1, j + 1] = dr.ItemArray[3].ToString();
-                j++;
-                excelSheet.Cells[i + 1, j + 1] = dr.ItemArray[5].ToString();
-                j++;
-                excelSheet.Cells[i + 1, j + 1] = dr.ItemArray[6].ToString();
-                j++;
-                excelSheet.Cells[i + 1, j + 1] = dr.ItemArray[7].ToString();
-                j++;
-                excelSheet.Cells[i + 1, j + 1] = dr.ItemArray[8].ToString();
-                j++;
-                excelSheet.Cells[i + 1, j + 1] = dr.ItemArray[9].ToString();
-                j++;
-                excelSheet.Cells[i + 1, j + 1] = dr.ItemArray[10].ToString();
-                j++;
-                excelSheet.Cells[i + 1, j + 1] = dr.ItemArray[11].ToString();
-                j++;
-                excelSheet.Cells[i + 1, j + 1] = dr.ItemArray[12].ToString();
-                j++;
-                excelSheet.Cells[i + 1, j + 1] = dr.ItemArray[13].ToString();
+                // ✅ CORREGIDOS: Índices correctos para la nueva estructura
+                excelSheet.Cells[i + 1, 1] = dr.ItemArray[3].ToString();   // Fecha
+                excelSheet.Cells[i + 1, 2] = dr.ItemArray[4].ToString();   // TipoExamen
+                excelSheet.Cells[i + 1, 3] = dr.ItemArray[5].ToString();   // Dni
+                excelSheet.Cells[i + 1, 4] = dr.ItemArray[6].ToString();   // Paciente
+                excelSheet.Cells[i + 1, 5] = dr.ItemArray[7].ToString();   // Categoria
+                excelSheet.Cells[i + 1, 6] = dr.ItemArray[8].ToString();   // Liga/Empresa
+                excelSheet.Cells[i + 1, 7] = dr.ItemArray[9].ToString();   // Club
+                excelSheet.Cells[i + 1, 8] = dr.ItemArray[10].ToString();  // ExClinico
+                excelSheet.Cells[i + 1, 9] = dr.ItemArray[11].ToString();  // Laboratorio
+                excelSheet.Cells[i + 1, 10] = dr.ItemArray[12].ToString(); // RX
+                excelSheet.Cells[i + 1, 11] = dr.ItemArray[13].ToString(); // EstComplementario
+
                 i++;
                 progressBar.PerformStep();
-                j = 0;
             }
 
-            excel.get_Range("A1", "L1").EntireColumn.AutoFit();
+            excel.get_Range("A1", "K1").EntireColumn.AutoFit();
             excelworkBook.SaveAs(saveFileDialog.FileName, Excel.XlFileFormat.xlOpenXMLWorkbook,
             Type.Missing, Type.Missing, Type.Missing, Type.Missing, Excel.XlSaveAsAccessMode.xlExclusive,
             Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
@@ -504,7 +483,7 @@ namespace CapaPresentacion
                 var values = new List<IList<object>>();
                 values.Add(new List<object>
                 {
-                    "FECHA", "HORA", "TIPO DE EXAMEN", "DNI", "PACIENTE",
+                    "FECHA", "TIPO DE EXAMEN", "DNI", "PACIENTE",
                     "CATEGORIA", "LIGA/EMPRESA", "CLUB", "EX. CLINICO",
                     "LABORATORIO", "RX", "EST. COMPLEMENTARIO"
                 });
@@ -512,11 +491,12 @@ namespace CapaPresentacion
                 DataTable grilla = (DataTable)dgv.DataSource;
                 foreach (DataRow dr in grilla.Rows)
                 {
+                    // ✅ CORREGIDOS: Índices correctos para la nueva estructura
                     values.Add(new List<object>
                     {
-                        dr.ItemArray[1], dr.ItemArray[2], dr.ItemArray[3], dr.ItemArray[5],
-                        dr.ItemArray[6], dr.ItemArray[7], dr.ItemArray[8], dr.ItemArray[9],
-                        dr.ItemArray[10], dr.ItemArray[11], dr.ItemArray[12], dr.ItemArray[13]
+                        dr.ItemArray[3], dr.ItemArray[4], dr.ItemArray[5], dr.ItemArray[6],
+                        dr.ItemArray[7], dr.ItemArray[8], dr.ItemArray[9], dr.ItemArray[10],
+                        dr.ItemArray[11], dr.ItemArray[12], dr.ItemArray[13]
                     });
                 }
 

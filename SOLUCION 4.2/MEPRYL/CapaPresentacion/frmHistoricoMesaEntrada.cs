@@ -14,6 +14,7 @@ namespace CapaPresentacion
     {
         string fechaDesde, fechaHasta;
         CapaNegocioMepryl.TipoExamen tipoEx;
+        DataTable tablaProcesada; // 🔍 Variable para guardar los datos procesados para filtrado
 
         public frmHistoricoMesaEntrada()
         {
@@ -21,7 +22,7 @@ namespace CapaPresentacion
             tipoEx = new CapaNegocioMepryl.TipoExamen();
             fechaDesde = DateTime.Today.ToShortDateString();
             fechaHasta = DateTime.Today.ToShortDateString();
-           
+
             cargarSinFiltro();
             cboTipoBusqueda.SelectedIndex = 0;
         }
@@ -35,12 +36,12 @@ namespace CapaPresentacion
             fechaDesde = DateTime.Today.ToShortDateString();
             fechaHasta = DateTime.Today.ToShortDateString();
 
-            
+
             cargarSinFiltro();
             cboTipoBusqueda.SelectedIndex = 0;
         }
 
-       
+
 
         private void cargarSinFiltro()
         {
@@ -180,6 +181,9 @@ namespace CapaPresentacion
 
         private void cargarGrilla(DataTable dtGrilla)
         {
+            // 🔍 Guardar tabla para filtrado posterior
+            tablaProcesada = dtGrilla.Copy();
+
             if (dgv.Rows.Count > 0)
             {
                 dgv.Rows.Clear();
@@ -529,14 +533,15 @@ namespace CapaPresentacion
         {
             if (e.KeyChar == (char)Keys.Enter)
             {
-                buscar();
+                e.Handled = true;
+                butBuscarPaciente_Click(sender, null);
             }
         }
 
 
         private void botonBuscar_Click(object sender, EventArgs e)
         {
-            buscar();
+            butBuscarPaciente_Click(sender, e);
         }
 
         private void butSalir_Click(object sender, EventArgs e)
@@ -554,6 +559,7 @@ namespace CapaPresentacion
             botonEC.Checked = false;
             cargarSinFiltro();
             tbBusqueda.Text = "";
+            tbBusquedaPaciente.Text = "";
             cboTipoBusqueda.SelectedIndex = 0;
             this.ActiveControl = dgv;
         }
@@ -615,6 +621,59 @@ namespace CapaPresentacion
             fechaHasta = tpFecha.Value.ToShortDateString();
             botonT.Checked = true;
             cargarSinFiltro();
+        }
+
+        // ✅ Búsqueda rápida por Nombre/Apellido o DNI en los datos cargados
+        private void butBuscarPaciente_Click(object sender, EventArgs e)
+        {
+            if (tablaProcesada == null || tablaProcesada.Rows.Count == 0)
+            {
+                MessageBox.Show("⚠️ No hay datos cargados. Realice una búsqueda primero.", "Información",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(tbBusquedaPaciente.Text))
+            {
+                // Sin criterio, recargar todo
+                cargarGrilla(tablaProcesada);
+                return;
+            }
+
+            // Filtrar usando LIKE sobre los nombres
+            string textoBusqueda = tbBusquedaPaciente.Text;
+            string filtro = string.Format("(apellido LIKE '%{0}%' OR nombre LIKE '%{0}%' OR dni LIKE '%{0}%')", textoBusqueda);
+
+            DataTable tablaFiltrada = tablaProcesada.Clone();
+            foreach (DataRow row in tablaProcesada.Rows)
+            {
+                if (row["apellido"].ToString().ToUpper().Contains(textoBusqueda.ToUpper()) ||
+                    row["nombre"].ToString().ToUpper().Contains(textoBusqueda.ToUpper()) ||
+                    row["dni"].ToString().ToUpper().Contains(textoBusqueda.ToUpper()))
+                {
+                    tablaFiltrada.ImportRow(row);
+                }
+            }
+
+            if (tablaFiltrada.Rows.Count > 0)
+            {
+                cargarGrilla(tablaFiltrada);
+            }
+            else
+            {
+                MessageBox.Show("No se encontraron pacientes con los criterios: " + tbBusquedaPaciente.Text, "Información",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+        // ✅ KeyPress para búsqueda de paciente
+        private void tbBusquedaPaciente_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                e.Handled = true;
+                butBuscarPaciente_Click(sender, null);
+            }
         }
     }
 
