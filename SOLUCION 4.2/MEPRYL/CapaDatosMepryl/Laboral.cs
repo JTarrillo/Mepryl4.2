@@ -719,7 +719,7 @@ namespace CapaDatosMepryl
             c.identificador, emp.razonSocial, p.dni, Convert(varchar(10),CONVERT(date,p.fechaNacimiento,106),103) as nacimiento,
             (p.apellido + ' ' + p.nombres) as apellidoNombre,
             p.nacionalidad, p. direccion, p.localidad, (ISNULL(p.telefonos, '') + ' / ' + ISNULL(p.celular, '')) AS telefonos, ete.tarea, el.*, tep.id
-            as idTe from dbo.ExamenLaboral el
+            as idTe, CL.idTipoExamen from dbo.ExamenLaboral el
             inner join dbo.ConsultaLaboral cl on el.id = cl.idExamenLaboral
             inner join dbo.TipoExamenDePaciente tep on cl.idTipoExamen = tep.id
             inner join dbo.Consulta c on tep.idConsulta = c.id
@@ -796,7 +796,7 @@ namespace CapaDatosMepryl
                 puntTxtEncab = 0;
 
                 TipoExamen te = new TipoExamen();
-                Entidades.TipoExamen entidad = te.cargarEstudiosPorExamen(consulta.Rows[0].ItemArray[140].ToString());
+                Entidades.TipoExamen entidad = te.cargarEstudiosPorExamen(consulta.Rows[0].ItemArray[consulta.Rows[0].ItemArray.Length - 1].ToString());
 
 
                 if (entidad.Clinico.Select("Id = 1 and Estado = true").Length > 0)
