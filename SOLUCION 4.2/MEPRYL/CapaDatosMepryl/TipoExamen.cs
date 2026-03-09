@@ -15,7 +15,7 @@ namespace CapaDatosMepryl
 
         public TipoExamen()
         {
-            items = SQLConnector.obtenerTablaSegunConsultaString("select * from dbo.Items order by codigo");
+            items = SQLConnector.obtenerTablaSegunConsultaString("SELECT codigo, id, nombreCompleto, nombreInformes, ordenFormulario, precioSuma, precioResta FROM dbo.Items ORDER BY codigo");
         }
 
         // ...existing code...
@@ -237,6 +237,7 @@ namespace CapaDatosMepryl
             }
             return resultado;
         }
+
         public Entidades.Resultado ActivarTodosLosSubtiposGlobal()
         {
             var resultado = new Entidades.Resultado();
@@ -326,6 +327,43 @@ namespace CapaDatosMepryl
             }
             return resultado;
         }
+
+        public Entidades.Resultado ActualizarNombreSubtipo(string idSubtipo, string nuevoNombre)
+        {
+            var resultado = new Entidades.Resultado();
+            try
+            {
+                // Validar que el nuevo nombre no esté vacío
+                if (string.IsNullOrWhiteSpace(nuevoNombre))
+                {
+                    resultado.Modo = -1;
+                    resultado.Mensaje = "El nombre del subtipo no puede estar vacío.";
+                    return resultado;
+                }
+
+                // Sanitizar el nombre para evitar SQL injection
+                string nombreSeguro = nuevoNombre.Replace("'", "''").Trim();
+
+                // Actualizar la descripción en la tabla Especialidad
+                string sql = $@"UPDATE dbo.Especialidad 
+                 SET descripcion = '{nombreSeguro}' 
+                 WHERE id = '{idSubtipo}' AND Padre = 0";
+
+                SQLConnector.EjecutarConsulta(sql);
+                resultado.Modo = 1;
+                resultado.Mensaje = $"Subtipo actualizado a: '{nuevoNombre}'";
+
+                System.Diagnostics.Debug.WriteLine($"✓ Subtipo actualizado: {idSubtipo} -> {nuevoNombre}");
+            }
+            catch (Exception ex)
+            {
+                resultado.Modo = -1;
+                resultado.Mensaje = $"Error al actualizar el nombre del subtipo: {ex.Message}";
+                System.Diagnostics.Debug.WriteLine($"ERROR en ActualizarNombreSubtipo: {ex.Message}");
+            }
+            return resultado;
+        }
+
 
 
         public DataTable cargarTiposDeExamenHijo(string idMotivoConsulta)
@@ -421,43 +459,6 @@ namespace CapaDatosMepryl
             return dt;
         }
 
-        public Entidades.Resultado ActualizarNombreSubtipo(string idSubtipo, string nuevoNombre)
-        {
-            var resultado = new Entidades.Resultado();
-            try
-            {
-                // Validar que el nuevo nombre no esté vacío
-                if (string.IsNullOrWhiteSpace(nuevoNombre))
-                {
-                    resultado.Modo = -1;
-                    resultado.Mensaje = "El nombre del subtipo no puede estar vacío.";
-                    return resultado;
-                }
-
-                // Sanitizar el nombre para evitar SQL injection
-                string nombreSeguro = nuevoNombre.Replace("'", "''").Trim();
-
-                // Actualizar la descripción en la tabla Especialidad
-                string sql = $@"UPDATE dbo.Especialidad 
-                    SET descripcion = '{nombreSeguro}' 
-                    WHERE id = '{idSubtipo}' AND Padre = 0";
-
-                SQLConnector.EjecutarConsulta(sql);
-                resultado.Modo = 1;
-                resultado.Mensaje = $"Subtipo actualizado a: '{nuevoNombre}'";
-
-                System.Diagnostics.Debug.WriteLine($"✓ Subtipo actualizado: {idSubtipo} -> {nuevoNombre}");
-            }
-            catch (Exception ex)
-            {
-                resultado.Modo = -1;
-                resultado.Mensaje = $"Error al actualizar el nombre del subtipo: {ex.Message}";
-                System.Diagnostics.Debug.WriteLine($"ERROR en ActualizarNombreSubtipo: {ex.Message}");
-            }
-            return resultado;
-        }
-    
-
 
         // Devuelve la descripción de la especialidad por ID
         public string DescripcionEspecialidad(string idEspecialidad)
@@ -500,11 +501,6 @@ namespace CapaDatosMepryl
 
         /// <summary>
         /// NIVEL 1: Devuelve las Especialidades padre (Padre=1) para un MotivoDeConsulta
-        /// Ej: CARDIOLOGÍA, NEUMOLOGÍA, etc. dentro de PREVENTIVA/LABORAL
-        /// </summary>
-        /// <summary>
-        /// NIVEL 1: Devuelve las Especialidades padre (Padre=1) para un MotivoDeConsulta
-        /// ✅ MEJORADO: Solo retorna PADRES que tengan SUBTIPOS ACTIVOS
         /// Ej: CARDIOLOGÍA, NEUMOLOGÍA, etc. dentro de PREVENTIVA/LABORAL
         /// </summary>
         public DataTable cargarNivel1Especialidad(string idMotivoConsulta)
@@ -636,6 +632,9 @@ namespace CapaDatosMepryl
 
         public DataTable cargarTablaSegunFiltro(int ordenFormulario, DataTable estudiosPorTipoExamen)
         {
+            // ✅ NUEVO: Recargar la tabla items desde BD para obtener items creados recientemente
+            items = SQLConnector.obtenerTablaSegunConsultaString("SELECT codigo, id, nombreCompleto, nombreInformes, ordenFormulario, precioSuma, precioResta FROM dbo.Items ORDER BY codigo");
+
             DataTable retorno = new DataTable();
             retorno.Columns.Add("Id");
             retorno.Columns.Add("Codigo");
@@ -648,9 +647,26 @@ namespace CapaDatosMepryl
 
             foreach (DataRow r in dr)
             {
-                int codigoItem = Convert.ToInt16(r.ItemArray[6].ToString()) + 1;
-                bool valorItem = obtenerValor(estudiosPorTipoExamen.Rows[0].ItemArray[codigoItem].ToString());
-                retorno.Rows.Add(r.ItemArray[0].ToString(), r.ItemArray[6].ToString(), valorItem, r.ItemArray[2].ToString());
+                // ✅ ACTUALIZADO: Ahora ItemArray[0] = codigo (secuencial 1-106)
+                int codigoItem = Convert.ToInt16(r.ItemArray[0].ToString()) + 1;
+
+                // ✅ CORREGIDO: Validar que la columna existe antes de acceder
+                bool valorItem = false;
+                try
+                {
+                    if (codigoItem < estudiosPorTipoExamen.Rows[0].ItemArray.Length)
+                    {
+                        valorItem = obtenerValor(estudiosPorTipoExamen.Rows[0].ItemArray[codigoItem].ToString());
+                    }
+                }
+                catch (IndexOutOfRangeException)
+                {
+                    // Si la columna no existe, asume valor false (item no seleccionado)
+                    valorItem = false;
+                }
+
+                // ItemArray[0]=codigo, ItemArray[1]=id, ItemArray[2]=nombreCompleto
+                retorno.Rows.Add(r.ItemArray[1].ToString(), r.ItemArray[0].ToString(), valorItem, r.ItemArray[2].ToString());
             }
             return retorno;
         }
@@ -824,68 +840,23 @@ namespace CapaDatosMepryl
             cargarValoresTablaActualizacion(entidad.EstComplementarios, ref r);
             tablaAEnviar.Rows.Add(r);
 
-            List<string> lista = SQLConnector.generarListaParaProcedure("@idEspecialidad", "@item1", "@item2",
-            "@item3", "@item4", "@item5", "@item6", "@item7", "@item8", "@item9", "@item10", "@item11", "@item12", "@item13",
-            "@item14", "@item15", "@item16", "@item17", "@item18", "@item19", "@item20", "@item21", "@item22", "@item23",
-            "@item24", "@item25", "@item26", "@item27", "@item28", "@item29", "@item30", "@item31", "@item32", "@item33",
-            "@item34", "@item35", "@item36", "@item37", "@item38", "@item39", "@item40", "@item41", "@item42", "@item43",
-            "@item44", "@item45", "@item46", "@item47", "@item48", "@item49", "@item50", "@item51", "@item52", "@item53",
-            "@item54", "@item55", "@item56", "@item57", "@item58", "@item59", "@item60", "@item61", "@item62", "@item63",
-            "@item64", "@item65", "@item66", "@item67", "@item68", "@item69", "@item70", "@item71", "@item72", "@item73",
-            "@item74", "@item75", "@item76", "@item77", "@item78", "@item79", "@item80", "@item81", "@item82", "@item83",
-            "@item84", "@item85", "@item86", "@item87", "@item88", "@item89", "@item90", "@item91", "@item92", "@item93",
-            "@item94", "@item95", "@item96", "@item97");
-            SQLConnector.executeProcedure("sp_EstudiosPorTipoExamen_Update", lista, entidad.Id,
-            guardarValor(tablaAEnviar.Rows[0].ItemArray[0].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][1].ToString()), guardarValor(tablaAEnviar.Rows[0][2].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][3].ToString()), guardarValor(tablaAEnviar.Rows[0][4].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][5].ToString()), guardarValor(tablaAEnviar.Rows[0][6].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][7].ToString()), guardarValor(tablaAEnviar.Rows[0][8].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][9].ToString()), guardarValor(tablaAEnviar.Rows[0][10].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][11].ToString()), guardarValor(tablaAEnviar.Rows[0][12].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][13].ToString()), guardarValor(tablaAEnviar.Rows[0][14].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][15].ToString()), guardarValor(tablaAEnviar.Rows[0][16].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][17].ToString()), guardarValor(tablaAEnviar.Rows[0][18].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][19].ToString()), guardarValor(tablaAEnviar.Rows[0][20].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][21].ToString()), guardarValor(tablaAEnviar.Rows[0][22].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][23].ToString()), guardarValor(tablaAEnviar.Rows[0][24].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][25].ToString()), guardarValor(tablaAEnviar.Rows[0][26].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][27].ToString()), guardarValor(tablaAEnviar.Rows[0][28].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][29].ToString()), guardarValor(tablaAEnviar.Rows[0][30].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][31].ToString()), guardarValor(tablaAEnviar.Rows[0][32].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][33].ToString()), guardarValor(tablaAEnviar.Rows[0][34].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][35].ToString()), guardarValor(tablaAEnviar.Rows[0][36].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][37].ToString()), guardarValor(tablaAEnviar.Rows[0][38].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][39].ToString()), guardarValor(tablaAEnviar.Rows[0][40].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][41].ToString()), guardarValor(tablaAEnviar.Rows[0][42].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][43].ToString()), guardarValor(tablaAEnviar.Rows[0][44].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][45].ToString()), guardarValor(tablaAEnviar.Rows[0][46].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][47].ToString()), guardarValor(tablaAEnviar.Rows[0][48].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][49].ToString()), guardarValor(tablaAEnviar.Rows[0][50].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][51].ToString()), guardarValor(tablaAEnviar.Rows[0][52].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][53].ToString()), guardarValor(tablaAEnviar.Rows[0][54].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][55].ToString()), guardarValor(tablaAEnviar.Rows[0][56].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][57].ToString()), guardarValor(tablaAEnviar.Rows[0][58].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][59].ToString()), guardarValor(tablaAEnviar.Rows[0][60].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][61].ToString()), guardarValor(tablaAEnviar.Rows[0][62].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][63].ToString()), guardarValor(tablaAEnviar.Rows[0][64].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][65].ToString()), guardarValor(tablaAEnviar.Rows[0][66].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][67].ToString()), guardarValor(tablaAEnviar.Rows[0][68].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][69].ToString()), guardarValor(tablaAEnviar.Rows[0][70].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][71].ToString()), guardarValor(tablaAEnviar.Rows[0][72].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][73].ToString()), guardarValor(tablaAEnviar.Rows[0][74].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][75].ToString()), guardarValor(tablaAEnviar.Rows[0][76].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][77].ToString()), guardarValor(tablaAEnviar.Rows[0][78].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][79].ToString()), guardarValor(tablaAEnviar.Rows[0][80].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][81].ToString()), guardarValor(tablaAEnviar.Rows[0][82].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][83].ToString()), guardarValor(tablaAEnviar.Rows[0][84].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][85].ToString()), guardarValor(tablaAEnviar.Rows[0][86].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][87].ToString()), guardarValor(tablaAEnviar.Rows[0][88].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][89].ToString()), guardarValor(tablaAEnviar.Rows[0][90].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][91].ToString()), guardarValor(tablaAEnviar.Rows[0][92].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][93].ToString()), guardarValor(tablaAEnviar.Rows[0][94].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][95].ToString()), guardarValor(tablaAEnviar.Rows[0][96].ToString()));
+            // Generar lista de parámetros y valores dinámicamente hasta 207
+            var parametros = new List<string> { "@idEspecialidad" };
+            for (int i = 1; i <= 207; i++)
+                parametros.Add($"@item{i}");
+            List<string> lista = SQLConnector.generarListaParaProcedure(parametros.ToArray());
+
+            var valores = new List<object> { entidad.Id };
+            for (int i = 0; i < 207; i++)
+                valores.Add(guardarValor(tablaAEnviar.Rows[0][i].ToString()));
+
+            SQLConnector.executeProcedure(
+                "sp_EstudiosPorTipoExamen_Update",
+                lista,
+                valores.ToArray()
+            );
         }
+
 
         private object guardarValor(string valor)
         {
@@ -901,7 +872,8 @@ namespace CapaDatosMepryl
         private DataTable crearTablaActualizacion()
         {
             DataTable retorno = new DataTable();
-            for (int i = 0; i <= 96; i++)
+            // ✅ CAMBIO: Crear 207 columnas (índices 0-206) para coincidir con el loop
+            for (int i = 0; i < 207; i++)
             {
                 retorno.Columns.Add(i.ToString());
                 retorno.Columns[i].DataType = System.Type.GetType("System.Boolean");
@@ -911,13 +883,28 @@ namespace CapaDatosMepryl
 
         private void cargarValoresTablaActualizacion(DataTable tabla, ref DataRow tablaActualizacion)
         {
+            System.Diagnostics.Debug.WriteLine($"[cargarValoresTablaActualizacion] Procesando tabla con {tabla.Rows.Count} filas");
+
             foreach (DataRow r in tabla.Rows)
             {
                 int codigo = Convert.ToInt16(r.ItemArray[1].ToString());
-                tablaActualizacion[codigo - 1] = Convert.ToBoolean(r.ItemArray[2]);
+                bool estado = Convert.ToBoolean(r.ItemArray[2]);
+
+                // ✅ DEBUG detallado
+                System.Diagnostics.Debug.WriteLine($"  [Fila] Código={codigo}, Estado={estado}, Descripción={r.ItemArray[3]}");
+
+                // ⚠️ PROBLEMA: Usar (codigo - 1) como índice
+                if (codigo >= 1 && codigo <= 207)
+                {
+                    tablaActualizacion[codigo - 1] = estado;
+                    System.Diagnostics.Debug.WriteLine($"    → Asignado a columna [{codigo - 1}] = {estado}");
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine($"    ⚠️ Código fuera de rango: {codigo}");
+                }
             }
         }
-
         public Entidades.TipoExamen cargarItems()
         {
             Entidades.TipoExamen retorno = new Entidades.TipoExamen();
@@ -958,6 +945,9 @@ namespace CapaDatosMepryl
 
         private DataTable cargarItemsSegunOrdenFormulario(int ordenFormulario)
         {
+            // ✅ NUEVO: Recargar la tabla items desde BD para obtener items creados recientemente
+            items = SQLConnector.obtenerTablaSegunConsultaString("SELECT codigo, id, nombreCompleto, nombreInformes, ordenFormulario, precioSuma, precioResta FROM dbo.Items ORDER BY codigo");
+
             DataTable retorno = new DataTable();
             retorno.Columns.Add("Id");
             retorno.Columns.Add("Codigo");
@@ -971,8 +961,10 @@ namespace CapaDatosMepryl
 
             foreach (DataRow r in dr)
             {
-                int codigoItem = Convert.ToInt16(r.ItemArray[6].ToString()) + 1;
-                retorno.Rows.Add(r.ItemArray[0].ToString(), r.ItemArray[6].ToString(), false, r.ItemArray[2].ToString(), ordenFormulario);
+                // ✅ ACTUALIZADO: Ahora ItemArray[0] = codigo (secuencial 1-106)
+                int codigoItem = Convert.ToInt16(r.ItemArray[0].ToString()) + 1;
+                // ItemArray[0]=codigo, ItemArray[1]=id, ItemArray[2]=nombreCompleto
+                retorno.Rows.Add(r.ItemArray[1].ToString(), r.ItemArray[0].ToString(), false, r.ItemArray[2].ToString(), ordenFormulario);
             }
             return retorno;
         }
@@ -983,6 +975,9 @@ namespace CapaDatosMepryl
         /// </summary>
         public DataTable cargarTodosLosItems()
         {
+            // ✅ NUEVO: Recargar la tabla items desde BD para obtener items creados recientemente
+            items = SQLConnector.obtenerTablaSegunConsultaString("SELECT codigo, id, nombreCompleto, nombreInformes, ordenFormulario, precioSuma, precioResta FROM dbo.Items ORDER BY codigo");
+
             DataTable retorno = new DataTable();
             retorno.Columns.Add("Id");
             retorno.Columns.Add("Codigo");
@@ -1002,12 +997,12 @@ namespace CapaDatosMepryl
                 foreach (DataRow r in items.Rows)
                 {
                     // Validar que existan los índices
-                    if (r.ItemArray.Length < 8)
+                    if (r.ItemArray.Length < 7)
                         continue;
 
                     retorno.Rows.Add(
-                        r.ItemArray[0]?.ToString() ?? "",        // Id
-                        r.ItemArray[6]?.ToString() ?? "",        // Codigo
+                        r.ItemArray[1]?.ToString() ?? "",        // ✅ Ahora ItemArray[1] = id
+                        r.ItemArray[0]?.ToString() ?? "",        // ✅ Ahora ItemArray[0] = codigo
                         false,                                   // Estado (tipo bool)
                         r.ItemArray[2]?.ToString() ?? "",        // Item (nombre)
                         r.ItemArray[7]?.ToString() ?? "0"        // OrdenFormulario
@@ -1078,22 +1073,52 @@ namespace CapaDatosMepryl
 
         private bool verificarItemsExamen(Entidades.TipoExamen examenPredet, Entidades.TipoExamen examen)
         {
-            if (compararItemsExamen(examenPredet.Clinico, examen.Clinico)) { return true; }
-            if (compararItemsExamen(examenPredet.Hematologia, examen.Hematologia)) { return true; }
-            if (compararItemsExamen(examenPredet.QuimicaHematica, examen.QuimicaHematica)) { return true; }
-            if (compararItemsExamen(examenPredet.Serologia, examen.Serologia)) { return true; }
-            if (compararItemsExamen(examenPredet.PerfilLipidico, examen.PerfilLipidico)) { return true; }
-            if (compararItemsExamen(examenPredet.Bacteriologia, examen.Bacteriologia)) { return true; }
-            if (compararItemsExamen(examenPredet.Orina, examen.Orina)) { return true; }
-            if (compararItemsExamen(examenPredet.LaboralesBasicas, examen.LaboralesBasicas)) { return true; }
-            if (compararItemsExamen(examenPredet.CraneoYMSuperior, examen.CraneoYMSuperior)) { return true; }
-            if (compararItemsExamen(examenPredet.TroncoYPelvis, examen.TroncoYPelvis)) { return true; }
-            if (compararItemsExamen(examenPredet.MiembroInferior, examen.MiembroInferior)) { return true; }
-            if (compararItemsExamen(examenPredet.CraneoYMSuperior, examen.CraneoYMSuperior)) { return true; }
-            if (compararItemsExamen(examenPredet.EstComplementarios, examen.EstComplementarios)) { return true; }
+            // ✅ Validaciones nulas antes de comparar
+            if (examenPredet == null || examen == null)
+            {
+                System.Diagnostics.Debug.WriteLine("⚠️ Uno de los exámenes es null");
+                return true;
+            }
+
+            // Comparar cada sección
+            if (examenPredet.Clinico != null && examen.Clinico != null)
+                if (compararItemsExamen(examenPredet.Clinico, examen.Clinico)) return true;
+
+            if (examenPredet.Hematologia != null && examen.Hematologia != null)
+                if (compararItemsExamen(examenPredet.Hematologia, examen.Hematologia)) return true;
+
+            if (examenPredet.QuimicaHematica != null && examen.QuimicaHematica != null)
+                if (compararItemsExamen(examenPredet.QuimicaHematica, examen.QuimicaHematica)) return true;
+
+            if (examenPredet.Serologia != null && examen.Serologia != null)
+                if (compararItemsExamen(examenPredet.Serologia, examen.Serologia)) return true;
+
+            if (examenPredet.PerfilLipidico != null && examen.PerfilLipidico != null)
+                if (compararItemsExamen(examenPredet.PerfilLipidico, examen.PerfilLipidico)) return true;
+
+            if (examenPredet.Bacteriologia != null && examen.Bacteriologia != null)
+                if (compararItemsExamen(examenPredet.Bacteriologia, examen.Bacteriologia)) return true;
+
+            if (examenPredet.Orina != null && examen.Orina != null)
+                if (compararItemsExamen(examenPredet.Orina, examen.Orina)) return true;
+
+            if (examenPredet.LaboralesBasicas != null && examen.LaboralesBasicas != null)
+                if (compararItemsExamen(examenPredet.LaboralesBasicas, examen.LaboralesBasicas)) return true;
+
+            if (examenPredet.CraneoYMSuperior != null && examen.CraneoYMSuperior != null)
+                if (compararItemsExamen(examenPredet.CraneoYMSuperior, examen.CraneoYMSuperior)) return true;
+
+            if (examenPredet.TroncoYPelvis != null && examen.TroncoYPelvis != null)
+                if (compararItemsExamen(examenPredet.TroncoYPelvis, examen.TroncoYPelvis)) return true;
+
+            if (examenPredet.MiembroInferior != null && examen.MiembroInferior != null)
+                if (compararItemsExamen(examenPredet.MiembroInferior, examen.MiembroInferior)) return true;
+
+            if (examenPredet.EstComplementarios != null && examen.EstComplementarios != null)
+                if (compararItemsExamen(examenPredet.EstComplementarios, examen.EstComplementarios)) return true;
+
             return false;
         }
-
         private bool compararItemsExamen(DataTable tabla1, DataTable tabla2)
         {
             int contador = 0;
@@ -1111,23 +1136,69 @@ namespace CapaDatosMepryl
         public Entidades.TipoExamen cargarEstudiosPorExamen(string idTipoExamen)
         {
             Entidades.TipoExamen retorno = new Entidades.TipoExamen();
-            DataTable estudiosPorExamen = SQLConnector.obtenerTablaSegunConsultaString(@"select epe.*, tep.id, e.id, e.descripcion, tep.precioExamen, tep.modificado from dbo.TipoExamenDePaciente tep inner join dbo.EstudiosPorExamen epe on tep.id = epe.idTipoExamen
-            inner join dbo.Especialidad e on tep.idEspecialidad = e.id 
-            where tep.id = '" + idTipoExamen + "'");
+
+            // ✅ Usar alias explícitos en SELECT en lugar de índices
+            DataTable estudiosPorExamen = SQLConnector.obtenerTablaSegunConsultaString(@"
+        SELECT 
+            epe.id AS IdEstudios,
+            epe.idTipoExamen,
+            epe.item1, epe.item2, epe.item3, epe.item4, epe.item5, epe.item6, epe.item7, epe.item8, 
+            epe.item9, epe.item10, epe.item11, epe.item12, epe.item13, epe.item14, epe.item15, epe.item16, 
+            epe.item17, epe.item18, epe.item19, epe.item20, epe.item21, epe.item22, epe.item23, epe.item24, 
+            epe.item25, epe.item26, epe.item27, epe.item28, epe.item29, epe.item30, epe.item31, epe.item32, 
+            epe.item33, epe.item34, epe.item35, epe.item36, epe.item37, epe.item38, epe.item39, epe.item40,
+            epe.item41, epe.item42, epe.item43, epe.item44, epe.item45, epe.item46, epe.item47, epe.item48,
+            epe.item49, epe.item50, epe.item51, epe.item52, epe.item53, epe.item54, epe.item55, epe.item56,
+            epe.item57, epe.item58, epe.item59, epe.item60, epe.item61, epe.item62, epe.item63, epe.item64,
+            epe.item65, epe.item66, epe.item67, epe.item68, epe.item69, epe.item70, epe.item71, epe.item72,
+            epe.item73, epe.item74, epe.item75, epe.item76, epe.item77, epe.item78, epe.item79, epe.item80,
+            epe.item81, epe.item82, epe.item83, epe.item84, epe.item85, epe.item86, epe.item87, epe.item88,
+            epe.item89, epe.item90, epe.item91, epe.item92, epe.item93, epe.item94, epe.item95, epe.item96,
+            epe.item97, epe.item98, epe.item99, epe.item100, epe.item101, epe.item102, epe.item103, epe.item104,
+            epe.item105, epe.item106, epe.item107, epe.item108, epe.item109, epe.item110, epe.item111, epe.item112,
+            epe.item113, epe.item114, epe.item115, epe.item116, epe.item117, epe.item118, epe.item119, epe.item120,
+            epe.item121, epe.item122, epe.item123, epe.item124, epe.item125, epe.item126, epe.item127, epe.item128,
+            epe.item129, epe.item130, epe.item131, epe.item132, epe.item133, epe.item134, epe.item135, epe.item136,
+            epe.item137, epe.item138, epe.item139, epe.item140, epe.item141, epe.item142, epe.item143, epe.item144,
+            epe.item145, epe.item146, epe.item147, epe.item148, epe.item149, epe.item150, epe.item151, epe.item152,
+            epe.item153, epe.item154, epe.item155, epe.item156, epe.item157, epe.item158, epe.item159, epe.item160,
+            epe.item161, epe.item162, epe.item163, epe.item164, epe.item165, epe.item166, epe.item167, epe.item168,
+            epe.item169, epe.item170, epe.item171, epe.item172, epe.item173, epe.item174, epe.item175, epe.item176,
+            epe.item177, epe.item178, epe.item179, epe.item180, epe.item181, epe.item182, epe.item183, epe.item184,
+            epe.item185, epe.item186, epe.item187, epe.item188, epe.item189, epe.item190, epe.item191, epe.item192,
+            epe.item193, epe.item194, epe.item195, epe.item196, epe.item197, epe.item198, epe.item199, epe.item200,
+            epe.item201, epe.item202, epe.item203, epe.item204, epe.item205, epe.item206, epe.item207,
+            tep.id AS IdTipoExamenPaciente,
+            e.id AS IdEspecialidad,
+            e.descripcion,
+            tep.precioExamen,
+            tep.modificado
+        FROM dbo.TipoExamenDePaciente tep 
+        INNER JOIN dbo.EstudiosPorExamen epe ON tep.id = epe.idTipoExamen
+        INNER JOIN dbo.Especialidad e ON tep.idEspecialidad = e.id 
+        WHERE tep.id = '" + idTipoExamen + "'");
+
             if (estudiosPorExamen.Rows.Count > 0)
             {
-                retorno.IdTipoExamenPaciente = new Guid(estudiosPorExamen.Rows[0][99].ToString());
-                retorno.Id = new Guid(estudiosPorExamen.Rows[0][100].ToString());
-                retorno.Descripcion = estudiosPorExamen.Rows[0][101].ToString();
-                Double result;
-                if (Double.TryParse(estudiosPorExamen.Rows[0][102].ToString(), out result))
+                DataRow row = estudiosPorExamen.Rows[0];
+
+                // ✅ Acceso seguro por nombre de columna
+                retorno.IdTipoExamenPaciente = new Guid(row["IdTipoExamenPaciente"].ToString());
+                retorno.Id = new Guid(row["IdEspecialidad"].ToString());
+                retorno.Descripcion = row["descripcion"].ToString();
+
+                // ...existing code...
+                if (Double.TryParse(row["precioExamen"].ToString(), out double precio))
                 {
-                    retorno.PrecioBase = result;
+                    retorno.PrecioBase = precio;
                 }
-                if (estudiosPorExamen.Rows[0][103].ToString() != string.Empty)
+
+                if (!string.IsNullOrEmpty(row["modificado"].ToString()))
                 {
                     retorno.Modificado = true;
                 }
+
+                // ...existing code...
                 retorno.Clinico = cargarTablaItemTipoExamenPaciente(estudiosPorExamen, 1);
                 retorno.Hematologia = cargarTablaItemTipoExamenPaciente(estudiosPorExamen, 2);
                 retorno.QuimicaHematica = cargarTablaItemTipoExamenPaciente(estudiosPorExamen, 3);
@@ -1144,6 +1215,7 @@ namespace CapaDatosMepryl
                 retorno.MiembroInferior = cargarTablaItemTipoExamenPaciente(estudiosPorExamen, 11);
                 retorno.EstComplementarios = cargarTablaItemTipoExamenPaciente(estudiosPorExamen, 12);
 
+                // ...existing code...
                 List<DataTable> lista = new List<DataTable>();
                 lista.Add(retorno.Clinico);
                 retorno.TextoClinico = estudiosString(ref lista);
@@ -1161,11 +1233,9 @@ namespace CapaDatosMepryl
                 retorno.TextoRx = estudiosString(ref lista);
                 lista.Add(retorno.EstComplementarios);
                 retorno.TextoEstComplement = estudiosString(ref lista);
-
             }
             return retorno;
         }
-
         private string estudiosString(ref List<DataTable> lista)
         {
             string texto = string.Empty;
@@ -1215,68 +1285,144 @@ namespace CapaDatosMepryl
         public Entidades.TipoExamen cargarEstudiosPorTipoExamen(string idTipoExamen)
         {
             Entidades.TipoExamen retorno = new Entidades.TipoExamen();
-            DataTable estudiosPorExamen = SQLConnector.obtenerTablaSegunConsultaString(@"select epe.*, e.id, e.descripcion, e.precioBase from dbo.EstudiosPorTipoExamen epe
-            inner join dbo.Especialidad e on epe.idEspecialidad = e.id 
-            where epe.idEspecialidad = '" + idTipoExamen + "'");
+
+            // ✅ PARA FILTRAR USAR: idEspecialidad (no idTipoExamen)
+            DataTable estudiosPorExamen = SQLConnector.obtenerTablaSegunConsultaString(@"
+        SELECT 
+            epe.id AS IdEstudios,
+            epe.idEspecialidad,
+            epe.item1, epe.item2, epe.item3, epe.item4, epe.item5, epe.item6, epe.item7, epe.item8, 
+            epe.item9, epe.item10, epe.item11, epe.item12, epe.item13, epe.item14, epe.item15, epe.item16, 
+            epe.item17, epe.item18, epe.item19, epe.item20, epe.item21, epe.item22, epe.item23, epe.item24, 
+            epe.item25, epe.item26, epe.item27, epe.item28, epe.item29, epe.item30, epe.item31, epe.item32, 
+            epe.item33, epe.item34, epe.item35, epe.item36, epe.item37, epe.item38, epe.item39, epe.item40,
+            epe.item41, epe.item42, epe.item43, epe.item44, epe.item45, epe.item46, epe.item47, epe.item48,
+            epe.item49, epe.item50, epe.item51, epe.item52, epe.item53, epe.item54, epe.item55, epe.item56,
+            epe.item57, epe.item58, epe.item59, epe.item60, epe.item61, epe.item62, epe.item63, epe.item64,
+            epe.item65, epe.item66, epe.item67, epe.item68, epe.item69, epe.item70, epe.item71, epe.item72,
+            epe.item73, epe.item74, epe.item75, epe.item76, epe.item77, epe.item78, epe.item79, epe.item80,
+            epe.item81, epe.item82, epe.item83, epe.item84, epe.item85, epe.item86, epe.item87, epe.item88,
+            epe.item89, epe.item90, epe.item91, epe.item92, epe.item93, epe.item94, epe.item95, epe.item96,
+            epe.item97, epe.item98, epe.item99, epe.item100, epe.item101, epe.item102, epe.item103, epe.item104,
+            epe.item105, epe.item106, epe.item107, epe.item108, epe.item109, epe.item110, epe.item111, epe.item112,
+            epe.item113, epe.item114, epe.item115, epe.item116, epe.item117, epe.item118, epe.item119, epe.item120,
+            epe.item121, epe.item122, epe.item123, epe.item124, epe.item125, epe.item126, epe.item127, epe.item128,
+            epe.item129, epe.item130, epe.item131, epe.item132, epe.item133, epe.item134, epe.item135, epe.item136,
+            epe.item137, epe.item138, epe.item139, epe.item140, epe.item141, epe.item142, epe.item143, epe.item144,
+            epe.item145, epe.item146, epe.item147, epe.item148, epe.item149, epe.item150, epe.item151, epe.item152,
+            epe.item153, epe.item154, epe.item155, epe.item156, epe.item157, epe.item158, epe.item159, epe.item160,
+            epe.item161, epe.item162, epe.item163, epe.item164, epe.item165, epe.item166, epe.item167, epe.item168,
+            epe.item169, epe.item170, epe.item171, epe.item172, epe.item173, epe.item174, epe.item175, epe.item176,
+            epe.item177, epe.item178, epe.item179, epe.item180, epe.item181, epe.item182, epe.item183, epe.item184,
+            epe.item185, epe.item186, epe.item187, epe.item188, epe.item189, epe.item190, epe.item191, epe.item192,
+            epe.item193, epe.item194, epe.item195, epe.item196, epe.item197, epe.item198, epe.item199, epe.item200,
+            epe.item201, epe.item202, epe.item203, epe.item204, epe.item205, epe.item206, epe.item207,
+            e.id AS IdEspecialidad,
+            e.descripcion AS DescripcionEspecialidad,
+            e.precioBase AS PrecioEspecialidad
+        FROM dbo.EstudiosPorTipoExamen epe
+        INNER JOIN dbo.Especialidad e ON epe.idEspecialidad = e.id 
+        WHERE epe.idEspecialidad = '" + idTipoExamen + "'");
+
             if (estudiosPorExamen.Rows.Count > 0)
             {
-                retorno.Id = new Guid(estudiosPorExamen.Rows[0][99].ToString());
-                retorno.Descripcion = estudiosPorExamen.Rows[0][100].ToString();
-                Double result;
-                if (Double.TryParse(estudiosPorExamen.Rows[0][101].ToString(), out result))
+                DataRow row = estudiosPorExamen.Rows[0];
+
+                try
                 {
-                    retorno.PrecioBase = result;
+                    // ✅ ACCESO SEGURO POR NOMBRE DE COLUMNA
+                    if (Guid.TryParse(row["IdEspecialidad"].ToString(), out Guid idEsp))
+                        retorno.Id = idEsp;
+                    else
+                        throw new FormatException($"IdEspecialidad no es GUID válido: {row["IdEspecialidad"]}");
+
+                    retorno.Descripcion = row["DescripcionEspecialidad"].ToString();
+
+                    if (Double.TryParse(row["PrecioEspecialidad"].ToString(), out double precio))
+                        retorno.PrecioBase = precio;
+
+                    // ...existing code...
+                    retorno.Clinico = cargarTablaItemTipoExamenPaciente(estudiosPorExamen, 1);
+                    retorno.Hematologia = cargarTablaItemTipoExamenPaciente(estudiosPorExamen, 2);
+                    retorno.QuimicaHematica = cargarTablaItemTipoExamenPaciente(estudiosPorExamen, 3);
+                    retorno.Serologia = cargarTablaItemTipoExamenPaciente(estudiosPorExamen, 4);
+                    retorno.PerfilLipidico = cargarTablaItemTipoExamenPaciente(estudiosPorExamen, 5);
+                    retorno.Bacteriologia = cargarTablaItemTipoExamenPaciente(estudiosPorExamen, 6);
+                    retorno.Orina = cargarTablaItemTipoExamenPaciente(estudiosPorExamen, 7);
+
+                    if (blnTieneRX)
+                        retorno.LaboralesBasicas = cargarTablaItemTipoExamenPaciente(estudiosPorExamen, 8);
+                    else
+                        retorno.LaboralesBasicas = cargarTablaItemTipoExamenPaciente2(estudiosPorExamen, 8, blnTieneRX);
+
+                    retorno.CraneoYMSuperior = cargarTablaItemTipoExamenPaciente(estudiosPorExamen, 9);
+                    retorno.TroncoYPelvis = cargarTablaItemTipoExamenPaciente(estudiosPorExamen, 10);
+                    retorno.MiembroInferior = cargarTablaItemTipoExamenPaciente(estudiosPorExamen, 11);
+                    retorno.EstComplementarios = cargarTablaItemTipoExamenPaciente(estudiosPorExamen, 12);
                 }
-                retorno.Clinico = cargarTablaItemTipoExamenPaciente(estudiosPorExamen, 1);
-                retorno.Hematologia = cargarTablaItemTipoExamenPaciente(estudiosPorExamen, 2);
-                retorno.QuimicaHematica = cargarTablaItemTipoExamenPaciente(estudiosPorExamen, 3);
-                retorno.Serologia = cargarTablaItemTipoExamenPaciente(estudiosPorExamen, 4);
-                retorno.PerfilLipidico = cargarTablaItemTipoExamenPaciente(estudiosPorExamen, 5);
-                retorno.Bacteriologia = cargarTablaItemTipoExamenPaciente(estudiosPorExamen, 6);
-                retorno.Orina = cargarTablaItemTipoExamenPaciente(estudiosPorExamen, 7);
-                // GRV - Modificado
-                if (blnTieneRX)
-                    retorno.LaboralesBasicas = cargarTablaItemTipoExamenPaciente(estudiosPorExamen, 8);
-                else
-                    retorno.LaboralesBasicas = cargarTablaItemTipoExamenPaciente2(estudiosPorExamen, 8, blnTieneRX);
-                retorno.CraneoYMSuperior = cargarTablaItemTipoExamenPaciente(estudiosPorExamen, 9);
-                retorno.TroncoYPelvis = cargarTablaItemTipoExamenPaciente(estudiosPorExamen, 10);
-                retorno.MiembroInferior = cargarTablaItemTipoExamenPaciente(estudiosPorExamen, 11);
-                retorno.EstComplementarios = cargarTablaItemTipoExamenPaciente(estudiosPorExamen, 12);
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"ERROR en cargarEstudiosPorTipoExamen: {ex.Message}");
+                    throw;
+                }
             }
             return retorno;
         }
-
         private DataTable cargarTablaItemTipoExamenPaciente(DataTable estudiosPorTipoExamen, int nroOrden)
         {
+            // ✅ INICIALIZAR: Crear DataTable retorno
             DataTable retorno = new DataTable();
             retorno.Columns.Add("Id");
             retorno.Columns.Add("Codigo");
             retorno.Columns.Add("Estado");
             retorno.Columns.Add("Item");
             retorno.Columns.Add("Nombre Completo");
-
-
             retorno.Columns[2].DataType = System.Type.GetType("System.Boolean");
-            int contador = 0;
-            foreach (object obj in estudiosPorTipoExamen.Rows[0].ItemArray)
+
+            // ✅ VALIDAR: Verificar que la entrada no sea nula
+            if (estudiosPorTipoExamen == null || estudiosPorTipoExamen.Rows.Count == 0)
+                return retorno;  // Retornar vacío si no hay datos
+
+            foreach (DataColumn col in estudiosPorTipoExamen.Columns)
             {
-                if (contador >= 2 && contador <= 98 && obj.ToString() != string.Empty)
+                if (!col.ColumnName.StartsWith("item", StringComparison.OrdinalIgnoreCase))
+                    continue;
+
+                try
                 {
-                    DataRow[] dr = items.Select("codigo = " + (contador - 1).ToString());
-                    if (dr.Length > 0)
+                    string numStr = col.ColumnName.Substring(4);
+                    if (!int.TryParse(numStr, out int codigoItem))
+                        continue;
+
+                    object valor = estudiosPorTipoExamen.Rows[0][col.ColumnName];
+
+                    // ✅ CORREGIR: Tratar NULL como 0 (false) en lugar de ignorar
+                    bool estado = (valor != DBNull.Value) && Convert.ToBoolean(valor);
+
+                    DataRow[] dr = items.Select($"codigo = {codigoItem}");
+                    if (dr.Length > 0 && dr[0][4].ToString() == nroOrden.ToString())
                     {
-                        if (dr[0][3].ToString() == nroOrden.ToString())
-                        {
-                            retorno.Rows.Add(dr[0][0].ToString(), dr[0][6].ToString(), obj, dr[0][2].ToString(),
-                                 dr[0][1].ToString());
-                        }
+                        retorno.Rows.Add(
+                            dr[0][1].ToString(),      // Id
+                            dr[0][0].ToString(),      // Codigo
+                            estado,                    // Estado (bool)
+                            dr[0][3].ToString(),      // Item (nombreInformes)
+                            dr[0][3].ToString()       // Nombre Completo (nombreInformes)
+                        );
+
+                        System.Diagnostics.Debug.WriteLine(
+                            $"✓ Item {codigoItem} | nombreInformes: {dr[0][3]} | Estado: {estado}");
                     }
                 }
-                contador++;
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"⚠️ Error procesando item: {ex.Message}");
+                }
             }
+
             return retorno;
         }
+
 
         // GRV - Modificado: Filtra items excepto item38 para preventivas sin RX
         private DataTable cargarTablaItemTipoExamenPaciente2(DataTable estudiosPorTipoExamen, int nroOrden, bool blnTieneRX)
@@ -1289,20 +1435,47 @@ namespace CapaDatosMepryl
             retorno.Columns.Add("Nombre Completo");
             retorno.Columns[2].DataType = System.Type.GetType("System.Boolean");
 
-            int contador = 0;
-            foreach (object obj in estudiosPorTipoExamen.Rows[0].ItemArray)
+            if (estudiosPorTipoExamen == null || estudiosPorTipoExamen.Rows.Count == 0)
+                return retorno;
+
+            foreach (DataColumn col in estudiosPorTipoExamen.Columns)
             {
-                if (contador >= 2 && contador <= 98 && obj.ToString() != string.Empty)
+                if (!col.ColumnName.StartsWith("item", StringComparison.OrdinalIgnoreCase))
+                    continue;
+
+                try
                 {
-                    DataRow[] dr = items.Select("codigo = " + (contador - 1).ToString());
-                    if (dr.Length > 0 && dr[0][3].ToString() == nroOrden.ToString())
+                    string numStr = col.ColumnName.Substring(4);
+                    if (!int.TryParse(numStr, out int codigoItem))
+                        continue;
+
+                    object valor = estudiosPorTipoExamen.Rows[0][col.ColumnName];
+                    if (valor == DBNull.Value || string.IsNullOrEmpty(valor.ToString()))
+                        continue;
+
+                    DataRow[] dr = items.Select($"codigo = {codigoItem}");
+                    if (dr.Length > 0 && dr[0][4].ToString() == nroOrden.ToString())
                     {
-                        bool valor = (contador == 39 && !blnTieneRX) ? false : Convert.ToBoolean(obj);
-                        retorno.Rows.Add(dr[0][0].ToString(), dr[0][6].ToString(), valor, dr[0][2].ToString(), dr[0][1].ToString());
+                        // ✅ Filtro de RX: si es item38/item39 y !blnTieneRX, poner false
+                        bool estado = Convert.ToBoolean(valor);
+                        if (codigoItem == 38 && !blnTieneRX)
+                            estado = false;
+
+                        retorno.Rows.Add(
+                            dr[0][1].ToString(),
+                            dr[0][0].ToString(),
+                            estado,
+                            dr[0][2].ToString(),
+                            dr[0][3].ToString()
+                        );
                     }
                 }
-                contador++;
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"⚠️ Error: {ex.Message}");
+                }
             }
+
             return retorno;
         }
 
@@ -1337,68 +1510,23 @@ namespace CapaDatosMepryl
             cargarValoresTablaActualizacion(entidad.EstComplementarios, ref r);
             tablaAEnviar.Rows.Add(r);
 
-            List<string> lista = SQLConnector.generarListaParaProcedure("@idTipoExamen", "@item1", "@item2",
-            "@item3", "@item4", "@item5", "@item6", "@item7", "@item8", "@item9", "@item10", "@item11", "@item12", "@item13",
-            "@item14", "@item15", "@item16", "@item17", "@item18", "@item19", "@item20", "@item21", "@item22", "@item23",
-            "@item24", "@item25", "@item26", "@item27", "@item28", "@item29", "@item30", "@item31", "@item32", "@item33",
-            "@item34", "@item35", "@item36", "@item37", "@item38", "@item39", "@item40", "@item41", "@item42", "@item43",
-            "@item44", "@item45", "@item46", "@item47", "@item48", "@item49", "@item50", "@item51", "@item52", "@item53",
-            "@item54", "@item55", "@item56", "@item57", "@item58", "@item59", "@item60", "@item61", "@item62", "@item63",
-            "@item64", "@item65", "@item66", "@item67", "@item68", "@item69", "@item70", "@item71", "@item72", "@item73",
-            "@item74", "@item75", "@item76", "@item77", "@item78", "@item79", "@item80", "@item81", "@item82", "@item83",
-            "@item84", "@item85", "@item86", "@item87", "@item88", "@item89", "@item90", "@item91", "@item92", "@item93",
-            "@item94", "@item95", "@item96", "@item97");
-            SQLConnector.executeProcedure("sp_EstudiosPorExamen_Update", lista, entidad.IdTipoExamenPaciente,
-            guardarValor(tablaAEnviar.Rows[0].ItemArray[0].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][1].ToString()), guardarValor(tablaAEnviar.Rows[0][2].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][3].ToString()), guardarValor(tablaAEnviar.Rows[0][4].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][5].ToString()), guardarValor(tablaAEnviar.Rows[0][6].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][7].ToString()), guardarValor(tablaAEnviar.Rows[0][8].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][9].ToString()), guardarValor(tablaAEnviar.Rows[0][10].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][11].ToString()), guardarValor(tablaAEnviar.Rows[0][12].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][13].ToString()), guardarValor(tablaAEnviar.Rows[0][14].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][15].ToString()), guardarValor(tablaAEnviar.Rows[0][16].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][17].ToString()), guardarValor(tablaAEnviar.Rows[0][18].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][19].ToString()), guardarValor(tablaAEnviar.Rows[0][20].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][21].ToString()), guardarValor(tablaAEnviar.Rows[0][22].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][23].ToString()), guardarValor(tablaAEnviar.Rows[0][24].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][25].ToString()), guardarValor(tablaAEnviar.Rows[0][26].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][27].ToString()), guardarValor(tablaAEnviar.Rows[0][28].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][29].ToString()), guardarValor(tablaAEnviar.Rows[0][30].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][31].ToString()), guardarValor(tablaAEnviar.Rows[0][32].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][33].ToString()), guardarValor(tablaAEnviar.Rows[0][34].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][35].ToString()), guardarValor(tablaAEnviar.Rows[0][36].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][37].ToString()), guardarValor(tablaAEnviar.Rows[0][38].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][39].ToString()), guardarValor(tablaAEnviar.Rows[0][40].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][41].ToString()), guardarValor(tablaAEnviar.Rows[0][42].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][43].ToString()), guardarValor(tablaAEnviar.Rows[0][44].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][45].ToString()), guardarValor(tablaAEnviar.Rows[0][46].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][47].ToString()), guardarValor(tablaAEnviar.Rows[0][48].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][49].ToString()), guardarValor(tablaAEnviar.Rows[0][50].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][51].ToString()), guardarValor(tablaAEnviar.Rows[0][52].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][53].ToString()), guardarValor(tablaAEnviar.Rows[0][54].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][55].ToString()), guardarValor(tablaAEnviar.Rows[0][56].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][57].ToString()), guardarValor(tablaAEnviar.Rows[0][58].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][59].ToString()), guardarValor(tablaAEnviar.Rows[0][60].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][61].ToString()), guardarValor(tablaAEnviar.Rows[0][62].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][63].ToString()), guardarValor(tablaAEnviar.Rows[0][64].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][65].ToString()), guardarValor(tablaAEnviar.Rows[0][66].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][67].ToString()), guardarValor(tablaAEnviar.Rows[0][68].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][69].ToString()), guardarValor(tablaAEnviar.Rows[0][70].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][71].ToString()), guardarValor(tablaAEnviar.Rows[0][72].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][73].ToString()), guardarValor(tablaAEnviar.Rows[0][74].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][75].ToString()), guardarValor(tablaAEnviar.Rows[0][76].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][77].ToString()), guardarValor(tablaAEnviar.Rows[0][78].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][79].ToString()), guardarValor(tablaAEnviar.Rows[0][80].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][81].ToString()), guardarValor(tablaAEnviar.Rows[0][82].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][83].ToString()), guardarValor(tablaAEnviar.Rows[0][84].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][85].ToString()), guardarValor(tablaAEnviar.Rows[0][86].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][87].ToString()), guardarValor(tablaAEnviar.Rows[0][88].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][89].ToString()), guardarValor(tablaAEnviar.Rows[0][90].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][91].ToString()), guardarValor(tablaAEnviar.Rows[0][92].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][93].ToString()), guardarValor(tablaAEnviar.Rows[0][94].ToString()),
-            guardarValor(tablaAEnviar.Rows[0][95].ToString()), guardarValor(tablaAEnviar.Rows[0][96].ToString()));
+            // Generar lista de parámetros y valores dinámicamente hasta 207
+            var parametros = new List<string> { "@idTipoExamen" };
+            for (int i = 1; i <= 207; i++)
+                parametros.Add($"@item{i}");
+            List<string> lista = SQLConnector.generarListaParaProcedure(parametros.ToArray());
+
+            var valores = new List<object> { entidad.IdTipoExamenPaciente };
+            for (int i = 0; i < 207; i++)
+                valores.Add(guardarValor(tablaAEnviar.Rows[0][i].ToString()));
+
+            SQLConnector.executeProcedure(
+                "sp_EstudiosPorExamen_Update",
+                lista,
+                valores.ToArray()
+            );
         }
+
 
         // GRV - Modificado 
         public void VerificaExamenPreventiva(bool blnTieneExamen, string strIdTipoExamen)
@@ -2249,7 +2377,7 @@ LEFT JOIN
             try
             {
                 // Construir SQL para poner TODOS los items en 0
-                string columnas = string.Join(", ", Enumerable.Range(1, 97).Select(i => $"item{i} = 0"));
+                string columnas = string.Join(", ", Enumerable.Range(1, 207).Select(i => $"item{i} = 0"));
                 string sql = $"UPDATE dbo.EstudiosPorTipoExamen SET {columnas} WHERE idEspecialidad = '{idSubtipo}'";
 
                 SQLConnector.EjecutarConsulta(sql);
@@ -2305,11 +2433,17 @@ LEFT JOIN
         {
             try
             {
-                // En EstudiosPorTipoExamen, cada item está en una columna: item1...item97
+                // Validar rango permitido
+                if (codigoItem < 1 || codigoItem > 207)
+                {
+                    System.Diagnostics.Debug.WriteLine($"❌ Código de item fuera de rango: {codigoItem}");
+                    return;
+                }
+
                 string columnName = $"item{codigoItem}";
                 string sql = $@"UPDATE dbo.EstudiosPorTipoExamen 
-                    SET {columnName} = 1 
-                    WHERE idEspecialidad = '{idSubtipo}'";
+            SET {columnName} = 1 
+            WHERE idEspecialidad = '{idSubtipo}'";
 
                 SQLConnector.EjecutarConsulta(sql);
                 System.Diagnostics.Debug.WriteLine($"✓ Item marcado: [{codigoItem}] {descripcionItem}");
@@ -2320,6 +2454,7 @@ LEFT JOIN
                 throw;
             }
         }
+
     }
 
 

@@ -35,22 +35,119 @@ namespace CapaPresentacion
                 ORDER BY i.ordenFormulario, i.codigo";
             DataTable dt = Comunes.SQLConnector.obtenerTablaSegunConsultaString(consulta);
             dgvItems.DataSource = dt;
+
+            // 🔍 DEBUG: Ver cuántos items hay
+            DebugCargarItems(dt);
+        }
+
+        private void DebugCargarItems(DataTable dt)
+        {
+            try
+            {
+                System.Diagnostics.Debug.WriteLine("══════════════════════════════════════════");
+                System.Diagnostics.Debug.WriteLine($"📊 [DEBUG] ITEMS CARGADOS: Total = {dt.Rows.Count}");
+                System.Diagnostics.Debug.WriteLine("══════════════════════════════════════════");
+
+                // Agrupar por sección
+                var seccionesunicas = new System.Collections.Generic.Dictionary<string, int>();
+                var sectores = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>>();
+
+                foreach (DataRow row in dt.Rows)
+                {
+                    string seccion = row["Seccion"]?.ToString() ?? "SIN SECCIÓN";
+                    string subseccion = row["Subseccion"]?.ToString() ?? "SIN SUBSECCIÓN";
+                    string codigo = row["codigo"]?.ToString() ?? "SIN CÓDIGO";
+                    string nombre = row["nombreCompleto"]?.ToString() ?? "SIN NOMBRE";
+
+                    if (!seccionesunicas.ContainsKey(seccion))
+                    {
+                        seccionesunicas[seccion] = 0;
+                        sectores[seccion] = new System.Collections.Generic.List<string>();
+                    }
+
+                    seccionesunicas[seccion]++;
+                    sectores[seccion].Add($"[{codigo}] {nombre}");
+                }
+
+                // Mostrar resumen por sección
+                System.Diagnostics.Debug.WriteLine("📋 RESUMEN POR SECCIÓN:");
+                foreach (var sec in seccionesunicas)
+                {
+                    System.Diagnostics.Debug.WriteLine($"  ✅ {sec.Key}: {sec.Value} items");
+                }
+
+                // Mostrar detalles completos
+                System.Diagnostics.Debug.WriteLine("\n📝 DETALLE COMPLETO:");
+                int conteo = 1;
+                foreach (DataRow row in dt.Rows)
+                {
+                    string codigo = row["codigo"]?.ToString() ?? "SIN CÓDIGO";
+                    string nombre = row["nombreCompleto"]?.ToString() ?? "SIN NOMBRE";
+                    string seccion = row["Seccion"]?.ToString() ?? "SIN SECCIÓN";
+                    string subseccion = row["Subseccion"]?.ToString() ?? "SIN SUBSECCIÓN";
+
+                    System.Diagnostics.Debug.WriteLine($"  {conteo}. [{codigo}] {nombre} ({seccion} / {subseccion})");
+                    conteo++;
+                }
+
+                System.Diagnostics.Debug.WriteLine("══════════════════════════════════════════");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"❌ [DEBUG] Error en DebugCargarItems: {ex.Message}");
+            }
         }
 
         private void btnNuevo_Click(object sender, EventArgs e)
         {
-            // Obtener el siguiente código disponible
-            DataTable dt = Comunes.SQLConnector.obtenerTablaSegunConsultaString("SELECT ISNULL(MAX(codigo), 0) + 1 AS NuevoCodigo FROM Items");
-            string nuevoCodigo = dt.Rows.Count > 0 ? dt.Rows[0]["NuevoCodigo"].ToString() : "1";
+            // ✅ CORREGIDO: Buscar el PRIMER código disponible (llenar huecos)
+            // Método simple: obtener todos los códigos, ordenar, y encontrar el primer hueco
+            string consultaObtenerCodigos = @"
+                SELECT CAST(codigo AS INT) AS cod 
+                FROM Items 
+                WHERE ISNUMERIC(codigo) = 1 
+                ORDER BY CAST(codigo AS INT)";
+
+            DataTable dtCodigos = Comunes.SQLConnector.obtenerTablaSegunConsultaString(consultaObtenerCodigos);
+
+            int nuevoCodigo = 1;
+            if (dtCodigos.Rows.Count > 0)
+            {
+                // Buscar el primer hueco
+                foreach (DataRow row in dtCodigos.Rows)
+                {
+                    int codigoExistente = Convert.ToInt32(row["cod"]);
+                    if (codigoExistente == nuevoCodigo)
+                    {
+                        nuevoCodigo++;
+                    }
+                    else if (codigoExistente > nuevoCodigo)
+                    {
+                        // Encontramos un hueco
+                        break;
+                    }
+                }
+            }
+
+            // 🔍 DEBUG: Ver qué código se está asignando
+            System.Diagnostics.Debug.WriteLine($"🆕 [NUEVO ITEM] Código asignado (llenar huecos): {nuevoCodigo}");
 
             using (var frm = new frmEdicionItemExamen())
             {
-                frm.Codigo = nuevoCodigo; // Asignar el nuevo código
+                frm.Codigo = nuevoCodigo.ToString(); // Asignar el nuevo código (convertir a string)
                 frm.GuardarClick += (s, args) =>
                 {
-                    string insert = $"INSERT INTO Items (codigo, nombreCompleto, nombreInformes, ordenFormulario) VALUES ('{frm.Codigo}', '{frm.NombreCompleto}', '{frm.NombreInformes}', (SELECT TOP 1 ordenFormulario FROM SeccionSubseccion WHERE Seccion = '{frm.Seccion}' AND Subseccion = '{frm.Subseccion}'))";
+                    // ✅ PREVENIR SQL INJECTION
+                    string codigoSeguro = frm.Codigo.Replace("'", "''");
+                    string nombreSeguro = frm.NombreCompleto.Replace("'", "''");
+                    string informesSeguro = frm.NombreInformes.Replace("'", "''");
+                    string seccionSegura = frm.Seccion.Replace("'", "''");
+                    string subseccionSegura = frm.Subseccion.Replace("'", "''");
+
+                    string insert = $"INSERT INTO Items (codigo, nombreCompleto, nombreInformes, ordenFormulario) VALUES ('{codigoSeguro}', '{nombreSeguro}', '{informesSeguro}', (SELECT TOP 1 ordenFormulario FROM SeccionSubseccion WHERE Seccion = '{seccionSegura}' AND Subseccion = '{subseccionSegura}'))";
                     Comunes.SQLConnector.EjecutarConsulta(insert);
                     MessageBox.Show("El ítem se guardó correctamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    System.Diagnostics.Debug.WriteLine($"✅ [NUEVO ITEM] Item guardado: [{nuevoCodigo}] {frm.NombreCompleto} en {frm.Seccion}/{frm.Subseccion}");
                     frm.DialogResult = DialogResult.OK;
                     frm.Close();
                     CargarItems();
@@ -75,7 +172,14 @@ namespace CapaPresentacion
                     };
                     frm.GuardarClick += (s, args) =>
                     {
-                        string update = $"UPDATE Items SET nombreCompleto = '{frm.NombreCompleto}', nombreInformes = '{frm.NombreInformes}', ordenFormulario = (SELECT TOP 1 ordenFormulario FROM SeccionSubseccion WHERE Seccion = '{frm.Seccion}' AND Subseccion = '{frm.Subseccion}') WHERE codigo = '{frm.Codigo}'";
+                        // ✅ PREVENIR SQL INJECTION
+                        string codigoSeguro = frm.Codigo.Replace("'", "''");
+                        string nombreSeguro = frm.NombreCompleto.Replace("'", "''");
+                        string informesSeguro = frm.NombreInformes.Replace("'", "''");
+                        string seccionSegura = frm.Seccion.Replace("'", "''");
+                        string subseccionSegura = frm.Subseccion.Replace("'", "''");
+
+                        string update = $"UPDATE Items SET nombreCompleto = '{nombreSeguro}', nombreInformes = '{informesSeguro}', ordenFormulario = (SELECT TOP 1 ordenFormulario FROM SeccionSubseccion WHERE Seccion = '{seccionSegura}' AND Subseccion = '{subseccionSegura}') WHERE codigo = '{codigoSeguro}'";
                         Comunes.SQLConnector.EjecutarConsulta(update);
                         MessageBox.Show("El ítem se guardó correctamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         frm.DialogResult = DialogResult.OK;
@@ -94,16 +198,24 @@ namespace CapaPresentacion
             string nombreInforme = txtNombreInforme.Text.Trim();
             string seccion = cboSeccion.Text.Trim();
             string subseccion = cboSubseccion.Text.Trim();
+
+            // ✅ PREVENIR SQL INJECTION
+            string codigoSeguro = codigo.Replace("'", "''");
+            string nombreSeguro = nombreCompleto.Replace("'", "''");
+            string informeSeguro = nombreInforme.Replace("'", "''");
+            string seccionSegura = seccion.Replace("'", "''");
+            string subseccionSegura = subseccion.Replace("'", "''");
+
             if (panelEdicion.Tag.ToString() == "nuevo")
             {
                 // INSERT
-                string insert = $"INSERT INTO Items (codigo, nombreCompleto, nombreInformes, ordenFormulario) VALUES ('{codigo}', '{nombreCompleto}', '{nombreInforme}', (SELECT TOP 1 ordenFormulario FROM SeccionSubseccion WHERE Seccion = '{seccion}' AND Subseccion = '{subseccion}'))";
+                string insert = $"INSERT INTO Items (codigo, nombreCompleto, nombreInformes, ordenFormulario) VALUES ('{codigoSeguro}', '{nombreSeguro}', '{informeSeguro}', (SELECT TOP 1 ordenFormulario FROM SeccionSubseccion WHERE Seccion = '{seccionSegura}' AND Subseccion = '{subseccionSegura}'))";
                 Comunes.SQLConnector.EjecutarConsulta(insert);
             }
             else
             {
                 // UPDATE
-                string update = $"UPDATE Items SET nombreCompleto = '{nombreCompleto}', nombreInformes = '{nombreInforme}', ordenFormulario = (SELECT TOP 1 ordenFormulario FROM SeccionSubseccion WHERE Seccion = '{seccion}' AND Subseccion = '{subseccion}') WHERE codigo = '{codigo}'";
+                string update = $"UPDATE Items SET nombreCompleto = '{nombreSeguro}', nombreInformes = '{informeSeguro}', ordenFormulario = (SELECT TOP 1 ordenFormulario FROM SeccionSubseccion WHERE Seccion = '{seccionSegura}' AND Subseccion = '{subseccionSegura}') WHERE codigo = '{codigoSeguro}'";
                 Comunes.SQLConnector.EjecutarConsulta(update);
             }
             panelEdicion.Visible = false;
@@ -169,7 +281,9 @@ namespace CapaPresentacion
 
                 if (confirm == DialogResult.Yes)
                 {
-                    string delete = $"DELETE FROM Items WHERE codigo = '{codigo}'";
+                    // ✅ PREVENIR SQL INJECTION
+                    string codigoSeguro = codigo.Replace("'", "''");
+                    string delete = $"DELETE FROM Items WHERE codigo = '{codigoSeguro}'";
                     Comunes.SQLConnector.EjecutarConsulta(delete);
                     MessageBox.Show("El ítem se eliminó correctamente.", "Eliminado", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     CargarItems();

@@ -795,6 +795,25 @@ namespace CapaPresentacion
             Utilidades.abrirFormulario(this, new frmLocalidadNacionalidad(this), this.configuracion);
         }
 
+
+        protected override void bbiItems_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            // Cierra formularios de configuración abiertos para forzar refresco global
+            foreach (Form frm in this.MdiChildren)
+            {
+                if (frm.Name == "frmAgregaItemsExamenes" || frm.Name == "frmLocalidadNacionalidad")
+                {
+                    frm.Dispose();
+                    frm.Close();
+                }
+            }
+
+            // Abre el formulario de ítems
+            Utilidades.abrirFormulario(this, new frmAgregaItemsExamenes(), this.configuracion);
+            LimpiarEstadoIcono();
+            if (bbiItems != null) bbiItems.Down = true;
+        }
+
         protected override void bbiConfiguracionesPrestaciones2_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             LimpiarEstadoIcono();

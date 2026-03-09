@@ -1312,7 +1312,7 @@ namespace CapaPresentacionBase
             this.bbiItems.Id = 100; // Usa un Id único que no esté en uso
             this.bbiItems.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("bbiPreventivaExamen.ImageOptions.LargeImage"))); // Opcional, si tienes un ícono
             this.bbiItems.Name = "bbiItems";
-            // this.bbiItems.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.bbiItems_ItemClick);
+            this.bbiItems.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.bbiItems_ItemClick);
 
 
             // 

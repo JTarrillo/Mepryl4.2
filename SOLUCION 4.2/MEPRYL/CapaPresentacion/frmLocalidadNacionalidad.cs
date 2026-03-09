@@ -1985,6 +1985,9 @@ namespace CapaPresentacion
         {
             tipoExamen = new CapaNegocioMepryl.TipoExamen();
 
+            // ✅ AGREGAR EVENTOS DE CAMBIO A TODOS LOS DATAGRIDVIEWS
+            SubscribirEventosCellValueChanged();
+
             // ✅ CARGAR COMBO AL INICIAR (ANTES DE modoMenu)
             try
             {
@@ -1998,11 +2001,106 @@ namespace CapaPresentacion
 
             modoMenu();
         }
-
         /// <summary>
         /// ✅ MÉTODO PÚBLICO: Carga un subtipo específico en el tab "Tipo de Examen Médico"
         /// Se llama desde FrmAñadirEspecialidad cuando se crea un subtipo nuevo
         /// </summary>
+
+        private void SubscribirEventosCellValueChanged()
+        {
+            dgvClinico.CellValueChanged += Dgv_CellValueChanged;
+            dgvClinico.CellContentClick += Dgv_CellContentClick;
+            dgvHematologia.CellValueChanged += Dgv_CellValueChanged;
+            dgvHematologia.CellContentClick += Dgv_CellContentClick;
+            dgvQuimicaHematica.CellValueChanged += Dgv_CellValueChanged;
+            dgvQuimicaHematica.CellContentClick += Dgv_CellContentClick;
+            dgvSerologia.CellValueChanged += Dgv_CellValueChanged;
+            dgvSerologia.CellContentClick += Dgv_CellContentClick;
+            dgvPerfilLipidico.CellValueChanged += Dgv_CellValueChanged;
+            dgvPerfilLipidico.CellContentClick += Dgv_CellContentClick;
+            dgvBacteriologia.CellValueChanged += Dgv_CellValueChanged;
+            dgvBacteriologia.CellContentClick += Dgv_CellContentClick;
+            dgvOrina.CellValueChanged += Dgv_CellValueChanged;
+            dgvOrina.CellContentClick += Dgv_CellContentClick;
+            dgvLaboralesBasicas.CellValueChanged += Dgv_CellValueChanged;
+            dgvLaboralesBasicas.CellContentClick += Dgv_CellContentClick;
+            dgvCraneoYMSuperior.CellValueChanged += Dgv_CellValueChanged;
+            dgvCraneoYMSuperior.CellContentClick += Dgv_CellContentClick;
+            dgvTroncoYPelvis.CellValueChanged += Dgv_CellValueChanged;
+            dgvTroncoYPelvis.CellContentClick += Dgv_CellContentClick;
+            dgvMiembroInferior.CellValueChanged += Dgv_CellValueChanged;
+            dgvMiembroInferior.CellContentClick += Dgv_CellContentClick;
+            dgvEstComplementarios.CellValueChanged += Dgv_CellValueChanged;
+            dgvEstComplementarios.CellContentClick += Dgv_CellContentClick;
+        }
+
+        private void Dgv_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            try
+            {
+                if (e.RowIndex >= 0 && e.ColumnIndex >= 0)
+                {
+                    DataGridView dgv = sender as DataGridView;
+                    if (dgv != null && dgv.DataSource is DataTable dt && dt.Rows.Count > e.RowIndex)
+                    {
+                        // ✅ OBTENER EL VALOR DE LA CELDA Y GUARDARLO EN LA FILA
+                        object newValue = dgv[e.ColumnIndex, e.RowIndex].Value;
+                        dt.Rows[e.RowIndex][e.ColumnIndex] = newValue;
+                        blnItemsModificados = true;  // Marcar como modificado
+
+                        // Debug
+                        System.Diagnostics.Debug.WriteLine(
+                            $"[CAMBIO ITEM] DataGrid={dgv.Name}, Fila={e.RowIndex}, " +
+                            $"Columna={dgv.Columns[e.ColumnIndex].Name}, Valor={newValue}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[ERROR] Dgv_CellValueChanged: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// ✅ EVENTO ESPECÍFICO PARA CHECKBOXES
+        /// Se dispara UNA SOLA VEZ cuando haces click en un checkbox
+        /// </summary>
+        private void Dgv_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            try
+            {
+                if (e.RowIndex >= 0 && e.ColumnIndex >= 0)
+                {
+                    DataGridView dgv = sender as DataGridView;
+                    if (dgv != null && dgv.Columns[e.ColumnIndex] is DataGridViewCheckBoxColumn)
+                    {
+                        if (dgv.DataSource is DataTable dt && dt.Rows.Count > e.RowIndex)
+                        {
+                            // ✅ LEER EL NUEVO VALOR DEL CHECKBOX (ya está actualizado)
+                            object verificarValor = dgv[e.ColumnIndex, e.RowIndex].Value;
+
+                            // ✅ ALTERNAR EL VALOR (click en checkbox = toggle)
+                            bool valorActual = verificarValor is bool ? (bool)verificarValor : false;
+                            bool valorNuevo = !valorActual;
+
+                            // ✅ GUARDAR EN DATATABLE
+                            dt.Rows[e.RowIndex][e.ColumnIndex] = valorNuevo;
+                            dgv[e.ColumnIndex, e.RowIndex].Value = valorNuevo;
+
+                            blnItemsModificados = true;
+
+                            System.Diagnostics.Debug.WriteLine(
+                                $"[✅ CHECKBOX CLICK] DataGrid={dgv.Name}, Fila={e.RowIndex}, " +
+                                $"Columna={dgv.Columns[e.ColumnIndex].Name}, Anterior={valorActual}, Nuevo={valorNuevo}");
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[ERROR] Dgv_CellContentClick: {ex.Message}");
+            }
+        }
         public void CargarSubtipoEnTab(int idMotivo, string idTipo, string idSubtipo)
         {
             try
@@ -2289,6 +2387,19 @@ namespace CapaPresentacion
             dgvMiembroInferior.DataSource = null;
             dgvEstComplementarios.DataSource = null;
 
+            // 🔍 DEBUG: Verificar datos de entrada ANTES de cargar
+            System.Diagnostics.Debug.WriteLine($"[llenarDataGrids] Cargando datos de la entidad...");
+            if (entidad.PerfilLipidico != null)
+            {
+                System.Diagnostics.Debug.WriteLine($"[llenarDataGrids] PerfilLipidico: {entidad.PerfilLipidico.Rows.Count} filas");
+                for (int i = 0; i < entidad.PerfilLipidico.Rows.Count; i++)
+                {
+                    var estado = entidad.PerfilLipidico.Rows[i][2];
+                    var descr = entidad.PerfilLipidico.Rows[i][3];
+                    System.Diagnostics.Debug.WriteLine($"  [Fila {i}] Estado={estado}, Descripción={descr}");
+                }
+            }
+
             dgvClinico.DataSource = entidad.Clinico;
             dgvHematologia.DataSource = entidad.Hematologia;
             dgvQuimicaHematica.DataSource = entidad.QuimicaHematica;
@@ -2303,6 +2414,18 @@ namespace CapaPresentacion
             dgvEstComplementarios.DataSource = entidad.EstComplementarios;
             ocultarColumnasDgv();
             AjustarScrollDgvClinico();
+
+            // 🔍 DEBUG: Verificar datos DESPUÉS de cargar en DataGrids
+            System.Diagnostics.Debug.WriteLine($"[llenarDataGrids] ✅ Datos cargados en DataGrids");
+            if (dgvPerfilLipidico.DataSource is DataTable dtPerfilVerif)
+            {
+                System.Diagnostics.Debug.WriteLine($"[llenarDataGrids][Verificación] dgvPerfilLipidico: {dtPerfilVerif.Rows.Count} filas");
+                for (int i = 0; i < dtPerfilVerif.Rows.Count; i++)
+                {
+                    var estado = dtPerfilVerif.Rows[i][2];
+                    System.Diagnostics.Debug.WriteLine($"  [Fila {i}] Estado en DataGrid={estado}");
+                }
+            }
         }
 
         private void llenarDataGridsInicio(Entidades.TipoExamen entidad)
@@ -2355,22 +2478,12 @@ namespace CapaPresentacion
                 {
                     string idSubtipo = cboTipoExamen.SelectedValue.ToString();
 
-                    // ✅ DEBUG: Verificar que el ítem seleccionado es el mismo
-                    System.Diagnostics.Debug.WriteLine($"[DEBUG][cboTipoExamen_SelectionChangeCommitted] SelectedIndex: {cboTipoExamen.SelectedIndex}");
-                    System.Diagnostics.Debug.WriteLine($"[DEBUG][cboTipoExamen_SelectionChangeCommitted] SelectedValue: {idSubtipo}");
-                    System.Diagnostics.Debug.WriteLine($"[DEBUG][cboTipoExamen_SelectionChangeCommitted] SelectedText: {cboTipoExamen.SelectedText}");
-                    System.Diagnostics.Debug.WriteLine($"[DEBUG][cboTipoExamen_SelectionChangeCommitted] SelectedItem: {cboTipoExamen.SelectedItem}");
-
                     // Cargar la entidad (especialidad) del Subtipo seleccionado
                     Entidades.TipoExamen entidad = tipoExamen.cargarEntidad(idSubtipo);
-
-                    // ✅ DEBUG: Verificar que la entidad se cargó correctamente
-                    System.Diagnostics.Debug.WriteLine($"[DEBUG][cboTipoExamen_SelectionChangeCommitted] Entidad cargada - ID: {entidad?.Id}, Descripcion: {entidad?.Descripcion}");
 
                     // Validar que la entidad tiene datos
                     if (entidad == null || string.IsNullOrEmpty(entidad.Descripcion))
                     {
-                        System.Diagnostics.Debug.WriteLine($"[DEBUG][cboTipoExamen_SelectionChangeCommitted] ERROR: Entidad nula o sin descripción");
                         MessageBox.Show("No se pudieron cargar los datos del subtipo seleccionado",
                             "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         return;
@@ -2391,31 +2504,18 @@ namespace CapaPresentacion
 
                     strIdEspecialidadViejo = cboTipoExamen.SelectedValue.ToString();
 
-                    // ✅ DEBUG: Verificar que se guardó el ID anterior
-                    System.Diagnostics.Debug.WriteLine($"[DEBUG][cboTipoExamen_SelectionChangeCommitted] strIdEspecialidadViejo guardado: {strIdEspecialidadViejo}");
-
                     // Habilitar controles y scroll automáticamente al seleccionar los 3 combos
                     cambiarHabilitacionControles(true);
-
-                    // ✅ DEBUG: Confirmación final
-                    System.Diagnostics.Debug.WriteLine($"[DEBUG][cboTipoExamen_SelectionChangeCommitted] ✅ COMPLETADO: Formulario cargado para subtipo {idSubtipo}");
                 }
                 catch (Exception ex)
                 {
-                    // ✅ DEBUG: Capturar excepciones
-                    System.Diagnostics.Debug.WriteLine($"[DEBUG][cboTipoExamen_SelectionChangeCommitted] ❌ EXCEPCIÓN: {ex.Message}");
-                    System.Diagnostics.Debug.WriteLine($"[DEBUG][cboTipoExamen_SelectionChangeCommitted] Stack Trace: {ex.StackTrace}");
-
                     MessageBox.Show($"Error al cargar los datos: {ex.Message}", "Error",
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                     limpiarPanelPrincipal();
                 }
             }
-            else
-            {
-                System.Diagnostics.Debug.WriteLine($"[DEBUG][cboTipoExamen_SelectionChangeCommitted] SelectedIndex es -1, no hay selección");
-            }
         }
+
         private void limpiarPanelPrincipal()
         {
             tbId7.Clear();
@@ -2649,6 +2749,18 @@ namespace CapaPresentacion
 
             Entidades.TipoExamen entidad = llenarDatosEntidad();
             Entidades.Resultado resultado;
+
+            // ✅ DEBUG: Verificar qué datos se están enviando
+            System.Diagnostics.Debug.WriteLine($"[GUARDAR] blnItemsModificados={blnItemsModificados}, Id={entidad.Id}");
+            System.Diagnostics.Debug.WriteLine($"[GUARDAR] PerfilLipidico rows={entidad.PerfilLipidico?.Rows.Count ?? 0}");
+            if (entidad.PerfilLipidico != null && entidad.PerfilLipidico.Rows.Count > 0)
+            {
+                for (int i = 0; i < entidad.PerfilLipidico.Rows.Count; i++)
+                {
+                    var estadoVal = entidad.PerfilLipidico.Rows[i][2];
+                    System.Diagnostics.Debug.WriteLine($"[GUARDAR][PerfilLipidico] Fila {i}: Estado={estadoVal}");
+                }
+            }
 
             // Siempre editar, nunca crear
             // Validación de nombre repetido eliminada porque siempre se edita
@@ -3592,36 +3704,80 @@ namespace CapaPresentacion
         {
             try
             {
+                System.Diagnostics.Debug.WriteLine("[CommitDataGridChanges] Iniciando commit de todos los DataGrids...");
+
                 // EndEdit() para cada grid para asegurar que los cambios se guarden
                 if (dgvClinico.DataSource != null)
+                {
                     dgvClinico.EndEdit();
+                    System.Diagnostics.Debug.WriteLine($"[CommitDataGridChanges] dgvClinico committed, rows={((DataTable)dgvClinico.DataSource).Rows.Count}");
+                }
                 if (dgvHematologia.DataSource != null)
+                {
                     dgvHematologia.EndEdit();
+                    System.Diagnostics.Debug.WriteLine($"[CommitDataGridChanges] dgvHematologia committed");
+                }
                 if (dgvQuimicaHematica.DataSource != null)
+                {
                     dgvQuimicaHematica.EndEdit();
+                    System.Diagnostics.Debug.WriteLine($"[CommitDataGridChanges] dgvQuimicaHematica committed");
+                }
                 if (dgvSerologia.DataSource != null)
+                {
                     dgvSerologia.EndEdit();
+                    System.Diagnostics.Debug.WriteLine($"[CommitDataGridChanges] dgvSerologia committed");
+                }
                 if (dgvPerfilLipidico.DataSource != null)
+                {
                     dgvPerfilLipidico.EndEdit();
+                    var dt = (DataTable)dgvPerfilLipidico.DataSource;
+                    System.Diagnostics.Debug.WriteLine($"[CommitDataGridChanges] dgvPerfilLipidico committed, rows={dt.Rows.Count}");
+                    if (dt.Rows.Count > 4)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"[CommitDataGridChanges][Fila 4] Estado={dt.Rows[4][2]}");
+                    }
+                }
                 if (dgvBacteriologia.DataSource != null)
+                {
                     dgvBacteriologia.EndEdit();
+                    System.Diagnostics.Debug.WriteLine($"[CommitDataGridChanges] dgvBacteriologia committed");
+                }
                 if (dgvOrina.DataSource != null)
+                {
                     dgvOrina.EndEdit();
+                    System.Diagnostics.Debug.WriteLine($"[CommitDataGridChanges] dgvOrina committed");
+                }
                 if (dgvLaboralesBasicas.DataSource != null)
+                {
                     dgvLaboralesBasicas.EndEdit();
+                    System.Diagnostics.Debug.WriteLine($"[CommitDataGridChanges] dgvLaboralesBasicas committed");
+                }
                 if (dgvCraneoYMSuperior.DataSource != null)
+                {
                     dgvCraneoYMSuperior.EndEdit();
+                    System.Diagnostics.Debug.WriteLine($"[CommitDataGridChanges] dgvCraneoYMSuperior committed");
+                }
                 if (dgvTroncoYPelvis.DataSource != null)
+                {
                     dgvTroncoYPelvis.EndEdit();
+                    System.Diagnostics.Debug.WriteLine($"[CommitDataGridChanges] dgvTroncoYPelvis committed");
+                }
                 if (dgvMiembroInferior.DataSource != null)
+                {
                     dgvMiembroInferior.EndEdit();
+                    System.Diagnostics.Debug.WriteLine($"[CommitDataGridChanges] dgvMiembroInferior committed");
+                }
                 if (dgvEstComplementarios.DataSource != null)
+                {
                     dgvEstComplementarios.EndEdit();
+                    System.Diagnostics.Debug.WriteLine($"[CommitDataGridChanges] dgvEstComplementarios committed");
+                }
 
-                blnItemsModificados = true;  // Marcar como modificado
+                System.Diagnostics.Debug.WriteLine($"[CommitDataGridChanges] ✅ Commit completado. blnItemsModificados={blnItemsModificados}");
             }
             catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"[ERROR][CommitDataGridChanges]: {ex.Message}");
             }
         }
 

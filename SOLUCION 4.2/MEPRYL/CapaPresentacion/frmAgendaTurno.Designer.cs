@@ -32,6 +32,9 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.lbTitulo = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.butBuscarPaciente = new System.Windows.Forms.Button();
+            this.lblBusquedaPaciente = new System.Windows.Forms.Label();
+            this.tbBusquedaPaciente = new System.Windows.Forms.TextBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.tbCategoriaHasta = new System.Windows.Forms.TextBox();
             this.tbCategoria = new System.Windows.Forms.TextBox();
@@ -52,6 +55,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.tbTotal = new System.Windows.Forms.TextBox();
             this.botonLaboratorio = new System.Windows.Forms.Panel();
+            this.butExportarGoogleSheet = new FontAwesome.Sharp.IconButton();
             this.butExportarListado = new System.Windows.Forms.Button();
             this.dgv = new System.Windows.Forms.DataGridView();
             this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
@@ -77,6 +81,9 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.butBuscarPaciente);
+            this.groupBox1.Controls.Add(this.lblBusquedaPaciente);
+            this.groupBox1.Controls.Add(this.tbBusquedaPaciente);
             this.groupBox1.Controls.Add(this.groupBox2);
             this.groupBox1.Controls.Add(this.label10);
             this.groupBox1.Controls.Add(this.comboEstado);
@@ -94,9 +101,41 @@
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox1.Location = new System.Drawing.Point(0, 25);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(1244, 144);
+            this.groupBox1.Size = new System.Drawing.Size(1244, 180);
             this.groupBox1.TabIndex = 127;
             this.groupBox1.TabStop = false;
+            // 
+            // butBuscarPaciente
+            // 
+            this.butBuscarPaciente.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.butBuscarPaciente.Image = ((System.Drawing.Image)(resources.GetObject("butBuscarPaciente.Image")));
+            this.butBuscarPaciente.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.butBuscarPaciente.Location = new System.Drawing.Point(1087, 105);
+            this.butBuscarPaciente.Name = "butBuscarPaciente";
+            this.butBuscarPaciente.Size = new System.Drawing.Size(96, 32);
+            this.butBuscarPaciente.TabIndex = 285;
+            this.butBuscarPaciente.Text = "Buscar";
+            this.butBuscarPaciente.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.butBuscarPaciente.UseVisualStyleBackColor = true;
+            this.butBuscarPaciente.Click += new System.EventHandler(this.butBuscarPaciente_Click);
+            // 
+            // lblBusquedaPaciente
+            // 
+            this.lblBusquedaPaciente.AutoSize = true;
+            this.lblBusquedaPaciente.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblBusquedaPaciente.Location = new System.Drawing.Point(828, 90);
+            this.lblBusquedaPaciente.Name = "lblBusquedaPaciente";
+            this.lblBusquedaPaciente.Size = new System.Drawing.Size(105, 16);
+            this.lblBusquedaPaciente.TabIndex = 284;
+            this.lblBusquedaPaciente.Text = "Buscar Paciente";
+            // 
+            // tbBusquedaPaciente
+            // 
+            this.tbBusquedaPaciente.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tbBusquedaPaciente.Location = new System.Drawing.Point(771, 115);
+            this.tbBusquedaPaciente.Name = "tbBusquedaPaciente";
+            this.tbBusquedaPaciente.Size = new System.Drawing.Size(260, 22);
+            this.tbBusquedaPaciente.TabIndex = 283;
             // 
             // groupBox2
             // 
@@ -134,7 +173,7 @@
             this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label7.Location = new System.Drawing.Point(50, 27);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(49, 16);
+            this.label7.Size = new System.Drawing.Size(48, 16);
             this.label7.TabIndex = 276;
             this.label7.Text = "Desde";
             // 
@@ -144,7 +183,7 @@
             this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label8.Location = new System.Drawing.Point(221, 27);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(44, 16);
+            this.label8.Size = new System.Drawing.Size(43, 16);
             this.label8.TabIndex = 279;
             this.label8.Text = "Hasta";
             // 
@@ -154,7 +193,7 @@
             this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label10.Location = new System.Drawing.Point(12, 85);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(51, 16);
+            this.label10.Size = new System.Drawing.Size(50, 16);
             this.label10.TabIndex = 281;
             this.label10.Text = "Estado";
             // 
@@ -177,7 +216,7 @@
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label5.Location = new System.Drawing.Point(254, 22);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(107, 16);
+            this.label5.Size = new System.Drawing.Size(106, 16);
             this.label5.TabIndex = 273;
             this.label5.Text = "Tipo de Exámen";
             // 
@@ -197,7 +236,7 @@
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label4.Location = new System.Drawing.Point(684, 52);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(35, 16);
+            this.label4.Size = new System.Drawing.Size(34, 16);
             this.label4.TabIndex = 271;
             this.label4.Text = "Club";
             // 
@@ -207,7 +246,7 @@
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.Location = new System.Drawing.Point(684, 22);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(34, 16);
+            this.label3.Size = new System.Drawing.Size(33, 16);
             this.label3.TabIndex = 270;
             this.label3.Text = "Liga";
             // 
@@ -264,7 +303,7 @@
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.Location = new System.Drawing.Point(12, 55);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(44, 16);
+            this.label2.Size = new System.Drawing.Size(43, 16);
             this.label2.TabIndex = 3;
             this.label2.Text = "Hasta";
             // 
@@ -285,7 +324,7 @@
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.Location = new System.Drawing.Point(12, 22);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(52, 16);
+            this.label1.Size = new System.Drawing.Size(51, 16);
             this.label1.TabIndex = 2;
             this.label1.Text = "Desde:";
             // 
@@ -296,7 +335,7 @@
             this.tbTotal.Dock = System.Windows.Forms.DockStyle.Top;
             this.tbTotal.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tbTotal.ForeColor = System.Drawing.Color.White;
-            this.tbTotal.Location = new System.Drawing.Point(0, 169);
+            this.tbTotal.Location = new System.Drawing.Point(0, 205);
             this.tbTotal.Multiline = true;
             this.tbTotal.Name = "tbTotal";
             this.tbTotal.Size = new System.Drawing.Size(1244, 25);
@@ -306,12 +345,32 @@
             // botonLaboratorio
             // 
             this.botonLaboratorio.BackColor = System.Drawing.SystemColors.Control;
+            this.botonLaboratorio.Controls.Add(this.butExportarGoogleSheet);
             this.botonLaboratorio.Controls.Add(this.butExportarListado);
             this.botonLaboratorio.Dock = System.Windows.Forms.DockStyle.Right;
-            this.botonLaboratorio.Location = new System.Drawing.Point(1101, 194);
+            this.botonLaboratorio.Location = new System.Drawing.Point(1101, 230);
             this.botonLaboratorio.Name = "botonLaboratorio";
-            this.botonLaboratorio.Size = new System.Drawing.Size(143, 395);
+            this.botonLaboratorio.Size = new System.Drawing.Size(143, 359);
             this.botonLaboratorio.TabIndex = 273;
+            // 
+            // butExportarGoogleSheet
+            // 
+            this.butExportarGoogleSheet.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.butExportarGoogleSheet.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.butExportarGoogleSheet.IconChar = FontAwesome.Sharp.IconChar.GoogleDrive;
+            this.butExportarGoogleSheet.IconColor = System.Drawing.Color.Black;
+            this.butExportarGoogleSheet.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            this.butExportarGoogleSheet.IconSize = 20;
+            this.butExportarGoogleSheet.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.butExportarGoogleSheet.Location = new System.Drawing.Point(10, 92);
+            this.butExportarGoogleSheet.Name = "butExportarGoogleSheet";
+            this.butExportarGoogleSheet.Size = new System.Drawing.Size(121, 45);
+            this.butExportarGoogleSheet.TabIndex = 276;
+            this.butExportarGoogleSheet.Text = "Google\r\nSheet";
+            this.butExportarGoogleSheet.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.butExportarGoogleSheet.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butExportarGoogleSheet.UseVisualStyleBackColor = true;
+            this.butExportarGoogleSheet.Click += new System.EventHandler(this.butExportarGoogleSheet_Click);
             // 
             // butExportarListado
             // 
@@ -323,7 +382,7 @@
             this.butExportarListado.Name = "butExportarListado";
             this.butExportarListado.Size = new System.Drawing.Size(121, 45);
             this.butExportarListado.TabIndex = 262;
-            this.butExportarListado.Text = "Exportar\r\nListado";
+            this.butExportarListado.Text = "Exportar\r\nExcel";
             this.butExportarListado.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.butExportarListado.UseVisualStyleBackColor = true;
             this.butExportarListado.Click += new System.EventHandler(this.butExportarListado_Click);
@@ -340,7 +399,7 @@
             this.dgv.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgv.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgv.GridColor = System.Drawing.Color.LightGray;
-            this.dgv.Location = new System.Drawing.Point(0, 194);
+            this.dgv.Location = new System.Drawing.Point(0, 230);
             this.dgv.Name = "dgv";
             this.dgv.ReadOnly = true;
             dataGridViewCellStyle1.BackColor = System.Drawing.Color.WhiteSmoke;
@@ -348,7 +407,7 @@
             dataGridViewCellStyle1.ForeColor = System.Drawing.Color.Black;
             this.dgv.RowsDefaultCellStyle = dataGridViewCellStyle1;
             this.dgv.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgv.Size = new System.Drawing.Size(1101, 395);
+            this.dgv.Size = new System.Drawing.Size(1101, 359);
             this.dgv.TabIndex = 274;
             // 
             // progressBar
@@ -407,6 +466,7 @@
         private System.Windows.Forms.TextBox tbTotal;
         protected System.Windows.Forms.Panel botonLaboratorio;
         protected System.Windows.Forms.Button butExportarListado;
+        protected FontAwesome.Sharp.IconButton butExportarGoogleSheet;
         private System.Windows.Forms.TextBox tbCategoria;
         private System.Windows.Forms.DataGridView dgv;
         private System.Windows.Forms.Label label8;
@@ -417,5 +477,8 @@
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.ComboBox comboEstado;
         private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.TextBox tbBusquedaPaciente;
+        private System.Windows.Forms.Label lblBusquedaPaciente;
+        private System.Windows.Forms.Button butBuscarPaciente;
     }
 }

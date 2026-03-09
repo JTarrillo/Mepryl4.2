@@ -1096,7 +1096,12 @@ namespace CapaPresentacionBase
 
         }
 
-
+        protected virtual void bbiItems_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            LimpiarEstadoIcono();
+            // Aquí va la lógica que quieras para el botón Items
+            MessageBox.Show("Botón Items presionado.");
+        }
         //private void menuStrip2_MouseHover(object sender, EventArgs e)
         //{
         //    navBarControl1.OptionsNavPane.NavPaneState = DevExpress.XtraNavBar.NavPaneState.Expanded;
