@@ -52,20 +52,21 @@
             this.dgvItems.AllowUserToAddRows = false;
             this.dgvItems.AllowUserToDeleteRows = false;
             this.dgvItems.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            this.dgvItems.Location = new System.Drawing.Point(12, 12);
+            this.dgvItems.Location = new System.Drawing.Point(0, 0);
             this.dgvItems.MultiSelect = false;
             this.dgvItems.Name = "dgvItems";
             this.dgvItems.ReadOnly = true;
             this.dgvItems.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvItems.Size = new System.Drawing.Size(650, 426);
+            this.dgvItems.Size = new System.Drawing.Size(680, 450);
             this.dgvItems.TabIndex = 0;
+            this.dgvItems.Dock = System.Windows.Forms.DockStyle.Fill;
             // 
             // panelBotones
             // 
             this.panelBotones.Controls.Add(this.btnNuevo);
             this.panelBotones.Controls.Add(this.btnModificar);
             this.panelBotones.Controls.Add(this.btnEliminar);
-            this.panelBotones.Location = new System.Drawing.Point(680, 80);
+            this.panelBotones.Dock = System.Windows.Forms.DockStyle.Right;
             this.panelBotones.Name = "panelBotones";
             this.panelBotones.Size = new System.Drawing.Size(120, 180);
             this.panelBotones.TabIndex = 1;
@@ -163,11 +164,12 @@
             this.panelEdicion.Controls.Add(this.cboSubseccion);
             this.panelEdicion.Controls.Add(this.btnGuardar);
             this.panelEdicion.Controls.Add(this.btnCancelar);
-            this.panelEdicion.Location = new System.Drawing.Point(680, 270);
+            this.panelEdicion.Location = new System.Drawing.Point(690, 220);
             this.panelEdicion.Name = "panelEdicion";
             this.panelEdicion.Size = new System.Drawing.Size(120, 230);
             this.panelEdicion.TabIndex = 2;
             this.panelEdicion.Visible = false;
+            this.panelEdicion.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             // 
             // frmAgregaItemsExamenes
             // 
@@ -179,6 +181,8 @@
             this.Controls.Add(this.panelEdicion);
             this.Name = "frmAgregaItemsExamenes";
             this.Text = "frmAgregaItemsExamenes";
+            this.MinimumSize = new System.Drawing.Size(600, 400);
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             ((System.ComponentModel.ISupportInitialize)(this.dgvItems)).EndInit();
             this.panelBotones.ResumeLayout(false);
             this.panelEdicion.ResumeLayout(false);

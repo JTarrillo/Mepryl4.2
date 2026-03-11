@@ -1115,7 +1115,8 @@ namespace Comunes
                 ManejadorErrores.escribirLog(ex, true);
             }
         }
-        
+
+        //Asegura que haya solo una instancia de cada formulario
         //Asegura que haya solo una instancia de cada formulario
         public static Form abrirFormulario(Form frmMDI, Form frmAbrir, Configuracion configuracion)
         {
