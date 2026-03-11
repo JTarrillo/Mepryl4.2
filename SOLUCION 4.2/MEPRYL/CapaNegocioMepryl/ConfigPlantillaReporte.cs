@@ -46,5 +46,22 @@ namespace CapaNegocioMepryl
             return Plantilla.ActualizaMensajeTurno3(strTipoPaciente, strPathArchivo);
         }
 
+        // ─── Mensajería dinámica por subtipo de Preventiva ───────────────────────
+
+        public DataTable ListarSubtiposPreventivaConMensaje()
+        {
+            return Plantilla.ListarSubtiposPreventivaConMensaje();
+        }
+
+        public string GetPathMensajePorSubtipo(string idSubtipo)
+        {
+            return Plantilla.GetPathMensajePorSubtipo(idSubtipo);
+        }
+
+        public void GuardarPathMensajePorSubtipo(string idSubtipo, string pathArchivo)
+        {
+            Plantilla.GuardarPathMensajePorSubtipo(idSubtipo, pathArchivo);
+        }
+
         }
 }

@@ -613,7 +613,7 @@ namespace CapaPresentacion
                     botAsignar.Visible = false;
                     botModificar.Visible = true;
                     botLiberar.Visible = true;
-                    btnCopiarInfo.Visible = true; //GRV - Modificado
+                    btnCopiarInfo.Visible = panelPacientePreventiva.Visible; //GRV - Solo visible para turnos Preventiva
                     btnVerEstudio.Visible = true;
                     btnMoverTurno.Visible = true; // GRV - Modificado
                     if (blnActivoMoverTurno)
@@ -2217,26 +2217,20 @@ namespace CapaPresentacion
             string strFechaTurno = "";
             string strCodSeg = "";
             string strPrecio = "";
-            string strTipoExamen = "";
+            string strIdSubtipo = "";
             DateTime dtDiaSemana;
 
             strPrecio = tbImportePreventiva.Text;
-            strHorario = dgv.Rows[dgv.CurrentCell.RowIndex].Cells[5].Value.ToString();    // ✅ HORA [5]
-            strFechaTurno = dgv.Rows[dgv.CurrentCell.RowIndex].Cells[4].Value.ToString(); // ✅ FECHA [4]
-            strCodSeg = dgv.Rows[dgv.CurrentCell.RowIndex].Cells[11].Value.ToString();    // ✅ CODIGO [11]
-            strPaciente = dgv.Rows[dgv.CurrentCell.RowIndex].Cells[9].Value.ToString();   // ✅ PACIENTE [9]
-            strTipoExamen = dgv.Rows[dgv.CurrentCell.RowIndex].Cells[1].Value.ToString(); // ✅ TIPOPADRE [1]
+            strHorario = dgv.Rows[dgv.CurrentCell.RowIndex].Cells[5].Value.ToString();    // HORA [5]
+            strFechaTurno = dgv.Rows[dgv.CurrentCell.RowIndex].Cells[4].Value.ToString(); // FECHA [4]
+            strCodSeg = dgv.Rows[dgv.CurrentCell.RowIndex].Cells[11].Value.ToString();    // CODIGO [11]
+            strPaciente = dgv.Rows[dgv.CurrentCell.RowIndex].Cells[9].Value.ToString();   // PACIENTE [9]
+            strIdSubtipo = dgv.Rows[dgv.CurrentCell.RowIndex].Cells[20].Value?.ToString() ?? ""; // IDSUBTIPO [20]
 
             dtDiaSemana = Convert.ToDateTime(strFechaTurno);
-
             strFechaTurno = dtDiaSemana.ToString("dddd", System.Globalization.CultureInfo.CreateSpecificCulture("es-ES")).ToUpper() + " " + strFechaTurno;
 
-            if (strTipoExamen == "FUTBOL LAFIJ")
-                RecuperarTexto();
-            else if (strTipoExamen == "ERGOMETRIA")
-                RecuperarTexto3();
-            else
-                RecuperarTexto2();
+            RecuperarTextoPorSubtipo(strIdSubtipo);
 
             strTextoPlantilla = strTextoPlantilla.Replace("<<paciente>>", strPaciente).Replace("<<FechaTurno>>",
                 strFechaTurno).Replace("<<horario>>", strHorario).Replace("<<codseg>>",
@@ -2250,18 +2244,17 @@ namespace CapaPresentacion
             strTextoPlantilla = "";
         }
 
-        private void RecuperarTexto()
+        private void RecuperarTextoPorSubtipo(string idSubtipo)
         {
             CapaNegocioMepryl.ConfigPlantillaReporte Reporte = new CapaNegocioMepryl.ConfigPlantillaReporte();
-            DataTable dt = Reporte.ListarPlantillas("P");
-            string strPathArchivo = "";
+            string strPathArchivo = Reporte.GetPathMensajePorSubtipo(idSubtipo);
 
-            if (dt.Rows.Count > 0)
+            if (string.IsNullOrEmpty(strPathArchivo) || !System.IO.File.Exists(strPathArchivo))
             {
-                for (int i = 0; i < dt.Rows.Count; i++)
-                {
-                    strPathArchivo = dt.Rows[i][8].ToString();
-                }
+                strTextoPlantilla = "";
+                MessageBox.Show("No hay plantilla de mensaje configurada para este subtipo de examen.\n\nConfigurala en: Configuración Mensaje → Mensaje Turnos.",
+                    "Sin plantilla", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
             }
 
             strTextoPlantilla = System.IO.File.ReadAllText(strPathArchivo);
@@ -2276,40 +2269,6 @@ namespace CapaPresentacion
             frmAvisoExamenModificado fExamen = new frmAvisoExamenModificado(false);
             fExamen.cargarEstudiosSegunIdTurno(new Guid(strIdTurno));
             fExamen.ShowDialog();
-        }
-
-        private void RecuperarTexto2()
-        {
-            CapaNegocioMepryl.ConfigPlantillaReporte Reporte = new CapaNegocioMepryl.ConfigPlantillaReporte();
-            DataTable dt = Reporte.ListarPlantillas("P");
-            string strPathArchivo = "";
-
-            if (dt.Rows.Count > 0)
-            {
-                for (int i = 0; i < dt.Rows.Count; i++)
-                {
-                    strPathArchivo = dt.Rows[i][9].ToString();
-                }
-            }
-
-            strTextoPlantilla = System.IO.File.ReadAllText(strPathArchivo);
-        }
-
-        private void RecuperarTexto3()
-        {
-            CapaNegocioMepryl.ConfigPlantillaReporte Reporte = new CapaNegocioMepryl.ConfigPlantillaReporte();
-            DataTable dt = Reporte.ListarPlantillas("P");
-            string strPathArchivo = "";
-
-            if (dt.Rows.Count > 0)
-            {
-                for (int i = 0; i < dt.Rows.Count; i++)
-                {
-                    strPathArchivo = dt.Rows[i][10].ToString();
-                }
-            }
-
-            strTextoPlantilla = System.IO.File.ReadAllText(strPathArchivo);
         }
 
         private void pintarControlesPanelDeshabilitar()

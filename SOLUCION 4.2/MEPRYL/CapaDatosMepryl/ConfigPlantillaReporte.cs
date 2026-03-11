@@ -110,5 +110,46 @@ namespace CapaDatosMepryl
 
             return blnResultado;
         }
+
+        // ─── Mensajería dinámica por subtipo de Preventiva ───────────────────────
+
+        /// Devuelve todos los subtipos activos de Preventiva con su PathArchivo configurado (puede ser vacío)
+        public DataTable ListarSubtiposPreventivaConMensaje()
+        {
+            string strSQL = @"
+                SELECT 
+                    e.id         AS IdSubtipo,
+                    e.descripcion AS Subtipo,
+                    ISNULL(m.PathArchivo, '') AS PathArchivo
+                FROM dbo.Especialidad e
+                INNER JOIN dbo.MotivoDeConsulta mc ON e.idMotivoConsulta = mc.id
+                LEFT  JOIN dbo.ConfigMensajeSubtipoPreventiva m ON m.IdSubtipo = e.id
+                WHERE mc.nombre = 'PREVENTIVA'
+                  AND e.Padre = 0
+                  AND e.estado = 1
+                ORDER BY e.descripcion";
+            return SQLConnector.obtenerTablaSegunConsultaString(strSQL);
+        }
+
+        /// Devuelve el PathArchivo para un subtipo específico; vacío si no está configurado
+        public string GetPathMensajePorSubtipo(string idSubtipo)
+        {
+            string strSQL = "SELECT ISNULL(PathArchivo,'') FROM dbo.ConfigMensajeSubtipoPreventiva WHERE IdSubtipo = '" + idSubtipo + "'";
+            DataTable dt = SQLConnector.obtenerTablaSegunConsultaString(strSQL);
+            if (dt.Rows.Count > 0)
+                return dt.Rows[0][0].ToString();
+            return string.Empty;
+        }
+
+        /// Guarda o actualiza el PathArchivo para un subtipo (upsert)
+        public void GuardarPathMensajePorSubtipo(string idSubtipo, string pathArchivo)
+        {
+            string strSQL = @"
+                IF EXISTS (SELECT 1 FROM dbo.ConfigMensajeSubtipoPreventiva WHERE IdSubtipo = '" + idSubtipo + @"')
+                    UPDATE dbo.ConfigMensajeSubtipoPreventiva SET PathArchivo = '" + pathArchivo.Replace("'", "''") + @"' WHERE IdSubtipo = '" + idSubtipo + @"'
+                ELSE
+                    INSERT INTO dbo.ConfigMensajeSubtipoPreventiva (IdSubtipo, PathArchivo) VALUES ('" + idSubtipo + @"', '" + pathArchivo.Replace("'", "''") + @"')";
+            SQLConnector.obtenerTablaSegunConsultaString(strSQL);
+        }
     }
 }

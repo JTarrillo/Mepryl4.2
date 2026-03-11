@@ -516,7 +516,7 @@ namespace Comunes
 
                     if (estado == 1)
                     {
-                        frmActualizacion frm = new frmActualizacion(versionMaxima, rutaInstalador, mensaje, configuracion.getConectionString());
+                        frmActualizacion frm = new frmActualizacion(VersionApp.VERSION, versionMaxima, rutaInstalador, mensaje, configuracion.getConectionString());
                         frm.ShowDialog();
                     }
                 }

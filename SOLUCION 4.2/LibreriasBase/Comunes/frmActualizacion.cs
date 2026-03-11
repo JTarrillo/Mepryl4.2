@@ -13,12 +13,12 @@ namespace Comunes
         private string versionNueva;
         private string connectionString;
 
-        public frmActualizacion(string versionNueva, string rutaInstaladores, string mensajePersonalizado, string connectionString)
+        public frmActualizacion(string versionActual, string versionNueva, string rutaInstaladores, string mensajePersonalizado, string connectionString)
         {
             this.versionNueva = versionNueva;
             this.rutaInstaladores = rutaInstaladores;
             this.connectionString = connectionString;
-            this.Text = "Actualización disponible - Mepryl 4.2 Prueba";
+            this.Text = $"Actualización disponible - Mepryl {versionActual}";
             this.Size = new System.Drawing.Size(500, 350);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
@@ -53,7 +53,7 @@ namespace Comunes
 
             // Mensaje centrado y con fuente más grande
             labelMensaje = new Label();
-            labelMensaje.Text = $"Existe una nueva versión de MEPRYL 4.2 Prueba disponible: {versionNueva}\n\n{mensajePersonalizado}\n\nBusque la carpeta MEPRYL{versionNueva} dentro de la siguiente ruta:";
+            labelMensaje.Text = $"Existe una nueva versión de MEPRYL disponible: {versionNueva}\n\n{mensajePersonalizado}\n\nBusque la carpeta MEPRYL{versionNueva} dentro de la siguiente ruta:";  
             labelMensaje.AutoSize = false;
             labelMensaje.Size = new System.Drawing.Size(440, 120);
             labelMensaje.Location = new System.Drawing.Point(30, 115);

@@ -18,10 +18,16 @@ namespace CapaPresentacion
         CapaNegocioMepryl.ConfigPlantillaReporte Reporte = new CapaNegocioMepryl.ConfigPlantillaReporte();
         bool blnNuevo = false;
 
+        // Datos de cascada: MotivoConsulta → TipoExamen (Padre=1) → Subtipo (Padre=0)
+        private DataTable dtMotivosConsulta;
+        private DataTable dtTiposExamen;
+        private DataTable dtSubtipos;
+        private string strIdMotivoSeleccionado;
+        private CapaNegocioMepryl.TipoExamen tipoExamen = new CapaNegocioMepryl.TipoExamen();
+
         public frmConfigMensajesPreventiva()
         {
             InitializeComponent();
-            //CorreosPreventiva = new CapaNegocioMepryl.ConfigMensajesCorreo();
             Inicializar();
         }
 
@@ -30,8 +36,90 @@ namespace CapaPresentacion
             InitializeComponent();
             this.MdiParent = parentForm;
             this.WindowState = FormWindowState.Maximized;
-            //CorreosPreventiva = new CapaNegocioMepryl.ConfigMensajesCorreo();
             Inicializar();
+        }
+
+        private void CargarMotivosConsulta()
+        {
+            dtMotivosConsulta = tipoExamen.cargarMotivosDeConsulta();
+            cmbMotivoConsulta.Items.Clear();
+            foreach (DataRow row in dtMotivosConsulta.Rows)
+                cmbMotivoConsulta.Items.Add(row["nombre"].ToString());
+            if (cmbMotivoConsulta.Items.Count > 0)
+                cmbMotivoConsulta.SelectedIndex = 0; // dispara cmbMotivoConsulta_SelectedIndexChanged → CargarTiposExamen
+        }
+
+        private void cmbMotivoConsulta_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            CargarTiposExamen();
+        }
+
+        private void CargarTiposExamen()
+        {
+            if (cmbMotivoConsulta.SelectedIndex < 0 || dtMotivosConsulta == null) return;
+            strIdMotivoSeleccionado = dtMotivosConsulta.Rows[cmbMotivoConsulta.SelectedIndex]["id"].ToString();
+
+            dtTiposExamen = tipoExamen.cargarTiposDeExamenPadre(strIdMotivoSeleccionado);
+            cmbTipoExamen.Items.Clear();
+            foreach (DataRow row in dtTiposExamen.Rows)
+                cmbTipoExamen.Items.Add(row["descripcion"].ToString());
+            if (cmbTipoExamen.Items.Count > 0)
+                cmbTipoExamen.SelectedIndex = 0; // dispara cmbTipoExamen_SelectedIndexChanged → CargarSubtipos
+        }
+
+        private void CargarSubtipos(string idPadre)
+        {
+            dtSubtipos = tipoExamen.cargarTiposDeExamenHijo(strIdMotivoSeleccionado, idPadre);
+            cmbSubtipos.Items.Clear();
+            foreach (DataRow row in dtSubtipos.Rows)
+                cmbSubtipos.Items.Add(row["descripcion"].ToString());
+            if (cmbSubtipos.Items.Count > 0)
+                cmbSubtipos.SelectedIndex = 0; // dispara cmbSubtipos_SelectedIndexChanged → CargarArchivoDelSubtipoSeleccionado
+            else
+            {
+                txtUbicacionArchivoTurno.Text = string.Empty;
+                txtArchivoTextoTurnos.Text = string.Empty;
+            }
+        }
+
+        private string GetIdSubtipoSeleccionado()
+        {
+            if (cmbSubtipos.SelectedIndex < 0 || dtSubtipos == null || dtSubtipos.Rows.Count == 0)
+                return string.Empty;
+            return dtSubtipos.Rows[cmbSubtipos.SelectedIndex]["id"].ToString();
+        }
+
+        private void cmbTipoExamen_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cmbTipoExamen.SelectedIndex < 0 || dtTiposExamen == null) return;
+            string idPadre = dtTiposExamen.Rows[cmbTipoExamen.SelectedIndex]["id"].ToString();
+            CargarSubtipos(idPadre);
+        }
+
+        private void cmbSubtipos_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            CargarArchivoDelSubtipoSeleccionado();
+        }
+
+        private const string STR_RUTA_DEFAULT = @"P:\Temporal\PLANTILLA REPORTE INFORMES";
+
+        private void CargarArchivoDelSubtipoSeleccionado()
+        {
+            if (cmbSubtipos.SelectedIndex < 0 || dtSubtipos == null || dtSubtipos.Rows.Count == 0) return;
+            string idSubtipo = dtSubtipos.Rows[cmbSubtipos.SelectedIndex]["id"].ToString();
+            string path = Reporte.GetPathMensajePorSubtipo(idSubtipo);
+            if (string.IsNullOrEmpty(path))
+            {
+                string nombreSubtipo = dtSubtipos.Rows[cmbSubtipos.SelectedIndex]["descripcion"].ToString();
+                foreach (char c in System.IO.Path.GetInvalidFileNameChars())
+                    nombreSubtipo = nombreSubtipo.Replace(c.ToString(), "");
+                path = System.IO.Path.Combine(STR_RUTA_DEFAULT, "PlantillaMensajeTurnos" + nombreSubtipo + ".txt");
+            }
+            txtUbicacionArchivoTurno.Text = path;
+            if (System.IO.File.Exists(path))
+                MostrarArchivoTextBox();
+            else
+                txtArchivoTextoTurnos.Text = string.Empty;
         }
 
         private void btnNuevo_Click(object sender, EventArgs e)
@@ -58,24 +146,16 @@ namespace CapaPresentacion
                 }
 
                 CargarGrilla();
-            } 
-            
+            }
+
             if (tbcCorreoE.SelectedTab == tpgMensajeTurno)
             {
-                if (rbtOpcionMensaje01.Checked)
+                string idSubtipo = GetIdSubtipoSeleccionado();
+                if (!string.IsNullOrEmpty(idSubtipo))
                 {
-                    ActualizaPathArchivoMensajeTurno();
+                    Reporte.GuardarPathMensajePorSubtipo(idSubtipo, txtUbicacionArchivoTurno.Text);
                     GuardarArchivoTextbox();
-                }
-                else if (rbtOpcionMensaje02.Checked)
-                {
-                    ActualizaPathArchivoMensajeTurno2();
-                    GuardarArchivoTextbox();
-                }
-                else if (rbtOpcionMensaje03.Checked)
-                {
-                    ActualizaPathArchivoMensajeTurno3();
-                    GuardarArchivoTextbox();
+                    MessageBox.Show("Plantilla guardada correctamente.", "Configuración", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
         }
@@ -111,7 +191,7 @@ namespace CapaPresentacion
         {
             dgvCorreos.DataSource = null;
             dgvCorreos.DataSource = CorreosPreventiva.ListarNombreCorreosPrevetniva("P");
-            dgvCorreos.Columns[0].Visible = false;            
+            dgvCorreos.Columns[0].Visible = false;
             dgvCorreos.Columns[2].Visible = false;
 
             dgvCorreos.Columns[1].Width = 200;
@@ -121,7 +201,7 @@ namespace CapaPresentacion
         {
             CargarGrilla();
             txtNombreCorreo.Enabled = false;
-            RepuperaArchivoTextoTurno();
+            CargarMotivosConsulta(); // carga motivos → dispara cascada TipoExamen→Subtipo
             tbcCorreoE.SelectedTab = tabPage4;
         }
 
@@ -133,7 +213,7 @@ namespace CapaPresentacion
             }
             catch (System.NullReferenceException ex)
             {
-                
+
             }
         }
 
@@ -167,7 +247,7 @@ namespace CapaPresentacion
         {
             int intID = Convert.ToInt32(dgvCorreos.Rows[dgvCorreos.CurrentCell.RowIndex].Cells[0].Value.ToString());
             CargarDatos();
-            CorreosPreventiva.ActualizarCorreo(intID, strDatos);           
+            CorreosPreventiva.ActualizarCorreo(intID, strDatos);
         }
 
         private void btnUbicarArchivo_Click(object sender, EventArgs e)
@@ -177,6 +257,7 @@ namespace CapaPresentacion
             fbdMostrarDirectorio.FilterIndex = 2;
             fbdMostrarDirectorio.RestoreDirectory = true;
             fbdMostrarDirectorio.Title = "Seleccione un archivo";
+            fbdMostrarDirectorio.InitialDirectory = STR_RUTA_DEFAULT;
 
             if (fbdMostrarDirectorio.ShowDialog() == DialogResult.OK)
             {
@@ -192,83 +273,7 @@ namespace CapaPresentacion
 
         private void GuardarArchivoTextbox()
         {
-            System.IO.File.WriteAllText(@txtUbicacionArchivoTurno.Text, txtArchivoTextoTurnos.Text);
-        }
-
-        private void ActualizaPathArchivoMensajeTurno()
-        {
-            Reporte.ActualizaMensajeTurno('P', txtUbicacionArchivoTurno.Text);
-        }
-
-        private void ActualizaPathArchivoMensajeTurno2()
-        {
-            Reporte.ActualizaMensajeTurno2('P', txtUbicacionArchivoTurno.Text);
-        }
-
-        private void ActualizaPathArchivoMensajeTurno3()
-        {
-            Reporte.ActualizaMensajeTurno3('P', txtUbicacionArchivoTurno.Text);
-        }
-
-        private void RepuperaArchivoTextoTurno()
-        {
-            DataTable dt = null;
-
-            if (rbtOpcionMensaje01.Checked)
-            {
-                 dt = Reporte.ListarPlantillas("P");
-
-                if (dt.Rows.Count > 0)
-                {
-                    for (int i = 0; i < dt.Rows.Count; i++)
-                    {
-                        txtUbicacionArchivoTurno.Text = dt.Rows[i][8].ToString();
-                        MostrarArchivoTextBox();
-                    }
-                }
-            }
-            else if(rbtOpcionMensaje02.Checked)
-            {
-                dt = Reporte.ListarPlantillas("P");
-
-                if (dt.Rows.Count > 0)
-                {
-                    for (int i = 0; i < dt.Rows.Count; i++)
-                    {
-                        txtUbicacionArchivoTurno.Text = dt.Rows[i][9].ToString();
-                        MostrarArchivoTextBox();
-                    }
-                }
-            }else if (rbtOpcionMensaje03.Checked)
-            {
-                dt = Reporte.ListarPlantillas("P");
-
-                if (dt.Rows.Count > 0)
-                {
-                    for (int i = 0; i < dt.Rows.Count; i++)
-                    {
-                        txtUbicacionArchivoTurno.Text = dt.Rows[i][10].ToString();
-                        MostrarArchivoTextBox();
-                    }
-                }
-            }
-
-            
-        }
-
-        private void rbtOpcionMensaje01_CheckedChanged(object sender, EventArgs e)
-        {
-            RepuperaArchivoTextoTurno();
-        }
-
-        private void rbtOpcionMensaje02_CheckedChanged(object sender, EventArgs e)
-        {
-            RepuperaArchivoTextoTurno();
-        }
-
-        private void rbtOpcionMensaje03_CheckedChanged(object sender, EventArgs e)
-        {
-            RepuperaArchivoTextoTurno();
+            System.IO.File.WriteAllText(txtUbicacionArchivoTurno.Text, txtArchivoTextoTurnos.Text);
         }
 
         private void tbcCorreoE_SelectedIndexChanged(object sender, EventArgs e)
@@ -281,6 +286,11 @@ namespace CapaPresentacion
             {
                 btnNuevo.Enabled = true;
             }
+        }
+
+        private void panel5_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }

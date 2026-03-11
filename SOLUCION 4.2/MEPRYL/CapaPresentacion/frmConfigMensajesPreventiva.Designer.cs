@@ -79,16 +79,19 @@
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
             this.label2 = new System.Windows.Forms.Label();
-            this.txtUbicacionArchivoTurno = new System.Windows.Forms.TextBox();
-            this.btnUbicarArchivo = new System.Windows.Forms.Button();
-            this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
-            this.rbtOpcionMensaje03 = new System.Windows.Forms.RadioButton();
-            this.rbtOpcionMensaje01 = new System.Windows.Forms.RadioButton();
-            this.rbtOpcionMensaje02 = new System.Windows.Forms.RadioButton();
+            this.lblMotivoConsulta = new System.Windows.Forms.Label();
+            this.cmbMotivoConsulta = new System.Windows.Forms.ComboBox();
+            this.lblTipoExamen = new System.Windows.Forms.Label();
+            this.cmbTipoExamen = new System.Windows.Forms.ComboBox();
+            this.lblSubtipo = new System.Windows.Forms.Label();
+            this.cmbSubtipos = new System.Windows.Forms.ComboBox();
             this.txtArchivoTextoTurnos = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.tpgWhatsApp = new System.Windows.Forms.TabPage();
             this.panel4 = new System.Windows.Forms.Panel();
+            this.txtUbicacionArchivoTurno = new System.Windows.Forms.TextBox();
+            this.btnUbicarArchivo = new System.Windows.Forms.Button();
+            this.panel5 = new System.Windows.Forms.Panel();
             this.tabPage4.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.panel3.SuspendLayout();
@@ -106,8 +109,8 @@
             this.tableLayoutPanel1.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.tableLayoutPanel5.SuspendLayout();
-            this.tableLayoutPanel6.SuspendLayout();
             this.panel4.SuspendLayout();
+            this.panel5.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabPage4
@@ -135,7 +138,7 @@
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 1;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 568F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 573F));
             this.tableLayoutPanel2.Size = new System.Drawing.Size(1069, 573);
             this.tableLayoutPanel2.TabIndex = 6;
             // 
@@ -187,7 +190,7 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(3, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(101, 16);
+            this.label1.Size = new System.Drawing.Size(100, 16);
             this.label1.TabIndex = 5;
             this.label1.Text = "Nombre Correo";
             // 
@@ -243,7 +246,7 @@
             this.label14.Location = new System.Drawing.Point(486, 92);
             this.label14.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(92, 16);
+            this.label14.Size = new System.Drawing.Size(91, 16);
             this.label14.TabIndex = 12;
             this.label14.Text = "Tiempo Envio";
             // 
@@ -253,7 +256,7 @@
             this.label13.Location = new System.Drawing.Point(714, 92);
             this.label13.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(36, 16);
+            this.label13.Size = new System.Drawing.Size(35, 16);
             this.label13.TabIndex = 11;
             this.label13.Text = "Seg.";
             // 
@@ -278,7 +281,7 @@
             this.chkSsl01.Margin = new System.Windows.Forms.Padding(4);
             this.chkSsl01.Name = "chkSsl01";
             this.chkSsl01.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.chkSsl01.Size = new System.Drawing.Size(155, 20);
+            this.chkSsl01.Size = new System.Drawing.Size(154, 20);
             this.chkSsl01.TabIndex = 6;
             this.chkSsl01.Text = "Conexión cifrada SSL";
             this.chkSsl01.UseVisualStyleBackColor = true;
@@ -290,7 +293,7 @@
             this.label12.Location = new System.Drawing.Point(486, 37);
             this.label12.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(88, 16);
+            this.label12.Size = new System.Drawing.Size(87, 16);
             this.label12.TabIndex = 8;
             this.label12.Text = "Puerto SMTP";
             // 
@@ -310,7 +313,7 @@
             this.label11.Location = new System.Drawing.Point(9, 96);
             this.label11.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(100, 16);
+            this.label11.Size = new System.Drawing.Size(99, 16);
             this.label11.TabIndex = 6;
             this.label11.Text = "Servidor SMTP";
             // 
@@ -330,7 +333,7 @@
             this.label9.Location = new System.Drawing.Point(9, 67);
             this.label9.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(80, 16);
+            this.label9.Size = new System.Drawing.Size(79, 16);
             this.label9.TabIndex = 4;
             this.label9.Text = "Contraseña ";
             // 
@@ -350,7 +353,7 @@
             this.label8.Location = new System.Drawing.Point(9, 38);
             this.label8.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(109, 16);
+            this.label8.Size = new System.Drawing.Size(108, 16);
             this.label8.TabIndex = 2;
             this.label8.Text = "Dirección Correo";
             // 
@@ -410,7 +413,7 @@
             this.label15.Location = new System.Drawing.Point(4, 0);
             this.label15.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(107, 16);
+            this.label15.Size = new System.Drawing.Size(106, 16);
             this.label15.TabIndex = 4;
             this.label15.Text = "Nombre Usuario";
             // 
@@ -443,7 +446,7 @@
             this.label17.Location = new System.Drawing.Point(4, 84);
             this.label17.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(60, 16);
+            this.label17.Size = new System.Drawing.Size(59, 16);
             this.label17.TabIndex = 8;
             this.label17.Text = "Mensaje";
             // 
@@ -457,7 +460,7 @@
             this.chkAdjuntos.Margin = new System.Windows.Forms.Padding(4);
             this.chkAdjuntos.Name = "chkAdjuntos";
             this.chkAdjuntos.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.chkAdjuntos.Size = new System.Drawing.Size(169, 20);
+            this.chkAdjuntos.Size = new System.Drawing.Size(168, 20);
             this.chkAdjuntos.TabIndex = 316;
             this.chkAdjuntos.Text = "Incluir archivos adjuntos";
             this.chkAdjuntos.UseVisualStyleBackColor = true;
@@ -469,7 +472,7 @@
             this.label16.Location = new System.Drawing.Point(4, 28);
             this.label16.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(49, 16);
+            this.label16.Size = new System.Drawing.Size(48, 16);
             this.label16.TabIndex = 6;
             this.label16.Text = "Asunto";
             // 
@@ -527,7 +530,7 @@
             this.label19.Location = new System.Drawing.Point(8, 41);
             this.label19.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(28, 16);
+            this.label19.Size = new System.Drawing.Size(27, 16);
             this.label19.TabIndex = 315;
             this.label19.Text = "Pie";
             this.label19.Visible = false;
@@ -552,7 +555,7 @@
             this.label18.Location = new System.Drawing.Point(8, 8);
             this.label18.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(68, 16);
+            this.label18.Size = new System.Drawing.Size(67, 16);
             this.label18.TabIndex = 312;
             this.label18.Text = "Cabecera";
             this.label18.Visible = false;
@@ -699,10 +702,11 @@
             // 
             this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox3.Controls.Add(this.panel5);
             this.groupBox3.Controls.Add(this.tableLayoutPanel5);
             this.groupBox3.Location = new System.Drawing.Point(3, 3);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(1071, 117);
+            this.groupBox3.Size = new System.Drawing.Size(1071, 146);
             this.groupBox3.TabIndex = 0;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Ubicación de archivo";
@@ -718,13 +722,13 @@
             this.tableLayoutPanel5.Controls.Add(this.label2, 0, 0);
             this.tableLayoutPanel5.Controls.Add(this.txtUbicacionArchivoTurno, 1, 0);
             this.tableLayoutPanel5.Controls.Add(this.btnUbicarArchivo, 2, 0);
-            this.tableLayoutPanel5.Controls.Add(this.tableLayoutPanel6, 1, 1);
-            this.tableLayoutPanel5.Location = new System.Drawing.Point(6, 29);
+            this.tableLayoutPanel5.Location = new System.Drawing.Point(6, 20);
             this.tableLayoutPanel5.Name = "tableLayoutPanel5";
-            this.tableLayoutPanel5.RowCount = 2;
+            this.tableLayoutPanel5.RowCount = 3;
+            this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 31F));
+            this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 29F));
             this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-            this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 18F));
-            this.tableLayoutPanel5.Size = new System.Drawing.Size(1059, 69);
+            this.tableLayoutPanel5.Size = new System.Drawing.Size(1046, 34);
             this.tableLayoutPanel5.TabIndex = 14;
             // 
             // label2
@@ -733,92 +737,78 @@
             this.label2.ForeColor = System.Drawing.Color.Black;
             this.label2.Location = new System.Drawing.Point(3, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(72, 16);
+            this.label2.Size = new System.Drawing.Size(71, 16);
             this.label2.TabIndex = 1;
             this.label2.Text = "Ubicación ";
             // 
-            // txtUbicacionArchivoTurno
+            // lblMotivoConsulta
             // 
-            this.txtUbicacionArchivoTurno.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.lblMotivoConsulta.AutoSize = true;
+            this.lblMotivoConsulta.ForeColor = System.Drawing.Color.Black;
+            this.lblMotivoConsulta.Location = new System.Drawing.Point(57, 24);
+            this.lblMotivoConsulta.Name = "lblMotivoConsulta";
+            this.lblMotivoConsulta.Size = new System.Drawing.Size(124, 16);
+            this.lblMotivoConsulta.TabIndex = 4;
+            this.lblMotivoConsulta.Text = "Motivo  de Consulta";
+            // 
+            // cmbMotivoConsulta
+            // 
+            this.cmbMotivoConsulta.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtUbicacionArchivoTurno.Location = new System.Drawing.Point(83, 3);
-            this.txtUbicacionArchivoTurno.Name = "txtUbicacionArchivoTurno";
-            this.txtUbicacionArchivoTurno.Size = new System.Drawing.Size(893, 22);
-            this.txtUbicacionArchivoTurno.TabIndex = 0;
+            this.cmbMotivoConsulta.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbMotivoConsulta.Location = new System.Drawing.Point(15, 45);
+            this.cmbMotivoConsulta.Name = "cmbMotivoConsulta";
+            this.cmbMotivoConsulta.Size = new System.Drawing.Size(215, 24);
+            this.cmbMotivoConsulta.TabIndex = 5;
+            this.cmbMotivoConsulta.SelectedIndexChanged += new System.EventHandler(this.cmbMotivoConsulta_SelectedIndexChanged);
             // 
-            // btnUbicarArchivo
+            // lblTipoExamen
             // 
-            this.btnUbicarArchivo.BackColor = System.Drawing.SystemColors.ButtonFace;
-            this.btnUbicarArchivo.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnUbicarArchivo.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnUbicarArchivo.Location = new System.Drawing.Point(983, 4);
-            this.btnUbicarArchivo.Margin = new System.Windows.Forms.Padding(4);
-            this.btnUbicarArchivo.Name = "btnUbicarArchivo";
-            this.btnUbicarArchivo.Size = new System.Drawing.Size(45, 22);
-            this.btnUbicarArchivo.TabIndex = 12;
-            this.btnUbicarArchivo.Text = "...";
-            this.btnUbicarArchivo.UseVisualStyleBackColor = true;
-            this.btnUbicarArchivo.Click += new System.EventHandler(this.btnUbicarArchivo_Click);
+            this.lblTipoExamen.AutoSize = true;
+            this.lblTipoExamen.ForeColor = System.Drawing.Color.Black;
+            this.lblTipoExamen.Location = new System.Drawing.Point(343, 24);
+            this.lblTipoExamen.Name = "lblTipoExamen";
+            this.lblTipoExamen.Size = new System.Drawing.Size(87, 16);
+            this.lblTipoExamen.TabIndex = 0;
+            this.lblTipoExamen.Text = "Tipo Examen";
             // 
-            // tableLayoutPanel6
+            // cmbTipoExamen
             // 
-            this.tableLayoutPanel6.ColumnCount = 3;
-            this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tableLayoutPanel6.Controls.Add(this.rbtOpcionMensaje03, 1, 0);
-            this.tableLayoutPanel6.Controls.Add(this.rbtOpcionMensaje01, 0, 0);
-            this.tableLayoutPanel6.Controls.Add(this.rbtOpcionMensaje02, 2, 0);
-            this.tableLayoutPanel6.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel6.Location = new System.Drawing.Point(83, 33);
-            this.tableLayoutPanel6.Name = "tableLayoutPanel6";
-            this.tableLayoutPanel6.RowCount = 1;
-            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel6.Size = new System.Drawing.Size(893, 33);
-            this.tableLayoutPanel6.TabIndex = 13;
+            this.cmbTipoExamen.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmbTipoExamen.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbTipoExamen.Location = new System.Drawing.Point(258, 45);
+            this.cmbTipoExamen.Name = "cmbTipoExamen";
+            this.cmbTipoExamen.Size = new System.Drawing.Size(264, 24);
+            this.cmbTipoExamen.TabIndex = 1;
+            this.cmbTipoExamen.SelectedIndexChanged += new System.EventHandler(this.cmbTipoExamen_SelectedIndexChanged);
             // 
-            // rbtOpcionMensaje03
+            // lblSubtipo
             // 
-            this.rbtOpcionMensaje03.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.rbtOpcionMensaje03.AutoSize = true;
-            this.rbtOpcionMensaje03.Location = new System.Drawing.Point(418, 3);
-            this.rbtOpcionMensaje03.Name = "rbtOpcionMensaje03";
-            this.rbtOpcionMensaje03.Size = new System.Drawing.Size(55, 20);
-            this.rbtOpcionMensaje03.TabIndex = 14;
-            this.rbtOpcionMensaje03.Text = "Ergo";
-            this.rbtOpcionMensaje03.UseVisualStyleBackColor = true;
-            this.rbtOpcionMensaje03.CheckedChanged += new System.EventHandler(this.rbtOpcionMensaje03_CheckedChanged);
+            this.lblSubtipo.AutoSize = true;
+            this.lblSubtipo.ForeColor = System.Drawing.Color.Black;
+            this.lblSubtipo.Location = new System.Drawing.Point(766, 24);
+            this.lblSubtipo.Name = "lblSubtipo";
+            this.lblSubtipo.Size = new System.Drawing.Size(53, 16);
+            this.lblSubtipo.TabIndex = 2;
+            this.lblSubtipo.Text = "Subtipo";
             // 
-            // rbtOpcionMensaje01
+            // cmbSubtipos
             // 
-            this.rbtOpcionMensaje01.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.rbtOpcionMensaje01.AutoSize = true;
-            this.rbtOpcionMensaje01.Checked = true;
-            this.rbtOpcionMensaje01.Location = new System.Drawing.Point(234, 3);
-            this.rbtOpcionMensaje01.Name = "rbtOpcionMensaje01";
-            this.rbtOpcionMensaje01.Size = new System.Drawing.Size(60, 20);
-            this.rbtOpcionMensaje01.TabIndex = 3;
-            this.rbtOpcionMensaje01.TabStop = true;
-            this.rbtOpcionMensaje01.Text = "LAFIJ";
-            this.rbtOpcionMensaje01.UseVisualStyleBackColor = true;
-            this.rbtOpcionMensaje01.CheckedChanged += new System.EventHandler(this.rbtOpcionMensaje01_CheckedChanged);
-            // 
-            // rbtOpcionMensaje02
-            // 
-            this.rbtOpcionMensaje02.AutoSize = true;
-            this.rbtOpcionMensaje02.Location = new System.Drawing.Point(597, 3);
-            this.rbtOpcionMensaje02.Name = "rbtOpcionMensaje02";
-            this.rbtOpcionMensaje02.Size = new System.Drawing.Size(58, 20);
-            this.rbtOpcionMensaje02.TabIndex = 13;
-            this.rbtOpcionMensaje02.Text = "Otros";
-            this.rbtOpcionMensaje02.UseVisualStyleBackColor = true;
-            this.rbtOpcionMensaje02.CheckedChanged += new System.EventHandler(this.rbtOpcionMensaje02_CheckedChanged);
+            this.cmbSubtipos.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmbSubtipos.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbSubtipos.Location = new System.Drawing.Point(549, 45);
+            this.cmbSubtipos.Name = "cmbSubtipos";
+            this.cmbSubtipos.Size = new System.Drawing.Size(519, 24);
+            this.cmbSubtipos.TabIndex = 3;
+            this.cmbSubtipos.SelectedIndexChanged += new System.EventHandler(this.cmbSubtipos_SelectedIndexChanged);
             // 
             // txtArchivoTextoTurnos
             // 
             this.txtArchivoTextoTurnos.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtArchivoTextoTurnos.Location = new System.Drawing.Point(3, 182);
+            this.txtArchivoTextoTurnos.Location = new System.Drawing.Point(3, 211);
             this.txtArchivoTextoTurnos.Multiline = true;
             this.txtArchivoTextoTurnos.Name = "txtArchivoTextoTurnos";
             this.txtArchivoTextoTurnos.ScrollBars = System.Windows.Forms.ScrollBars.Both;
@@ -829,9 +819,9 @@
             // 
             this.label3.AutoSize = true;
             this.label3.ForeColor = System.Drawing.Color.Black;
-            this.label3.Location = new System.Drawing.Point(3, 151);
+            this.label3.Location = new System.Drawing.Point(3, 180);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(160, 16);
+            this.label3.Size = new System.Drawing.Size(159, 16);
             this.label3.TabIndex = 2;
             this.label3.Text = "Ver contenido del archivo";
             // 
@@ -853,6 +843,43 @@
             this.panel4.Name = "panel4";
             this.panel4.Size = new System.Drawing.Size(1098, 630);
             this.panel4.TabIndex = 292;
+            // 
+            // txtUbicacionArchivoTurno
+            // 
+            this.txtUbicacionArchivoTurno.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtUbicacionArchivoTurno.Location = new System.Drawing.Point(83, 3);
+            this.txtUbicacionArchivoTurno.Name = "txtUbicacionArchivoTurno";
+            this.txtUbicacionArchivoTurno.Size = new System.Drawing.Size(880, 22);
+            this.txtUbicacionArchivoTurno.TabIndex = 0;
+            // 
+            // btnUbicarArchivo
+            // 
+            this.btnUbicarArchivo.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.btnUbicarArchivo.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnUbicarArchivo.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnUbicarArchivo.Location = new System.Drawing.Point(970, 4);
+            this.btnUbicarArchivo.Margin = new System.Windows.Forms.Padding(4);
+            this.btnUbicarArchivo.Name = "btnUbicarArchivo";
+            this.btnUbicarArchivo.Size = new System.Drawing.Size(45, 22);
+            this.btnUbicarArchivo.TabIndex = 12;
+            this.btnUbicarArchivo.Text = "...";
+            this.btnUbicarArchivo.UseVisualStyleBackColor = true;
+            this.btnUbicarArchivo.Click += new System.EventHandler(this.btnUbicarArchivo_Click);
+            // 
+            // panel5
+            // 
+            this.panel5.Controls.Add(this.cmbMotivoConsulta);
+            this.panel5.Controls.Add(this.cmbSubtipos);
+            this.panel5.Controls.Add(this.lblMotivoConsulta);
+            this.panel5.Controls.Add(this.lblSubtipo);
+            this.panel5.Controls.Add(this.cmbTipoExamen);
+            this.panel5.Controls.Add(this.lblTipoExamen);
+            this.panel5.Location = new System.Drawing.Point(-3, 55);
+            this.panel5.Name = "panel5";
+            this.panel5.Size = new System.Drawing.Size(1074, 100);
+            this.panel5.TabIndex = 15;
+            this.panel5.Paint += new System.Windows.Forms.PaintEventHandler(this.panel5_Paint);
             // 
             // frmConfigMensajesPreventiva
             // 
@@ -890,9 +917,9 @@
             this.groupBox3.ResumeLayout(false);
             this.tableLayoutPanel5.ResumeLayout(false);
             this.tableLayoutPanel5.PerformLayout();
-            this.tableLayoutPanel6.ResumeLayout(false);
-            this.tableLayoutPanel6.PerformLayout();
             this.panel4.ResumeLayout(false);
+            this.panel5.ResumeLayout(false);
+            this.panel5.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -942,12 +969,12 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox txtArchivoTextoTurnos;
         private System.Windows.Forms.GroupBox groupBox3;
-        protected System.Windows.Forms.Button btnUbicarArchivo;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox txtUbicacionArchivoTurno;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private System.Windows.Forms.RadioButton rbtOpcionMensaje02;
-        private System.Windows.Forms.RadioButton rbtOpcionMensaje01;
+        private System.Windows.Forms.Label lblTipoExamen;
+        private System.Windows.Forms.ComboBox cmbTipoExamen;
+        private System.Windows.Forms.Label lblSubtipo;
+        private System.Windows.Forms.ComboBox cmbSubtipos;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
@@ -955,7 +982,10 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel4;
         private System.Windows.Forms.Panel panel4;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel5;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel6;
-        private System.Windows.Forms.RadioButton rbtOpcionMensaje03;
+        private System.Windows.Forms.Label lblMotivoConsulta;
+        private System.Windows.Forms.ComboBox cmbMotivoConsulta;
+        private System.Windows.Forms.TextBox txtUbicacionArchivoTurno;
+        protected System.Windows.Forms.Button btnUbicarArchivo;
+        private System.Windows.Forms.Panel panel5;
     }
 }
