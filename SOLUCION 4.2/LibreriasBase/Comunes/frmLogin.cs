@@ -408,7 +408,7 @@ namespace Comunes
                 pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
 
                 fs.Close();
-                
+
                 // Agregar indicador de PRUEBA si aplica
                 AgregarIndicadorPrueba();
             }
@@ -431,21 +431,21 @@ namespace Comunes
                         // Crear un rectángulo rojo en la esquina superior derecha
                         int rectSize = 50;
                         Rectangle rectPrueba = new Rectangle(bmp.Width - rectSize - 5, 5, rectSize, rectSize);
-                        
+
                         // Dibujar fondo rojo
                         g.FillRectangle(new SolidBrush(Color.Red), rectPrueba);
-                        
+
                         // Dibujar borde negro
                         g.DrawRectangle(new Pen(Color.Black, 2), rectPrueba);
-                        
+
                         // Dibujar texto "PRUEBA"
                         string textoPrueba = "PRUEBA";
                         Font fontPrueba = new Font("Arial", 8, FontStyle.Bold);
                         SizeF textSize = g.MeasureString(textoPrueba, fontPrueba);
-                        
+
                         float x = rectPrueba.X + (rectPrueba.Width - textSize.Width) / 2;
                         float y = rectPrueba.Y + (rectPrueba.Height - textSize.Height) / 2;
-                        
+
                         g.DrawString(textoPrueba, fontPrueba, Brushes.White, x, y);
                     }
                     pictureBox1.Image = bmp;
@@ -516,7 +516,7 @@ namespace Comunes
 
                     if (estado == 1)
                     {
-                        frmActualizacion frm = new frmActualizacion(versionMaxima, rutaInstalador, mensaje, configuracion.getConectionString());
+                        frmActualizacion frm = new frmActualizacion(VersionApp.VERSION, versionMaxima, rutaInstalador, mensaje, configuracion.getConectionString());
                         frm.ShowDialog();
                     }
                 }
