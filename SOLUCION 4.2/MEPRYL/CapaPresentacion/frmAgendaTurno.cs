@@ -92,7 +92,7 @@ namespace CapaPresentacion
             // Consulta desde dbo.Turno (todos los turnos) + subquery para obtener tep.id si existe
             DataTable consulta = SQLConnector.obtenerTablaSegunConsultaString(@"select t.id, t.pacienteID,
             (SELECT TOP 1 tep.id FROM dbo.TipoExamenDePaciente tep WHERE tep.idTurno = t.id) as tepId,
-            CONVERT(date, t.fecha), t.horaReferencia, e.descripcion, t.reservado, t.reserva
+            CONVERT(varchar(10), t.fecha, 103), t.horaReferencia, e.descripcion, t.reservado, t.reserva
             from dbo.Turno t inner join dbo.Horario h on t.horarioID = h.id
             inner join dbo.Especialidad e on h.especialidadID = e.id
             where convert(date, t.fecha) >= '" + tpDesde.Value.ToShortDateString() + @"'
@@ -379,7 +379,7 @@ namespace CapaPresentacion
             {
                 comenzarExportacion();
                 // También exportar a Google Sheets
-                ExportarAGoogleSheets();
+                //ExportarAGoogleSheets();
             }
         }
 
@@ -413,6 +413,9 @@ namespace CapaPresentacion
             setearColorYBorde(excel.get_Range("A1", "M1"));
 
             DataTable grilla = (DataTable)dgv.DataSource;
+
+            // Forzar columna Fecha como texto para mantener formato dd/mm/yyyy
+            excel.get_Range("A2", "A" + (grilla.Rows.Count + 1).ToString()).NumberFormat = "@";
 
             progressBar.Visible = true;
             progressBar.Minimum = 1;

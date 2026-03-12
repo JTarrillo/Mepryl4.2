@@ -1,61 +1,67 @@
-; Script de instalación para Mepryl - Versión 4.0
-; Generado con InnoSetup Compiler 6.2.0
+#define MyAppName "Mepryl 4.4"
+#define MyAppVersion "4.4.0.0"
+#define MyAppPublisher "Mepryl"
+#define MyAppExeName "MEPRYL.exe"
+#define MyAppPath "C:\Mepryl4.2\SOLUCION 4.2\MEPRYL\Administracion\bin\Release"
 
 [Setup]
-AppId={{3A1AF435-5DB7-473C-9322-F0560A360E7F}
-AppName=Mepryl 4.0
-AppVersion=4.0.0.0
-AppPublisher=Tu Empresa
+AppId={{A91F3E2D-6B3F-4A5E-9B12-1C7E4F92D8AB}}
+AppName={#MyAppName}
+AppVersion={#MyAppVersion}
+AppPublisher={#MyAppPublisher}
+
 AppPublisherURL=https://www.tuempresa.com
 AppSupportURL=https://www.tuempresa.com/soporte
 AppUpdatesURL=https://www.tuempresa.com/actualizaciones
-DefaultDirName={commonpf}\Mepryl 4.0
-DefaultGroupName=Mepryl 4.0
+
+DefaultDirName={commonpf}\{#MyAppName}
+DefaultGroupName={#MyAppName}
+
+UsePreviousGroup=False
 DisableProgramGroupPage=no
 AllowNoIcons=yes
-LicenseFile=
-InfoBeforeFile=
-InfoAfterFile=
-OutputDir=C:\Programador\SOLUCION 3.10\Instaladores
-OutputBaseFilename=Mepryl_4.0_Setup
+
+OutputDir=C:\Mepryl4.2\SOLUCION 4.2\Instaladores
+OutputBaseFilename=Mepryl_4.4_Setup
+
 Compression=lzma
 SolidCompression=yes
+
 PrivilegesRequired=admin
-ChangesEnvironment=no
 WizardStyle=modern
-UninstallDisplayIcon={app}\Mepryl.exe
-SetupIconFile="C:\Programador\SOLUCION 3.10\MEPRYL\Administracion\bin\Release\Logo Definitivo.ico"
-WizardImageFile=
-WizardSmallImageFile=
+
+UninstallDisplayIcon={app}\{#MyAppExeName}
+
+SetupIconFile="{#MyAppPath}\Logo Definitivo.ico"
+
+ChangesEnvironment=no
 
 [Languages]
 Name: "spanish"; MessagesFile: "compiler:Languages\Spanish.isl"
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Tasks]
-Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked; OnlyBelowVersion: 6.1,6.1
+Name: "desktopicon"; Description: "Crear acceso directo en el escritorio"; Flags: unchecked
 
 [Files]
 ; Archivo ejecutable principal
-Source: "C:\Programador\SOLUCION 3.10\MEPRYL\Administracion\bin\Release\MEPRYL.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#MyAppPath}\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
 ; Archivo de configuración
-Source: "C:\Programador\SOLUCION 3.10\MEPRYL\Administracion\bin\Release\MEPRYL.exe.config"; DestDir: "{app}"; Flags: ignoreversion
-; Todos los archivos DLL del release
-Source: "C:\Programador\SOLUCION 3.10\MEPRYL\Administracion\bin\Release\*.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#MyAppPath}\MEPRYL.exe.config"; DestDir: "{app}"; Flags: ignoreversion
+; Todos los archivos DLL del release (incluye subcarpetas para DLLs de PDF de DevExpress y Spire)
+Source: "{#MyAppPath}\*.dll"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; Archivos adicionales
-Source: "C:\Programador\SOLUCION 3.10\MEPRYL\Administracion\bin\Release\Logo Definitivo.ico"; DestDir: "{app}"; DestName: "Logo Definitivo.ico"; Flags: ignoreversion
-Source: "C:\Programador\SOLUCION 3.10\MEPRYL\Administracion\bin\Release\Config.xml"; DestDir: "{app}"; Flags: ignoreversion onlyifdoesntexist
-
+Source: "{#MyAppPath}\Logo Definitivo.ico"; DestDir: "{app}"; DestName: "Logo Definitivo.ico"; Flags: ignoreversion
+Source: "{#MyAppPath}\Config.xml"; DestDir: "{app}"; Flags: ignoreversion onlyifdoesntexist
+Source: "{#MyAppPath}\credentials.json"; DestDir: "{app}"; Flags: ignoreversion onlyifdoesntexist
 
 [Icons]
-Name: "{group}\Mepryl 4.0"; Filename: "{app}\Mepryl.exe"; IconFilename: "{app}\Logo Definitivo.ico"; IconIndex: 0
-Name: "{group}\{cm:UninstallProgram,Mepryl 4.0}"; Filename: "{uninstallexe}"
-Name: "{commondesktop}\Mepryl 4.0"; Filename: "{app}\Mepryl.exe"; IconFilename: "{app}\Logo Definitivo.ico"; IconIndex: 0
-Name: "{commondesktop}\Mepryl 4.0 (Admin)"; Filename: "{app}\Mepryl.exe"; IconFilename: "{app}\Logo Definitivo.ico"; IconIndex: 0
-Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\Mepryl 4.0"; Filename: "{app}\Mepryl.exe"; Tasks: quicklaunchicon; IconIndex: 0
+Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\Logo Definitivo.ico"
+Name: "{group}\Desinstalar {#MyAppName}"; Filename: "{uninstallexe}"
+Name: "{commondesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon; IconFilename: "{app}\Logo Definitivo.ico"
 
 [Run]
-Filename: "{app}\Mepryl.exe"; Description: "{cm:LaunchProgram,Mepryl}"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\{#MyAppExeName}"; Description: "Ejecutar {#MyAppName}"; Flags: nowait postinstall skipifsilent
 
 [UninstallDelete]
 Type: filesandordirs; Name: "{app}\Reportes"
