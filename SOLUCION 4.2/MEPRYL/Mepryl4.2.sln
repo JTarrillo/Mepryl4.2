@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36518.9 d17.14
+VisualStudioVersion = 17.14.36518.9
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CapaPresentacion", "CapaPresentacion\CapaPresentacion.csproj", "{F86CC74C-3FEC-402E-A8AA-BE4D2E0BCD91}"
 EndProject
@@ -30,12 +30,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CapaNegocio", "CapaNegocio\CapaNegocio.csproj", "{7F6DF0E8-3A00-4465-B9DB-B88826705BA3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Comunes", "..\LibreriasBase\Comunes\Comunes.csproj", "{3A1AF435-5DB7-473C-9322-F0560A360E7F}"
-EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "SetupMepryl2", "SetupMepryl2\SetupMepryl2.vdproj", "{DF31F5A6-D146-4E92-A50B-473E8A67D787}"
-EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "SetupMeprylv3.0", "SetupMeprylV2.2-Prueba.vdproj", "{869FE788-4E3B-4148-AC3F-CCB9A36E099D}"
-EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Mepryl4.0_Setup", "..\Mepryl4.0_Setup\Mepryl4.0_Setup.vdproj", "{42EA0D11-F999-1B6B-BAEF-F9CA9BA2731E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -152,18 +146,6 @@ Global
 		{3A1AF435-5DB7-473C-9322-F0560A360E7F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3A1AF435-5DB7-473C-9322-F0560A360E7F}.Release|x86.ActiveCfg = Release|x86
 		{3A1AF435-5DB7-473C-9322-F0560A360E7F}.Release|x86.Build.0 = Release|x86
-		{DF31F5A6-D146-4E92-A50B-473E8A67D787}.Debug|Any CPU.ActiveCfg = Debug
-		{DF31F5A6-D146-4E92-A50B-473E8A67D787}.Debug|x86.ActiveCfg = Debug
-		{DF31F5A6-D146-4E92-A50B-473E8A67D787}.Release|Any CPU.ActiveCfg = Release
-		{DF31F5A6-D146-4E92-A50B-473E8A67D787}.Release|x86.ActiveCfg = Release
-		{869FE788-4E3B-4148-AC3F-CCB9A36E099D}.Debug|Any CPU.ActiveCfg = Debug
-		{869FE788-4E3B-4148-AC3F-CCB9A36E099D}.Debug|x86.ActiveCfg = Debug
-		{869FE788-4E3B-4148-AC3F-CCB9A36E099D}.Release|Any CPU.ActiveCfg = Release
-		{869FE788-4E3B-4148-AC3F-CCB9A36E099D}.Release|x86.ActiveCfg = Release
-		{42EA0D11-F999-1B6B-BAEF-F9CA9BA2731E}.Debug|Any CPU.ActiveCfg = Debug
-		{42EA0D11-F999-1B6B-BAEF-F9CA9BA2731E}.Debug|x86.ActiveCfg = Debug
-		{42EA0D11-F999-1B6B-BAEF-F9CA9BA2731E}.Release|Any CPU.ActiveCfg = Release
-		{42EA0D11-F999-1B6B-BAEF-F9CA9BA2731E}.Release|x86.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
