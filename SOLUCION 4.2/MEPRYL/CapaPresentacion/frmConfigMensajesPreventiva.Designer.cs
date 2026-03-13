@@ -77,21 +77,21 @@
             this.tpgMensajeTurno = new System.Windows.Forms.TabPage();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
-            this.label2 = new System.Windows.Forms.Label();
+            this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
             this.lblMotivoConsulta = new System.Windows.Forms.Label();
             this.cmbMotivoConsulta = new System.Windows.Forms.ComboBox();
             this.lblTipoExamen = new System.Windows.Forms.Label();
             this.cmbTipoExamen = new System.Windows.Forms.ComboBox();
             this.lblSubtipo = new System.Windows.Forms.Label();
             this.cmbSubtipos = new System.Windows.Forms.ComboBox();
-            this.txtArchivoTextoTurnos = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.tpgWhatsApp = new System.Windows.Forms.TabPage();
-            this.panel4 = new System.Windows.Forms.Panel();
+            this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
+            this.label2 = new System.Windows.Forms.Label();
             this.txtUbicacionArchivoTurno = new System.Windows.Forms.TextBox();
             this.btnUbicarArchivo = new System.Windows.Forms.Button();
-            this.panel5 = new System.Windows.Forms.Panel();
+            this.label3 = new System.Windows.Forms.Label();
+            this.txtArchivoTextoTurnos = new System.Windows.Forms.TextBox();
+            this.tpgWhatsApp = new System.Windows.Forms.TabPage();
+            this.panel4 = new System.Windows.Forms.Panel();
             this.tabPage4.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.panel3.SuspendLayout();
@@ -108,9 +108,9 @@
             this.tpgMensajeTurno.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.groupBox3.SuspendLayout();
+            this.tableLayoutPanel6.SuspendLayout();
             this.tableLayoutPanel5.SuspendLayout();
             this.panel4.SuspendLayout();
-            this.panel5.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabPage4
@@ -171,8 +171,8 @@
             // dgvCorreos
             // 
             this.dgvCorreos.AllowUserToAddRows = false;
-            this.dgvCorreos.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.dgvCorreos.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvCorreos.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.dgvCorreos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
@@ -196,7 +196,7 @@
             // 
             // txtNombreCorreo
             // 
-            this.txtNombreCorreo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.txtNombreCorreo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtNombreCorreo.Location = new System.Drawing.Point(3, 31);
             this.txtNombreCorreo.Name = "txtNombreCorreo";
@@ -215,7 +215,7 @@
             // 
             // groupBox1
             // 
-            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.Controls.Add(this.label14);
             this.groupBox1.Controls.Add(this.label13);
@@ -368,8 +368,8 @@
             // 
             // groupBox2
             // 
-            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox2.Controls.Add(this.tableLayoutPanel4);
             this.groupBox2.Location = new System.Drawing.Point(4, 136);
@@ -383,8 +383,8 @@
             // 
             // tableLayoutPanel4
             // 
-            this.tableLayoutPanel4.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.tableLayoutPanel4.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel4.ColumnCount = 2;
             this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 138F));
@@ -478,7 +478,7 @@
             // 
             // txtAsunto
             // 
-            this.txtAsunto.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.txtAsunto.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtAsunto.Location = new System.Drawing.Point(142, 32);
             this.txtAsunto.Margin = new System.Windows.Forms.Padding(4);
@@ -656,8 +656,8 @@
             // 
             // tbcCorreoE
             // 
-            this.tbcCorreoE.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.tbcCorreoE.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tbcCorreoE.Controls.Add(this.tpgMensajeTurno);
             this.tbcCorreoE.Controls.Add(this.tpgWhatsApp);
@@ -685,35 +685,122 @@
             this.tableLayoutPanel1.ColumnCount = 1;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.Controls.Add(this.groupBox3, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.txtArchivoTextoTurnos, 0, 3);
-            this.tableLayoutPanel1.Controls.Add(this.label3, 0, 2);
+            this.tableLayoutPanel1.Controls.Add(this.label3, 0, 1);
+            this.tableLayoutPanel1.Controls.Add(this.txtArchivoTextoTurnos, 0, 2);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 4;
+            this.tableLayoutPanel1.RowCount = 3;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 28F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 28F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(1077, 581);
             this.tableLayoutPanel1.TabIndex = 3;
             // 
             // groupBox3
             // 
-            this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox3.Controls.Add(this.panel5);
+            this.groupBox3.Controls.Add(this.tableLayoutPanel6);
             this.groupBox3.Controls.Add(this.tableLayoutPanel5);
+            this.groupBox3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox3.Location = new System.Drawing.Point(3, 3);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(1071, 146);
+            this.groupBox3.Padding = new System.Windows.Forms.Padding(4);
+            this.groupBox3.Size = new System.Drawing.Size(1071, 130);
             this.groupBox3.TabIndex = 0;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Ubicación de archivo";
             // 
+            // tableLayoutPanel6
+            // 
+            this.tableLayoutPanel6.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutPanel6.ColumnCount = 3;
+            this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 22F));
+            this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 30F));
+            this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 48F));
+            this.tableLayoutPanel6.Controls.Add(this.lblMotivoConsulta, 0, 0);
+            this.tableLayoutPanel6.Controls.Add(this.cmbMotivoConsulta, 0, 1);
+            this.tableLayoutPanel6.Controls.Add(this.lblTipoExamen, 1, 0);
+            this.tableLayoutPanel6.Controls.Add(this.cmbTipoExamen, 1, 1);
+            this.tableLayoutPanel6.Controls.Add(this.lblSubtipo, 2, 0);
+            this.tableLayoutPanel6.Controls.Add(this.cmbSubtipos, 2, 1);
+            this.tableLayoutPanel6.Location = new System.Drawing.Point(6, 55);
+            this.tableLayoutPanel6.Name = "tableLayoutPanel6";
+            this.tableLayoutPanel6.RowCount = 2;
+            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 28F));
+            this.tableLayoutPanel6.Size = new System.Drawing.Size(1056, 48);
+            this.tableLayoutPanel6.TabIndex = 16;
+            // 
+            // lblMotivoConsulta
+            // 
+            this.lblMotivoConsulta.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            this.lblMotivoConsulta.AutoSize = true;
+            this.lblMotivoConsulta.ForeColor = System.Drawing.Color.Black;
+            this.lblMotivoConsulta.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+            this.lblMotivoConsulta.Name = "lblMotivoConsulta";
+            this.lblMotivoConsulta.Size = new System.Drawing.Size(121, 16);
+            this.lblMotivoConsulta.TabIndex = 4;
+            this.lblMotivoConsulta.Text = "Motivo de Consulta";
+            // 
+            // cmbMotivoConsulta
+            // 
+            this.cmbMotivoConsulta.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmbMotivoConsulta.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbMotivoConsulta.Margin = new System.Windows.Forms.Padding(3, 2, 8, 2);
+            this.cmbMotivoConsulta.Name = "cmbMotivoConsulta";
+            this.cmbMotivoConsulta.Size = new System.Drawing.Size(220, 24);
+            this.cmbMotivoConsulta.TabIndex = 5;
+            this.cmbMotivoConsulta.SelectedIndexChanged += new System.EventHandler(this.cmbMotivoConsulta_SelectedIndexChanged);
+            // 
+            // lblTipoExamen
+            // 
+            this.lblTipoExamen.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            this.lblTipoExamen.AutoSize = true;
+            this.lblTipoExamen.ForeColor = System.Drawing.Color.Black;
+            this.lblTipoExamen.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+            this.lblTipoExamen.Name = "lblTipoExamen";
+            this.lblTipoExamen.Size = new System.Drawing.Size(106, 16);
+            this.lblTipoExamen.TabIndex = 0;
+            this.lblTipoExamen.Text = "Tipo de Examen";
+            // 
+            // cmbTipoExamen
+            // 
+            this.cmbTipoExamen.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmbTipoExamen.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbTipoExamen.Margin = new System.Windows.Forms.Padding(3, 2, 8, 2);
+            this.cmbTipoExamen.Name = "cmbTipoExamen";
+            this.cmbTipoExamen.Size = new System.Drawing.Size(300, 24);
+            this.cmbTipoExamen.TabIndex = 1;
+            this.cmbTipoExamen.SelectedIndexChanged += new System.EventHandler(this.cmbTipoExamen_SelectedIndexChanged);
+            // 
+            // lblSubtipo
+            // 
+            this.lblSubtipo.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            this.lblSubtipo.AutoSize = true;
+            this.lblSubtipo.ForeColor = System.Drawing.Color.Black;
+            this.lblSubtipo.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+            this.lblSubtipo.Name = "lblSubtipo";
+            this.lblSubtipo.Size = new System.Drawing.Size(124, 16);
+            this.lblSubtipo.TabIndex = 2;
+            this.lblSubtipo.Text = "Subtipo de Examen";
+            // 
+            // cmbSubtipos
+            // 
+            this.cmbSubtipos.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmbSubtipos.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbSubtipos.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.cmbSubtipos.Name = "cmbSubtipos";
+            this.cmbSubtipos.Size = new System.Drawing.Size(490, 24);
+            this.cmbSubtipos.TabIndex = 3;
+            this.cmbSubtipos.SelectedIndexChanged += new System.EventHandler(this.cmbSubtipos_SelectedIndexChanged);
+            // 
             // tableLayoutPanel5
             // 
-            this.tableLayoutPanel5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.tableLayoutPanel5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel5.ColumnCount = 3;
             this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 80F));
@@ -741,112 +828,9 @@
             this.label2.TabIndex = 1;
             this.label2.Text = "Ubicación ";
             // 
-            // lblMotivoConsulta
-            // 
-            this.lblMotivoConsulta.AutoSize = true;
-            this.lblMotivoConsulta.ForeColor = System.Drawing.Color.Black;
-            this.lblMotivoConsulta.Location = new System.Drawing.Point(57, 24);
-            this.lblMotivoConsulta.Name = "lblMotivoConsulta";
-            this.lblMotivoConsulta.Size = new System.Drawing.Size(124, 16);
-            this.lblMotivoConsulta.TabIndex = 4;
-            this.lblMotivoConsulta.Text = "Motivo  de Consulta";
-            // 
-            // cmbMotivoConsulta
-            // 
-            this.cmbMotivoConsulta.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmbMotivoConsulta.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbMotivoConsulta.Location = new System.Drawing.Point(15, 45);
-            this.cmbMotivoConsulta.Name = "cmbMotivoConsulta";
-            this.cmbMotivoConsulta.Size = new System.Drawing.Size(215, 24);
-            this.cmbMotivoConsulta.TabIndex = 5;
-            this.cmbMotivoConsulta.SelectedIndexChanged += new System.EventHandler(this.cmbMotivoConsulta_SelectedIndexChanged);
-            // 
-            // lblTipoExamen
-            // 
-            this.lblTipoExamen.AutoSize = true;
-            this.lblTipoExamen.ForeColor = System.Drawing.Color.Black;
-            this.lblTipoExamen.Location = new System.Drawing.Point(343, 24);
-            this.lblTipoExamen.Name = "lblTipoExamen";
-            this.lblTipoExamen.Size = new System.Drawing.Size(87, 16);
-            this.lblTipoExamen.TabIndex = 0;
-            this.lblTipoExamen.Text = "Tipo Examen";
-            // 
-            // cmbTipoExamen
-            // 
-            this.cmbTipoExamen.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmbTipoExamen.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbTipoExamen.Location = new System.Drawing.Point(258, 45);
-            this.cmbTipoExamen.Name = "cmbTipoExamen";
-            this.cmbTipoExamen.Size = new System.Drawing.Size(264, 24);
-            this.cmbTipoExamen.TabIndex = 1;
-            this.cmbTipoExamen.SelectedIndexChanged += new System.EventHandler(this.cmbTipoExamen_SelectedIndexChanged);
-            // 
-            // lblSubtipo
-            // 
-            this.lblSubtipo.AutoSize = true;
-            this.lblSubtipo.ForeColor = System.Drawing.Color.Black;
-            this.lblSubtipo.Location = new System.Drawing.Point(766, 24);
-            this.lblSubtipo.Name = "lblSubtipo";
-            this.lblSubtipo.Size = new System.Drawing.Size(53, 16);
-            this.lblSubtipo.TabIndex = 2;
-            this.lblSubtipo.Text = "Subtipo";
-            // 
-            // cmbSubtipos
-            // 
-            this.cmbSubtipos.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmbSubtipos.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbSubtipos.Location = new System.Drawing.Point(549, 45);
-            this.cmbSubtipos.Name = "cmbSubtipos";
-            this.cmbSubtipos.Size = new System.Drawing.Size(519, 24);
-            this.cmbSubtipos.TabIndex = 3;
-            this.cmbSubtipos.SelectedIndexChanged += new System.EventHandler(this.cmbSubtipos_SelectedIndexChanged);
-            // 
-            // txtArchivoTextoTurnos
-            // 
-            this.txtArchivoTextoTurnos.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtArchivoTextoTurnos.Location = new System.Drawing.Point(3, 211);
-            this.txtArchivoTextoTurnos.Multiline = true;
-            this.txtArchivoTextoTurnos.Name = "txtArchivoTextoTurnos";
-            this.txtArchivoTextoTurnos.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.txtArchivoTextoTurnos.Size = new System.Drawing.Size(1071, 324);
-            this.txtArchivoTextoTurnos.TabIndex = 1;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.ForeColor = System.Drawing.Color.Black;
-            this.label3.Location = new System.Drawing.Point(3, 180);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(159, 16);
-            this.label3.TabIndex = 2;
-            this.label3.Text = "Ver contenido del archivo";
-            // 
-            // tpgWhatsApp
-            // 
-            this.tpgWhatsApp.BackColor = System.Drawing.SystemColors.Control;
-            this.tpgWhatsApp.Location = new System.Drawing.Point(4, 25);
-            this.tpgWhatsApp.Margin = new System.Windows.Forms.Padding(4);
-            this.tpgWhatsApp.Name = "tpgWhatsApp";
-            this.tpgWhatsApp.Size = new System.Drawing.Size(1077, 581);
-            this.tpgWhatsApp.TabIndex = 2;
-            this.tpgWhatsApp.Text = "WhatsApp";
-            // 
-            // panel4
-            // 
-            this.panel4.Controls.Add(this.tbcCorreoE);
-            this.panel4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel4.Location = new System.Drawing.Point(0, 25);
-            this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(1098, 630);
-            this.panel4.TabIndex = 292;
-            // 
             // txtUbicacionArchivoTurno
             // 
-            this.txtUbicacionArchivoTurno.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.txtUbicacionArchivoTurno.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtUbicacionArchivoTurno.Location = new System.Drawing.Point(83, 3);
             this.txtUbicacionArchivoTurno.Name = "txtUbicacionArchivoTurno";
@@ -867,19 +851,44 @@
             this.btnUbicarArchivo.UseVisualStyleBackColor = true;
             this.btnUbicarArchivo.Click += new System.EventHandler(this.btnUbicarArchivo_Click);
             // 
-            // panel5
+            // label3
             // 
-            this.panel5.Controls.Add(this.cmbMotivoConsulta);
-            this.panel5.Controls.Add(this.cmbSubtipos);
-            this.panel5.Controls.Add(this.lblMotivoConsulta);
-            this.panel5.Controls.Add(this.lblSubtipo);
-            this.panel5.Controls.Add(this.cmbTipoExamen);
-            this.panel5.Controls.Add(this.lblTipoExamen);
-            this.panel5.Location = new System.Drawing.Point(-3, 55);
-            this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(1074, 100);
-            this.panel5.TabIndex = 15;
-            this.panel5.Paint += new System.Windows.Forms.PaintEventHandler(this.panel5_Paint);
+            this.label3.AutoSize = true;
+            this.label3.ForeColor = System.Drawing.Color.Black;
+            this.label3.Location = new System.Drawing.Point(3, 136);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(159, 16);
+            this.label3.TabIndex = 2;
+            this.label3.Text = "Ver contenido del archivo";
+            // 
+            // txtArchivoTextoTurnos
+            // 
+            this.txtArchivoTextoTurnos.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtArchivoTextoTurnos.Location = new System.Drawing.Point(3, 163);
+            this.txtArchivoTextoTurnos.Multiline = true;
+            this.txtArchivoTextoTurnos.Name = "txtArchivoTextoTurnos";
+            this.txtArchivoTextoTurnos.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.txtArchivoTextoTurnos.Size = new System.Drawing.Size(1071, 415);
+            this.txtArchivoTextoTurnos.TabIndex = 1;
+            // 
+            // tpgWhatsApp
+            // 
+            this.tpgWhatsApp.BackColor = System.Drawing.SystemColors.Control;
+            this.tpgWhatsApp.Location = new System.Drawing.Point(4, 25);
+            this.tpgWhatsApp.Margin = new System.Windows.Forms.Padding(4);
+            this.tpgWhatsApp.Name = "tpgWhatsApp";
+            this.tpgWhatsApp.Size = new System.Drawing.Size(1077, 581);
+            this.tpgWhatsApp.TabIndex = 2;
+            this.tpgWhatsApp.Text = "WhatsApp";
+            // 
+            // panel4
+            // 
+            this.panel4.Controls.Add(this.tbcCorreoE);
+            this.panel4.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel4.Location = new System.Drawing.Point(0, 25);
+            this.panel4.Name = "panel4";
+            this.panel4.Size = new System.Drawing.Size(1098, 630);
+            this.panel4.TabIndex = 292;
             // 
             // frmConfigMensajesPreventiva
             // 
@@ -915,11 +924,11 @@
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
             this.groupBox3.ResumeLayout(false);
+            this.tableLayoutPanel6.ResumeLayout(false);
+            this.tableLayoutPanel6.PerformLayout();
             this.tableLayoutPanel5.ResumeLayout(false);
             this.tableLayoutPanel5.PerformLayout();
             this.panel4.ResumeLayout(false);
-            this.panel5.ResumeLayout(false);
-            this.panel5.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -986,6 +995,6 @@
         private System.Windows.Forms.ComboBox cmbMotivoConsulta;
         private System.Windows.Forms.TextBox txtUbicacionArchivoTurno;
         protected System.Windows.Forms.Button btnUbicarArchivo;
-        private System.Windows.Forms.Panel panel5;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel6;
     }
 }

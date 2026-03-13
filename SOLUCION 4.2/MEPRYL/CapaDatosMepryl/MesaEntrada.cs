@@ -17,7 +17,7 @@ namespace CapaDatosMepryl
         {
             return SQLConnector.obtenerTablaSegunConsultaString(@"select id, descripcion
             from dbo.Especialidad
-            where idMotivoConsulta = " + idMotivoConsulta + "  order by convert(int,codigo)");            
+            where idMotivoConsulta = " + idMotivoConsulta + "  order by convert(int,codigo)");
         }
 
         public DataTable cargarTiposDeExamenBuscar(string strValor)
@@ -163,11 +163,19 @@ namespace CapaDatosMepryl
             DataTable retorno = crearTablaRetornoGrilla();
             DataTable consulta = SQLConnector.obtenerTablaSegunConsultaString(
              @"select c.id as IdConsulta, c.pacienteID as IdPaciente, 
-            te.id as IdTipoExamen, te.idTurno as IdTurno, Format(c.fecha, 'dd-MM-yyyy hh:mm', 'en-US') as Fecha, c.nroOrden as 'Nº Ingreso', c.tipo as Tipo, c.identificador as 'Nº Orden',
-            c.observaciones as Observaciones, e.descripcion as 'Tipo de Exámen', te.rm, te.modificado
+            te.id as IdTipoExamen, te.idTurno as IdTurno, c.fecha as Fecha, c.nroOrden as NroIngreso, c.tipo as Tipo, c.identificador as NroOrden,
+            c.observaciones as Observaciones, e.descripcion as TipoExamen, te.rm, te.modificado,
+            COALESCE(p.dni, pl.dni) as Dni,
+            COALESCE(p.apellido, pl.apellido) as Apellido,
+            COALESCE(p.nombres, pl.nombres) as Nombres,
+            COALESCE(CONVERT(VARCHAR(10), p.fechaNacimiento, 103), CONVERT(VARCHAR(10), pl.fechaNacimiento, 103)) as FechaNaci,
+            ISNULL(t.observaciones, '') as ObservacionesTurno
             from Consulta c
             inner join dbo.TipoExamenDePaciente te on te.idConsulta = c.id
             inner join dbo.Especialidad e on te.idEspecialidad = e.id
+            left join dbo.Paciente p on p.id = c.pacienteID
+            left join dbo.PacienteLaboral pl on pl.id = c.pacienteID
+            left join dbo.Turno t on t.id = te.idTurno and te.idTurno <> '00000000-0000-0000-0000-000000000000'
             where convert(Date,c.fecha) = '" + DateTime.Today.ToString("yyyy-MM-dd") + "' and c.valido = '1' and c.nroOrden != '0' and c.tipo != 'V' order by c.nroOrden"
           );
             foreach (DataRow row in consulta.Rows)
@@ -180,13 +188,23 @@ namespace CapaDatosMepryl
         public DataTable cargarMesaEntradaVista()
         {
             DataTable retorno = crearTablaRetornoGrilla();
-            DataTable consulta = SQLConnector.obtenerTablaSegunConsultaString(@"select c.id as IdConsulta, c.pacienteID as IdPaciente, 
-            te.id as IdTipoExamen, te.idTurno as IdTurno, Format(c.fecha, 'dd-MM-yyyy hh:mm', 'en-US') as Fecha, c.nroOrden as 'Nº Ingreso', c.tipo as Tipo, c.identificador as 'Nº Orden',
-            c.observaciones as Observaciones, e.descripcion as 'Tipo de Exámen', te.rm, te.modificado
+            DataTable consulta = SQLConnector.obtenerTablaSegunConsultaString(
+             @"select c.id as IdConsulta, c.pacienteID as IdPaciente, 
+            te.id as IdTipoExamen, te.idTurno as IdTurno, c.fecha as Fecha, c.nroOrden as NroIngreso, c.tipo as Tipo, c.identificador as NroOrden,
+            c.observaciones as Observaciones, e.descripcion as TipoExamen, te.rm, te.modificado,
+            COALESCE(p.dni, pl.dni) as Dni,
+            COALESCE(p.apellido, pl.apellido) as Apellido,
+            COALESCE(p.nombres, pl.nombres) as Nombres,
+            COALESCE(CONVERT(VARCHAR(10), p.fechaNacimiento, 103), CONVERT(VARCHAR(10), pl.fechaNacimiento, 103)) as FechaNaci,
+            ISNULL(t.observaciones, '') as ObservacionesTurno
             from Consulta c
             inner join dbo.TipoExamenDePaciente te on te.idConsulta = c.id
             inner join dbo.Especialidad e on te.idEspecialidad = e.id
-            where convert(Date,c.fecha) = '" + DateTime.Today.ToShortDateString() + "' and c.valido = '1' and c.nroOrden != '0' and c.tipo != 'V' order by c.nroOrden");
+            left join dbo.Paciente p on p.id = c.pacienteID
+            left join dbo.PacienteLaboral pl on pl.id = c.pacienteID
+            left join dbo.Turno t on t.id = te.idTurno and te.idTurno <> '00000000-0000-0000-0000-000000000000'
+            where convert(Date,c.fecha) = '" + DateTime.Today.ToString("yyyy-MM-dd") + "' and c.valido = '1' and c.nroOrden != '0' and c.tipo != 'V' order by c.nroOrden"
+          );
             foreach (DataRow row in consulta.Rows)
             {
                 procesarFilaTablaGrilla(ref retorno, row);
@@ -223,14 +241,16 @@ namespace CapaDatosMepryl
         }
         private void procesarFilaTablaGrilla(ref DataTable retorno, DataRow fila)
         {
-            List<object> list = cargarDatosPaciente(new Guid(fila.ItemArray[1].ToString()));
-            Guid idTurno = new Guid(fila[3].ToString());
             retorno.Rows.Add(fila.ItemArray[0], fila.ItemArray[1], fila.ItemArray[2], fila.ItemArray[3],
                 Convert.ToDateTime(fila.ItemArray[4]).ToShortDateString(), String.Format("{0:HH:mm}", Convert.ToDateTime(fila.ItemArray[4])),
                 fila.ItemArray[5], fila.ItemArray[6], fila.ItemArray[9].ToString() + " " + fila.ItemArray[11].ToString(), fila.ItemArray[7],
-                devolverStringLista(list, 0), devolverStringLista(list, 1), devolverStringLista(list, 2),
-                cargarObservacionesTurno(new Guid(fila.ItemArray[3].ToString())), fila.ItemArray[8],
-                devolverBooleano(fila.ItemArray[10]), devolverStringLista(list, 3));
+                fila[12] == DBNull.Value ? string.Empty : fila[12].ToString(),
+                fila[13] == DBNull.Value ? string.Empty : fila[13].ToString(),
+                fila[14] == DBNull.Value ? string.Empty : fila[14].ToString(),
+                fila[16] == DBNull.Value ? string.Empty : fila[16].ToString(),
+                fila.ItemArray[8],
+                devolverBooleano(fila.ItemArray[10]),
+                fila[15] == DBNull.Value ? string.Empty : fila[15].ToString());
         }
 
         private bool devolverBooleano(object objeto)
@@ -295,7 +315,7 @@ namespace CapaDatosMepryl
                 retorno[6] = datos.Rows[0][6].ToString();
 
             }
-            return retorno;           
+            return retorno;
         }
 
         private List<object> cargarDatosPacienteLaboral(Guid idPaciente)
@@ -346,14 +366,19 @@ namespace CapaDatosMepryl
         {
             DataTable retorno = crearTablaRetornoTurnos();
             DataTable turnosPendientesIngreso = SQLConnector.obtenerTablaSegunConsultaString(@"select t.id as Id, 
-            convert(date,t.fecha) as Fecha,t.hora as Hora, e.descripcion as 'Tipo de Exámen', 
+            convert(date,t.fecha) as Fecha, t.hora as Hora, e.descripcion as 'Tipo de Exámen', 
             mc.nombre as 'Motivo de Consulta', t.codigo as Código, 
             t.observaciones as Observaciones, t.pacienteID as IdPaciente, te.id,
-            te.modificado           
+            te.modificado,
+            COALESCE(p.dni, pl.dni) as Dni,
+            COALESCE(p.apellido, pl.apellido) as Apellido,
+            COALESCE(p.nombres, pl.nombres) as Nombres
             from dbo.Turno t inner join dbo.Horario h on t.horarioID = h.id
             inner join dbo.Especialidad e on h.especialidadID = e.id
             inner join dbo.MotivoDeConsulta mc on e.idMotivoConsulta = mc.id
             inner join dbo.TipoExamenDePaciente te on te.idTurno = t.id
+            left join dbo.Paciente p on p.id = t.pacienteID
+            left join dbo.PacienteLaboral pl on pl.id = t.pacienteID
             where t.recepcion = '1' and mc.id = " + idMotivo + " and (t.mesaDeEntrada = '0' or t.mesaDeEntrada = '')");
             foreach (DataRow row in turnosPendientesIngreso.Rows)
             {
@@ -382,13 +407,13 @@ namespace CapaDatosMepryl
 
         private void procesarFilaTablaTurnos(ref DataTable retorno, DataRow fila)
         {
-            List<object> list = cargarDatosPaciente(new Guid(fila.ItemArray[7].ToString()));
             retorno.Rows.Add(fila.ItemArray[0],
             Convert.ToDateTime(fila.ItemArray[1]).ToShortDateString(), fila.ItemArray[2],
             fila.ItemArray[3].ToString() + " " + fila.ItemArray[9].ToString(),
-            devolverStringLista(list, 1), devolverStringLista(list, 2), 
-            fila.ItemArray[4],  fila.ItemArray[5], fila.ItemArray[6], fila.ItemArray[7],
-            fila.ItemArray[8], devolverStringLista(list, 0));
+            fila[11] == DBNull.Value ? string.Empty : fila[11].ToString(),
+            fila[12] == DBNull.Value ? string.Empty : fila[12].ToString(),
+            fila.ItemArray[4], fila.ItemArray[5], fila.ItemArray[6], fila.ItemArray[7],
+            fila.ItemArray[8], fila[10] == DBNull.Value ? string.Empty : fila[10].ToString());
         }
 
         public Entidades.MesaEntrada cargarInformacionConsulta(Guid idConsulta)
@@ -442,7 +467,7 @@ namespace CapaDatosMepryl
                     DataTable empresaYTarea = SQLConnector.obtenerTablaSegunConsultaString(@"select e.razonSocial, 
                     ete.tarea, e.id from dbo.empresaPorTipoDeExamen ete inner join dbo.Empresa e on ete.idEmpresa = e.id
                     where ete.idTipoExamen = '" + idTipoExamen.Rows[0][0].ToString() + "'");
-                    procesarRetornoEmpresaOClub(ref retorno, empresaYTarea, "Empresa", "Tarea", "IdEmpresa");            
+                    procesarRetornoEmpresaOClub(ref retorno, empresaYTarea, "Empresa", "Tarea", "IdEmpresa");
                 }
             }
             return retorno;
@@ -1078,7 +1103,7 @@ namespace CapaDatosMepryl
         }
         private DataTable cargarInfoBasicaReportes(string idConsulta, bool laboral)
         {
-            DataTable info=new DataTable();
+            DataTable info = new DataTable();
             if (laboral)
             {
                 info = SQLConnector.obtenerTablaSegunConsultaString(@"select c.id as idConsulta, c.nroOrden, c.identificador, tep.id as idTipoExamen,e.descripcion, tep.modificado, c.fecha, tep.rm, c.pacienteID, pl.mail 
@@ -1136,7 +1161,7 @@ namespace CapaDatosMepryl
             {
                 SQLConnector.executeProcedure("sp_clubesPorTipoExamen_Add", addClub, entidad.TipoExamen.IdTipoExamenPaciente,
                     new Guid(r.ItemArray[0].ToString()));
-            }          
+            }
         }
 
         public void actualizarEmpresaPorTipoExamen(string idConsulta, string idPaciente, string idEmpresa)
@@ -1155,7 +1180,7 @@ namespace CapaDatosMepryl
                 SQLConnector.executeProcedure("sp_empresaPorTipoDeExamen_Add", addEmpresa, entidad.TipoExamen.IdTipoExamenPaciente,
                     new Guid(idEmpresa), empresaActual.Rows[0][0].ToString());
 
-            }     
+            }
         }
 
         public string ObtenerDNI(string strIdPaciente)
@@ -1210,12 +1235,12 @@ namespace CapaDatosMepryl
 
         private void procesarFilaTablaGrillaPlanillaCompleta(ref DataTable retorno, DataRow fila)
         {
-            Entidades.MesaEntrada paciente = cargarInformacionConsulta(new Guid(fila.ItemArray[0].ToString())); 
+            Entidades.MesaEntrada paciente = cargarInformacionConsulta(new Guid(fila.ItemArray[0].ToString()));
             List<object> list = cargarDatosPaciente(new Guid(fila.ItemArray[1].ToString()));
             DataTable clubesOEmpresa = cargarClubesOEmpresa(new Guid(fila.ItemArray[0].ToString()));
 
             //Guid idTurno = new Guid(fila[3].ToString());
-            
+
 
             retorno.Rows.Add(fila.ItemArray[0], fila.ItemArray[1], fila.ItemArray[2], fila.ItemArray[3],
                 Convert.ToDateTime(fila.ItemArray[4]).ToShortDateString(), String.Format("{0:HH:mm}", Convert.ToDateTime(fila.ItemArray[4])),
