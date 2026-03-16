@@ -108,11 +108,11 @@ namespace CapaDatosMepryl
         // COMPROBANTES
         // ─────────────────────────────────────────────────────────────────────
 
-        /// <summary>Obtiene los comprobantes emitidos para una consulta.</summary>
-        public DataTable ObtenerComprobantesPorConsulta(Guid idConsulta)
+        /// <summary>Obtiene los comprobantes emitidos para un turno.</summary>
+        public DataTable ObtenerComprobantesPorTurno(Guid idTurno)
         {
             return SQLConnector.obtenerTablaSegunConsultaString(
-                $"SELECT * FROM dbo.FacturaElectronica WHERE idConsulta = '{idConsulta}' ORDER BY fechaCreacion DESC");
+                $"SELECT * FROM dbo.FacturaElectronica WHERE idTurno = '{idTurno}' ORDER BY fechaCreacion DESC");
         }
 
         /// <summary>Obtiene un comprobante por su ID.</summary>
@@ -143,7 +143,7 @@ namespace CapaDatosMepryl
 
         /// <summary>Inserta un comprobante nuevo (antes de llamar a AFIP).</summary>
         public Guid InsertarComprobante(
-            Guid idConsulta, int tipoComprobante, int puntoVenta, long nroComprobante,
+            Guid idTurno, int tipoComprobante, int puntoVenta, long nroComprobante,
             string cuitReceptor, string nombreReceptor, string condicionIVAReceptor,
             decimal importeNeto, decimal importeIVA, decimal importeTotal,
             int concepto, string observaciones)
@@ -156,12 +156,12 @@ namespace CapaDatosMepryl
 
             string sql = $@"
                 INSERT INTO dbo.FacturaElectronica
-                    (id, idConsulta, tipoComprobante, puntoVenta, nroComprobante,
+                    (id, idTurno, tipoComprobante, puntoVenta, nroComprobante,
                      cuitReceptor, nombreReceptor, condicionIVAReceptor,
                      importeNeto, importeIVA, importeTotal,
                      concepto, estado, observaciones, fechaEmision, fechaCreacion)
                 VALUES
-                    ('{nuevoId}', '{idConsulta}', {tipoComprobante}, {puntoVenta}, {nroComprobante},
+                    ('{nuevoId}', '{idTurno}', {tipoComprobante}, {puntoVenta}, {nroComprobante},
                      '{cuitSafe}', '{nombreSafe}', '{condicionIVAReceptor}',
                      {importeNeto.ToString(System.Globalization.CultureInfo.InvariantCulture)},
                      {importeIVA.ToString(System.Globalization.CultureInfo.InvariantCulture)},
@@ -226,9 +226,9 @@ namespace CapaDatosMepryl
         public DataTable ListarComprobantesDia()
         {
             return SQLConnector.obtenerTablaSegunConsultaString(
-                @"SELECT f.*, c.nroOrden, c.identificador
+                @"SELECT f.*, t.nroOrden, t.codigo
                   FROM dbo.FacturaElectronica f
-                  LEFT JOIN dbo.Consulta c ON c.id = f.idConsulta
+                  LEFT JOIN dbo.Turno t ON t.id = f.idTurno
                   WHERE CONVERT(DATE, f.fechaCreacion) = CONVERT(DATE, GETDATE())
                   ORDER BY f.fechaCreacion DESC");
         }
@@ -237,9 +237,9 @@ namespace CapaDatosMepryl
         public DataTable ListarComprobantesEntreFechas(DateTime desde, DateTime hasta)
         {
             return SQLConnector.obtenerTablaSegunConsultaString(
-                $@"SELECT f.*, c.nroOrden, c.identificador
+                $@"SELECT f.*, t.nroOrden, t.codigo
                    FROM dbo.FacturaElectronica f
-                   LEFT JOIN dbo.Consulta c ON c.id = f.idConsulta
+                   LEFT JOIN dbo.Turno t ON t.id = f.idTurno
                    WHERE CONVERT(DATE, f.fechaEmision) BETWEEN '{desde:yyyy-MM-dd}' AND '{hasta:yyyy-MM-dd}'
                    ORDER BY f.fechaEmision DESC, f.nroComprobante ASC");
         }

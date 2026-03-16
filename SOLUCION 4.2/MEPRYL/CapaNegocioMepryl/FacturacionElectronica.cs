@@ -59,7 +59,7 @@ namespace CapaNegocioMepryl
         ///   4. Llama a AFIP (WSAA + WSFE).
         ///   5. Guarda el CAE o marca como rechazado.
         /// </summary>
-        /// <param name="idConsulta">ID de la consulta médica a facturar</param>
+        /// <param name="idTurno">ID del turno a facturar</param>
         /// <param name="tipoComprobante">1=FactA, 6=FactB, 11=FactC</param>
         /// <param name="cuitReceptor">CUIT del paciente/empresa. "0" para consumidor final.</param>
         /// <param name="nombreReceptor">Razón social o nombre del receptor</param>
@@ -68,7 +68,7 @@ namespace CapaNegocioMepryl
         /// <param name="alicuotaIVA">Porcentaje de IVA: 21, 10.5 o 0</param>
         /// <param name="concepto">1=Productos, 2=Servicios (prestaciones médicas), 3=Ambos</param>
         public Entidades.Resultado EmitirFactura(
-            Guid    idConsulta,
+            Guid    idTurno,
             int     tipoComprobante,
             string  cuitReceptor,
             string  nombreReceptor,
@@ -121,7 +121,7 @@ namespace CapaNegocioMepryl
 
                 // 4. Insertar en BD como "Pendiente"
                 Guid idFactura = _datos.InsertarComprobante(
-                    idConsulta, tipoComprobante, puntoVenta, proximoNro,
+                    idTurno, tipoComprobante, puntoVenta, proximoNro,
                     cuitReceptor, nombreReceptor, condicionIVAReceptor,
                     impNeto, impIVA, importeTotal,
                     concepto, "");
@@ -162,9 +162,9 @@ namespace CapaNegocioMepryl
         // CONSULTAS DE COMPROBANTES
         // ─────────────────────────────────────────────────────────────────────
 
-        public DataTable ObtenerComprobantesPorConsulta(Guid idConsulta)
+        public DataTable ObtenerComprobantesPorTurno(Guid idTurno)
         {
-            return _datos.ObtenerComprobantesPorConsulta(idConsulta);
+            return _datos.ObtenerComprobantesPorTurno(idTurno);
         }
 
         public DataTable ListarComprobantesDia()

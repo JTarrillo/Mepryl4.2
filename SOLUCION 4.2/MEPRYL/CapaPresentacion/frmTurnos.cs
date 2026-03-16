@@ -292,8 +292,17 @@ namespace CapaPresentacion
             {
                 foreach (DataGridViewRow fila in dgv.Rows)
                 {
-                    object cellValue = fila.Cells[18].Value;  // ✅ Cambiar de 17 a 18
+                    // Primero verificar si la fila tiene RESERVA (columna 12)
+                    object cellReserva = fila.Cells[12].Value;
+                    if (cellReserva != null && !string.IsNullOrEmpty(cellReserva.ToString()))
+                    {
+                        fila.DefaultCellStyle.BackColor = System.Drawing.Color.LightGray;
+                        System.Diagnostics.Debug.WriteLine($"Fila {fila.Index} - RESERVADA para: {cellReserva}");
+                        continue;
+                    }
 
+                    // Si no tiene reserva, colorear según ESTADO (columna 18)
+                    object cellValue = fila.Cells[18].Value;
                     if (cellValue == null || string.IsNullOrEmpty(cellValue.ToString()))
                         continue;
 
@@ -303,12 +312,28 @@ namespace CapaPresentacion
                         continue;
                     }
 
-                    System.Diagnostics.Debug.WriteLine($"Estado: {valor}");
+                    System.Diagnostics.Debug.WriteLine($"Fila {fila.Index} - Estado: {valor}");
 
-                    if (valor == 2)
+                    switch (valor)
                     {
-                        fila.DefaultCellStyle.BackColor = System.Drawing.Color.MistyRose;
-                        System.Diagnostics.Debug.WriteLine($"✅ Coloreada fila con estado 2");
+                        case 1: // Libre
+                            fila.DefaultCellStyle.BackColor = System.Drawing.Color.White;
+                            break;
+                        case 2: // Asignado
+                            fila.DefaultCellStyle.BackColor = System.Drawing.Color.MistyRose;
+                            System.Diagnostics.Debug.WriteLine($"Fila {fila.Index} ASIGNADA (MistyRose)");
+                            break;
+                        case 3: // Bloqueado
+                            fila.DefaultCellStyle.BackColor = System.Drawing.Color.LightGray;
+                            System.Diagnostics.Debug.WriteLine($"Fila {fila.Index} BLOQUEADA (LightGray)");
+                            break;
+                        case 4: // Reservado
+                            fila.DefaultCellStyle.BackColor = System.Drawing.Color.LightSteelBlue;
+                            System.Diagnostics.Debug.WriteLine($"Fila {fila.Index} RESERVADA (LightSteelBlue)");
+                            break;
+                        default:
+                            fila.DefaultCellStyle.BackColor = System.Drawing.Color.White;
+                            break;
                     }
                 }
             }

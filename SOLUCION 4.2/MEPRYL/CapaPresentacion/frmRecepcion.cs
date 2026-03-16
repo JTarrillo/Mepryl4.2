@@ -409,7 +409,10 @@ namespace CapaPresentacion
             }
             if (e.ColumnIndex == 1 && e.RowIndex >= 0)
             {
-                ventanilla.actualizarAbono(new Guid(dgv.SelectedRows[0].Cells[2].Value.ToString()), obtenerValorBooleano(e.RowIndex, 1));
+                bool nuevoValorAbono = obtenerValorBooleano(e.RowIndex, 1);
+                ventanilla.actualizarAbono(new Guid(dgv.SelectedRows[0].Cells[2].Value.ToString()), nuevoValorAbono);
+                if (nuevoValorAbono)
+                    EmitirFacturaAlCobrar(e.RowIndex);
             }
             if (e.ColumnIndex == 16 && e.RowIndex >= 0)
             {
@@ -673,6 +676,56 @@ namespace CapaPresentacion
         private void dgv_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
 
+        }
+
+        /// <summary>
+        /// Emite factura electronica AFIP cuando el operador marca el Abono (cobro) en Ventanilla.
+        /// Columnas del dgv: [2]=IdTurno, [8]=Paciente, [9]=Importe
+        /// </summary>
+        private void EmitirFacturaAlCobrar(int rowIndex)
+        {
+            try
+            {
+                Guid    idTurno       = new Guid(dgv.Rows[rowIndex].Cells[2].Value.ToString());
+                string  nombrePaciente = dgv.Rows[rowIndex].Cells[8].Value?.ToString() ?? "";
+                string  importeStr    = dgv.Rows[rowIndex].Cells[9].Value?.ToString() ?? "0";
+
+                // Parsear importe (puede tener separador local ',' o '.')
+                if (!decimal.TryParse(importeStr,
+                        System.Globalization.NumberStyles.Any,
+                        System.Globalization.CultureInfo.CurrentCulture,
+                        out decimal importeTotal) || importeTotal <= 0)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[AFIP] Importe no v\u00e1lido ({importeStr}) para turno {idTurno}");
+                    return; // Sin importe no se puede facturar
+                }
+
+                var facturacion = new CapaNegocioMepryl.FacturacionElectronica();
+                var resultado   = facturacion.EmitirFactura(
+                    idTurno:              idTurno,
+                    tipoComprobante:      6,          // Factura B — Consumidor Final por defecto
+                    cuitReceptor:         "0",
+                    nombreReceptor:       nombrePaciente,
+                    condicionIVAReceptor: "CF",
+                    importeTotal:         importeTotal,
+                    alicuotaIVA:          21m,
+                    concepto:             2            // Servicios m\u00e9dicos
+                );
+
+                if (resultado.Modo == 1)
+                    MessageBox.Show("Factura electr\u00f3nica emitida.\n" + resultado.Mensaje,
+                        "AFIP \u2014 Autorizado", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                else if (resultado.Modo == 0)
+                    MessageBox.Show("AFIP rechaz\u00f3 el comprobante:\n" + resultado.Mensaje,
+                        "AFIP \u2014 Rechazado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                // Modo -1 = error t\u00e9cnico (ej: certificado no configurado) → solo log en Debug
+                else
+                    System.Diagnostics.Debug.WriteLine("[AFIP] Error t\u00e9cnico: " + resultado.Mensaje);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("[AFIP] Excepci\u00f3n en EmitirFacturaAlCobrar: " + ex.Message);
+            }
         }
     }
 }
