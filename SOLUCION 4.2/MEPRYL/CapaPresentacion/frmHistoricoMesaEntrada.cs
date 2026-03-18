@@ -560,8 +560,18 @@ namespace CapaPresentacion
 
         private void botMostrarEstudios_Click(object sender, EventArgs e)
         {
-            if (dgv.Columns["Estudios"].Visible) { dgv.Columns["Estudios"].Visible = false; }
-            else { dgv.Columns["Estudios"].Visible = true; }
+            if (dgv.Columns["Estudios"].Visible)
+            {
+                dgv.Columns["Estudios"].Visible = false;
+            }
+            else
+            {
+                dgv.Columns["Estudios"].Visible = true;
+                // Permitir scroll horizontal y auto-ajuste de ancho
+                dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
+                dgv.Columns["Estudios"].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                dgv.ScrollBars = ScrollBars.Both;
+            }
         }
 
         private void botonRango_Click(object sender, EventArgs e)
