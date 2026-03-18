@@ -68,18 +68,18 @@ namespace CapaPresentacion
 
         private void llenarDataGrids()
         {
-            dgvClinico.DataSource = tipoExamen.Clinico;
-            dgvHematologia.DataSource = tipoExamen.Hematologia;
-            dgvQuimicaHematica.DataSource = tipoExamen.QuimicaHematica;
-            dgvSerologia.DataSource = tipoExamen.Serologia;
-            dgvPerfilLipidico.DataSource = tipoExamen.PerfilLipidico;
-            dgvBacteriologia.DataSource = tipoExamen.Bacteriologia;
-            dgvOrina.DataSource = tipoExamen.Orina;
-            dgvLaboralesBasicas.DataSource = tipoExamen.LaboralesBasicas;
-            dgvCraneoYMSuperior.DataSource = tipoExamen.CraneoYMSuperior;
-            dgvTroncoYPelvis.DataSource = tipoExamen.TroncoYPelvis;
-            dgvMiembroInferior.DataSource = tipoExamen.MiembroInferior;
-            dgvEstComplementarios.DataSource = tipoExamen.EstComplementarios;
+            dgvClinico.DataSource = OrdenarDataTable(tipoExamen.Clinico);
+            dgvHematologia.DataSource = OrdenarDataTable(tipoExamen.Hematologia);
+            dgvQuimicaHematica.DataSource = OrdenarDataTable(tipoExamen.QuimicaHematica);
+            dgvSerologia.DataSource = OrdenarDataTable(tipoExamen.Serologia);
+            dgvPerfilLipidico.DataSource = OrdenarDataTable(tipoExamen.PerfilLipidico);
+            dgvBacteriologia.DataSource = OrdenarDataTable(tipoExamen.Bacteriologia);
+            dgvOrina.DataSource = OrdenarDataTable(tipoExamen.Orina);
+            dgvLaboralesBasicas.DataSource = OrdenarDataTable(tipoExamen.LaboralesBasicas);
+            dgvCraneoYMSuperior.DataSource = OrdenarDataTable(tipoExamen.CraneoYMSuperior);
+            dgvTroncoYPelvis.DataSource = OrdenarDataTable(tipoExamen.TroncoYPelvis);
+            dgvMiembroInferior.DataSource = OrdenarDataTable(tipoExamen.MiembroInferior);
+            dgvEstComplementarios.DataSource = OrdenarDataTable(tipoExamen.EstComplementarios);
             ocultarColumnasDgv();
             actualizarResumen();
         }
@@ -180,7 +180,7 @@ namespace CapaPresentacion
                 tep.actualizarEstudiosPorExamen(tipoExamen);
                 objDelegateModificado();
                 this.Close();
-            } 
+            }
         }
 
         private Entidades.TipoExamen llenarDatosEntidad()
@@ -214,6 +214,25 @@ namespace CapaPresentacion
         private void tabControl_SelectedIndexChanged(object sender, EventArgs e)
         {
             actualizarResumen();
+        }
+
+        // Método auxiliar para ordenar DataTable alfabéticamente por la columna de descripción
+        private DataTable OrdenarDataTable(DataTable dt)
+        {
+            if (dt == null || dt.Rows.Count == 0)
+                return dt;
+
+            // Mostrar los nombres de las columnas para identificar el nombre correcto
+            foreach (DataColumn col in dt.Columns)
+            {
+                //MessageBox.Show(col.ColumnName);
+                System.Diagnostics.Debug.WriteLine(col.ColumnName);
+            }
+
+            // Cambia "Descripcion" por el nombre real de la columna de texto si es diferente
+            DataView dv = dt.DefaultView;
+            dv.Sort = "Item ASC";
+            return dv.ToTable();
         }
     }
 }

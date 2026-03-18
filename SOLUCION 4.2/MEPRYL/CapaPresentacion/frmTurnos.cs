@@ -1163,6 +1163,7 @@ namespace CapaPresentacion
         {
             frmTipoExamen fTipoExamen = new frmTipoExamen(tipoExamenActual);
             fTipoExamen.objDelegateDevolverTipoExamen = new frmTipoExamen.DelegateDevolverTipoExamen(cargarTipoExamenPreventiva);
+            fTipoExamen.Size = new Size(1200, 800);
             fTipoExamen.ShowDialog();
         }
 
