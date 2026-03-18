@@ -1,4 +1,4 @@
-﻿using CapaNegocioMepryl;
+using CapaNegocioMepryl;
 using CapaPresentacionBase;
 using Comunes;
 using System;
@@ -9,7 +9,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-
+using System.Web;
 namespace CapaPresentacion
 {
     public partial class frmTurnos : DevExpress.XtraEditors.XtraForm
@@ -614,12 +614,14 @@ namespace CapaPresentacion
                     botModificar.Visible = true;
                     botLiberar.Visible = true;
                     btnCopiarInfo.Visible = panelPacientePreventiva.Visible; //GRV - Solo visible para turnos Preventiva
+                    btnWhatsApp.Visible = panelPacientePreventiva.Visible; // WhatsApp solo visible para turnos Preventiva
                     btnVerEstudio.Visible = true;
                     btnMoverTurno.Visible = true; // GRV - Modificado
                     if (blnActivoMoverTurno)
                     {
                         botLiberar.Visible = false;
                         btnCopiarInfo.Visible = false; //GRV - Modificado
+                        btnWhatsApp.Visible = false; // WhatsApp oculto en modo mover turno
                         btnVerEstudio.Visible = false;
                         btnMoverTurno.Visible = false; // GRV - Modificado
                         botModificar.Visible = false;
@@ -632,6 +634,7 @@ namespace CapaPresentacion
                         botAsignar.Visible = true;
                     }
                     btnMoverTurno.Visible = false; // GRV - Modificado
+                    btnWhatsApp.Visible = false; // WhatsApp oculto si no hay turno asignado
                     if (blnActivoMoverTurno)
                     {
                         botAsignar.Visible = false;
@@ -649,6 +652,7 @@ namespace CapaPresentacion
                 botModificar.Visible = false;
                 botLiberar.Visible = false;
                 btnCopiarInfo.Visible = false; //GRV - Modificado
+                btnWhatsApp.Visible = false; // WhatsApp oculto si no hay selección
                 btnVerEstudio.Visible = false;
             }
         }
@@ -2258,7 +2262,10 @@ namespace CapaPresentacion
                 return;
             }
 
-            strTextoPlantilla = System.IO.File.ReadAllText(strPathArchivo);
+            // Lee el archivo como UTF-8 y elimina el BOM si está presente
+            strTextoPlantilla = System.IO.File.ReadAllText(strPathArchivo, Encoding.UTF8);
+            if (!string.IsNullOrEmpty(strTextoPlantilla) && strTextoPlantilla[0] == '\uFEFF')
+                strTextoPlantilla = strTextoPlantilla.Substring(1);
         }
 
         private void btnVerEstudio_Click(object sender, EventArgs e)
@@ -2560,6 +2567,80 @@ namespace CapaPresentacion
         private void tbFiltro_TextChanged(object sender, EventArgs e)
         {
 
+        }
+        private void btnWhatsApp_Click(object sender, EventArgs e)
+        {
+            // Validar que haya una fila seleccionada en la grilla
+            if (dgv.CurrentRow == null || dgv.CurrentRow.Index < 0)
+            {
+                MessageBox.Show("Debe seleccionar un turno en la grilla para enviar el mensaje por WhatsApp.", "WhatsApp", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            string telefono = "";
+
+            // Detecta de dónde tomar el teléfono según el panel visible
+            if (panelLaboral.Visible)
+                telefono = tbTelefonoLaboral.Text;
+            else if (panelPacientePreventiva.Visible)
+                telefono = tbTelefonoPreventiva.Text;
+            else
+                telefono = "";
+
+            // Limpieza y formato para WhatsApp Argentina
+            telefono = telefono.Replace(" ", "").Replace("-", "").Replace("(", "").Replace(")", "");
+
+            if (telefono.StartsWith("15"))
+                telefono = telefono.Substring(2);
+
+            if (telefono.StartsWith("0"))
+                telefono = telefono.Substring(1);
+
+            if (!telefono.StartsWith("549"))
+                telefono = "549" + telefono;
+
+            // Genera el mensaje personalizado con emojis
+            reemplazarTexto();
+
+            // Reemplazos de "�" por los emojis correctos según el modelo
+            strTextoPlantilla = strTextoPlantilla
+                .Replace("� El turno", "📅 El turno")
+                .Replace("� Valor", "💰 Valor")
+                .Replace("� No trabajamos", "⛔ No trabajamos")
+                .Replace("�LA DURACIÓN", "⏱LA DURACIÓN")
+                .Replace("� AYUNO", "▶️ AYUNO")
+                .Replace("� ORINA", "▶️ ORINA")
+                .Replace("� Traer", "▶️ Traer")
+                .Replace("� IMPORTANTE�", "❗ IMPORTANTE❗")
+                .Replace("� Si faltás", "🗣️ Si faltás")
+                .Replace("� Recordá", "⛔ Recordá")
+                .Replace("� CONCURRIR", "⛔ CONCURRIR")
+                .Replace("� NO ATENDEREMOS", "⛔ NO ATENDEREMOS")
+                .Replace("� NO VENGAS", "⛔ NO VENGAS")
+                .Replace("� NO ES", "⛔ NO ES")
+                .Replace("� IMPORTANTE Sres. Padres:", "⚠️ IMPORTANTE Sres. Padres:")
+                .Replace("� Tenés", "👀 Tenés")
+                .Replace("� ESTE EXAMEN", "📝 ESTE EXAMEN")
+                .Replace("� APTITUD", "⛔ APTITUD")
+                .Replace("� APTO CONDICIONAL", "⚠️ APTO CONDICIONAL")
+                .Replace("� APTO CON SUGERENCIAS", "⚠️ APTO CON SUGERENCIAS")
+                .Replace("� APTO FISICO", "✅ APTO FISICO")
+                .Replace("� Es tu responsabilidad", "👀 Es tu responsabilidad")
+                .Replace("� Enviá", "📱 Enviá")
+                .Replace("� Dirección", "📍 Dirección")
+                ;
+
+            // Si hay líneas que pueden variar, puedes hacer reemplazos más generales:
+            strTextoPlantilla = strTextoPlantilla.Replace("�", "⛔"); // Solo si quedan "�" sueltos
+
+            if (strTextoPlantilla.Contains("�"))
+            {
+                MessageBox.Show("¡Quedó un signo de interrogación en el mensaje! Revisa la plantilla o amplía los reemplazos.");
+            }
+            string mensaje = strTextoPlantilla;
+            string mensajeUrl = HttpUtility.UrlEncode(mensaje);
+            string url = $"https://wa.me/{telefono}?text={mensajeUrl}";
+            System.Diagnostics.Process.Start(url);
         }
 
         /// <summary>

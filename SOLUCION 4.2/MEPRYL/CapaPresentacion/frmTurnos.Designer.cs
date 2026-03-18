@@ -1,4 +1,4 @@
-﻿namespace CapaPresentacion
+namespace CapaPresentacion
 {
     partial class frmTurnos
     {
@@ -38,6 +38,7 @@
             this.cboMotivoConsulta = new System.Windows.Forms.ComboBox();
             this.cboTipoExamen = new System.Windows.Forms.ComboBox();
             this.botonLaboratorio = new System.Windows.Forms.Panel();
+            this.btnWhatsApp = new System.Windows.Forms.Button();
             this.btnCancelarMover = new System.Windows.Forms.Button();
             this.btnMoverTurno = new System.Windows.Forms.Button();
             this.btnVerEstudio = new System.Windows.Forms.Button();
@@ -270,6 +271,7 @@
             // 
             this.botonLaboratorio.BackColor = System.Drawing.SystemColors.ControlLight;
             this.botonLaboratorio.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.botonLaboratorio.Controls.Add(this.btnWhatsApp);
             this.botonLaboratorio.Controls.Add(this.btnCancelarMover);
             this.botonLaboratorio.Controls.Add(this.btnMoverTurno);
             this.botonLaboratorio.Controls.Add(this.btnVerEstudio);
@@ -289,6 +291,20 @@
             this.botonLaboratorio.Name = "botonLaboratorio";
             this.botonLaboratorio.Size = new System.Drawing.Size(134, 682);
             this.botonLaboratorio.TabIndex = 129;
+            // 
+            // btnWhatsApp
+            // 
+            this.btnWhatsApp.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold);
+            this.btnWhatsApp.Image = ((System.Drawing.Image)(resources.GetObject("btnWhatsApp.Image")));
+            this.btnWhatsApp.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnWhatsApp.Location = new System.Drawing.Point(9, 151);
+            this.btnWhatsApp.Name = "btnWhatsApp";
+            this.btnWhatsApp.Size = new System.Drawing.Size(120, 43);
+            this.btnWhatsApp.TabIndex = 135;
+            this.btnWhatsApp.Text = "WhatsAp";
+            this.btnWhatsApp.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btnWhatsApp.UseVisualStyleBackColor = true;
+            this.btnWhatsApp.Click += new System.EventHandler(this.btnWhatsApp_Click);
             // 
             // btnCancelarMover
             // 
@@ -330,7 +346,7 @@
             this.btnVerEstudio.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold);
             this.btnVerEstudio.Image = ((System.Drawing.Image)(resources.GetObject("btnVerEstudio.Image")));
             this.btnVerEstudio.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnVerEstudio.Location = new System.Drawing.Point(6, 30);
+            this.btnVerEstudio.Location = new System.Drawing.Point(7, 27);
             this.btnVerEstudio.Name = "btnVerEstudio";
             this.btnVerEstudio.Size = new System.Drawing.Size(120, 45);
             this.btnVerEstudio.TabIndex = 132;
@@ -344,7 +360,7 @@
             this.btnCopiarInfo.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold);
             this.btnCopiarInfo.Image = ((System.Drawing.Image)(resources.GetObject("btnCopiarInfo.Image")));
             this.btnCopiarInfo.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnCopiarInfo.Location = new System.Drawing.Point(6, 100);
+            this.btnCopiarInfo.Location = new System.Drawing.Point(9, 97);
             this.btnCopiarInfo.Name = "btnCopiarInfo";
             this.btnCopiarInfo.Size = new System.Drawing.Size(120, 45);
             this.btnCopiarInfo.TabIndex = 131;
@@ -423,7 +439,7 @@
             this.botLiberar.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.botLiberar.Image = ((System.Drawing.Image)(resources.GetObject("botLiberar.Image")));
             this.botLiberar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.botLiberar.Location = new System.Drawing.Point(6, 250);
+            this.botLiberar.Location = new System.Drawing.Point(6, 262);
             this.botLiberar.Name = "botLiberar";
             this.botLiberar.Size = new System.Drawing.Size(120, 45);
             this.botLiberar.TabIndex = 4;
@@ -439,7 +455,7 @@
             this.botModificar.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.botModificar.Image = ((System.Drawing.Image)(resources.GetObject("botModificar.Image")));
             this.botModificar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.botModificar.Location = new System.Drawing.Point(6, 180);
+            this.botModificar.Location = new System.Drawing.Point(5, 205);
             this.botModificar.Name = "botModificar";
             this.botModificar.Size = new System.Drawing.Size(120, 45);
             this.botModificar.TabIndex = 3;
@@ -2042,5 +2058,6 @@
         private System.Windows.Forms.Button botTurno;
         private System.Windows.Forms.Label labelTipoExamen;
         private System.Windows.Forms.Label labelSubTipoExamen;
+        private System.Windows.Forms.Button btnWhatsApp;
     }
 }
