@@ -7,9 +7,11 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
-using System.Windows.Forms;
+using System.Threading.Tasks;
 using System.Web;
+using System.Windows.Forms;
 namespace CapaPresentacion
 {
     public partial class frmTurnos : DevExpress.XtraEditors.XtraForm
@@ -2253,6 +2255,7 @@ namespace CapaPresentacion
         {
             CapaNegocioMepryl.ConfigPlantillaReporte Reporte = new CapaNegocioMepryl.ConfigPlantillaReporte();
             string strPathArchivo = Reporte.GetPathMensajePorSubtipo(idSubtipo);
+            MessageBox.Show(strPathArchivo, "Archivo de plantilla usado");
 
             if (string.IsNullOrEmpty(strPathArchivo) || !System.IO.File.Exists(strPathArchivo))
             {
@@ -2568,9 +2571,36 @@ namespace CapaPresentacion
         {
 
         }
-        private void btnWhatsApp_Click(object sender, EventArgs e)
+        private string LimpiarMensaje(string mensaje)
         {
-            // Validar que haya una fila seleccionada en la grilla
+            // Normaliza UTF-8
+            byte[] bytes = Encoding.UTF8.GetBytes(mensaje);
+            mensaje = Encoding.UTF8.GetString(bytes);
+
+            // Elimina caracteres corruptos
+            mensaje = mensaje.Replace("�", "");
+
+            // Elimina caracteres invisibles problemáticos
+            mensaje = System.Text.RegularExpressions.Regex.Replace(mensaje, @"[\u0000-\u001F\u007F]", "");
+
+            return mensaje.Trim();
+
+
+        }
+
+        public async Task<bool> EnviarMensajeWhatsApp(string telefono, string rutaArchivo)
+        {
+            using (var client = new HttpClient())
+            {
+                var url = "http://localhost:3000/enviar-mensaje";
+                var json = $"{{\"telefono\":\"{telefono}\",\"rutaArchivo\":\"{rutaArchivo}\"}}";
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                var response = await client.PostAsync(url, content);
+                return response.IsSuccessStatusCode;
+            }
+        }
+        private async void btnWhatsApp_Click(object sender, EventArgs e)
+        {
             if (dgv.CurrentRow == null || dgv.CurrentRow.Index < 0)
             {
                 MessageBox.Show("Debe seleccionar un turno en la grilla para enviar el mensaje por WhatsApp.", "WhatsApp", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -2579,15 +2609,12 @@ namespace CapaPresentacion
 
             string telefono = "";
 
-            // Detecta de dónde tomar el teléfono según el panel visible
             if (panelLaboral.Visible)
                 telefono = tbTelefonoLaboral.Text;
             else if (panelPacientePreventiva.Visible)
                 telefono = tbTelefonoPreventiva.Text;
-            else
-                telefono = "";
 
-            // Limpieza y formato para WhatsApp Argentina
+            // Limpieza teléfono
             telefono = telefono.Replace(" ", "").Replace("-", "").Replace("(", "").Replace(")", "");
 
             if (telefono.StartsWith("15"))
@@ -2599,49 +2626,27 @@ namespace CapaPresentacion
             if (!telefono.StartsWith("549"))
                 telefono = "549" + telefono;
 
-            // Genera el mensaje personalizado con emojis
+            // Genera mensaje
             reemplazarTexto();
+            strTextoPlantilla = LimpiarMensaje(strTextoPlantilla);
 
-            // Reemplazos de "�" por los emojis correctos según el modelo
-            strTextoPlantilla = strTextoPlantilla
-                .Replace("� El turno", "📅 El turno")
-                .Replace("� Valor", "💰 Valor")
-                .Replace("� No trabajamos", "⛔ No trabajamos")
-                .Replace("�LA DURACIÓN", "⏱LA DURACIÓN")
-                .Replace("� AYUNO", "▶️ AYUNO")
-                .Replace("� ORINA", "▶️ ORINA")
-                .Replace("� Traer", "▶️ Traer")
-                .Replace("� IMPORTANTE�", "❗ IMPORTANTE❗")
-                .Replace("� Si faltás", "🗣️ Si faltás")
-                .Replace("� Recordá", "⛔ Recordá")
-                .Replace("� CONCURRIR", "⛔ CONCURRIR")
-                .Replace("� NO ATENDEREMOS", "⛔ NO ATENDEREMOS")
-                .Replace("� NO VENGAS", "⛔ NO VENGAS")
-                .Replace("� NO ES", "⛔ NO ES")
-                .Replace("� IMPORTANTE Sres. Padres:", "⚠️ IMPORTANTE Sres. Padres:")
-                .Replace("� Tenés", "👀 Tenés")
-                .Replace("� ESTE EXAMEN", "📝 ESTE EXAMEN")
-                .Replace("� APTITUD", "⛔ APTITUD")
-                .Replace("� APTO CONDICIONAL", "⚠️ APTO CONDICIONAL")
-                .Replace("� APTO CON SUGERENCIAS", "⚠️ APTO CON SUGERENCIAS")
-                .Replace("� APTO FISICO", "✅ APTO FISICO")
-                .Replace("� Es tu responsabilidad", "👀 Es tu responsabilidad")
-                .Replace("� Enviá", "📱 Enviá")
-                .Replace("� Dirección", "📍 Dirección")
-                ;
+            // Obtiene el idSubtipo de la grilla
+            string strIdSubtipo = dgv.Rows[dgv.CurrentCell.RowIndex].Cells[20].Value?.ToString() ?? "";
 
-            // Si hay líneas que pueden variar, puedes hacer reemplazos más generales:
-            strTextoPlantilla = strTextoPlantilla.Replace("�", "⛔"); // Solo si quedan "�" sueltos
+            // Obtiene la ruta del archivo usando el idSubtipo
+            var reporte = new CapaNegocioMepryl.ConfigPlantillaReporte();
+            string rutaArchivo = reporte.GetPathMensajePorSubtipo(strIdSubtipo);
 
-            if (strTextoPlantilla.Contains("�"))
-            {
-                MessageBox.Show("¡Quedó un signo de interrogación en el mensaje! Revisa la plantilla o amplía los reemplazos.");
-            }
-            string mensaje = strTextoPlantilla;
-            string mensajeUrl = HttpUtility.UrlEncode(mensaje);
-            string url = $"https://wa.me/{telefono}?text={mensajeUrl}";
-            System.Diagnostics.Process.Start(url);
+            // Llama a la API REST
+            bool exito = await EnviarMensajeWhatsApp(telefono, rutaArchivo);
+
+            if (exito)
+                MessageBox.Show("Mensaje enviado por WhatsApp correctamente.", "WhatsApp", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            else
+                MessageBox.Show("Error al enviar el mensaje por WhatsApp.", "WhatsApp", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
+
+
 
         /// <summary>
         /// Evento CASCADA NIVEL 3: Cuando cambia cboSubTipoExamen, recarga la grilla con el filtro aplicado
