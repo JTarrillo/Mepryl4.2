@@ -545,7 +545,7 @@ namespace CapaDatosMepryl
                 retorno.Aspecto = examen.Rows[0].ItemArray[59].ToString();
                 retorno.Densidad = examen.Rows[0].ItemArray[60].ToString();
                 retorno.Ph = examen.Rows[0].ItemArray[61].ToString();
-                retorno.Celulas = examen.Rows[0].ItemArray[62].ToString();
+                retorno.RodillaF = examen.Rows[0].ItemArray[62].ToString();
                 retorno.Leuco = examen.Rows[0].ItemArray[63].ToString();
                 retorno.Hematies = examen.Rows[0].ItemArray[64].ToString();
                 retorno.Prot = examen.Rows[0].ItemArray[65].ToString();
@@ -582,7 +582,7 @@ namespace CapaDatosMepryl
                 retorno.CaderaF = examen.Rows[0].ItemArray[96].ToString();
                 retorno.CaderaP = examen.Rows[0].ItemArray[97].ToString();
                 retorno.FemurFyP = examen.Rows[0].ItemArray[98].ToString();
-                retorno.RodillaF = examen.Rows[0].ItemArray[99].ToString();
+                retorno.DorsalF = examen.Rows[0].ItemArray[99].ToString();
                 retorno.RodillaP = examen.Rows[0].ItemArray[100].ToString();
                 retorno.PiernaFyP = examen.Rows[0].ItemArray[101].ToString();
                 retorno.TobilloFyP = examen.Rows[0].ItemArray[102].ToString();
@@ -859,7 +859,10 @@ namespace CapaDatosMepryl
             consulta.Rows[0].ItemArray[108].ToString(), "RX. ");
             setearValoresDinamicos(entidad.TroncoYPelvis, "Id = 60", encabezados, txtencabezados,
             consulta.Rows[0].ItemArray[109].ToString(), "RX. ");
-            setearValoresDinamicos(entidad.MiembroInferior, "Id = 61", encabezados, txtencabezados, 
+                // Mapeo para DORSAL (F) (Id=99)
+                setearValoresDinamicos(entidad.TroncoYPelvis, "Id = 99", encabezados, txtencabezados,
+                consulta.Rows[0].ItemArray[99].ToString(), "RX. ");
+                setearValoresDinamicos(entidad.MiembroInferior, "Id = 61", encabezados, txtencabezados, 
             consulta.Rows[0].ItemArray[110].ToString(), "RX. ");
             setearValoresDinamicos(entidad.MiembroInferior, "Id = 62", encabezados, txtencabezados, 
             consulta.Rows[0].ItemArray[111].ToString(), "RX. ");

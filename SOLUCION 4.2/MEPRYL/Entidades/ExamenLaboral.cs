@@ -675,6 +675,14 @@ namespace Entidades
             get { return colDorsalFyP; }
             set { colDorsalFyP = value; }
         }
+
+        // Nueva propiedad para DORSAL (F) - Código 99
+        private string dorsalF;
+        public string DorsalF
+        {
+            get { return dorsalF; }
+            set { dorsalF = value; }
+        }
         private string pelvisF;
 
         public string PelvisF
@@ -1001,6 +1009,7 @@ namespace Entidades
             this.toraxP = string.Empty;
             this.pCostalFyO = string.Empty;
             this.colDorsalFyP = string.Empty;
+            this.dorsalF = string.Empty;
             this.pelvisF = string.Empty;
             this.caderaF = string.Empty;
             this.caderaP = string.Empty;

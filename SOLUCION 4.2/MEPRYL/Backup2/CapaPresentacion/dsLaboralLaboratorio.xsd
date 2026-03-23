@@ -83,6 +83,7 @@
               <xs:element name="relacAlbGlob" msprop:Generator_UserColumnName="relacAlbGlob" msprop:Generator_ColumnVarNameInTable="columnrelacAlbGlob" msprop:Generator_ColumnPropNameInRow="relacAlbGlob" msprop:Generator_ColumnPropNameInTable="relacAlbGlobColumn" type="xs:string" minOccurs="0" />
               <xs:element name="creat" msprop:Generator_UserColumnName="creat" msprop:Generator_ColumnVarNameInTable="columncreat" msprop:Generator_ColumnPropNameInRow="creat" msprop:Generator_ColumnPropNameInTable="creatColumn" type="xs:string" minOccurs="0" />
               <xs:element name="logo" msprop:Generator_UserColumnName="logo" msprop:Generator_ColumnVarNameInTable="columnlogo" msprop:Generator_ColumnPropNameInRow="logo" msprop:Generator_ColumnPropNameInTable="logoColumn" type="xs:base64Binary" minOccurs="0" />
+                          <xs:element name="DorsalF" msprop:Generator_UserColumnName="DorsalF" msprop:Generator_ColumnVarNameInTable="columnDorsalF" msprop:Generator_ColumnPropNameInRow="DorsalF" msprop:Generator_ColumnPropNameInTable="DorsalFColumn" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>

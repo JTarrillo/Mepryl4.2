@@ -2231,7 +2231,32 @@ namespace CapaPresentacion
             strHorario = dgv.Rows[dgv.CurrentCell.RowIndex].Cells[5].Value.ToString();    // HORA [5]
             strFechaTurno = dgv.Rows[dgv.CurrentCell.RowIndex].Cells[4].Value.ToString(); // FECHA [4]
             strCodSeg = dgv.Rows[dgv.CurrentCell.RowIndex].Cells[11].Value.ToString();    // CODIGO [11]
-            strPaciente = dgv.Rows[dgv.CurrentCell.RowIndex].Cells[9].Value.ToString();   // PACIENTE [9]
+            // Obtener nombre y apellido por separado si están disponibles
+            string nombre = "";
+            string apellido = "";
+            if (dgv.Rows[dgv.CurrentCell.RowIndex].Cells[9].Value != null)
+            {
+                var pacienteCompleto = dgv.Rows[dgv.CurrentCell.RowIndex].Cells[9].Value.ToString();
+                // Si el formato es "APELLIDO, NOMBRE" lo separamos
+                if (pacienteCompleto.Contains(","))
+                {
+                    var partes = pacienteCompleto.Split(',');
+                    if (partes.Length >= 2)
+                    {
+                        apellido = partes[0].Trim();
+                        nombre = partes[1].Trim();
+                        strPaciente = nombre + " " + apellido;
+                    }
+                    else
+                    {
+                        strPaciente = pacienteCompleto.Trim();
+                    }
+                }
+                else
+                {
+                    strPaciente = pacienteCompleto.Trim();
+                }
+            }
             strIdSubtipo = dgv.Rows[dgv.CurrentCell.RowIndex].Cells[20].Value?.ToString() ?? ""; // IDSUBTIPO [20]
 
             dtDiaSemana = Convert.ToDateTime(strFechaTurno);
@@ -2239,9 +2264,16 @@ namespace CapaPresentacion
 
             RecuperarTextoPorSubtipo(strIdSubtipo);
 
-            strTextoPlantilla = strTextoPlantilla.Replace("<<paciente>>", strPaciente).Replace("<<FechaTurno>>",
-                strFechaTurno).Replace("<<horario>>", strHorario).Replace("<<codseg>>",
-                strCodSeg).Replace("<<Precio>>", strPrecio);
+            strTextoPlantilla = strTextoPlantilla.Replace("<<paciente>>", strPaciente)
+                .Replace("<<nombre>>", nombre)
+                .Replace("<<apellido>>", apellido)
+                .Replace("<<FechaTurno>>", strFechaTurno)
+                .Replace("<<horario>>", strHorario)
+                .Replace("<<codseg>>", strCodSeg)
+                .Replace("<<Precio>>", strPrecio);
+
+            // DEBUG: Mostrar el mensaje final tras el reemplazo
+            System.Diagnostics.Debug.WriteLine("[WhatsApp] Mensaje tras reemplazo:\n" + strTextoPlantilla);
         }
 
         private void CopiarTexto()
@@ -2580,24 +2612,37 @@ namespace CapaPresentacion
             // Elimina caracteres corruptos
             mensaje = mensaje.Replace("�", "");
 
-            // Elimina caracteres invisibles problemáticos
-            mensaje = System.Text.RegularExpressions.Regex.Replace(mensaje, @"[\u0000-\u001F\u007F]", "");
+            // Elimina caracteres invisibles problemáticos, pero CONSERVA saltos de línea (\n y \r)
+            // Solo elimina los caracteres de control excepto \n (10) y \r (13)
+            mensaje = System.Text.RegularExpressions.Regex.Replace(mensaje, "[\u0000-\u0009\u000B\u000C\u000E-\u001F\u007F]", "");
 
             return mensaje.Trim();
 
 
         }
 
-        public async Task<bool> EnviarMensajeWhatsApp(string telefono, string rutaArchivo)
+        public async Task<bool> EnviarMensajeWhatsApp(string telefono, object mensajeObj)
         {
             using (var client = new HttpClient())
             {
                 var url = "http://localhost:3000/enviar-mensaje";
-                var json = $"{{\"telefono\":\"{telefono}\",\"rutaArchivo\":\"{rutaArchivo}\"}}";
+                var payload = new { telefono = telefono, mensaje = mensajeObj };
+                var json = Newtonsoft.Json.JsonConvert.SerializeObject(payload);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                // DEBUG: Mostrar el JSON enviado
+                System.Diagnostics.Debug.WriteLine($"[WhatsApp] JSON enviado: {json}");
+
                 var response = await client.PostAsync(url, content);
+                var responseText = await response.Content.ReadAsStringAsync();
+
+                // DEBUG: Mostrar la respuesta completa de la API
+                System.Diagnostics.Debug.WriteLine($"[WhatsApp] StatusCode: {response.StatusCode}");
+                System.Diagnostics.Debug.WriteLine($"[WhatsApp] Respuesta: {responseText}");
+
                 return response.IsSuccessStatusCode;
             }
+
         }
         private async void btnWhatsApp_Click(object sender, EventArgs e)
         {
@@ -2626,19 +2671,60 @@ namespace CapaPresentacion
             if (!telefono.StartsWith("549"))
                 telefono = "549" + telefono;
 
+            // DEBUG: Mostrar el número final en la salida de depuración
+            System.Diagnostics.Debug.WriteLine($"[WhatsApp] Número a enviar: {telefono}");
+
+            // Validación básica: el número debe tener al menos 11 dígitos (549 + cod área + número)
+            if (telefono.Length < 13)
+            {
+                MessageBox.Show("El número de teléfono es demasiado corto. Debe incluir código de área.\nEjemplo: 2324518204 → 5492324518204", "WhatsApp", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+
             // Genera mensaje
             reemplazarTexto();
+            // DEBUG: Mostrar plantilla antes de limpiar
+            System.Diagnostics.Debug.WriteLine("[WhatsApp] Plantilla antes de limpiar:\n" + strTextoPlantilla.Replace("\n", "[NL]\n"));
             strTextoPlantilla = LimpiarMensaje(strTextoPlantilla);
+            // DEBUG: Mostrar plantilla después de limpiar
+            System.Diagnostics.Debug.WriteLine("[WhatsApp] Plantilla después de limpiar:\n" + strTextoPlantilla.Replace("\n", "[NL]\n"));
 
-            // Obtiene el idSubtipo de la grilla
-            string strIdSubtipo = dgv.Rows[dgv.CurrentCell.RowIndex].Cells[20].Value?.ToString() ?? "";
+            // Obtiene el idSubtipo de la grilla usando el nombre de columna
+            string strIdSubtipo = "";
+            if (dgv.CurrentRow != null && dgv.CurrentRow.Cells["IdSubtipo"] != null)
+                strIdSubtipo = dgv.CurrentRow.Cells["IdSubtipo"].Value?.ToString() ?? "";
 
-            // Obtiene la ruta del archivo usando el idSubtipo
+            // Obtiene la ruta del archivo de plantilla usando el idSubtipo
             var reporte = new CapaNegocioMepryl.ConfigPlantillaReporte();
-            string rutaArchivo = reporte.GetPathMensajePorSubtipo(strIdSubtipo);
+            string rutaPlantilla = reporte.GetPathMensajePorSubtipo(strIdSubtipo);
 
-            // Llama a la API REST
-            bool exito = await EnviarMensajeWhatsApp(telefono, rutaArchivo);
+            // Validar que la ruta no esté vacía y que el archivo exista
+            if (string.IsNullOrEmpty(rutaPlantilla) || !System.IO.File.Exists(rutaPlantilla))
+            {
+                MessageBox.Show("No se encontró el archivo de mensaje para el subtipo seleccionado.", "WhatsApp", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            // Forzar saltos de línea a \n (Unix-style para WhatsApp)
+            System.Diagnostics.Debug.WriteLine("[WhatsApp] MENSAJE ANTES DE ENVIAR (saltos de línea visibles como [NL]):\n" + strTextoPlantilla.Replace("\n", "[NL]\n"));
+            strTextoPlantilla = strTextoPlantilla.Replace("\r\n", "\n").Replace("\r", "\n");
+
+            // SIEMPRE CONVERTIR A OBJETO ESTRUCTURADO PARA EL BUILDER DEL BACKEND
+            object mensajeObj = ParsearPlantillaTxtAObjeto(strTextoPlantilla);
+
+            // Si por algún motivo el "temporal" es string, forzar conversión a objeto
+            if (mensajeObj is string textoPlano)
+            {
+                mensajeObj = ParsearPlantillaTxtAObjeto(textoPlano);
+            }
+
+            // DEBUG: Mostrar el objeto estructurado antes de enviarlo
+            string debugMensajeObj = Newtonsoft.Json.JsonConvert.SerializeObject(mensajeObj, Newtonsoft.Json.Formatting.Indented);
+            System.Diagnostics.Debug.WriteLine($"[WhatsApp] OBJETO ESTRUCTURADO A ENVIAR:\n{debugMensajeObj}");
+
+            // Llama a la API REST enviando el objeto estructurado
+            bool exito = await EnviarMensajeWhatsApp(telefono, mensajeObj);
 
             if (exito)
                 MessageBox.Show("Mensaje enviado por WhatsApp correctamente.", "WhatsApp", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -2646,7 +2732,207 @@ namespace CapaPresentacion
                 MessageBox.Show("Error al enviar el mensaje por WhatsApp.", "WhatsApp", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
+        private object ParsearPlantillaTxtAObjeto(string plantillaTxt)
+        {
+            var lineas = plantillaTxt.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
+            string titulo = null;
+            string cuerpo = null;
+            var secciones = new List<object>();
+            string pie = null;
+            var items = new List<string>();
+            string seccionActual = null;
+            var textoSeccion = new List<string>();
 
+            // Diccionario para acumular secciones únicas (normalizando encabezados)
+            var seccionesUnicas = new Dictionary<string, (List<string> items, List<string> textos)>();
+            // Función para normalizar encabezados de sección especial
+            string QuitarTildes(string texto)
+            {
+                var conTildes = "áéíóúÁÉÍÓÚñÑ";
+                var sinTildes = "aeiouAEIOUnN";
+                var sb = new System.Text.StringBuilder(texto.Length);
+                foreach (var c in texto)
+                {
+                    int idx = conTildes.IndexOf(c);
+                    sb.Append(idx >= 0 ? sinTildes[idx] : c);
+                }
+                return sb.ToString();
+            }
+
+            string NormalizarSeccion(string encabezado)
+            {
+                var s = QuitarTildes(encabezado).ToUpper();
+                s = s.Replace("_", "").Replace("*", "").Replace(":", "").Replace(" ", "").Replace("-", "");
+                if (s.Contains("IMPORTANTE") && s.Contains("PADRES")) return "*IMPORTANTE Sres. Padres:*";
+                if (s.Contains("IMPORTANTE")) return "*IMPORTANTE*";
+                return encabezado.Trim();
+            }
+
+            foreach (var linea in lineas)
+            {
+                if (linea.StartsWith("📅"))
+                {
+                    titulo = linea.Trim();
+                }
+                // Forzar doble salto de línea antes y después de la duración del examen
+                else if (linea.ToUpper().Contains("DURACION DEL EXAMEN"))
+                {
+                    if (cuerpo == null) cuerpo = "";
+                    // Eliminar saltos de línea al final del texto anterior
+                    cuerpo = cuerpo.TrimEnd('\n', '\r');
+                    // Agregar dos saltos antes y dos después
+                    cuerpo += "\n\n" + linea.Trim() + "\n\n";
+                }
+                else if (linea.StartsWith("💰") || linea.StartsWith("⛔") || linea.StartsWith("⏱"))
+                {
+                    if (cuerpo == null) cuerpo = "";
+                    cuerpo += (cuerpo.Length > 0 ? "\n" : "") + linea.Trim();
+                }
+                // Forzar INDICACIONES en negrita
+                else if (linea.ToUpper().Contains("INDICACIONES"))
+                {
+                    if (seccionActual != null && items.Count > 0)
+                    {
+                        var itemsLimpios = items.Select(i => i.Trim('*', ' ')).ToList();
+                        secciones.Add(new { titulo = seccionActual, items = itemsLimpios.ToArray() });
+                        items.Clear();
+                    }
+                    seccionActual = "*INDICACIONES:*";
+                }
+                else if (linea.StartsWith("▶️") || linea.StartsWith("✅"))
+                {
+                    if (seccionActual == "*INDICACIONES:*")
+                    {
+                        var textoSinEmoji = linea.Trim().Replace("▶️", "").Replace("✅", "").Trim();
+                        textoSinEmoji = textoSinEmoji.Trim('*', ' ');
+                        if (!string.IsNullOrEmpty(textoSinEmoji))
+                            items.Add(textoSinEmoji);
+                    }
+                    else
+                    {
+                        var textoLimpio = linea.Trim().Trim('*', ' ');
+                        items.Add(textoLimpio);
+                    }
+                }
+                // Detectar cualquier variante de IMPORTANTE o IMPORTANTE Sres. Padres (con o sin emoji, con o sin formato)
+                else if (
+                    linea.ToUpper().Contains("IMPORTANTE SRES. PADRES") ||
+                    linea.ToUpper().Contains("IMPORTANTE SRES PADRES") ||
+                    linea.ToUpper().Contains("IMPORTANTE")
+                )
+                {
+                    // Antes de cambiar de sección, acumula lo anterior si corresponde
+                    if (seccionActual != null && (items.Count > 0 || textoSeccion.Count > 0))
+                    {
+                        var itemsLimpios = items.Select(i => i.Trim('*', ' ')).ToList();
+                        var textoLimpio = string.Join("\n", textoSeccion.Select(t => t.Trim('*', ' ')));
+                        var claveNormalizada = NormalizarSeccion(seccionActual);
+                        if (claveNormalizada == "*IMPORTANTE*" || claveNormalizada == "*IMPORTANTE Sres. Padres:*")
+                        {
+                            if (!seccionesUnicas.ContainsKey(claveNormalizada))
+                                seccionesUnicas[claveNormalizada] = (new List<string>(), new List<string>());
+                            seccionesUnicas[claveNormalizada].items.AddRange(itemsLimpios);
+                            if (!string.IsNullOrEmpty(textoLimpio))
+                                seccionesUnicas[claveNormalizada].textos.Add(textoLimpio);
+                        }
+                        else
+                        {
+                            secciones.Add(new { titulo = seccionActual, items = itemsLimpios.ToArray(), texto = textoLimpio });
+                        }
+                        items.Clear(); textoSeccion.Clear();
+                    }
+                    // Normalizar el encabezado
+                    var claveNueva = NormalizarSeccion(linea);
+                    seccionActual = claveNueva;
+                    var textoSinEmoji = linea.Trim().Replace("❗", "").Replace("🗣️", "").Replace("⚠️", "").Trim('*', ' ').Trim();
+                    if (!string.IsNullOrEmpty(textoSinEmoji))
+                        textoSeccion.Add(textoSinEmoji);
+                }
+                else if (linea.StartsWith("_*CLASIFICACION DE LOS RESULTADOS:*_"))
+                {
+                    if (seccionActual != null && (items.Count > 0 || textoSeccion.Count > 0))
+                    {
+                        var itemsLimpios = items.Select(i => i.Trim('*', ' ')).ToList();
+                        var textoLimpio = string.Join(" ", textoSeccion.Select(t => t.Trim('*', ' ')));
+                        if (seccionActual == "*IMPORTANTE*" || seccionActual == "*IMPORTANTE Sres. Padres:*")
+                        {
+                            if (!seccionesUnicas.ContainsKey(seccionActual))
+                                seccionesUnicas[seccionActual] = (new List<string>(), new List<string>());
+                            seccionesUnicas[seccionActual].items.AddRange(itemsLimpios);
+                            if (!string.IsNullOrEmpty(textoLimpio))
+                                seccionesUnicas[seccionActual].textos.Add(textoLimpio);
+                        }
+                        else
+                        {
+                            secciones.Add(new { titulo = seccionActual, items = itemsLimpios.ToArray(), texto = textoLimpio });
+                        }
+                        items.Clear(); textoSeccion.Clear();
+                    }
+                    seccionActual = "CLASIFICACION DE LOS RESULTADOS";
+                }
+                else if (linea.StartsWith("⛔") || linea.StartsWith("⚠️") || linea.StartsWith("✅") || linea.StartsWith("(*)"))
+                {
+                    var textoLimpio = linea.Trim().Trim('*', ' ');
+                    items.Add(textoLimpio);
+                }
+                else if (linea.StartsWith("📍"))
+                {
+                    // Resaltar la dirección con salto de línea antes y después
+                    var direccionResaltada = "\n" + linea.Trim() + "\n";
+                    pie = (pie == null ? "" : pie + "\n") + direccionResaltada;
+                }
+                else if (linea.StartsWith("📱"))
+                {
+                    pie = (pie == null ? "" : pie + "\n") + linea.Trim();
+                }
+                else if (!string.IsNullOrWhiteSpace(linea))
+                {
+                    if (seccionActual != null)
+                        textoSeccion.Add(linea.Trim().Trim('*', ' '));
+                }
+            }
+            // Agrega última sección si corresponde
+            if (seccionActual != null && (items.Count > 0 || textoSeccion.Count > 0))
+            {
+                var itemsLimpios = items.Select(i => i.Trim('*', ' ')).ToList();
+                var textoLimpio = string.Join("\n", textoSeccion.Select(t => t.Trim('*', ' ')));
+                var claveNormalizada = NormalizarSeccion(seccionActual);
+                if (claveNormalizada == "*IMPORTANTE*" || claveNormalizada == "*IMPORTANTE Sres. Padres:*")
+                {
+                    if (!seccionesUnicas.ContainsKey(claveNormalizada))
+                        seccionesUnicas[claveNormalizada] = (new List<string>(), new List<string>());
+                    seccionesUnicas[claveNormalizada].items.AddRange(itemsLimpios);
+                    if (!string.IsNullOrEmpty(textoLimpio))
+                        seccionesUnicas[claveNormalizada].textos.Add(textoLimpio);
+                }
+                else
+                {
+                    secciones.Add(new { titulo = seccionActual, items = itemsLimpios.ToArray(), texto = textoLimpio });
+                }
+            }
+
+            // Al final, agrega las secciones únicas (IMPORTANTE y IMPORTANTE Sres. Padres) solo una vez cada una
+            foreach (var kvp in seccionesUnicas)
+            {
+                var itemsArr = kvp.Value.items.ToArray();
+                var textoArr = kvp.Value.textos;
+                var textoFinal = string.Join("\n", textoArr.Where(t => !string.IsNullOrWhiteSpace(t)));
+                // Si es la sección IMPORTANTE, quitar la palabra 'IMPORTANTE' del texto
+                if (kvp.Key == "*IMPORTANTE*")
+                {
+                    textoFinal = textoFinal.Replace("IMPORTANTE\n", "").Replace("IMPORTANTE", "");
+                }
+                secciones.Add(new { titulo = kvp.Key, items = itemsArr, texto = textoFinal });
+            }
+
+            return new
+            {
+                titulo = titulo,
+                cuerpo = cuerpo,
+                secciones = secciones.ToArray(),
+                pie = pie
+            };
+        }
 
         /// <summary>
         /// Evento CASCADA NIVEL 3: Cuando cambia cboSubTipoExamen, recarga la grilla con el filtro aplicado

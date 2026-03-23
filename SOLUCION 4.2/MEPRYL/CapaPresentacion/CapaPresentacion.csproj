@@ -17,7 +17,6 @@
     <OldToolsVersion>3.5</OldToolsVersion>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <TargetFrameworkProfile />
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -32,6 +31,7 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -42,7 +42,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>0</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x64</PlatformTarget>
     <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
     <NoWarn>CS0168;CS0252;CS0219;CS0162;CS0414,;CS0219</NoWarn>
   </PropertyGroup>
@@ -74,19 +74,128 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Lib\AForge.Video.DirectShow.dll</HintPath>
     </Reference>
+    <Reference Include="AxShockwaveFlashObjects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\SAP BusinessObjects\Crystal Reports for .NET Framework 4.0\Common\SAP BusinessObjects Enterprise XI 4.0\win32_x86\dotnet\AxShockwaveFlashObjects.dll</HintPath>
+    </Reference>
     <Reference Include="BouncyCastle.Crypto, Version=1.8.1.0, Culture=neutral, PublicKeyToken=0e99375e54769942, processorArchitecture=MSIL">
-      <HintPath>..\packages\Portable.BouncyCastle.1.8.1.4\lib\net40\BouncyCastle.Crypto.dll</HintPath>
+      <HintPath>..\packages\Portable.BouncyCastle.1.8.1.3\lib\net40\BouncyCastle.Crypto.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Common.Logging, Version=3.4.1.0, Culture=neutral, PublicKeyToken=af08829b84f0328e, processorArchitecture=MSIL">
       <HintPath>..\packages\Common.Logging.3.4.1\lib\net40\Common.Logging.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Common.Logging.Core, Version=3.4.1.0, Culture=neutral, PublicKeyToken=af08829b84f0328e, processorArchitecture=MSIL">
       <HintPath>..\packages\Common.Logging.Core.3.4.1\lib\net40\Common.Logging.Core.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="CrystalDecisions.CrystalReports.Engine, Version=13.0.3500.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
-    <Reference Include="CrystalDecisions.ReportSource, Version=13.0.3500.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
-    <Reference Include="CrystalDecisions.Shared, Version=13.0.3500.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
-    <Reference Include="CrystalDecisions.Windows.Forms, Version=13.0.3500.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
+    <Reference Include="CRVsPackageLib, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\SAP BusinessObjects\Crystal Reports for .NET Framework 4.0\Common\SAP BusinessObjects Enterprise XI 4.0\win32_x86\dotnet\CRVsPackageLib.dll</HintPath>
+    </Reference>
+    <Reference Include="CrystalDecisions.CrystalReports.Design, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\SAP BusinessObjects\Crystal Reports for .NET Framework 4.0\Common\SAP BusinessObjects Enterprise XI 4.0\win32_x86\dotnet\CrystalDecisions.CrystalReports.Design.dll</HintPath>
+    </Reference>
+    <Reference Include="CrystalDecisions.CrystalReports.Engine, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\SAP BusinessObjects\Crystal Reports for .NET Framework 4.0\Common\SAP BusinessObjects Enterprise XI 4.0\win32_x86\dotnet\CrystalDecisions.CrystalReports.Engine.dll</HintPath>
+    </Reference>
+    <Reference Include="CrystalDecisions.CrystalReports.TemplateEngine, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\SAP BusinessObjects\Crystal Reports for .NET Framework 4.0\Common\SAP BusinessObjects Enterprise XI 4.0\win32_x86\dotnet\CrystalDecisions.CrystalReports.TemplateEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="CrystalDecisions.Data.AdoDotNetInterop, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\SAP BusinessObjects\Crystal Reports for .NET Framework 4.0\Common\SAP BusinessObjects Enterprise XI 4.0\win32_x86\dotnet\CrystalDecisions.Data.AdoDotNetInterop.dll</HintPath>
+    </Reference>
+    <Reference Include="CrystalDecisions.Enterprise.Viewing.ReportSource, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\SAP BusinessObjects\Crystal Reports for .NET Framework 4.0\Common\SAP BusinessObjects Enterprise XI 4.0\win32_x86\dotnet\CrystalDecisions.Enterprise.Viewing.ReportSource.dll</HintPath>
+    </Reference>
+    <Reference Include="CrystalDecisions.ReportAppServer.ClientDoc, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\SAP BusinessObjects\Crystal Reports for .NET Framework 4.0\Common\SAP BusinessObjects Enterprise XI 4.0\win32_x86\dotnet\CrystalDecisions.ReportAppServer.ClientDoc.dll</HintPath>
+    </Reference>
+    <Reference Include="CrystalDecisions.ReportAppServer.CommLayer, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\SAP BusinessObjects\Crystal Reports for .NET Framework 4.0\Common\SAP BusinessObjects Enterprise XI 4.0\win32_x86\dotnet\CrystalDecisions.ReportAppServer.CommLayer.dll</HintPath>
+    </Reference>
+    <Reference Include="CrystalDecisions.ReportAppServer.CommonControls, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\SAP BusinessObjects\Crystal Reports for .NET Framework 4.0\Common\SAP BusinessObjects Enterprise XI 4.0\win32_x86\dotnet\CrystalDecisions.ReportAppServer.CommonControls.dll</HintPath>
+    </Reference>
+    <Reference Include="CrystalDecisions.ReportAppServer.CommonObjectModel, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\SAP BusinessObjects\Crystal Reports for .NET Framework 4.0\Common\SAP BusinessObjects Enterprise XI 4.0\win32_x86\dotnet\CrystalDecisions.ReportAppServer.CommonObjectModel.dll</HintPath>
+    </Reference>
+    <Reference Include="CrystalDecisions.ReportAppServer.Controllers, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\SAP BusinessObjects\Crystal Reports for .NET Framework 4.0\Common\SAP BusinessObjects Enterprise XI 4.0\win32_x86\dotnet\CrystalDecisions.ReportAppServer.Controllers.dll</HintPath>
+    </Reference>
+    <Reference Include="CrystalDecisions.ReportAppServer.CubeDefModel, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\SAP BusinessObjects\Crystal Reports for .NET Framework 4.0\Common\SAP BusinessObjects Enterprise XI 4.0\win32_x86\dotnet\CrystalDecisions.ReportAppServer.CubeDefModel.dll</HintPath>
+    </Reference>
+    <Reference Include="CrystalDecisions.ReportAppServer.DataDefModel, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\SAP BusinessObjects\Crystal Reports for .NET Framework 4.0\Common\SAP BusinessObjects Enterprise XI 4.0\win32_x86\dotnet\CrystalDecisions.ReportAppServer.DataDefModel.dll</HintPath>
+    </Reference>
+    <Reference Include="CrystalDecisions.ReportAppServer.DataSetConversion, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\SAP BusinessObjects\Crystal Reports for .NET Framework 4.0\Common\SAP BusinessObjects Enterprise XI 4.0\win32_x86\dotnet\CrystalDecisions.ReportAppServer.DataSetConversion.dll</HintPath>
+    </Reference>
+    <Reference Include="CrystalDecisions.ReportAppServer.ObjectFactory, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\SAP BusinessObjects\Crystal Reports for .NET Framework 4.0\Common\SAP BusinessObjects Enterprise XI 4.0\win32_x86\dotnet\CrystalDecisions.ReportAppServer.ObjectFactory.dll</HintPath>
+    </Reference>
+    <Reference Include="CrystalDecisions.ReportAppServer.Prompting, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\SAP BusinessObjects\Crystal Reports for .NET Framework 4.0\Common\SAP BusinessObjects Enterprise XI 4.0\win32_x86\dotnet\CrystalDecisions.ReportAppServer.Prompting.dll</HintPath>
+    </Reference>
+    <Reference Include="CrystalDecisions.ReportAppServer.ReportDefModel, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\SAP BusinessObjects\Crystal Reports for .NET Framework 4.0\Common\SAP BusinessObjects Enterprise XI 4.0\win32_x86\dotnet\CrystalDecisions.ReportAppServer.ReportDefModel.dll</HintPath>
+    </Reference>
+    <Reference Include="CrystalDecisions.ReportAppServer.XmlSerialize, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\SAP BusinessObjects\Crystal Reports for .NET Framework 4.0\Common\SAP BusinessObjects Enterprise XI 4.0\win32_x86\dotnet\CrystalDecisions.ReportAppServer.XmlSerialize.dll</HintPath>
+    </Reference>
+    <Reference Include="CrystalDecisions.ReportSource, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\SAP BusinessObjects\Crystal Reports for .NET Framework 4.0\Common\SAP BusinessObjects Enterprise XI 4.0\win32_x86\dotnet\CrystalDecisions.ReportSource.dll</HintPath>
+    </Reference>
+    <Reference Include="CrystalDecisions.Shared, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\SAP BusinessObjects\Crystal Reports for .NET Framework 4.0\Common\SAP BusinessObjects Enterprise XI 4.0\win32_x86\dotnet\CrystalDecisions.Shared.dll</HintPath>
+    </Reference>
+    <Reference Include="CrystalDecisions.VSDesigner, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\SAP BusinessObjects\Crystal Reports for .NET Framework 4.0\Common\SAP BusinessObjects Enterprise XI 4.0\win32_x86\dotnet\CrystalDecisions.VSDesigner.dll</HintPath>
+    </Reference>
+    <Reference Include="CrystalDecisions.Web, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\SAP BusinessObjects\Crystal Reports for .NET Framework 4.0\Common\SAP BusinessObjects Enterprise XI 4.0\win32_x86\dotnet\CrystalDecisions.Web.dll</HintPath>
+    </Reference>
+    <Reference Include="CrystalDecisions.Windows.Forms, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\SAP BusinessObjects\Crystal Reports for .NET Framework 4.0\Common\SAP BusinessObjects Enterprise XI 4.0\win32_x86\dotnet\CrystalDecisions.Windows.Forms.dll</HintPath>
+    </Reference>
     <Reference Include="DevExpress.BonusSkins.v17.1, Version=17.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.Charts.v17.1.Core, Version=17.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
     <Reference Include="DevExpress.Data.v17.1, Version=17.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
@@ -114,53 +223,72 @@
     <Reference Include="DevExpress.XtraRichEdit.v17.1, Version=17.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
     <Reference Include="DevExpress.XtraSpreadsheet.v17.1, Version=17.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.XtraTreeList.v17.1, Version=17.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
-    <Reference Include="EPPlus, Version=4.5.3.3, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
-      <HintPath>..\packages\EPPlus.4.5.3.3\lib\net40\EPPlus.dll</HintPath>
+    <Reference Include="EPPlus, Version=4.5.3.1, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
+      <HintPath>..\packages\EPPlus.4.5.3.1\lib\net40\EPPlus.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="FontAwesome.Sharp, Version=6.6.0.0, Culture=neutral, PublicKeyToken=d16d1e4e568ec10f, processorArchitecture=MSIL">
+    <Reference Include="FontAwesome.Sharp">
       <HintPath>..\packages\FontAwesome.Sharp.6.6.0\lib\net48\FontAwesome.Sharp.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="Google.Apis, Version=1.73.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+    <Reference Include="Google.Apis">
       <HintPath>..\packages\Google.Apis.1.73.0\lib\net462\Google.Apis.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="Google.Apis.Auth, Version=1.73.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+    <Reference Include="Google.Apis.Auth">
       <HintPath>..\packages\Google.Apis.Auth.1.73.0\lib\net462\Google.Apis.Auth.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="Google.Apis.Core, Version=1.73.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+    <Reference Include="Google.Apis.Core">
       <HintPath>..\packages\Google.Apis.Core.1.73.0\lib\net462\Google.Apis.Core.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="Google.Apis.Sheets.v4, Version=1.73.0.4061, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+    <Reference Include="Google.Apis.Sheets.v4">
       <HintPath>..\packages\Google.Apis.Sheets.v4.1.73.0.4061\lib\net462\Google.Apis.Sheets.v4.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="InputSimulator">
       <HintPath>..\..\..\..\..\Downloads\Programas\InputSimulator.0.1.0.0-bin\Debug\InputSimulator.dll</HintPath>
     </Reference>
     <Reference Include="itext.barcodes, Version=7.1.8.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
       <HintPath>..\packages\itext7.7.1.8\lib\net40\itext.barcodes.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="itext.forms, Version=7.1.8.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
       <HintPath>..\packages\itext7.7.1.8\lib\net40\itext.forms.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="itext.io, Version=7.1.8.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
       <HintPath>..\packages\itext7.7.1.8\lib\net40\itext.io.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="itext.kernel, Version=7.1.8.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
       <HintPath>..\packages\itext7.7.1.8\lib\net40\itext.kernel.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="itext.layout, Version=7.1.8.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
       <HintPath>..\packages\itext7.7.1.8\lib\net40\itext.layout.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="itext.pdfa, Version=7.1.8.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
       <HintPath>..\packages\itext7.7.1.8\lib\net40\itext.pdfa.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="itext.sign, Version=7.1.8.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
       <HintPath>..\packages\itext7.7.1.8\lib\net40\itext.sign.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="itext.styledxmlparser, Version=7.1.8.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
       <HintPath>..\packages\itext7.7.1.8\lib\net40\itext.styledxmlparser.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="itext.svg, Version=7.1.8.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
       <HintPath>..\packages\itext7.7.1.8\lib\net40\itext.svg.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="itextsharp, Version=5.5.10.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -175,6 +303,7 @@
       <HintPath>..\CapaDatos\bin\Microsoft.ApplicationBlocks.Data.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Net.Http" />
     <Reference Include="Microsoft.Office.Interop.Excel, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Lib\Microsoft.Office.Interop.Excel.dll</HintPath>
@@ -182,31 +311,37 @@
     <Reference Include="Microsoft.ReportViewer.Common, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
     <Reference Include="Microsoft.ReportViewer.WinForms, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
     <Reference Include="Microsoft.VisualBasic" />
-    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.13.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="RawPrint, Version=0.5.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\RawPrint.0.5.0\lib\net40\RawPrint.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="System">
-      <HintPath>..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8\System.dll</HintPath>
+    <Reference Include="SAPBusinessObjects.WPF.Viewer, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\SAP BusinessObjects\Crystal Reports for .NET Framework 4.0\Common\SAP BusinessObjects Enterprise XI 4.0\win32_x86\dotnet\SAPBusinessObjects.WPF.Viewer.dll</HintPath>
     </Reference>
+    <Reference Include="SAPBusinessObjects.WPF.ViewerShared, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\SAP BusinessObjects\Crystal Reports for .NET Framework 4.0\Common\SAP BusinessObjects Enterprise XI 4.0\win32_x86\dotnet\SAPBusinessObjects.WPF.ViewerShared.dll</HintPath>
+    </Reference>
+    <Reference Include="ShockwaveFlashObjects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\SAP BusinessObjects\Crystal Reports for .NET Framework 4.0\Common\SAP BusinessObjects Enterprise XI 4.0\win32_x86\dotnet\ShockwaveFlashObjects.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Management" />
     <Reference Include="System.Messaging" />
-    <Reference Include="System.Net.Http" />
     <Reference Include="System.Security" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Services, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\Windows\assembly\GAC_MSIL\System.Web.Services\2.0.0.0__b03f5f7f11d50a3a\System.Web.Services.dll</HintPath>
     </Reference>
-    <Reference Include="System.Windows.Controls.Ribbon" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
@@ -263,12 +398,6 @@
     </Compile>
     <Compile Include="frmConfigConsolidadosGuardarPre.Designer.cs">
       <DependentUpon>frmConfigConsolidadosGuardarPre.cs</DependentUpon>
-    </Compile>
-    <Compile Include="frmConfigDictamenesConsultas.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="frmConfigDictamenesConsultas.Designer.cs">
-      <DependentUpon>frmConfigDictamenesConsultas.cs</DependentUpon>
     </Compile>
     <Compile Include="frmConfigMensajesPreventiva.cs">
       <SubType>Form</SubType>
@@ -333,11 +462,15 @@
     <Compile Include="frmEdicionItemExamen.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmEdicionItemExamen.Designer.cs" />
+    <Compile Include="frmEdicionItemExamen.Designer.cs">
+      <DependentUpon>frmEdicionItemExamen.cs</DependentUpon>
+    </Compile>
     <Compile Include="FrmEditarSubtipo.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FrmEditarSubtipo.Designer.cs" />
+    <Compile Include="FrmEditarSubtipo.Designer.cs">
+      <DependentUpon>FrmEditarSubtipo.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmEstudioComplementario.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -367,12 +500,6 @@
     </Compile>
     <Compile Include="frmFacturacionPrestaciones.Designer.cs">
       <DependentUpon>frmFacturacionPrestaciones.cs</DependentUpon>
-    </Compile>
-    <Compile Include="frmHorario.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="frmHorario.Designer.cs">
-      <DependentUpon>frmHorario.cs</DependentUpon>
     </Compile>
     <Compile Include="frmListaDePrecios.cs">
       <SubType>Form</SubType>
@@ -406,9 +533,6 @@
     </Compile>
     <Compile Include="frmReplicarHorario.Designer.cs">
       <DependentUpon>frmReplicarHorario.cs</DependentUpon>
-    </Compile>
-    <Compile Include="FrmSeleccionarItems.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="frmTransferenciaDeLegajos.cs">
       <SubType>Form</SubType>
@@ -480,9 +604,17 @@
     <Compile Include="ItemsPorSecciones.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ItemsPorSecciones.Designer.cs" />
+    <Compile Include="ItemsPorSecciones.Designer.cs">
+      <DependentUpon>ItemsPorSecciones.cs</DependentUpon>
+    </Compile>
     <Compile Include="ReporteAudiometria.cs">
       <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="rptConsultorioDomicilios.cs">
+      <DependentUpon>rptConsultorioDomicilios.rpt</DependentUpon>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
     </Compile>
     <Compile Include="rptProtocoloLaboratorioLaboral02.cs">
       <DependentUpon>rptProtocoloLaboratorioLaboral02.rpt</DependentUpon>
@@ -1001,12 +1133,6 @@
       <DependentUpon>rptConsultaLaboral.rpt</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="rptConsultorioDomicilios.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>rptConsultorioDomicilios.rpt</DependentUpon>
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="rptExamenClinico.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -1118,6 +1244,12 @@
     </Compile>
     <Compile Include="frmClub.Designer.cs">
       <DependentUpon>frmClub.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmHorario.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmHorario.Designer.cs">
+      <DependentUpon>frmHorario.cs</DependentUpon>
     </Compile>
     <Compile Include="frmPaciente.cs">
       <SubType>Form</SubType>
@@ -1231,9 +1363,6 @@
     <EmbeddedResource Include="frmConfigConsolidadosGuardarPre.resx">
       <DependentUpon>frmConfigConsolidadosGuardarPre.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmConfigDictamenesConsultas.resx">
-      <DependentUpon>frmConfigDictamenesConsultas.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="frmConfigMensajesPreventiva.resx">
       <DependentUpon>frmConfigMensajesPreventiva.cs</DependentUpon>
     </EmbeddedResource>
@@ -1282,10 +1411,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmFacturacionPrestaciones.resx">
       <DependentUpon>frmFacturacionPrestaciones.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="frmHorario.resx">
-      <DependentUpon>frmHorario.cs</DependentUpon>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="frmListaDePrecios.resx">
       <DependentUpon>frmListaDePrecios.cs</DependentUpon>
@@ -1336,6 +1461,10 @@
       <DependentUpon>frmUsuariosSistema.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\licenses.licx" />
+    <EmbeddedResource Include="rptConsultorioDomicilios.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>rptConsultorioDomicilios.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="rptProtocoloLaboratorioLaboral02.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>rptProtocoloLaboratorioLaboral02.cs</LastGenOutput>
@@ -1584,10 +1713,6 @@
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>rptConsultaLaboral.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="rptConsultorioDomicilios.rpt">
-      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>rptConsultorioDomicilios.cs</LastGenOutput>
-    </EmbeddedResource>
     <EmbeddedResource Include="rptExamenClinico.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>rptExamenClinico.cs</LastGenOutput>
@@ -1652,6 +1777,10 @@
       <SubType>Designer</SubType>
       <DependentUpon>frmClub.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="frmHorario.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>frmHorario.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmPaciente.resx">
       <SubType>Designer</SubType>
       <DependentUpon>frmPaciente.cs</DependentUpon>
@@ -1691,9 +1820,6 @@
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="bin\Debug\CapaPresentacion.dll.config" />
-    <None Include="bin\x86\Debug\CapaPresentacion.dll.config" />
-    <None Include="bin\x86\Release\CapaPresentacion.dll.config" />
     <None Include="ClassDiagram2.cd" />
     <None Include="ClassDiagram3.cd" />
     <None Include="dsAgenda.xsc">
@@ -1851,266 +1977,6 @@
     <None Include="Resources\CancelarSalir.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="bin\Debug\ADODB.dll" />
-    <Content Include="bin\Debug\AForge.Video.DirectShow.dll" />
-    <Content Include="bin\Debug\AForge.Video.dll" />
-    <Content Include="bin\Debug\AxInterop.MOZILLACONTROLLib.dll" />
-    <Content Include="bin\Debug\CapaDatos.dll" />
-    <Content Include="bin\Debug\CapaDatos.pdb" />
-    <Content Include="bin\Debug\CapaDatosBase.dll" />
-    <Content Include="bin\Debug\CapaDatosBase.pdb" />
-    <Content Include="bin\Debug\CapaDatosMepryl.dll" />
-    <Content Include="bin\Debug\CapaDatosMepryl.pdb" />
-    <Content Include="bin\Debug\CapaNegocio.dll" />
-    <Content Include="bin\Debug\CapaNegocio.pdb" />
-    <Content Include="bin\Debug\CapaNegocioBase.dll" />
-    <Content Include="bin\Debug\CapaNegocioBase.pdb" />
-    <Content Include="bin\Debug\CapaNegocioMepryl.dll" />
-    <Content Include="bin\Debug\CapaNegocioMepryl.pdb" />
-    <Content Include="bin\Debug\CapaPresentacion.dll" />
-    <Content Include="bin\Debug\CapaPresentacion.pdb" />
-    <Content Include="bin\Debug\CapaPresentacionBase.dll" />
-    <Content Include="bin\Debug\CapaPresentacionBase.pdb" />
-    <Content Include="bin\Debug\Comunes.dll" />
-    <Content Include="bin\Debug\Comunes.pdb" />
-    <Content Include="bin\Debug\CrystalDecisions.CrystalReports.Engine.dll" />
-    <Content Include="bin\Debug\CrystalDecisions.ReportAppServer.ClientDoc.dll" />
-    <Content Include="bin\Debug\CrystalDecisions.ReportAppServer.CommLayer.dll" />
-    <Content Include="bin\Debug\CrystalDecisions.ReportAppServer.CommonControls.dll" />
-    <Content Include="bin\Debug\CrystalDecisions.ReportAppServer.CommonObjectModel.dll" />
-    <Content Include="bin\Debug\CrystalDecisions.ReportAppServer.Controllers.dll" />
-    <Content Include="bin\Debug\CrystalDecisions.ReportAppServer.CubeDefModel.dll" />
-    <Content Include="bin\Debug\CrystalDecisions.ReportAppServer.DataDefModel.dll" />
-    <Content Include="bin\Debug\CrystalDecisions.ReportAppServer.DataSetConversion.dll" />
-    <Content Include="bin\Debug\CrystalDecisions.ReportAppServer.ObjectFactory.dll" />
-    <Content Include="bin\Debug\CrystalDecisions.ReportAppServer.Prompting.dll" />
-    <Content Include="bin\Debug\CrystalDecisions.ReportAppServer.ReportDefModel.dll" />
-    <Content Include="bin\Debug\CrystalDecisions.ReportAppServer.XmlSerialize.dll" />
-    <Content Include="bin\Debug\CrystalDecisions.ReportSource.dll" />
-    <Content Include="bin\Debug\CrystalDecisions.Shared.dll" />
-    <Content Include="bin\Debug\CrystalDecisions.Windows.Forms.dll" />
-    <Content Include="bin\Debug\DevExpress.BonusSkins.v17.1.dll" />
-    <Content Include="bin\Debug\DevExpress.Charts.v17.1.Core.dll" />
-    <Content Include="bin\Debug\DevExpress.CodeParser.v17.1.dll" />
-    <Content Include="bin\Debug\DevExpress.Data.v17.1.dll" />
-    <Content Include="bin\Debug\DevExpress.Data.v17.1.xml" />
-    <Content Include="bin\Debug\DevExpress.DataAccess.v17.1.dll" />
-    <Content Include="bin\Debug\DevExpress.DataAccess.v17.1.UI.dll" />
-    <Content Include="bin\Debug\DevExpress.DataAccess.v17.1.UI.xml" />
-    <Content Include="bin\Debug\DevExpress.DataAccess.v17.1.xml" />
-    <Content Include="bin\Debug\DevExpress.Diagram.v17.1.Core.dll" />
-    <Content Include="bin\Debug\DevExpress.Diagram.v17.1.Core.xml" />
-    <Content Include="bin\Debug\DevExpress.Office.v17.1.Core.dll" />
-    <Content Include="bin\Debug\DevExpress.Office.v17.1.Core.xml" />
-    <Content Include="bin\Debug\DevExpress.Pdf.v17.1.Core.dll" />
-    <Content Include="bin\Debug\DevExpress.Pdf.v17.1.Core.xml" />
-    <Content Include="bin\Debug\DevExpress.Printing.v17.1.Core.dll" />
-    <Content Include="bin\Debug\DevExpress.Printing.v17.1.Core.xml" />
-    <Content Include="bin\Debug\DevExpress.RichEdit.v17.1.Core.dll" />
-    <Content Include="bin\Debug\DevExpress.RichEdit.v17.1.Core.xml" />
-    <Content Include="bin\Debug\DevExpress.Sparkline.v17.1.Core.dll" />
-    <Content Include="bin\Debug\DevExpress.Sparkline.v17.1.Core.xml" />
-    <Content Include="bin\Debug\DevExpress.Spreadsheet.v17.1.Core.dll" />
-    <Content Include="bin\Debug\DevExpress.Spreadsheet.v17.1.Core.xml" />
-    <Content Include="bin\Debug\DevExpress.Utils.v17.1.dll" />
-    <Content Include="bin\Debug\DevExpress.Utils.v17.1.UI.dll" />
-    <Content Include="bin\Debug\DevExpress.Utils.v17.1.UI.xml" />
-    <Content Include="bin\Debug\DevExpress.Utils.v17.1.xml" />
-    <Content Include="bin\Debug\DevExpress.Xpo.v17.1.dll" />
-    <Content Include="bin\Debug\DevExpress.Xpo.v17.1.xml" />
-    <Content Include="bin\Debug\DevExpress.XtraBars.v17.1.dll" />
-    <Content Include="bin\Debug\DevExpress.XtraBars.v17.1.xml" />
-    <Content Include="bin\Debug\DevExpress.XtraCharts.v17.1.dll" />
-    <Content Include="bin\Debug\DevExpress.XtraCharts.v17.1.xml" />
-    <Content Include="bin\Debug\DevExpress.XtraDiagram.v17.1.dll" />
-    <Content Include="bin\Debug\DevExpress.XtraDiagram.v17.1.xml" />
-    <Content Include="bin\Debug\DevExpress.XtraEditors.v17.1.dll" />
-    <Content Include="bin\Debug\DevExpress.XtraEditors.v17.1.xml" />
-    <Content Include="bin\Debug\DevExpress.XtraGrid.v17.1.dll" />
-    <Content Include="bin\Debug\DevExpress.XtraGrid.v17.1.xml" />
-    <Content Include="bin\Debug\DevExpress.XtraLayout.v17.1.dll" />
-    <Content Include="bin\Debug\DevExpress.XtraLayout.v17.1.xml" />
-    <Content Include="bin\Debug\DevExpress.XtraNavBar.v17.1.dll" />
-    <Content Include="bin\Debug\DevExpress.XtraNavBar.v17.1.xml" />
-    <Content Include="bin\Debug\DevExpress.XtraPrinting.v17.1.dll" />
-    <Content Include="bin\Debug\DevExpress.XtraPrinting.v17.1.xml" />
-    <Content Include="bin\Debug\DevExpress.XtraRichEdit.v17.1.dll" />
-    <Content Include="bin\Debug\DevExpress.XtraRichEdit.v17.1.xml" />
-    <Content Include="bin\Debug\DevExpress.XtraSpreadsheet.v17.1.dll" />
-    <Content Include="bin\Debug\DevExpress.XtraSpreadsheet.v17.1.xml" />
-    <Content Include="bin\Debug\DevExpress.XtraTreeList.v17.1.dll" />
-    <Content Include="bin\Debug\DevExpress.XtraTreeList.v17.1.xml" />
-    <Content Include="bin\Debug\DevExpress.XtraVerticalGrid.v17.1.dll" />
-    <Content Include="bin\Debug\DevExpress.XtraVerticalGrid.v17.1.xml" />
-    <Content Include="bin\Debug\de\DevExpress.Data.v17.1.resources.dll" />
-    <Content Include="bin\Debug\de\DevExpress.DataAccess.v17.1.resources.dll" />
-    <Content Include="bin\Debug\de\DevExpress.DataAccess.v17.1.UI.resources.dll" />
-    <Content Include="bin\Debug\de\DevExpress.Diagram.v17.1.Core.resources.dll" />
-    <Content Include="bin\Debug\de\DevExpress.Office.v17.1.Core.resources.dll" />
-    <Content Include="bin\Debug\de\DevExpress.Pdf.v17.1.Core.resources.dll" />
-    <Content Include="bin\Debug\de\DevExpress.Printing.v17.1.Core.resources.dll" />
-    <Content Include="bin\Debug\de\DevExpress.RichEdit.v17.1.Core.resources.dll" />
-    <Content Include="bin\Debug\de\DevExpress.Sparkline.v17.1.Core.resources.dll" />
-    <Content Include="bin\Debug\de\DevExpress.Spreadsheet.v17.1.Core.resources.dll" />
-    <Content Include="bin\Debug\de\DevExpress.Utils.v17.1.resources.dll" />
-    <Content Include="bin\Debug\de\DevExpress.Utils.v17.1.UI.resources.dll" />
-    <Content Include="bin\Debug\de\DevExpress.Xpo.v17.1.resources.dll" />
-    <Content Include="bin\Debug\de\DevExpress.XtraBars.v17.1.resources.dll" />
-    <Content Include="bin\Debug\de\DevExpress.XtraCharts.v17.1.resources.dll" />
-    <Content Include="bin\Debug\de\DevExpress.XtraEditors.v17.1.resources.dll" />
-    <Content Include="bin\Debug\de\DevExpress.XtraGrid.v17.1.resources.dll" />
-    <Content Include="bin\Debug\de\DevExpress.XtraLayout.v17.1.resources.dll" />
-    <Content Include="bin\Debug\de\DevExpress.XtraNavBar.v17.1.resources.dll" />
-    <Content Include="bin\Debug\de\DevExpress.XtraPrinting.v17.1.resources.dll" />
-    <Content Include="bin\Debug\de\DevExpress.XtraRichEdit.v17.1.resources.dll" />
-    <Content Include="bin\Debug\de\DevExpress.XtraSpreadsheet.v17.1.resources.dll" />
-    <Content Include="bin\Debug\de\DevExpress.XtraTreeList.v17.1.resources.dll" />
-    <Content Include="bin\Debug\de\DevExpress.XtraVerticalGrid.v17.1.resources.dll" />
-    <Content Include="bin\Debug\Entidades.dll" />
-    <Content Include="bin\Debug\Entidades.pdb" />
-    <Content Include="bin\Debug\EPPlus.dll" />
-    <Content Include="bin\Debug\EPPlus.xml" />
-    <Content Include="bin\Debug\es\DevExpress.Data.v17.1.resources.dll" />
-    <Content Include="bin\Debug\es\DevExpress.DataAccess.v17.1.resources.dll" />
-    <Content Include="bin\Debug\es\DevExpress.DataAccess.v17.1.UI.resources.dll" />
-    <Content Include="bin\Debug\es\DevExpress.Diagram.v17.1.Core.resources.dll" />
-    <Content Include="bin\Debug\es\DevExpress.Office.v17.1.Core.resources.dll" />
-    <Content Include="bin\Debug\es\DevExpress.Pdf.v17.1.Core.resources.dll" />
-    <Content Include="bin\Debug\es\DevExpress.Printing.v17.1.Core.resources.dll" />
-    <Content Include="bin\Debug\es\DevExpress.RichEdit.v17.1.Core.resources.dll" />
-    <Content Include="bin\Debug\es\DevExpress.Sparkline.v17.1.Core.resources.dll" />
-    <Content Include="bin\Debug\es\DevExpress.Spreadsheet.v17.1.Core.resources.dll" />
-    <Content Include="bin\Debug\es\DevExpress.Utils.v17.1.resources.dll" />
-    <Content Include="bin\Debug\es\DevExpress.Utils.v17.1.UI.resources.dll" />
-    <Content Include="bin\Debug\es\DevExpress.Xpo.v17.1.resources.dll" />
-    <Content Include="bin\Debug\es\DevExpress.XtraBars.v17.1.resources.dll" />
-    <Content Include="bin\Debug\es\DevExpress.XtraCharts.v17.1.resources.dll" />
-    <Content Include="bin\Debug\es\DevExpress.XtraEditors.v17.1.resources.dll" />
-    <Content Include="bin\Debug\es\DevExpress.XtraGrid.v17.1.resources.dll" />
-    <Content Include="bin\Debug\es\DevExpress.XtraLayout.v17.1.resources.dll" />
-    <Content Include="bin\Debug\es\DevExpress.XtraNavBar.v17.1.resources.dll" />
-    <Content Include="bin\Debug\es\DevExpress.XtraPrinting.v17.1.resources.dll" />
-    <Content Include="bin\Debug\es\DevExpress.XtraRichEdit.v17.1.resources.dll" />
-    <Content Include="bin\Debug\es\DevExpress.XtraSpreadsheet.v17.1.resources.dll" />
-    <Content Include="bin\Debug\es\DevExpress.XtraTreeList.v17.1.resources.dll" />
-    <Content Include="bin\Debug\es\DevExpress.XtraVerticalGrid.v17.1.resources.dll" />
-    <Content Include="bin\Debug\es\Microsoft.Build.Utilities.v3.5.resources.dll" />
-    <Content Include="bin\Debug\FlashControlV71.dll" />
-    <Content Include="bin\Debug\InputSimulator.dll" />
-    <Content Include="bin\Debug\Interop.Microsoft.Office.Core.dll" />
-    <Content Include="bin\Debug\Interop.MOZILLACONTROLLib.dll" />
-    <Content Include="bin\Debug\itextsharp.dll" />
-    <Content Include="bin\Debug\ja\DevExpress.Data.v17.1.resources.dll" />
-    <Content Include="bin\Debug\ja\DevExpress.DataAccess.v17.1.resources.dll" />
-    <Content Include="bin\Debug\ja\DevExpress.DataAccess.v17.1.UI.resources.dll" />
-    <Content Include="bin\Debug\ja\DevExpress.Diagram.v17.1.Core.resources.dll" />
-    <Content Include="bin\Debug\ja\DevExpress.Office.v17.1.Core.resources.dll" />
-    <Content Include="bin\Debug\ja\DevExpress.Pdf.v17.1.Core.resources.dll" />
-    <Content Include="bin\Debug\ja\DevExpress.Printing.v17.1.Core.resources.dll" />
-    <Content Include="bin\Debug\ja\DevExpress.RichEdit.v17.1.Core.resources.dll" />
-    <Content Include="bin\Debug\ja\DevExpress.Sparkline.v17.1.Core.resources.dll" />
-    <Content Include="bin\Debug\ja\DevExpress.Spreadsheet.v17.1.Core.resources.dll" />
-    <Content Include="bin\Debug\ja\DevExpress.Utils.v17.1.resources.dll" />
-    <Content Include="bin\Debug\ja\DevExpress.Utils.v17.1.UI.resources.dll" />
-    <Content Include="bin\Debug\ja\DevExpress.Xpo.v17.1.resources.dll" />
-    <Content Include="bin\Debug\ja\DevExpress.XtraBars.v17.1.resources.dll" />
-    <Content Include="bin\Debug\ja\DevExpress.XtraCharts.v17.1.resources.dll" />
-    <Content Include="bin\Debug\ja\DevExpress.XtraEditors.v17.1.resources.dll" />
-    <Content Include="bin\Debug\ja\DevExpress.XtraGrid.v17.1.resources.dll" />
-    <Content Include="bin\Debug\ja\DevExpress.XtraLayout.v17.1.resources.dll" />
-    <Content Include="bin\Debug\ja\DevExpress.XtraNavBar.v17.1.resources.dll" />
-    <Content Include="bin\Debug\ja\DevExpress.XtraPrinting.v17.1.resources.dll" />
-    <Content Include="bin\Debug\ja\DevExpress.XtraRichEdit.v17.1.resources.dll" />
-    <Content Include="bin\Debug\ja\DevExpress.XtraSpreadsheet.v17.1.resources.dll" />
-    <Content Include="bin\Debug\ja\DevExpress.XtraTreeList.v17.1.resources.dll" />
-    <Content Include="bin\Debug\ja\DevExpress.XtraVerticalGrid.v17.1.resources.dll" />
-    <Content Include="bin\Debug\KMCurrencyTextBox.dll" />
-    <Content Include="bin\Debug\Microsoft.ApplicationBlocks.Data.dll" />
-    <Content Include="bin\Debug\Microsoft.Build.Utilities.v3.5.dll" />
-    <Content Include="bin\Debug\Microsoft.Build.Utilities.v3.5.xml" />
-    <Content Include="bin\Debug\Microsoft.mshtml.dll" />
-    <Content Include="bin\Debug\Microsoft.Office.Interop.Excel.dll" />
-    <Content Include="bin\Debug\Microsoft.Office.Interop.Word.dll" />
-    <Content Include="bin\Debug\Microsoft.ReportViewer.Common.dll" />
-    <Content Include="bin\Debug\Microsoft.ReportViewer.WinForms.dll" />
-    <Content Include="bin\Debug\Microsoft.Vbe.Interop.dll" />
-    <Content Include="bin\Debug\office.dll" />
-    <Content Include="bin\Debug\ru\DevExpress.Data.v17.1.resources.dll" />
-    <Content Include="bin\Debug\ru\DevExpress.DataAccess.v17.1.resources.dll" />
-    <Content Include="bin\Debug\ru\DevExpress.DataAccess.v17.1.UI.resources.dll" />
-    <Content Include="bin\Debug\ru\DevExpress.Diagram.v17.1.Core.resources.dll" />
-    <Content Include="bin\Debug\ru\DevExpress.Office.v17.1.Core.resources.dll" />
-    <Content Include="bin\Debug\ru\DevExpress.Pdf.v17.1.Core.resources.dll" />
-    <Content Include="bin\Debug\ru\DevExpress.Printing.v17.1.Core.resources.dll" />
-    <Content Include="bin\Debug\ru\DevExpress.RichEdit.v17.1.Core.resources.dll" />
-    <Content Include="bin\Debug\ru\DevExpress.Sparkline.v17.1.Core.resources.dll" />
-    <Content Include="bin\Debug\ru\DevExpress.Spreadsheet.v17.1.Core.resources.dll" />
-    <Content Include="bin\Debug\ru\DevExpress.Utils.v17.1.resources.dll" />
-    <Content Include="bin\Debug\ru\DevExpress.Utils.v17.1.UI.resources.dll" />
-    <Content Include="bin\Debug\ru\DevExpress.Xpo.v17.1.resources.dll" />
-    <Content Include="bin\Debug\ru\DevExpress.XtraBars.v17.1.resources.dll" />
-    <Content Include="bin\Debug\ru\DevExpress.XtraCharts.v17.1.resources.dll" />
-    <Content Include="bin\Debug\ru\DevExpress.XtraEditors.v17.1.resources.dll" />
-    <Content Include="bin\Debug\ru\DevExpress.XtraGrid.v17.1.resources.dll" />
-    <Content Include="bin\Debug\ru\DevExpress.XtraLayout.v17.1.resources.dll" />
-    <Content Include="bin\Debug\ru\DevExpress.XtraNavBar.v17.1.resources.dll" />
-    <Content Include="bin\Debug\ru\DevExpress.XtraPrinting.v17.1.resources.dll" />
-    <Content Include="bin\Debug\ru\DevExpress.XtraRichEdit.v17.1.resources.dll" />
-    <Content Include="bin\Debug\ru\DevExpress.XtraSpreadsheet.v17.1.resources.dll" />
-    <Content Include="bin\Debug\ru\DevExpress.XtraTreeList.v17.1.resources.dll" />
-    <Content Include="bin\Debug\ru\DevExpress.XtraVerticalGrid.v17.1.resources.dll" />
-    <Content Include="bin\Debug\ShockwaveFlashObjects.dll" />
-    <Content Include="bin\Debug\Spire.Doc.dll" />
-    <Content Include="bin\Debug\Spire.License.dll" />
-    <Content Include="bin\Debug\Spire.Pdf.dll" />
-    <Content Include="bin\Debug\stdole.dll" />
-    <Content Include="bin\Debug\UserControls.dll" />
-    <Content Include="bin\Debug\UserControls.pdb" />
-    <Content Include="bin\Release\CapaPresentacion.dll" />
-    <Content Include="bin\Release\CapaPresentacion.pdb" />
-    <Content Include="bin\x86\Debug\CapaDatos.dll" />
-    <Content Include="bin\x86\Debug\CapaDatos.pdb" />
-    <Content Include="bin\x86\Debug\CapaDatosBase.dll" />
-    <Content Include="bin\x86\Debug\CapaDatosBase.pdb" />
-    <Content Include="bin\x86\Debug\CapaNegocio.dll" />
-    <Content Include="bin\x86\Debug\CapaNegocio.pdb" />
-    <Content Include="bin\x86\Debug\CapaNegocioBase.dll" />
-    <Content Include="bin\x86\Debug\CapaNegocioBase.pdb" />
-    <Content Include="bin\x86\Debug\CapaPresentacion.dll" />
-    <Content Include="bin\x86\Debug\CapaPresentacion.pdb" />
-    <Content Include="bin\x86\Debug\CapaPresentacionBase.dll" />
-    <Content Include="bin\x86\Debug\CapaPresentacionBase.pdb" />
-    <Content Include="bin\x86\Debug\Comunes.dll" />
-    <Content Include="bin\x86\Debug\Comunes.pdb" />
-    <Content Include="bin\x86\Debug\datasms.mdf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="bin\x86\Debug\datasms_log.ldf">
-      <DependentUpon>datasms.mdf</DependentUpon>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="bin\x86\Debug\KMCurrencyTextBox.dll" />
-    <Content Include="bin\x86\Debug\Microsoft.ApplicationBlocks.Data.dll" />
-    <Content Include="bin\x86\Debug\UserControls.dll" />
-    <Content Include="bin\x86\Debug\UserControls.pdb" />
-    <Content Include="bin\x86\Release\CapaDatos.dll" />
-    <Content Include="bin\x86\Release\CapaDatosBase.dll" />
-    <Content Include="bin\x86\Release\CapaNegocio.dll" />
-    <Content Include="bin\x86\Release\CapaNegocioBase.dll" />
-    <Content Include="bin\x86\Release\CapaPresentacion.dll" />
-    <Content Include="bin\x86\Release\CapaPresentacionBase.dll" />
-    <Content Include="bin\x86\Release\Comunes.dll" />
-    <Content Include="bin\x86\Release\datasms.mdf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="bin\x86\Release\datasms_log.ldf">
-      <DependentUpon>datasms.mdf</DependentUpon>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="bin\x86\Release\Interop.Microsoft.Office.Core.dll" />
-    <Content Include="bin\x86\Release\KMCurrencyTextBox.dll" />
-    <Content Include="bin\x86\Release\Microsoft.ApplicationBlocks.Data.dll" />
-    <Content Include="bin\x86\Release\UserControls.dll" />
     <Content Include="Imagenes\Iconos\ClubesLigas\mCambioClub237x237.png" />
     <Content Include="Imagenes\Iconos\ClubesLigas\mCambioClub36x36.png" />
     <Content Include="Imagenes\Iconos\ClubesLigas\mClub36x36.png" />
@@ -2137,12 +2003,6 @@
     <Content Include="Imagenes\Iconos\Examenes\mRevalidacion60x60.png" />
     <Content Include="Imagenes\Iconos\Examenes\mRxAuto512x512.png" />
     <Content Include="Imagenes\Iconos\Exportaciones\jumpy.png" />
-    <None Include="Resources\disco-flexible.png" />
-    <None Include="Resources\cancelar.png" />
-    <None Include="Resources\tacho.png" />
-    <None Include="Resources\papelera %281%29.png" />
-    <None Include="Resources\papelera.png" />
-    <None Include="Imagenes\Iconos\Otros\mActualiza36x36.png" />
     <Content Include="Imagenes\Iconos\Otros\mAddPaciente22x22.png" />
     <Content Include="Imagenes\Iconos\Otros\mAddPaciente24x24.png" />
     <Content Include="Imagenes\Iconos\Otros\mAddPaciente36x36.png" />
@@ -2180,11 +2040,6 @@
     <Content Include="Imagenes\Iconos\Profesionales\mMedicos40x40.png" />
     <Content Include="Imagenes\Iconos\Turnos\mTurnos36x36.png" />
     <None Include="Resources\jumpy.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="bin\Debug\fr\" />
-    <Folder Include="bin\Debug\it\" />
-    <Folder Include="bin\Debug\pt-BR\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

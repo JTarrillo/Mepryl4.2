@@ -1,14 +1,15 @@
-﻿using System;
+﻿using CapaNegocioMepryl;
+using Comunes;
+using Entidades;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using CapaNegocioMepryl;
-using Entidades;
-using Comunes;
-using System.IO;
 
 namespace CapaPresentacion
 {
@@ -941,6 +942,16 @@ namespace CapaPresentacion
                 tbPanelRx1.Focus();
                 tbPanelRx1.SelectionStart = 0;
                 tbPanelRx1.SelectionLength = tbPanelRx1.Text.Length;
+                // DEBUG: Mostrar los IDs presentes en RX
+                try
+                {
+                    string ids = string.Join(", ", textBoxsIdUsados.Select(tb => tb.Text));
+                    System.Diagnostics.Debug.WriteLine("IDs en RX: " + ids);
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine("Error mostrando IDs RX: " + ex.Message);
+                }
             }
             else if (tabControl1.SelectedTab == tabPageEC)
             {
@@ -1096,6 +1107,7 @@ namespace CapaPresentacion
             examen.ToraxP = obtenerValorTb("55");
             examen.PCostalFyO = obtenerValorTb("56");
             examen.ColDorsalFyP = obtenerValorTb("57");
+            examen.DorsalF = obtenerValorTb("228");
             examen.PelvisF = obtenerValorTb("58");
             examen.CaderaF = obtenerValorTb("59");
             examen.CaderaP = obtenerValorTb("60");
@@ -1475,6 +1487,7 @@ namespace CapaPresentacion
             setearTbSegunId("55", examen.ToraxP, "");
             setearTbSegunId("56", examen.PCostalFyO, "");
             setearTbSegunId("57", examen.ColDorsalFyP, "");
+            setearTbSegunId("228", examen.DorsalF, "SIN PARTICULARIDADES");
             setearTbSegunId("58", examen.PelvisF, "");
             setearTbSegunId("59", examen.CaderaF, "");
             setearTbSegunId("60", examen.CaderaP, "");
