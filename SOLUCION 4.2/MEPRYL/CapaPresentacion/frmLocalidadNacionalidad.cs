@@ -4021,6 +4021,9 @@ namespace CapaPresentacion
             }
         }
 
+        private void dgvOrina_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
 
+        }
     }
 }

@@ -29,7 +29,7 @@ namespace CapaPresentacion
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmTurnos));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.lbTitulo = new System.Windows.Forms.Label();
             this.labelSubTipoExamen = new System.Windows.Forms.Label();
             this.cboSubTipoExamen = new System.Windows.Forms.ComboBox();
@@ -299,9 +299,9 @@ namespace CapaPresentacion
             this.btnWhatsApp.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnWhatsApp.Location = new System.Drawing.Point(9, 151);
             this.btnWhatsApp.Name = "btnWhatsApp";
-            this.btnWhatsApp.Size = new System.Drawing.Size(120, 43);
+            this.btnWhatsApp.Size = new System.Drawing.Size(120, 45);
             this.btnWhatsApp.TabIndex = 135;
-            this.btnWhatsApp.Text = "WhatsAp";
+            this.btnWhatsApp.Text = "Whatsapp";
             this.btnWhatsApp.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btnWhatsApp.UseVisualStyleBackColor = true;
             this.btnWhatsApp.Click += new System.EventHandler(this.btnWhatsApp_Click);
@@ -439,7 +439,7 @@ namespace CapaPresentacion
             this.botLiberar.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.botLiberar.Image = ((System.Drawing.Image)(resources.GetObject("botLiberar.Image")));
             this.botLiberar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.botLiberar.Location = new System.Drawing.Point(6, 262);
+            this.botLiberar.Location = new System.Drawing.Point(9, 262);
             this.botLiberar.Name = "botLiberar";
             this.botLiberar.Size = new System.Drawing.Size(120, 45);
             this.botLiberar.TabIndex = 4;
@@ -455,7 +455,7 @@ namespace CapaPresentacion
             this.botModificar.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.botModificar.Image = ((System.Drawing.Image)(resources.GetObject("botModificar.Image")));
             this.botModificar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.botModificar.Location = new System.Drawing.Point(5, 205);
+            this.botModificar.Location = new System.Drawing.Point(9, 204);
             this.botModificar.Name = "botModificar";
             this.botModificar.Size = new System.Drawing.Size(120, 45);
             this.botModificar.TabIndex = 3;
@@ -854,6 +854,7 @@ namespace CapaPresentacion
             this.tbPacienteLaboral.ReadOnly = true;
             this.tbPacienteLaboral.Size = new System.Drawing.Size(305, 22);
             this.tbPacienteLaboral.TabIndex = 22;
+            this.tbPacienteLaboral.TextChanged += new System.EventHandler(this.tbPacienteLaboral_TextChanged);
             // 
             // label14
             // 
@@ -1150,14 +1151,14 @@ namespace CapaPresentacion
             this.dgvLigaYClub.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.dgvLigaYClub.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvLigaYClub.ColumnHeadersVisible = false;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Tahoma", 8.25F);
-            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvLigaYClub.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Tahoma", 8.25F);
+            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(31)))), ((int)(((byte)(53)))));
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvLigaYClub.DefaultCellStyle = dataGridViewCellStyle2;
             this.dgvLigaYClub.GridColor = System.Drawing.SystemColors.Control;
             this.dgvLigaYClub.Location = new System.Drawing.Point(15, 209);
             this.dgvLigaYClub.MultiSelect = false;

@@ -633,7 +633,7 @@ namespace CapaDatosMepryl
         public DataTable cargarTablaSegunFiltro(int ordenFormulario, DataTable estudiosPorTipoExamen)
         {
             // ✅ NUEVO: Recargar la tabla items desde BD para obtener items creados recientemente
-            items = SQLConnector.obtenerTablaSegunConsultaString("SELECT codigo, id, nombreCompleto, nombreInformes, ordenFormulario, precioSuma, precioResta FROM dbo.Items ORDER BY codigo");
+            items = SQLConnector.obtenerTablaSegunConsultaString("SELECT codigo, id, nombreInformes, nombreInformes, ordenFormulario, precioSuma, precioResta FROM dbo.Items ORDER BY codigo");
 
             DataTable retorno = new DataTable();
             retorno.Columns.Add("Id");

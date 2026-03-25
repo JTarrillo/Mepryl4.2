@@ -1169,7 +1169,7 @@ namespace CapaPresentacion
         {
             frmTipoExamen fTipoExamen = new frmTipoExamen(tipoExamenActual);
             fTipoExamen.objDelegateDevolverTipoExamen = new frmTipoExamen.DelegateDevolverTipoExamen(cargarTipoExamenPreventiva);
-            fTipoExamen.Size = new Size(1200, 800);
+            fTipoExamen.Size = new Size(1400, 800);
             fTipoExamen.ShowDialog();
         }
 
@@ -2932,6 +2932,11 @@ namespace CapaPresentacion
                 secciones = secciones.ToArray(),
                 pie = pie
             };
+        }
+
+        private void tbPacienteLaboral_TextChanged(object sender, EventArgs e)
+        {
+
         }
 
         /// <summary>

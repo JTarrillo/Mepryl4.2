@@ -117,7 +117,7 @@
             this.lbTitulo.ForeColor = System.Drawing.Color.White;
             this.lbTitulo.Location = new System.Drawing.Point(0, 0);
             this.lbTitulo.Name = "lbTitulo";
-            this.lbTitulo.Size = new System.Drawing.Size(1196, 30);
+            this.lbTitulo.Size = new System.Drawing.Size(1326, 30);
             this.lbTitulo.TabIndex = 129;
             this.lbTitulo.Text = "Estudios Asociados";
             this.lbTitulo.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -129,7 +129,7 @@
             this.botonLaboratorio.Controls.Add(this.botCancelar);
             this.botonLaboratorio.Controls.Add(this.botGuardar);
             this.botonLaboratorio.Dock = System.Windows.Forms.DockStyle.Right;
-            this.botonLaboratorio.Location = new System.Drawing.Point(1062, 30);
+            this.botonLaboratorio.Location = new System.Drawing.Point(1192, 30);
             this.botonLaboratorio.Name = "botonLaboratorio";
             this.botonLaboratorio.Size = new System.Drawing.Size(134, 633);
             this.botonLaboratorio.TabIndex = 130;
@@ -176,7 +176,7 @@
             this.tabControl.Location = new System.Drawing.Point(5, 115);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(1051, 548);
+            this.tabControl.Size = new System.Drawing.Size(1181, 548);
             this.tabControl.TabIndex = 131;
             this.tabControl.SelectedIndexChanged += new System.EventHandler(this.tabControl_SelectedIndexChanged);
             // 
@@ -350,7 +350,7 @@
             this.tabPageLaboratorio.Location = new System.Drawing.Point(4, 25);
             this.tabPageLaboratorio.Name = "tabPageLaboratorio";
             this.tabPageLaboratorio.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageLaboratorio.Size = new System.Drawing.Size(1043, 519);
+            this.tabPageLaboratorio.Size = new System.Drawing.Size(1173, 519);
             this.tabPageLaboratorio.TabIndex = 1;
             this.tabPageLaboratorio.Text = "Laboratorio";
             // 
@@ -358,7 +358,7 @@
             // 
             this.label7.AutoSize = true;
             this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label7.Location = new System.Drawing.Point(823, 11);
+            this.label7.Location = new System.Drawing.Point(994, 11);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(39, 16);
             this.label7.TabIndex = 12;
@@ -368,7 +368,7 @@
             // 
             this.label8.AutoSize = true;
             this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label8.Location = new System.Drawing.Point(660, 11);
+            this.label8.Location = new System.Drawing.Point(807, 11);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(87, 16);
             this.label8.TabIndex = 11;
@@ -378,7 +378,7 @@
             // 
             this.label9.AutoSize = true;
             this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label9.Location = new System.Drawing.Point(497, 11);
+            this.label9.Location = new System.Drawing.Point(611, 11);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(87, 16);
             this.label9.TabIndex = 10;
@@ -388,7 +388,7 @@
             // 
             this.label10.AutoSize = true;
             this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label10.Location = new System.Drawing.Point(334, 11);
+            this.label10.Location = new System.Drawing.Point(418, 11);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(66, 16);
             this.label10.TabIndex = 9;
@@ -435,11 +435,11 @@
             dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.dgvOrina.DefaultCellStyle = dataGridViewCellStyle2;
             this.dgvOrina.GridColor = System.Drawing.Color.WhiteSmoke;
-            this.dgvOrina.Location = new System.Drawing.Point(826, 30);
+            this.dgvOrina.Location = new System.Drawing.Point(997, 30);
             this.dgvOrina.Name = "dgvOrina";
             this.dgvOrina.RowHeadersVisible = false;
             this.dgvOrina.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
-            this.dgvOrina.Size = new System.Drawing.Size(157, 486);
+            this.dgvOrina.Size = new System.Drawing.Size(170, 486);
             this.dgvOrina.TabIndex = 6;
             // 
             // dgvBacteriologia
@@ -463,11 +463,11 @@
             dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.dgvBacteriologia.DefaultCellStyle = dataGridViewCellStyle3;
             this.dgvBacteriologia.GridColor = System.Drawing.Color.WhiteSmoke;
-            this.dgvBacteriologia.Location = new System.Drawing.Point(663, 30);
+            this.dgvBacteriologia.Location = new System.Drawing.Point(810, 30);
             this.dgvBacteriologia.Name = "dgvBacteriologia";
             this.dgvBacteriologia.RowHeadersVisible = false;
             this.dgvBacteriologia.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
-            this.dgvBacteriologia.Size = new System.Drawing.Size(157, 489);
+            this.dgvBacteriologia.Size = new System.Drawing.Size(172, 489);
             this.dgvBacteriologia.TabIndex = 5;
             // 
             // dgvPerfilLipidico
@@ -491,11 +491,11 @@
             dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.dgvPerfilLipidico.DefaultCellStyle = dataGridViewCellStyle4;
             this.dgvPerfilLipidico.GridColor = System.Drawing.Color.WhiteSmoke;
-            this.dgvPerfilLipidico.Location = new System.Drawing.Point(500, 30);
+            this.dgvPerfilLipidico.Location = new System.Drawing.Point(614, 30);
             this.dgvPerfilLipidico.Name = "dgvPerfilLipidico";
             this.dgvPerfilLipidico.RowHeadersVisible = false;
             this.dgvPerfilLipidico.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
-            this.dgvPerfilLipidico.Size = new System.Drawing.Size(157, 489);
+            this.dgvPerfilLipidico.Size = new System.Drawing.Size(190, 489);
             this.dgvPerfilLipidico.TabIndex = 4;
             // 
             // dgvSerologia
@@ -519,11 +519,11 @@
             dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.dgvSerologia.DefaultCellStyle = dataGridViewCellStyle5;
             this.dgvSerologia.GridColor = System.Drawing.Color.WhiteSmoke;
-            this.dgvSerologia.Location = new System.Drawing.Point(337, 30);
+            this.dgvSerologia.Location = new System.Drawing.Point(421, 30);
             this.dgvSerologia.Name = "dgvSerologia";
             this.dgvSerologia.RowHeadersVisible = false;
             this.dgvSerologia.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
-            this.dgvSerologia.Size = new System.Drawing.Size(157, 486);
+            this.dgvSerologia.Size = new System.Drawing.Size(187, 486);
             this.dgvSerologia.TabIndex = 3;
             // 
             // dgvQuimicaHematica
@@ -551,7 +551,7 @@
             this.dgvQuimicaHematica.Name = "dgvQuimicaHematica";
             this.dgvQuimicaHematica.RowHeadersVisible = false;
             this.dgvQuimicaHematica.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
-            this.dgvQuimicaHematica.Size = new System.Drawing.Size(157, 483);
+            this.dgvQuimicaHematica.Size = new System.Drawing.Size(241, 483);
             this.dgvQuimicaHematica.TabIndex = 2;
             // 
             // dgvHematologia
@@ -860,7 +860,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1196, 663);
+            this.ClientSize = new System.Drawing.Size(1326, 663);
             this.Controls.Add(this.tbId);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.tbImporte);
