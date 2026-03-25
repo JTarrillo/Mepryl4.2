@@ -70,6 +70,7 @@ namespace CapaPresentacion
             celda = -1;
             cambiarEnabled(true, false);
             dgv.MultiSelect = true;
+            dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
             progressBar.Visible = false;
             CargarDataTable();
         }
@@ -87,6 +88,7 @@ namespace CapaPresentacion
             celda = -1;
             cambiarEnabled(true, false);
             dgv.MultiSelect = true;
+            dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
             progressBar.Visible = false;
             CargarDataTable();
         }
@@ -186,6 +188,7 @@ namespace CapaPresentacion
                 }                
             }
             cambiarVisibilidadColumnas();
+            dgv.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);
             if (dgv.Rows.Count > 0) { seleccionarCelda(); }
             CambiaColorRepYEC();
         }
@@ -550,6 +553,25 @@ namespace CapaPresentacion
                 {
                     e.Handled = true;
                     abrirVentana(dgv.CurrentCell);
+                }
+            }
+
+            // Redimensionar columna actual con Ctrl + Flecha Derecha / Izquierda
+            if (e.Control && dgv.CurrentCell != null)
+            {
+                int colIndex = dgv.CurrentCell.ColumnIndex;
+                int paso = 20;
+
+                if (e.KeyCode == Keys.Right)
+                {
+                    dgv.Columns[colIndex].Width += paso;
+                    e.Handled = true;
+                }
+                else if (e.KeyCode == Keys.Left)
+                {
+                    int nuevoAncho = dgv.Columns[colIndex].Width - paso;
+                    dgv.Columns[colIndex].Width = Math.Max(nuevoAncho, 20);
+                    e.Handled = true;
                 }
             }
         }

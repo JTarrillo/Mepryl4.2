@@ -29,7 +29,7 @@ namespace CapaPresentacion
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmTurnos));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.lbTitulo = new System.Windows.Forms.Label();
             this.labelSubTipoExamen = new System.Windows.Forms.Label();
             this.cboSubTipoExamen = new System.Windows.Forms.ComboBox();
@@ -297,7 +297,7 @@ namespace CapaPresentacion
             this.btnWhatsApp.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold);
             this.btnWhatsApp.Image = ((System.Drawing.Image)(resources.GetObject("btnWhatsApp.Image")));
             this.btnWhatsApp.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnWhatsApp.Location = new System.Drawing.Point(9, 151);
+            this.btnWhatsApp.Location = new System.Drawing.Point(9, 136);
             this.btnWhatsApp.Name = "btnWhatsApp";
             this.btnWhatsApp.Size = new System.Drawing.Size(120, 45);
             this.btnWhatsApp.TabIndex = 135;
@@ -360,7 +360,7 @@ namespace CapaPresentacion
             this.btnCopiarInfo.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold);
             this.btnCopiarInfo.Image = ((System.Drawing.Image)(resources.GetObject("btnCopiarInfo.Image")));
             this.btnCopiarInfo.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnCopiarInfo.Location = new System.Drawing.Point(9, 97);
+            this.btnCopiarInfo.Location = new System.Drawing.Point(9, 83);
             this.btnCopiarInfo.Name = "btnCopiarInfo";
             this.btnCopiarInfo.Size = new System.Drawing.Size(120, 45);
             this.btnCopiarInfo.TabIndex = 131;
@@ -455,7 +455,7 @@ namespace CapaPresentacion
             this.botModificar.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.botModificar.Image = ((System.Drawing.Image)(resources.GetObject("botModificar.Image")));
             this.botModificar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.botModificar.Location = new System.Drawing.Point(9, 204);
+            this.botModificar.Location = new System.Drawing.Point(9, 187);
             this.botModificar.Name = "botModificar";
             this.botModificar.Size = new System.Drawing.Size(120, 45);
             this.botModificar.TabIndex = 3;
@@ -470,7 +470,7 @@ namespace CapaPresentacion
             this.botEditarExamenPreventiva.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.botEditarExamenPreventiva.Image = ((System.Drawing.Image)(resources.GetObject("botEditarExamenPreventiva.Image")));
             this.botEditarExamenPreventiva.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.botEditarExamenPreventiva.Location = new System.Drawing.Point(6, 100);
+            this.botEditarExamenPreventiva.Location = new System.Drawing.Point(9, 83);
             this.botEditarExamenPreventiva.Name = "botEditarExamenPreventiva";
             this.botEditarExamenPreventiva.Size = new System.Drawing.Size(120, 45);
             this.botEditarExamenPreventiva.TabIndex = 43;
@@ -515,7 +515,7 @@ namespace CapaPresentacion
             this.botEditarExamenLaboral.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.botEditarExamenLaboral.Image = ((System.Drawing.Image)(resources.GetObject("botEditarExamenLaboral.Image")));
             this.botEditarExamenLaboral.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.botEditarExamenLaboral.Location = new System.Drawing.Point(6, 100);
+            this.botEditarExamenLaboral.Location = new System.Drawing.Point(6, 82);
             this.botEditarExamenLaboral.Name = "botEditarExamenLaboral";
             this.botEditarExamenLaboral.Size = new System.Drawing.Size(120, 45);
             this.botEditarExamenLaboral.TabIndex = 43;
@@ -1151,14 +1151,14 @@ namespace CapaPresentacion
             this.dgvLigaYClub.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.dgvLigaYClub.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvLigaYClub.ColumnHeadersVisible = false;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Tahoma", 8.25F);
-            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(31)))), ((int)(((byte)(53)))));
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvLigaYClub.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Tahoma", 8.25F);
+            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(31)))), ((int)(((byte)(53)))));
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvLigaYClub.DefaultCellStyle = dataGridViewCellStyle1;
             this.dgvLigaYClub.GridColor = System.Drawing.SystemColors.Control;
             this.dgvLigaYClub.Location = new System.Drawing.Point(15, 209);
             this.dgvLigaYClub.MultiSelect = false;

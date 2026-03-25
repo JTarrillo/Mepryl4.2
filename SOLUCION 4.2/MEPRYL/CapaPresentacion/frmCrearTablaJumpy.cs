@@ -92,89 +92,110 @@ namespace CapaPresentacion
 
         private void guardarExportacionExcel()
         {
-            Microsoft.Office.Interop.Excel.Application excel = new Microsoft.Office.Interop.Excel.Application();
-            Microsoft.Office.Interop.Excel.Workbook excelworkBook;
-            Microsoft.Office.Interop.Excel.Worksheet excelSheet;
-
-            lblTarea.Visible = true;
-            excel.Visible = false;
-            excel.DisplayAlerts = false;
-            excel.SheetsInNewWorkbook = 1;
-            excelworkBook = (Microsoft.Office.Interop.Excel.Workbook)(excel.Workbooks.Add(Type.Missing));
-            excelSheet = (Microsoft.Office.Interop.Excel.Worksheet)excelworkBook.ActiveSheet;
-            excelSheet.Name = "Hoja1";
-
-
-            excelSheet.Cells[1, 1] = "fila";
-            excelSheet.Cells[1, 2] = "numero";
-            excelSheet.Cells[1, 3] = "nombre";
-            excelSheet.Cells[1, 4] = "dni"; 
-            excelSheet.Cells[1, 5] = "variable";
-            excelSheet.Cells[1, 6] = "variable1";
-
-            setearColorYBorde(excel.get_Range("A1", "A1"));
-            setearColorYBorde(excel.get_Range("B1", "B1"));
-            setearColorYBorde(excel.get_Range("C1", "C1"));
-            setearColorYBorde(excel.get_Range("D1", "D1"));
-            setearColorYBorde(excel.get_Range("E1", "E1"));
-            setearColorYBorde(excel.get_Range("F1", "F1"));
-
-            DataTable dt = cargarTablasExcel();
-
-            DataTable dt2 = dt.Clone();
-            dt2.Columns["fila"].DataType = Type.GetType("System.Int32");
-
-            foreach (DataRow dr in dt.Rows)
+            Microsoft.Office.Interop.Excel.Application excel = null;
+            Microsoft.Office.Interop.Excel.Workbook excelworkBook = null;
+            try
             {
-                if (dr["variable"].ToString()!="")
+                excel = new Microsoft.Office.Interop.Excel.Application();
+                Microsoft.Office.Interop.Excel.Worksheet excelSheet;
+
+                lblTarea.Visible = true;
+                excel.Visible = false;
+                excel.DisplayAlerts = false;
+                excel.SheetsInNewWorkbook = 1;
+                excelworkBook = (Microsoft.Office.Interop.Excel.Workbook)(excel.Workbooks.Add(Type.Missing));
+                excelSheet = (Microsoft.Office.Interop.Excel.Worksheet)excelworkBook.ActiveSheet;
+                excelSheet.Name = "Hoja1";
+
+                excelSheet.Cells[1, 1] = "fila";
+                excelSheet.Cells[1, 2] = "numero";
+                excelSheet.Cells[1, 3] = "nombre";
+                excelSheet.Cells[1, 4] = "dni"; 
+                excelSheet.Cells[1, 5] = "variable";
+                excelSheet.Cells[1, 6] = "variable1";
+
+                setearColorYBorde(excel.get_Range("A1", "A1"));
+                setearColorYBorde(excel.get_Range("B1", "B1"));
+                setearColorYBorde(excel.get_Range("C1", "C1"));
+                setearColorYBorde(excel.get_Range("D1", "D1"));
+                setearColorYBorde(excel.get_Range("E1", "E1"));
+                setearColorYBorde(excel.get_Range("F1", "F1"));
+
+                DataTable dt = cargarTablasExcel();
+
+                DataTable dt2 = dt.Clone();
+                dt2.Columns["fila"].DataType = Type.GetType("System.Int32");
+
+                foreach (DataRow dr in dt.Rows)
                 {
-                    fecha = Convert.ToDateTime(dr["variable"].ToString());
-                    dr["variable"] = fecha.ToString("dd/MM/yyyy");
-                    dt2.ImportRow(dr);
+                    if (dr["variable"].ToString()!="")
+                    {
+                        fecha = Convert.ToDateTime(dr["variable"].ToString());
+                        dr["variable"] = fecha.ToString("dd/MM/yyyy");
+                        dt2.ImportRow(dr);
+                    }
                 }
+                dt2.AcceptChanges();
+
+                DataView dv = dt2.DefaultView;
+                dv.Sort = "FILA asc";
+                DataTable sortedDT = dv.ToTable();
+
+                progressBar.Visible = true;
+                progressBar.Minimum = 1;
+                progressBar.Maximum = dt.Rows.Count;
+                progressBar.Step = 1;
+
+                int i = 1;
+                int j = 0;
+                foreach (DataRow dr in sortedDT.Rows)
+                {
+                    excelSheet.Cells[i + 1, j + 1] = Convert.ToInt64(dr.ItemArray[0].ToString());
+                    j++;
+                    excelSheet.Cells[i + 1, j + 1] = dr.ItemArray[1].ToString();
+                    j++;
+                    excelSheet.Cells[i + 1, j + 1] = dr.ItemArray[2].ToString();
+                    j++;
+                    excelSheet.Cells[i + 1, j + 1] = dr.ItemArray[3].ToString();
+                    j++;
+                    excelSheet.Cells[i + 1, j + 1] = dr.ItemArray[4].ToString();
+                    j++;
+                    excelSheet.Cells[i + 1, j + 1] = dr.ItemArray[5].ToString();
+
+                    i++;
+                    progressBar.PerformStep();
+                    j = 0;
+                }
+                excel.get_Range("A1", "E1").EntireColumn.AutoFit();
+                excelworkBook.SaveAs(tbExcel.Text, Excel.XlFileFormat.xlCSV,
+                    Type.Missing, Type.Missing, Type.Missing, Type.Missing, Excel.XlSaveAsAccessMode.xlExclusive,
+                    Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
+                progressBar.Visible = false;
+                lblTarea.Visible = false;
+                MessageBox.Show("La exportación se a guardado correctamente: \n" + tbExcel.Text, "Exportar", MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+                this.Close();
             }
-            dt2.AcceptChanges();
-
-            DataView dv = dt2.DefaultView;
-            dv.Sort = "FILA asc";
-            DataTable sortedDT = dv.ToTable();
-
-            progressBar.Visible = true;
-            progressBar.Minimum = 1;
-            progressBar.Maximum = dt.Rows.Count;
-            progressBar.Step = 1;
-
-            int i = 1;
-            int j = 0;
-            foreach (DataRow dr in sortedDT.Rows)
+            catch (Exception ex)
             {
-                excelSheet.Cells[i + 1, j + 1] = Convert.ToInt64(dr.ItemArray[0].ToString());
-                j++;
-                excelSheet.Cells[i + 1, j + 1] = dr.ItemArray[1].ToString();
-                j++;
-                excelSheet.Cells[i + 1, j + 1] = dr.ItemArray[2].ToString();
-                j++;
-                excelSheet.Cells[i + 1, j + 1] = dr.ItemArray[3].ToString();
-                j++;
-                excelSheet.Cells[i + 1, j + 1] = dr.ItemArray[4].ToString();
-                j++;
-                excelSheet.Cells[i + 1, j + 1] = dr.ItemArray[5].ToString();
-
-                i++;
-                progressBar.PerformStep();
-                j = 0;
+                progressBar.Visible = false;
+                lblTarea.Visible = false;
+                MessageBox.Show("Error al exportar: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            excel.get_Range("A1", "E1").EntireColumn.AutoFit();
-            excelworkBook.SaveAs(tbExcel.Text, Excel.XlFileFormat.xlCSV,
-            Type.Missing, Type.Missing, Type.Missing, Type.Missing, Excel.XlSaveAsAccessMode.xlExclusive,
-            Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
-            excel.Quit();
-            progressBar.Visible = false;
-            lblTarea.Visible = false;
-
-            MessageBox.Show("La exportación se a guardado correctamente: \n" + tbExcel.Text, "Exportar", MessageBoxButtons.OK,
-                MessageBoxIcon.Information);
-            this.Close();
+            finally
+            {
+                // Liberar siempre los objetos COM para evitar procesos zombie de Excel
+                try { excelworkBook?.Close(false); } catch { }
+                try
+                {
+                    if (excel != null)
+                    {
+                        excel.Quit();
+                        System.Runtime.InteropServices.Marshal.ReleaseComObject(excel);
+                    }
+                }
+                catch { }
+            }
         }
 
         private void setearColorRojoFuente(Excel.Range rng)

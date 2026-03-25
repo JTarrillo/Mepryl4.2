@@ -2349,27 +2349,19 @@ namespace CapaPresentacion
         private void actualizarTextBox(TextBox tb, ref List<DataTable> lista)
         {
             tb.Clear();
+            var descripciones = new List<string>();
             foreach (DataTable dt in lista)
             {
                 foreach (DataRow dr in dt.Rows)
                 {
                     if ((bool)dr.ItemArray[2])
-                    {
-                        if (tb.Text.Length == 0)
-                        {
-                            tb.Text = dr.ItemArray[3].ToString();
-                        }
-                        else
-                        {
-                            tb.Text = tb.Text + " - " + dr.ItemArray[3].ToString();
-                        }
-
-                    }
+                        descripciones.Add(dr.ItemArray[3].ToString());
                 }
             }
+            descripciones.Sort(StringComparer.CurrentCultureIgnoreCase);
+            tb.Text = string.Join(" - ", descripciones);
             lista.Clear();
         }
-
 
         private void llenarDataGrids(Entidades.TipoExamen entidad)
         {

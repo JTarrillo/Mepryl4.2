@@ -125,12 +125,15 @@ namespace CapaPresentacion
 
         private void guardarExportacionExcel()
         {
-            Microsoft.Office.Interop.Excel.Application excel = new Microsoft.Office.Interop.Excel.Application();
-            Microsoft.Office.Interop.Excel.Workbook excelworkBook;
-            Microsoft.Office.Interop.Excel.Worksheet excelSheet;
+            Microsoft.Office.Interop.Excel.Application excel = null;
+            Microsoft.Office.Interop.Excel.Workbook excelworkBook = null;
+            try
+            {
+                excel = new Microsoft.Office.Interop.Excel.Application();
+                Microsoft.Office.Interop.Excel.Worksheet excelSheet;
 
-            excel.Visible = false;
-            excel.DisplayAlerts = false;
+                excel.Visible = false;
+                excel.DisplayAlerts = false;
             excel.SheetsInNewWorkbook = 1;
             excelworkBook = (Microsoft.Office.Interop.Excel.Workbook)(excel.Workbooks.Add(Type.Missing));
             excelSheet = (Microsoft.Office.Interop.Excel.Worksheet)excelworkBook.ActiveSheet;
@@ -438,11 +441,30 @@ namespace CapaPresentacion
             excelworkBook.SaveAs(tbUbicacion.Text, Excel.XlFileFormat.xlAddIn,
             Type.Missing, Type.Missing, Type.Missing, Type.Missing, Excel.XlSaveAsAccessMode.xlExclusive,
             Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
-            excel.Quit();
-            progressBar.Visible = false;
-            MessageBox.Show("Exportación guardada correctamente en: \n" + tbUbicacion.Text, "Exportar", MessageBoxButtons.OK,
-                MessageBoxIcon.Information);
-            this.Close();
+                progressBar.Visible = false;
+                MessageBox.Show("Exportación guardada correctamente en: \n" + tbUbicacion.Text, "Exportar", MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+                this.Close();
+            }
+            catch (Exception ex)
+            {
+                progressBar.Visible = false;
+                MessageBox.Show("Error al exportar: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                // Liberar siempre los objetos COM para evitar procesos zombie de Excel
+                try { excelworkBook?.Close(false); } catch { }
+                try
+                {
+                    if (excel != null)
+                    {
+                        excel.Quit();
+                        System.Runtime.InteropServices.Marshal.ReleaseComObject(excel);
+                    }
+                }
+                catch { }
+            }
         }
 
         private void setearColorYBorde(Excel.Range rng, System.Drawing.Color color)
@@ -674,12 +696,15 @@ namespace CapaPresentacion
 
         private void guardarExportacionAcotada()
         {
-            Microsoft.Office.Interop.Excel.Application excel = new Microsoft.Office.Interop.Excel.Application();
-            Microsoft.Office.Interop.Excel.Workbook excelworkBook;
-            Microsoft.Office.Interop.Excel.Worksheet excelSheet;
+            Microsoft.Office.Interop.Excel.Application excel = null;
+            Microsoft.Office.Interop.Excel.Workbook excelworkBook = null;
+            try
+            {
+                excel = new Microsoft.Office.Interop.Excel.Application();
+                Microsoft.Office.Interop.Excel.Worksheet excelSheet;
 
-            excel.Visible = false;
-            excel.DisplayAlerts = false;
+                excel.Visible = false;
+                excel.DisplayAlerts = false;
             excel.SheetsInNewWorkbook = 1;
             excelworkBook = (Microsoft.Office.Interop.Excel.Workbook)(excel.Workbooks.Add(Type.Missing));
             excelSheet = (Microsoft.Office.Interop.Excel.Worksheet)excelworkBook.ActiveSheet;
@@ -777,16 +802,31 @@ namespace CapaPresentacion
             excelworkBook.SaveAs(tbUbicacion.Text, Excel.XlFileFormat.xlAddIn,
             Type.Missing, Type.Missing, Type.Missing, Type.Missing, Excel.XlSaveAsAccessMode.xlExclusive,
             Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
-            excel.Quit();
-            progressBar.Visible = false;
-            
-            
+                progressBar.Visible = false;
 
-            MessageBox.Show("Exportación guardada correctamente en: \n" + tbUbicacion.Text, "Exportar", MessageBoxButtons.OK,
-                MessageBoxIcon.Information);
-            this.Close();
-
-
+                MessageBox.Show("Exportación guardada correctamente en: \n" + tbUbicacion.Text, "Exportar", MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+                this.Close();
+            }
+            catch (Exception ex)
+            {
+                progressBar.Visible = false;
+                MessageBox.Show("Error al exportar: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                // Liberar siempre los objetos COM para evitar procesos zombie de Excel
+                try { excelworkBook?.Close(false); } catch { }
+                try
+                {
+                    if (excel != null)
+                    {
+                        excel.Quit();
+                        System.Runtime.InteropServices.Marshal.ReleaseComObject(excel);
+                    }
+                }
+                catch { }
+            }
         }
 
         private DataTable cargarTablasAcotada()
