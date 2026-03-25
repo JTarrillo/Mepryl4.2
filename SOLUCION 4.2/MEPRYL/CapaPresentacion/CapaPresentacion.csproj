@@ -54,6 +54,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -61,7 +62,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>x64</PlatformTarget>
     <OutputPath>bin\x86\Release\</OutputPath>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
@@ -77,6 +78,10 @@
     <Reference Include="AxShockwaveFlashObjects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\Program Files (x86)\SAP BusinessObjects\Crystal Reports for .NET Framework 4.0\Common\SAP BusinessObjects Enterprise XI 4.0\win32_x86\dotnet\AxShockwaveFlashObjects.dll</HintPath>
+    </Reference>
+    <Reference Include="EPPlus, Version=4.5.3.3, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\EPPlus.4.5.3.3\lib\net40\EPPlus.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="BouncyCastle.Crypto, Version=1.8.1.0, Culture=neutral, PublicKeyToken=0e99375e54769942, processorArchitecture=MSIL">
       <HintPath>..\packages\Portable.BouncyCastle.1.8.1.3\lib\net40\BouncyCastle.Crypto.dll</HintPath>
@@ -1469,6 +1474,30 @@
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>rptConsultorioDomicilios.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="rptExamenLaboral.resx">
+      <DependentUpon>rptExamenLaboral.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="rptExamenPreventiva.resx">
+      <DependentUpon>rptExamenPreventiva.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="rptHistoriaClinica.resx">
+      <DependentUpon>rptHistoriaClinica.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="rptHistoricoME.resx">
+      <DependentUpon>rptHistoricoME.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="rptHojaRuta.resx">
+      <DependentUpon>rptHojaRuta.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="rptListadoCheques.resx">
+      <DependentUpon>rptListadoCheques.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="rptProtocoloLaboratorioLaboral.resx">
+      <DependentUpon>rptProtocoloLaboratorioLaboral.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="rptProtocoloLaboratorioLaboral02.resx">
+      <DependentUpon>rptProtocoloLaboratorioLaboral02.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="rptProtocoloLaboratorioLaboral02.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>rptProtocoloLaboratorioLaboral02.cs</LastGenOutput>
@@ -1490,7 +1519,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="rptProtocoloLaboratorioLaboral01.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>rptProtocoloLaboratorioLaboral01.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="rptProtocoloLaboratorioLaboral.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
@@ -1741,9 +1769,15 @@
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>rptHojaRuta.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="rptProtocoloLaboratorioPreventiva.resx">
+      <DependentUpon>rptProtocoloLaboratorioPreventiva.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="rptProtocoloLaboratorioPreventiva.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>rptProtocoloLaboratorioPreventiva.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="rptReporteTurnos.resx">
+      <DependentUpon>rptReporteTurnos.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="rptReporteTurnos.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
@@ -1801,6 +1835,9 @@
     <EmbeddedResource Include="rptListadoCheques.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>rptListadoCheques.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="rptVisitaDomicilio.resx">
+      <DependentUpon>rptVisitaDomicilio.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="rptVisitaDomicilio.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>

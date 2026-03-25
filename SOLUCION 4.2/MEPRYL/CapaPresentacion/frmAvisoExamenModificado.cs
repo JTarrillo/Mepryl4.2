@@ -67,30 +67,19 @@ namespace CapaPresentacion
 
         private void agregarATextBox(DataTable estudios, TextBox tb)
         {
-            bool primeraVez = true;
-            string cadena = "";
-            if (tb.Text.Length != 0) 
-            { 
-                primeraVez = false;
-                cadena = tb.Text;
-            }
- 
-            foreach(DataRow dr in estudios.Rows)
+            List<string> items = new List<string>();
+
+            if (tb.Text.Length != 0)
+                items.AddRange(tb.Text.Split(new string[] { " - " }, StringSplitOptions.RemoveEmptyEntries));
+
+            foreach (DataRow dr in estudios.Rows)
             {
                 if ((bool)dr.ItemArray[2])
-                {
-                    if (primeraVez)
-                    {
-                        cadena = dr.ItemArray[3].ToString();
-                        primeraVez = false;
-                    }
-                    else
-                    {
-                        cadena = cadena + " - " + dr.ItemArray[3].ToString();
-                    }
-                }
+                    items.Add(dr.ItemArray[3].ToString());
             }
-            tb.Text = cadena;
+
+            items.Sort(StringComparer.CurrentCultureIgnoreCase);
+            tb.Text = string.Join(" - ", items);
         }
 
         private void frmAvisoExamenModificado_KeyPress(object sender, KeyPressEventArgs e)
