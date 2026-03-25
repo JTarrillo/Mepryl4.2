@@ -16,7 +16,8 @@
     </UpgradeBackupLocation>
     <OldToolsVersion>3.5</OldToolsVersion>
     <IsWebBootstrapper>false</IsWebBootstrapper>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -31,7 +32,6 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -40,8 +40,11 @@
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <WarningLevel>0</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
+    <NoWarn>CS0168;CS0252;CS0219;CS0162;CS0414,;CS0219</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -71,16 +74,98 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Lib\AForge.Video.DirectShow.dll</HintPath>
     </Reference>
-    <Reference Include="CrystalDecisions.CrystalReports.Engine, Version=10.5.3700.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
-    <Reference Include="CrystalDecisions.Enterprise.Framework, Version=10.5.3700.0, Culture=neutral, PublicKeyToken=692fbea5521e1304" />
-    <Reference Include="CrystalDecisions.Enterprise.InfoStore, Version=10.5.3700.0, Culture=neutral, PublicKeyToken=692fbea5521e1304" />
-    <Reference Include="CrystalDecisions.ReportSource, Version=10.5.3700.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
-    <Reference Include="CrystalDecisions.Shared, Version=10.5.3700.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
-    <Reference Include="CrystalDecisions.Windows.Forms, Version=10.5.3700.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
+    <Reference Include="BouncyCastle.Crypto, Version=1.8.1.0, Culture=neutral, PublicKeyToken=0e99375e54769942, processorArchitecture=MSIL">
+      <HintPath>..\packages\Portable.BouncyCastle.1.8.1.4\lib\net40\BouncyCastle.Crypto.dll</HintPath>
+    </Reference>
+    <Reference Include="Common.Logging, Version=3.4.1.0, Culture=neutral, PublicKeyToken=af08829b84f0328e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Common.Logging.3.4.1\lib\net40\Common.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Common.Logging.Core, Version=3.4.1.0, Culture=neutral, PublicKeyToken=af08829b84f0328e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Common.Logging.Core.3.4.1\lib\net40\Common.Logging.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="CrystalDecisions.CrystalReports.Engine, Version=13.0.3500.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
+    <Reference Include="CrystalDecisions.ReportSource, Version=13.0.3500.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
+    <Reference Include="CrystalDecisions.Shared, Version=13.0.3500.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
+    <Reference Include="CrystalDecisions.Windows.Forms, Version=13.0.3500.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.BonusSkins.v17.1, Version=17.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Charts.v17.1.Core, Version=17.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
     <Reference Include="DevExpress.Data.v17.1, Version=17.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.Utils.v17.1, Version=17.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.XtraBars.v17.1, Version=17.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.DataAccess.v17.1, Version=17.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.DataAccess.v17.1.UI, Version=17.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.Office.v17.1.Core, Version=17.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.Printing.v17.1.Core, Version=17.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.RichEdit.v17.1.Core, Version=17.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.Spreadsheet.v17.1.Core, Version=17.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.Utils.v17.1, Version=17.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 17.1\Components\Bin\Framework\DevExpress.Utils.v17.1.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.Utils.v17.1.UI, Version=17.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.XtraBars.v17.1, Version=17.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 17.1\Components\Bin\Framework\DevExpress.XtraBars.v17.1.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.XtraCharts.v17.1, Version=17.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
     <Reference Include="DevExpress.XtraEditors.v17.1, Version=17.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraGrid.v17.1, Version=17.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.XtraLayout.v17.1, Version=17.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.XtraNavBar.v17.1, Version=17.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraPrinting.v17.1, Version=17.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.XtraRichEdit.v17.1, Version=17.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.XtraSpreadsheet.v17.1, Version=17.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraTreeList.v17.1, Version=17.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="EPPlus, Version=4.5.3.3, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
+      <HintPath>..\packages\EPPlus.4.5.3.3\lib\net40\EPPlus.dll</HintPath>
+    </Reference>
+    <Reference Include="FontAwesome.Sharp, Version=6.6.0.0, Culture=neutral, PublicKeyToken=d16d1e4e568ec10f, processorArchitecture=MSIL">
+      <HintPath>..\packages\FontAwesome.Sharp.6.6.0\lib\net48\FontAwesome.Sharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis, Version=1.73.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.1.73.0\lib\net462\Google.Apis.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Auth, Version=1.73.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Auth.1.73.0\lib\net462\Google.Apis.Auth.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Core, Version=1.73.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Core.1.73.0\lib\net462\Google.Apis.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Sheets.v4, Version=1.73.0.4061, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Sheets.v4.1.73.0.4061\lib\net462\Google.Apis.Sheets.v4.dll</HintPath>
+    </Reference>
+    <Reference Include="InputSimulator">
+      <HintPath>..\..\..\..\..\Downloads\Programas\InputSimulator.0.1.0.0-bin\Debug\InputSimulator.dll</HintPath>
+    </Reference>
+    <Reference Include="itext.barcodes, Version=7.1.8.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext7.7.1.8\lib\net40\itext.barcodes.dll</HintPath>
+    </Reference>
+    <Reference Include="itext.forms, Version=7.1.8.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext7.7.1.8\lib\net40\itext.forms.dll</HintPath>
+    </Reference>
+    <Reference Include="itext.io, Version=7.1.8.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext7.7.1.8\lib\net40\itext.io.dll</HintPath>
+    </Reference>
+    <Reference Include="itext.kernel, Version=7.1.8.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext7.7.1.8\lib\net40\itext.kernel.dll</HintPath>
+    </Reference>
+    <Reference Include="itext.layout, Version=7.1.8.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext7.7.1.8\lib\net40\itext.layout.dll</HintPath>
+    </Reference>
+    <Reference Include="itext.pdfa, Version=7.1.8.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext7.7.1.8\lib\net40\itext.pdfa.dll</HintPath>
+    </Reference>
+    <Reference Include="itext.sign, Version=7.1.8.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext7.7.1.8\lib\net40\itext.sign.dll</HintPath>
+    </Reference>
+    <Reference Include="itext.styledxmlparser, Version=7.1.8.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext7.7.1.8\lib\net40\itext.styledxmlparser.dll</HintPath>
+    </Reference>
+    <Reference Include="itext.svg, Version=7.1.8.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext7.7.1.8\lib\net40\itext.svg.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp, Version=5.5.10.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Lib\itextsharp.dll</HintPath>
+    </Reference>
     <Reference Include="KMCurrencyTextBox, Version=1.0.1956.38445, Culture=neutral">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\LibreriasBase\CapaPresentacionBase\bin\Debug\KMCurrencyTextBox.dll</HintPath>
@@ -89,6 +174,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\CapaDatos\bin\Microsoft.ApplicationBlocks.Data.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Office.Interop.Excel, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Lib\Microsoft.Office.Interop.Excel.dll</HintPath>
@@ -96,25 +182,69 @@
     <Reference Include="Microsoft.ReportViewer.Common, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
     <Reference Include="Microsoft.ReportViewer.WinForms, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
     <Reference Include="Microsoft.VisualBasic" />
-    <Reference Include="System" />
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="RawPrint, Version=0.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\RawPrint.0.5.0\lib\net40\RawPrint.dll</HintPath>
+    </Reference>
+    <Reference Include="System">
+      <HintPath>..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8\System.dll</HintPath>
+    </Reference>
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Messaging" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Services, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\Windows\assembly\GAC_MSIL\System.Web.Services\2.0.0.0__b03f5f7f11d50a3a\System.Web.Services.dll</HintPath>
     </Reference>
+    <Reference Include="System.Windows.Controls.Ribbon" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="frmAgendaMesaEntrada2.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmAgendaMesaEntrada2.Designer.cs">
+      <DependentUpon>frmAgendaMesaEntrada2.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmAgendaMesaEntrada.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="frmAgendaMesaEntrada.Designer.cs">
       <DependentUpon>frmAgendaMesaEntrada.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmAgregaItemsExamenes.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmAgregaItemsExamenes.Designer.cs">
+      <DependentUpon>frmAgregaItemsExamenes.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FrmAgregarTipoExamen.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmAñadirEspecialidad.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmAñadirEspecialidad.Designer.cs">
+      <DependentUpon>FrmAñadirEspecialidad.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmBusquedaCasaMatriz.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmBusquedaCasaMatriz.Designer.cs">
+      <DependentUpon>frmBusquedaCasaMatriz.cs</DependentUpon>
     </Compile>
     <Compile Include="frmConfigConsolidacionLaboral.cs">
       <SubType>Form</SubType>
@@ -122,11 +252,23 @@
     <Compile Include="frmConfigConsolidacionLaboral.Designer.cs">
       <DependentUpon>frmConfigConsolidacionLaboral.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmConfigConsolidadosGuardarLab.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmConfigConsolidadosGuardarLab.Designer.cs">
+      <DependentUpon>frmConfigConsolidadosGuardarLab.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmConfigConsolidadosGuardarPre.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="frmConfigConsolidadosGuardarPre.Designer.cs">
       <DependentUpon>frmConfigConsolidadosGuardarPre.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmConfigDictamenesConsultas.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmConfigDictamenesConsultas.Designer.cs">
+      <DependentUpon>frmConfigDictamenesConsultas.cs</DependentUpon>
     </Compile>
     <Compile Include="frmConfigMensajesPreventiva.cs">
       <SubType>Form</SubType>
@@ -158,17 +300,163 @@
     <Compile Include="frmConfigPlantillaReporte.Designer.cs">
       <DependentUpon>frmConfigPlantillaReporte.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmConfigTipoExamenExApt.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmConfigTipoExamenExApt.Designer.cs">
+      <DependentUpon>frmConfigTipoExamenExApt.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmConfigUbicacionFotosLaboral.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="frmConfigUbicacionFotosLaboral.Designer.cs">
       <DependentUpon>frmConfigUbicacionFotosLaboral.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmConfiguraciónImpuestos.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmConfiguraciónImpuestos.Designer.cs">
+      <DependentUpon>frmConfiguraciónImpuestos.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmConsultaFacturacionEmpresa.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmConsultaFacturacionEmpresa.Designer.cs">
+      <DependentUpon>frmConsultaFacturacionEmpresa.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmConsultasSQL.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmConsultasSQL.Designer.cs">
+      <DependentUpon>frmConsultasSQL.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmEdicionItemExamen.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmEdicionItemExamen.Designer.cs" />
+    <Compile Include="FrmEditarSubtipo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmEditarSubtipo.Designer.cs" />
+    <Compile Include="frmEstudioComplementario.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmEstudioComplementario.Designer.cs">
+      <DependentUpon>frmEstudioComplementario.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmExportacionLaboralDictamen.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmExportacionLaboralDictamen.Designer.cs">
+      <DependentUpon>frmExportacionLaboralDictamen.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmExportacionesLaboral.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmExportacionesLaboral.Designer.cs">
+      <DependentUpon>frmExportacionesLaboral.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmExportacionesPreventiva.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmExportacionesPreventiva.Designer.cs">
+      <DependentUpon>frmExportacionesPreventiva.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmFacturacionPrestaciones.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmFacturacionPrestaciones.Designer.cs">
+      <DependentUpon>frmFacturacionPrestaciones.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmHorario.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmHorario.Designer.cs">
+      <DependentUpon>frmHorario.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmListaDePrecios.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmListaDePrecios.Designer.cs">
+      <DependentUpon>frmListaDePrecios.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmListaPrecioTomaBase.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmListaPrecioTomaBase.Designer.cs">
+      <DependentUpon>frmListaPrecioTomaBase.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmCrearTablaJumpy.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmCrearTablaJumpy.Designer.cs">
+      <DependentUpon>frmCrearTablaJumpy.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmMuestraFactPorEmpresa.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmMuestraFactPorEmpresa.Designer.cs">
+      <DependentUpon>frmMuestraFactPorEmpresa.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FrmNuevoMotivoConsulta.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmReplicarHorario.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmReplicarHorario.Designer.cs">
+      <DependentUpon>frmReplicarHorario.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FrmSeleccionarItems.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmTransferenciaDeLegajos.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmTransferenciaDeLegajos.Designer.cs">
+      <DependentUpon>frmTransferenciaDeLegajos.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmZonasNacionalidad.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmZonasNacionalidad.Designer.cs">
+      <DependentUpon>frmZonasNacionalidad.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmLocalidadNacionalidad.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="frmLocalidadNacionalidad.Designer.cs">
       <DependentUpon>frmLocalidadNacionalidad.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmProfesionalesCopy.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmProfesionalesCopy.Designer.cs">
+      <DependentUpon>frmProfesionalesCopy.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmReporteAudiometria2.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmReporteAudiometria2.Designer.cs">
+      <DependentUpon>frmReporteAudiometria2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmReporteAudiometria.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmReporteAudiometria.Designer.cs">
+      <DependentUpon>frmReporteAudiometria.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmSeleccionarProfesional.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmSeleccionarProfesional.Designer.cs">
+      <DependentUpon>frmSeleccionarProfesional.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmTipoExamenExAptitud.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmTipoExamenExAptitud.Designer.cs">
+      <DependentUpon>frmTipoExamenExAptitud.cs</DependentUpon>
     </Compile>
     <Compile Include="frmTipoPacienteSeleccionar.cs">
       <SubType>Form</SubType>
@@ -187,6 +475,14 @@
     </Compile>
     <Compile Include="frmUsuariosSistema.Designer.cs">
       <DependentUpon>frmUsuariosSistema.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Interface1.cs" />
+    <Compile Include="ItemsPorSecciones.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ItemsPorSecciones.Designer.cs" />
+    <Compile Include="ReporteAudiometria.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="rptProtocoloLaboratorioLaboral02.cs">
       <DependentUpon>rptProtocoloLaboratorioLaboral02.rpt</DependentUpon>
@@ -823,12 +1119,6 @@
     <Compile Include="frmClub.Designer.cs">
       <DependentUpon>frmClub.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmHorario.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="frmHorario.Designer.cs">
-      <DependentUpon>frmHorario.cs</DependentUpon>
-    </Compile>
     <Compile Include="frmPaciente.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -864,6 +1154,27 @@
       <DependentUpon>rptVisitaDomicilio.rpt</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="SplashScreen1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SplashScreen1.Designer.cs">
+      <DependentUpon>SplashScreen1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SplashScreen2.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SplashScreen2.Designer.cs">
+      <DependentUpon>SplashScreen2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ToggleButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="WaitForm1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WaitForm1.Designer.cs">
+      <DependentUpon>WaitForm1.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\LibreriasBase\CapaNegocioBase\CapaNegocioBase.csproj">
@@ -896,14 +1207,32 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="frmAgendaMesaEntrada2.resx">
+      <DependentUpon>frmAgendaMesaEntrada2.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmAgendaMesaEntrada.resx">
       <DependentUpon>frmAgendaMesaEntrada.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmAgregaItemsExamenes.resx">
+      <DependentUpon>frmAgregaItemsExamenes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmAñadirEspecialidad.resx">
+      <DependentUpon>FrmAñadirEspecialidad.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmBusquedaCasaMatriz.resx">
+      <DependentUpon>frmBusquedaCasaMatriz.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmConfigConsolidacionLaboral.resx">
       <DependentUpon>frmConfigConsolidacionLaboral.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="frmConfigConsolidadosGuardarLab.resx">
+      <DependentUpon>frmConfigConsolidadosGuardarLab.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmConfigConsolidadosGuardarPre.resx">
       <DependentUpon>frmConfigConsolidadosGuardarPre.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmConfigDictamenesConsultas.resx">
+      <DependentUpon>frmConfigDictamenesConsultas.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmConfigMensajesPreventiva.resx">
       <DependentUpon>frmConfigMensajesPreventiva.cs</DependentUpon>
@@ -913,6 +1242,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmConfigMensajes.resx">
       <DependentUpon>frmConfigMensajes.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="frmConfigPlantillaReporteLaboral.resx">
       <DependentUpon>frmConfigPlantillaReporteLaboral.cs</DependentUpon>
@@ -920,11 +1250,81 @@
     <EmbeddedResource Include="frmConfigPlantillaReporte.resx">
       <DependentUpon>frmConfigPlantillaReporte.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="frmConfigTipoExamenExApt.resx">
+      <DependentUpon>frmConfigTipoExamenExApt.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmConfigUbicacionFotosLaboral.resx">
       <DependentUpon>frmConfigUbicacionFotosLaboral.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="frmConfiguraciónImpuestos.resx">
+      <DependentUpon>frmConfiguraciónImpuestos.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmConsultaFacturacionEmpresa.resx">
+      <DependentUpon>frmConsultaFacturacionEmpresa.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmConsultasSQL.resx">
+      <DependentUpon>frmConsultasSQL.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmEdicionItemExamen.resx">
+      <DependentUpon>frmEdicionItemExamen.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmEstudioComplementario.resx">
+      <DependentUpon>frmEstudioComplementario.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmExportacionLaboralDictamen.resx">
+      <DependentUpon>frmExportacionLaboralDictamen.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmExportacionesLaboral.resx">
+      <DependentUpon>frmExportacionesLaboral.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmExportacionesPreventiva.resx">
+      <DependentUpon>frmExportacionesPreventiva.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmFacturacionPrestaciones.resx">
+      <DependentUpon>frmFacturacionPrestaciones.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmHorario.resx">
+      <DependentUpon>frmHorario.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmListaDePrecios.resx">
+      <DependentUpon>frmListaDePrecios.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmListaPrecioTomaBase.resx">
+      <DependentUpon>frmListaPrecioTomaBase.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmCrearTablaJumpy.resx">
+      <DependentUpon>frmCrearTablaJumpy.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmMuestraFactPorEmpresa.resx">
+      <DependentUpon>frmMuestraFactPorEmpresa.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmReplicarHorario.resx">
+      <DependentUpon>frmReplicarHorario.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmTransferenciaDeLegajos.resx">
+      <DependentUpon>frmTransferenciaDeLegajos.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmZonasNacionalidad.resx">
+      <DependentUpon>frmZonasNacionalidad.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmLocalidadNacionalidad.resx">
       <DependentUpon>frmLocalidadNacionalidad.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmProfesionalesCopy.resx">
+      <DependentUpon>frmProfesionalesCopy.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmReporteAudiometria2.resx">
+      <DependentUpon>frmReporteAudiometria2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmReporteAudiometria.resx">
+      <DependentUpon>frmReporteAudiometria.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmSeleccionarProfesional.resx">
+      <DependentUpon>frmSeleccionarProfesional.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmTipoExamenExAptitud.resx">
+      <DependentUpon>frmTipoExamenExAptitud.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmTipoPacienteSeleccionar.resx">
       <DependentUpon>frmTipoPacienteSeleccionar.cs</DependentUpon>
@@ -995,9 +1395,11 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmBusquedaEmpresa.resx">
       <DependentUpon>frmBusquedaEmpresa.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="frmBusquedaExamen.resx">
       <DependentUpon>frmBusquedaExamen.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="frmBusquedaLaboral.resx">
       <DependentUpon>frmBusquedaLaboral.cs</DependentUpon>
@@ -1250,10 +1652,6 @@
       <SubType>Designer</SubType>
       <DependentUpon>frmClub.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmHorario.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>frmHorario.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="frmPaciente.resx">
       <SubType>Designer</SubType>
       <DependentUpon>frmPaciente.cs</DependentUpon>
@@ -1275,13 +1673,29 @@
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>rptVisitaDomicilio.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="SplashScreen1.resx">
+      <DependentUpon>SplashScreen1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SplashScreen2.resx">
+      <DependentUpon>SplashScreen2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WaitForm1.resx">
+      <DependentUpon>WaitForm1.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{967B4E0D-AD0C-4609-AB67-0FA40C0206D8}" />
+    <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="bin\Debug\CapaPresentacion.dll.config" />
+    <None Include="bin\x86\Debug\CapaPresentacion.dll.config" />
+    <None Include="bin\x86\Release\CapaPresentacion.dll.config" />
     <None Include="ClassDiagram2.cd" />
+    <None Include="ClassDiagram3.cd" />
     <None Include="dsAgenda.xsc">
       <DependentUpon>dsAgenda.xsd</DependentUpon>
     </None>
@@ -1304,6 +1718,7 @@
     <None Include="dsCheque.xss">
       <DependentUpon>dsCheque.xsd</DependentUpon>
     </None>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -1436,6 +1851,266 @@
     <None Include="Resources\CancelarSalir.png" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="bin\Debug\ADODB.dll" />
+    <Content Include="bin\Debug\AForge.Video.DirectShow.dll" />
+    <Content Include="bin\Debug\AForge.Video.dll" />
+    <Content Include="bin\Debug\AxInterop.MOZILLACONTROLLib.dll" />
+    <Content Include="bin\Debug\CapaDatos.dll" />
+    <Content Include="bin\Debug\CapaDatos.pdb" />
+    <Content Include="bin\Debug\CapaDatosBase.dll" />
+    <Content Include="bin\Debug\CapaDatosBase.pdb" />
+    <Content Include="bin\Debug\CapaDatosMepryl.dll" />
+    <Content Include="bin\Debug\CapaDatosMepryl.pdb" />
+    <Content Include="bin\Debug\CapaNegocio.dll" />
+    <Content Include="bin\Debug\CapaNegocio.pdb" />
+    <Content Include="bin\Debug\CapaNegocioBase.dll" />
+    <Content Include="bin\Debug\CapaNegocioBase.pdb" />
+    <Content Include="bin\Debug\CapaNegocioMepryl.dll" />
+    <Content Include="bin\Debug\CapaNegocioMepryl.pdb" />
+    <Content Include="bin\Debug\CapaPresentacion.dll" />
+    <Content Include="bin\Debug\CapaPresentacion.pdb" />
+    <Content Include="bin\Debug\CapaPresentacionBase.dll" />
+    <Content Include="bin\Debug\CapaPresentacionBase.pdb" />
+    <Content Include="bin\Debug\Comunes.dll" />
+    <Content Include="bin\Debug\Comunes.pdb" />
+    <Content Include="bin\Debug\CrystalDecisions.CrystalReports.Engine.dll" />
+    <Content Include="bin\Debug\CrystalDecisions.ReportAppServer.ClientDoc.dll" />
+    <Content Include="bin\Debug\CrystalDecisions.ReportAppServer.CommLayer.dll" />
+    <Content Include="bin\Debug\CrystalDecisions.ReportAppServer.CommonControls.dll" />
+    <Content Include="bin\Debug\CrystalDecisions.ReportAppServer.CommonObjectModel.dll" />
+    <Content Include="bin\Debug\CrystalDecisions.ReportAppServer.Controllers.dll" />
+    <Content Include="bin\Debug\CrystalDecisions.ReportAppServer.CubeDefModel.dll" />
+    <Content Include="bin\Debug\CrystalDecisions.ReportAppServer.DataDefModel.dll" />
+    <Content Include="bin\Debug\CrystalDecisions.ReportAppServer.DataSetConversion.dll" />
+    <Content Include="bin\Debug\CrystalDecisions.ReportAppServer.ObjectFactory.dll" />
+    <Content Include="bin\Debug\CrystalDecisions.ReportAppServer.Prompting.dll" />
+    <Content Include="bin\Debug\CrystalDecisions.ReportAppServer.ReportDefModel.dll" />
+    <Content Include="bin\Debug\CrystalDecisions.ReportAppServer.XmlSerialize.dll" />
+    <Content Include="bin\Debug\CrystalDecisions.ReportSource.dll" />
+    <Content Include="bin\Debug\CrystalDecisions.Shared.dll" />
+    <Content Include="bin\Debug\CrystalDecisions.Windows.Forms.dll" />
+    <Content Include="bin\Debug\DevExpress.BonusSkins.v17.1.dll" />
+    <Content Include="bin\Debug\DevExpress.Charts.v17.1.Core.dll" />
+    <Content Include="bin\Debug\DevExpress.CodeParser.v17.1.dll" />
+    <Content Include="bin\Debug\DevExpress.Data.v17.1.dll" />
+    <Content Include="bin\Debug\DevExpress.Data.v17.1.xml" />
+    <Content Include="bin\Debug\DevExpress.DataAccess.v17.1.dll" />
+    <Content Include="bin\Debug\DevExpress.DataAccess.v17.1.UI.dll" />
+    <Content Include="bin\Debug\DevExpress.DataAccess.v17.1.UI.xml" />
+    <Content Include="bin\Debug\DevExpress.DataAccess.v17.1.xml" />
+    <Content Include="bin\Debug\DevExpress.Diagram.v17.1.Core.dll" />
+    <Content Include="bin\Debug\DevExpress.Diagram.v17.1.Core.xml" />
+    <Content Include="bin\Debug\DevExpress.Office.v17.1.Core.dll" />
+    <Content Include="bin\Debug\DevExpress.Office.v17.1.Core.xml" />
+    <Content Include="bin\Debug\DevExpress.Pdf.v17.1.Core.dll" />
+    <Content Include="bin\Debug\DevExpress.Pdf.v17.1.Core.xml" />
+    <Content Include="bin\Debug\DevExpress.Printing.v17.1.Core.dll" />
+    <Content Include="bin\Debug\DevExpress.Printing.v17.1.Core.xml" />
+    <Content Include="bin\Debug\DevExpress.RichEdit.v17.1.Core.dll" />
+    <Content Include="bin\Debug\DevExpress.RichEdit.v17.1.Core.xml" />
+    <Content Include="bin\Debug\DevExpress.Sparkline.v17.1.Core.dll" />
+    <Content Include="bin\Debug\DevExpress.Sparkline.v17.1.Core.xml" />
+    <Content Include="bin\Debug\DevExpress.Spreadsheet.v17.1.Core.dll" />
+    <Content Include="bin\Debug\DevExpress.Spreadsheet.v17.1.Core.xml" />
+    <Content Include="bin\Debug\DevExpress.Utils.v17.1.dll" />
+    <Content Include="bin\Debug\DevExpress.Utils.v17.1.UI.dll" />
+    <Content Include="bin\Debug\DevExpress.Utils.v17.1.UI.xml" />
+    <Content Include="bin\Debug\DevExpress.Utils.v17.1.xml" />
+    <Content Include="bin\Debug\DevExpress.Xpo.v17.1.dll" />
+    <Content Include="bin\Debug\DevExpress.Xpo.v17.1.xml" />
+    <Content Include="bin\Debug\DevExpress.XtraBars.v17.1.dll" />
+    <Content Include="bin\Debug\DevExpress.XtraBars.v17.1.xml" />
+    <Content Include="bin\Debug\DevExpress.XtraCharts.v17.1.dll" />
+    <Content Include="bin\Debug\DevExpress.XtraCharts.v17.1.xml" />
+    <Content Include="bin\Debug\DevExpress.XtraDiagram.v17.1.dll" />
+    <Content Include="bin\Debug\DevExpress.XtraDiagram.v17.1.xml" />
+    <Content Include="bin\Debug\DevExpress.XtraEditors.v17.1.dll" />
+    <Content Include="bin\Debug\DevExpress.XtraEditors.v17.1.xml" />
+    <Content Include="bin\Debug\DevExpress.XtraGrid.v17.1.dll" />
+    <Content Include="bin\Debug\DevExpress.XtraGrid.v17.1.xml" />
+    <Content Include="bin\Debug\DevExpress.XtraLayout.v17.1.dll" />
+    <Content Include="bin\Debug\DevExpress.XtraLayout.v17.1.xml" />
+    <Content Include="bin\Debug\DevExpress.XtraNavBar.v17.1.dll" />
+    <Content Include="bin\Debug\DevExpress.XtraNavBar.v17.1.xml" />
+    <Content Include="bin\Debug\DevExpress.XtraPrinting.v17.1.dll" />
+    <Content Include="bin\Debug\DevExpress.XtraPrinting.v17.1.xml" />
+    <Content Include="bin\Debug\DevExpress.XtraRichEdit.v17.1.dll" />
+    <Content Include="bin\Debug\DevExpress.XtraRichEdit.v17.1.xml" />
+    <Content Include="bin\Debug\DevExpress.XtraSpreadsheet.v17.1.dll" />
+    <Content Include="bin\Debug\DevExpress.XtraSpreadsheet.v17.1.xml" />
+    <Content Include="bin\Debug\DevExpress.XtraTreeList.v17.1.dll" />
+    <Content Include="bin\Debug\DevExpress.XtraTreeList.v17.1.xml" />
+    <Content Include="bin\Debug\DevExpress.XtraVerticalGrid.v17.1.dll" />
+    <Content Include="bin\Debug\DevExpress.XtraVerticalGrid.v17.1.xml" />
+    <Content Include="bin\Debug\de\DevExpress.Data.v17.1.resources.dll" />
+    <Content Include="bin\Debug\de\DevExpress.DataAccess.v17.1.resources.dll" />
+    <Content Include="bin\Debug\de\DevExpress.DataAccess.v17.1.UI.resources.dll" />
+    <Content Include="bin\Debug\de\DevExpress.Diagram.v17.1.Core.resources.dll" />
+    <Content Include="bin\Debug\de\DevExpress.Office.v17.1.Core.resources.dll" />
+    <Content Include="bin\Debug\de\DevExpress.Pdf.v17.1.Core.resources.dll" />
+    <Content Include="bin\Debug\de\DevExpress.Printing.v17.1.Core.resources.dll" />
+    <Content Include="bin\Debug\de\DevExpress.RichEdit.v17.1.Core.resources.dll" />
+    <Content Include="bin\Debug\de\DevExpress.Sparkline.v17.1.Core.resources.dll" />
+    <Content Include="bin\Debug\de\DevExpress.Spreadsheet.v17.1.Core.resources.dll" />
+    <Content Include="bin\Debug\de\DevExpress.Utils.v17.1.resources.dll" />
+    <Content Include="bin\Debug\de\DevExpress.Utils.v17.1.UI.resources.dll" />
+    <Content Include="bin\Debug\de\DevExpress.Xpo.v17.1.resources.dll" />
+    <Content Include="bin\Debug\de\DevExpress.XtraBars.v17.1.resources.dll" />
+    <Content Include="bin\Debug\de\DevExpress.XtraCharts.v17.1.resources.dll" />
+    <Content Include="bin\Debug\de\DevExpress.XtraEditors.v17.1.resources.dll" />
+    <Content Include="bin\Debug\de\DevExpress.XtraGrid.v17.1.resources.dll" />
+    <Content Include="bin\Debug\de\DevExpress.XtraLayout.v17.1.resources.dll" />
+    <Content Include="bin\Debug\de\DevExpress.XtraNavBar.v17.1.resources.dll" />
+    <Content Include="bin\Debug\de\DevExpress.XtraPrinting.v17.1.resources.dll" />
+    <Content Include="bin\Debug\de\DevExpress.XtraRichEdit.v17.1.resources.dll" />
+    <Content Include="bin\Debug\de\DevExpress.XtraSpreadsheet.v17.1.resources.dll" />
+    <Content Include="bin\Debug\de\DevExpress.XtraTreeList.v17.1.resources.dll" />
+    <Content Include="bin\Debug\de\DevExpress.XtraVerticalGrid.v17.1.resources.dll" />
+    <Content Include="bin\Debug\Entidades.dll" />
+    <Content Include="bin\Debug\Entidades.pdb" />
+    <Content Include="bin\Debug\EPPlus.dll" />
+    <Content Include="bin\Debug\EPPlus.xml" />
+    <Content Include="bin\Debug\es\DevExpress.Data.v17.1.resources.dll" />
+    <Content Include="bin\Debug\es\DevExpress.DataAccess.v17.1.resources.dll" />
+    <Content Include="bin\Debug\es\DevExpress.DataAccess.v17.1.UI.resources.dll" />
+    <Content Include="bin\Debug\es\DevExpress.Diagram.v17.1.Core.resources.dll" />
+    <Content Include="bin\Debug\es\DevExpress.Office.v17.1.Core.resources.dll" />
+    <Content Include="bin\Debug\es\DevExpress.Pdf.v17.1.Core.resources.dll" />
+    <Content Include="bin\Debug\es\DevExpress.Printing.v17.1.Core.resources.dll" />
+    <Content Include="bin\Debug\es\DevExpress.RichEdit.v17.1.Core.resources.dll" />
+    <Content Include="bin\Debug\es\DevExpress.Sparkline.v17.1.Core.resources.dll" />
+    <Content Include="bin\Debug\es\DevExpress.Spreadsheet.v17.1.Core.resources.dll" />
+    <Content Include="bin\Debug\es\DevExpress.Utils.v17.1.resources.dll" />
+    <Content Include="bin\Debug\es\DevExpress.Utils.v17.1.UI.resources.dll" />
+    <Content Include="bin\Debug\es\DevExpress.Xpo.v17.1.resources.dll" />
+    <Content Include="bin\Debug\es\DevExpress.XtraBars.v17.1.resources.dll" />
+    <Content Include="bin\Debug\es\DevExpress.XtraCharts.v17.1.resources.dll" />
+    <Content Include="bin\Debug\es\DevExpress.XtraEditors.v17.1.resources.dll" />
+    <Content Include="bin\Debug\es\DevExpress.XtraGrid.v17.1.resources.dll" />
+    <Content Include="bin\Debug\es\DevExpress.XtraLayout.v17.1.resources.dll" />
+    <Content Include="bin\Debug\es\DevExpress.XtraNavBar.v17.1.resources.dll" />
+    <Content Include="bin\Debug\es\DevExpress.XtraPrinting.v17.1.resources.dll" />
+    <Content Include="bin\Debug\es\DevExpress.XtraRichEdit.v17.1.resources.dll" />
+    <Content Include="bin\Debug\es\DevExpress.XtraSpreadsheet.v17.1.resources.dll" />
+    <Content Include="bin\Debug\es\DevExpress.XtraTreeList.v17.1.resources.dll" />
+    <Content Include="bin\Debug\es\DevExpress.XtraVerticalGrid.v17.1.resources.dll" />
+    <Content Include="bin\Debug\es\Microsoft.Build.Utilities.v3.5.resources.dll" />
+    <Content Include="bin\Debug\FlashControlV71.dll" />
+    <Content Include="bin\Debug\InputSimulator.dll" />
+    <Content Include="bin\Debug\Interop.Microsoft.Office.Core.dll" />
+    <Content Include="bin\Debug\Interop.MOZILLACONTROLLib.dll" />
+    <Content Include="bin\Debug\itextsharp.dll" />
+    <Content Include="bin\Debug\ja\DevExpress.Data.v17.1.resources.dll" />
+    <Content Include="bin\Debug\ja\DevExpress.DataAccess.v17.1.resources.dll" />
+    <Content Include="bin\Debug\ja\DevExpress.DataAccess.v17.1.UI.resources.dll" />
+    <Content Include="bin\Debug\ja\DevExpress.Diagram.v17.1.Core.resources.dll" />
+    <Content Include="bin\Debug\ja\DevExpress.Office.v17.1.Core.resources.dll" />
+    <Content Include="bin\Debug\ja\DevExpress.Pdf.v17.1.Core.resources.dll" />
+    <Content Include="bin\Debug\ja\DevExpress.Printing.v17.1.Core.resources.dll" />
+    <Content Include="bin\Debug\ja\DevExpress.RichEdit.v17.1.Core.resources.dll" />
+    <Content Include="bin\Debug\ja\DevExpress.Sparkline.v17.1.Core.resources.dll" />
+    <Content Include="bin\Debug\ja\DevExpress.Spreadsheet.v17.1.Core.resources.dll" />
+    <Content Include="bin\Debug\ja\DevExpress.Utils.v17.1.resources.dll" />
+    <Content Include="bin\Debug\ja\DevExpress.Utils.v17.1.UI.resources.dll" />
+    <Content Include="bin\Debug\ja\DevExpress.Xpo.v17.1.resources.dll" />
+    <Content Include="bin\Debug\ja\DevExpress.XtraBars.v17.1.resources.dll" />
+    <Content Include="bin\Debug\ja\DevExpress.XtraCharts.v17.1.resources.dll" />
+    <Content Include="bin\Debug\ja\DevExpress.XtraEditors.v17.1.resources.dll" />
+    <Content Include="bin\Debug\ja\DevExpress.XtraGrid.v17.1.resources.dll" />
+    <Content Include="bin\Debug\ja\DevExpress.XtraLayout.v17.1.resources.dll" />
+    <Content Include="bin\Debug\ja\DevExpress.XtraNavBar.v17.1.resources.dll" />
+    <Content Include="bin\Debug\ja\DevExpress.XtraPrinting.v17.1.resources.dll" />
+    <Content Include="bin\Debug\ja\DevExpress.XtraRichEdit.v17.1.resources.dll" />
+    <Content Include="bin\Debug\ja\DevExpress.XtraSpreadsheet.v17.1.resources.dll" />
+    <Content Include="bin\Debug\ja\DevExpress.XtraTreeList.v17.1.resources.dll" />
+    <Content Include="bin\Debug\ja\DevExpress.XtraVerticalGrid.v17.1.resources.dll" />
+    <Content Include="bin\Debug\KMCurrencyTextBox.dll" />
+    <Content Include="bin\Debug\Microsoft.ApplicationBlocks.Data.dll" />
+    <Content Include="bin\Debug\Microsoft.Build.Utilities.v3.5.dll" />
+    <Content Include="bin\Debug\Microsoft.Build.Utilities.v3.5.xml" />
+    <Content Include="bin\Debug\Microsoft.mshtml.dll" />
+    <Content Include="bin\Debug\Microsoft.Office.Interop.Excel.dll" />
+    <Content Include="bin\Debug\Microsoft.Office.Interop.Word.dll" />
+    <Content Include="bin\Debug\Microsoft.ReportViewer.Common.dll" />
+    <Content Include="bin\Debug\Microsoft.ReportViewer.WinForms.dll" />
+    <Content Include="bin\Debug\Microsoft.Vbe.Interop.dll" />
+    <Content Include="bin\Debug\office.dll" />
+    <Content Include="bin\Debug\ru\DevExpress.Data.v17.1.resources.dll" />
+    <Content Include="bin\Debug\ru\DevExpress.DataAccess.v17.1.resources.dll" />
+    <Content Include="bin\Debug\ru\DevExpress.DataAccess.v17.1.UI.resources.dll" />
+    <Content Include="bin\Debug\ru\DevExpress.Diagram.v17.1.Core.resources.dll" />
+    <Content Include="bin\Debug\ru\DevExpress.Office.v17.1.Core.resources.dll" />
+    <Content Include="bin\Debug\ru\DevExpress.Pdf.v17.1.Core.resources.dll" />
+    <Content Include="bin\Debug\ru\DevExpress.Printing.v17.1.Core.resources.dll" />
+    <Content Include="bin\Debug\ru\DevExpress.RichEdit.v17.1.Core.resources.dll" />
+    <Content Include="bin\Debug\ru\DevExpress.Sparkline.v17.1.Core.resources.dll" />
+    <Content Include="bin\Debug\ru\DevExpress.Spreadsheet.v17.1.Core.resources.dll" />
+    <Content Include="bin\Debug\ru\DevExpress.Utils.v17.1.resources.dll" />
+    <Content Include="bin\Debug\ru\DevExpress.Utils.v17.1.UI.resources.dll" />
+    <Content Include="bin\Debug\ru\DevExpress.Xpo.v17.1.resources.dll" />
+    <Content Include="bin\Debug\ru\DevExpress.XtraBars.v17.1.resources.dll" />
+    <Content Include="bin\Debug\ru\DevExpress.XtraCharts.v17.1.resources.dll" />
+    <Content Include="bin\Debug\ru\DevExpress.XtraEditors.v17.1.resources.dll" />
+    <Content Include="bin\Debug\ru\DevExpress.XtraGrid.v17.1.resources.dll" />
+    <Content Include="bin\Debug\ru\DevExpress.XtraLayout.v17.1.resources.dll" />
+    <Content Include="bin\Debug\ru\DevExpress.XtraNavBar.v17.1.resources.dll" />
+    <Content Include="bin\Debug\ru\DevExpress.XtraPrinting.v17.1.resources.dll" />
+    <Content Include="bin\Debug\ru\DevExpress.XtraRichEdit.v17.1.resources.dll" />
+    <Content Include="bin\Debug\ru\DevExpress.XtraSpreadsheet.v17.1.resources.dll" />
+    <Content Include="bin\Debug\ru\DevExpress.XtraTreeList.v17.1.resources.dll" />
+    <Content Include="bin\Debug\ru\DevExpress.XtraVerticalGrid.v17.1.resources.dll" />
+    <Content Include="bin\Debug\ShockwaveFlashObjects.dll" />
+    <Content Include="bin\Debug\Spire.Doc.dll" />
+    <Content Include="bin\Debug\Spire.License.dll" />
+    <Content Include="bin\Debug\Spire.Pdf.dll" />
+    <Content Include="bin\Debug\stdole.dll" />
+    <Content Include="bin\Debug\UserControls.dll" />
+    <Content Include="bin\Debug\UserControls.pdb" />
+    <Content Include="bin\Release\CapaPresentacion.dll" />
+    <Content Include="bin\Release\CapaPresentacion.pdb" />
+    <Content Include="bin\x86\Debug\CapaDatos.dll" />
+    <Content Include="bin\x86\Debug\CapaDatos.pdb" />
+    <Content Include="bin\x86\Debug\CapaDatosBase.dll" />
+    <Content Include="bin\x86\Debug\CapaDatosBase.pdb" />
+    <Content Include="bin\x86\Debug\CapaNegocio.dll" />
+    <Content Include="bin\x86\Debug\CapaNegocio.pdb" />
+    <Content Include="bin\x86\Debug\CapaNegocioBase.dll" />
+    <Content Include="bin\x86\Debug\CapaNegocioBase.pdb" />
+    <Content Include="bin\x86\Debug\CapaPresentacion.dll" />
+    <Content Include="bin\x86\Debug\CapaPresentacion.pdb" />
+    <Content Include="bin\x86\Debug\CapaPresentacionBase.dll" />
+    <Content Include="bin\x86\Debug\CapaPresentacionBase.pdb" />
+    <Content Include="bin\x86\Debug\Comunes.dll" />
+    <Content Include="bin\x86\Debug\Comunes.pdb" />
+    <Content Include="bin\x86\Debug\datasms.mdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="bin\x86\Debug\datasms_log.ldf">
+      <DependentUpon>datasms.mdf</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="bin\x86\Debug\KMCurrencyTextBox.dll" />
+    <Content Include="bin\x86\Debug\Microsoft.ApplicationBlocks.Data.dll" />
+    <Content Include="bin\x86\Debug\UserControls.dll" />
+    <Content Include="bin\x86\Debug\UserControls.pdb" />
+    <Content Include="bin\x86\Release\CapaDatos.dll" />
+    <Content Include="bin\x86\Release\CapaDatosBase.dll" />
+    <Content Include="bin\x86\Release\CapaNegocio.dll" />
+    <Content Include="bin\x86\Release\CapaNegocioBase.dll" />
+    <Content Include="bin\x86\Release\CapaPresentacion.dll" />
+    <Content Include="bin\x86\Release\CapaPresentacionBase.dll" />
+    <Content Include="bin\x86\Release\Comunes.dll" />
+    <Content Include="bin\x86\Release\datasms.mdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="bin\x86\Release\datasms_log.ldf">
+      <DependentUpon>datasms.mdf</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="bin\x86\Release\Interop.Microsoft.Office.Core.dll" />
+    <Content Include="bin\x86\Release\KMCurrencyTextBox.dll" />
+    <Content Include="bin\x86\Release\Microsoft.ApplicationBlocks.Data.dll" />
+    <Content Include="bin\x86\Release\UserControls.dll" />
     <Content Include="Imagenes\Iconos\ClubesLigas\mCambioClub237x237.png" />
     <Content Include="Imagenes\Iconos\ClubesLigas\mCambioClub36x36.png" />
     <Content Include="Imagenes\Iconos\ClubesLigas\mClub36x36.png" />
@@ -1461,6 +2136,13 @@
     <Content Include="Imagenes\Iconos\Examenes\mRayosX_36x36.png" />
     <Content Include="Imagenes\Iconos\Examenes\mRevalidacion60x60.png" />
     <Content Include="Imagenes\Iconos\Examenes\mRxAuto512x512.png" />
+    <Content Include="Imagenes\Iconos\Exportaciones\jumpy.png" />
+    <None Include="Resources\disco-flexible.png" />
+    <None Include="Resources\cancelar.png" />
+    <None Include="Resources\tacho.png" />
+    <None Include="Resources\papelera %281%29.png" />
+    <None Include="Resources\papelera.png" />
+    <None Include="Imagenes\Iconos\Otros\mActualiza36x36.png" />
     <Content Include="Imagenes\Iconos\Otros\mAddPaciente22x22.png" />
     <Content Include="Imagenes\Iconos\Otros\mAddPaciente24x24.png" />
     <Content Include="Imagenes\Iconos\Otros\mAddPaciente36x36.png" />
@@ -1497,6 +2179,12 @@
     <Content Include="Imagenes\Iconos\Pacientes\mUsers36x36.png" />
     <Content Include="Imagenes\Iconos\Profesionales\mMedicos40x40.png" />
     <Content Include="Imagenes\Iconos\Turnos\mTurnos36x36.png" />
+    <None Include="Resources\jumpy.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="bin\Debug\fr\" />
+    <Folder Include="bin\Debug\it\" />
+    <Folder Include="bin\Debug\pt-BR\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
