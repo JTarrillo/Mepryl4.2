@@ -69,6 +69,7 @@ namespace CapaDatosMepryl
             {
                 string cuitSafe   = cuitEmisor.Replace("'", "''").Trim();
                 string razonSafe  = razonSocial.Replace("'", "''").Trim();
+                string condSafe   = condicionIVA.Replace("'", "''").Trim();
                 string domSafe    = domicilio.Replace("'", "''").Trim();
                 string rutaSafe   = rutaCertificado.Replace("'", "''").Trim();
                 string passSafe   = passwordCert.Replace("'", "''").Trim();
@@ -79,7 +80,7 @@ namespace CapaDatosMepryl
                         UPDATE dbo.ConfiguracionAFIP SET
                             cuitEmisor      = '{cuitSafe}',
                             razonSocial     = '{razonSafe}',
-                            condicionIVA    = '{condicionIVA}',
+                            condicionIVA    = '{condSafe}',
                             puntoVenta      = {puntoVenta},
                             ambiente        = '{ambiente}',
                             rutaCertificado = '{rutaSafe}',
@@ -90,7 +91,7 @@ namespace CapaDatosMepryl
                         INSERT INTO dbo.ConfiguracionAFIP
                             (id, cuitEmisor, razonSocial, condicionIVA, puntoVenta, ambiente, rutaCertificado, passwordCert, domicilioEmisor)
                         VALUES
-                            (1, '{cuitSafe}', '{razonSafe}', '{condicionIVA}', {puntoVenta}, '{ambiente}', '{rutaSafe}', '{passSafe}', '{domSafe}')";
+                            (1, '{cuitSafe}', '{razonSafe}', '{condSafe}', {puntoVenta}, '{ambiente}', '{rutaSafe}', '{passSafe}', '{domSafe}')";
 
                 SQLConnector.EjecutarConsulta(sql);
                 resultado.Modo    = 1;
@@ -113,6 +114,13 @@ namespace CapaDatosMepryl
         {
             return SQLConnector.obtenerTablaSegunConsultaString(
                 $"SELECT * FROM dbo.FacturaElectronica WHERE idConsulta = '{idConsulta}' ORDER BY fechaCreacion DESC");
+        }
+
+        /// <summary>Obtiene los comprobantes emitidos para un turno.</summary>
+        public DataTable ObtenerComprobantesPorTurno(Guid idTurno)
+        {
+            return SQLConnector.obtenerTablaSegunConsultaString(
+                $"SELECT * FROM dbo.FacturaElectronica WHERE idTurno = '{idTurno}' ORDER BY fechaCreacion DESC");
         }
 
         /// <summary>Obtiene un comprobante por su ID.</summary>
@@ -143,7 +151,7 @@ namespace CapaDatosMepryl
 
         /// <summary>Inserta un comprobante nuevo (antes de llamar a AFIP).</summary>
         public Guid InsertarComprobante(
-            Guid idConsulta, int tipoComprobante, int puntoVenta, long nroComprobante,
+            Guid idTurno, int tipoComprobante, int puntoVenta, long nroComprobante,
             string cuitReceptor, string nombreReceptor, string condicionIVAReceptor,
             decimal importeNeto, decimal importeIVA, decimal importeTotal,
             int concepto, string observaciones)
@@ -152,17 +160,21 @@ namespace CapaDatosMepryl
 
             string cuitSafe   = cuitReceptor.Replace("'", "''");
             string nombreSafe = nombreReceptor.Replace("'", "''");
+            string condSafe   = condicionIVAReceptor.Replace("'", "''");
             string obsSafe    = (observaciones ?? "").Replace("'", "''");
+
+            // Si no hay turno asociado (emisión manual en ventanilla), guardar NULL
+            string idTurnoSql = (idTurno == Guid.Empty) ? "NULL" : $"'{idTurno}'";
 
             string sql = $@"
                 INSERT INTO dbo.FacturaElectronica
-                    (id, idConsulta, tipoComprobante, puntoVenta, nroComprobante,
+                    (id, idTurno, tipoComprobante, puntoVenta, nroComprobante,
                      cuitReceptor, nombreReceptor, condicionIVAReceptor,
                      importeNeto, importeIVA, importeTotal,
                      concepto, estado, observaciones, fechaEmision, fechaCreacion)
                 VALUES
-                    ('{nuevoId}', '{idConsulta}', {tipoComprobante}, {puntoVenta}, {nroComprobante},
-                     '{cuitSafe}', '{nombreSafe}', '{condicionIVAReceptor}',
+                    ('{nuevoId}', {idTurnoSql}, {tipoComprobante}, {puntoVenta}, {nroComprobante},
+                     '{cuitSafe}', '{nombreSafe}', '{condSafe}',
                      {importeNeto.ToString(System.Globalization.CultureInfo.InvariantCulture)},
                      {importeIVA.ToString(System.Globalization.CultureInfo.InvariantCulture)},
                      {importeTotal.ToString(System.Globalization.CultureInfo.InvariantCulture)},
@@ -172,17 +184,20 @@ namespace CapaDatosMepryl
             return nuevoId;
         }
 
-        /// <summary>Actualiza el estado de un comprobante con el CAE devuelto por AFIP.</summary>
-        public Entidades.Resultado ActualizarConCAE(Guid idFactura, string cae, DateTime fechaVencCAE)
+        /// <summary>Actualiza el estado de un comprobante con el CAE devuelto por TusFacturas.</summary>
+        public Entidades.Resultado ActualizarConCAE(Guid idFactura, string cae, DateTime fechaVencCAE, long nroComprobante = 0, string pdfUrl = "")
         {
             var resultado = new Entidades.Resultado();
             try
             {
+                string pdfSafe = (pdfUrl ?? "").Replace("'", "''");
                 string sql = $@"
                     UPDATE dbo.FacturaElectronica SET
-                        cae         = '{cae}',
-                        fechaVencCAE = '{fechaVencCAE:yyyy-MM-dd}',
-                        estado       = 'Autorizado'
+                        cae            = '{cae}',
+                        fechaVencCAE   = '{fechaVencCAE:yyyy-MM-dd}',
+                        nroComprobante = {nroComprobante},
+                        estado         = 'Autorizado',
+                        pdfUrl         = '{pdfSafe}'
                     WHERE id = '{idFactura}'";
 
                 SQLConnector.EjecutarConsulta(sql);
@@ -193,6 +208,25 @@ namespace CapaDatosMepryl
             {
                 resultado.Modo    = -1;
                 resultado.Mensaje = "Error al guardar CAE: " + ex.Message;
+            }
+            return resultado;
+        }
+
+        /// <summary>Marca un comprobante como Anulado.</summary>
+        public Entidades.Resultado AnularComprobante(Guid idFactura)
+        {
+            var resultado = new Entidades.Resultado();
+            try
+            {
+                string sql = $"UPDATE dbo.FacturaElectronica SET estado = 'Anulado' WHERE id = '{idFactura}'";
+                SQLConnector.EjecutarConsulta(sql);
+                resultado.Modo    = 1;
+                resultado.Mensaje = "Comprobante anulado correctamente.";
+            }
+            catch (Exception ex)
+            {
+                resultado.Modo    = -1;
+                resultado.Mensaje = "Error al anular: " + ex.Message;
             }
             return resultado;
         }
@@ -226,22 +260,47 @@ namespace CapaDatosMepryl
         public DataTable ListarComprobantesDia()
         {
             return SQLConnector.obtenerTablaSegunConsultaString(
-                @"SELECT f.*, c.nroOrden, c.identificador
-                  FROM dbo.FacturaElectronica f
-                  LEFT JOIN dbo.Consulta c ON c.id = f.idConsulta
-                  WHERE CONVERT(DATE, f.fechaCreacion) = CONVERT(DATE, GETDATE())
-                  ORDER BY f.fechaCreacion DESC");
+                @"SELECT * FROM dbo.FacturaElectronica
+                  WHERE CONVERT(DATE, fechaCreacion) = CONVERT(DATE, GETDATE())
+                  ORDER BY fechaCreacion DESC");
         }
 
         /// <summary>Lista comprobantes entre fechas.</summary>
         public DataTable ListarComprobantesEntreFechas(DateTime desde, DateTime hasta)
         {
             return SQLConnector.obtenerTablaSegunConsultaString(
-                $@"SELECT f.*, c.nroOrden, c.identificador
-                   FROM dbo.FacturaElectronica f
-                   LEFT JOIN dbo.Consulta c ON c.id = f.idConsulta
-                   WHERE CONVERT(DATE, f.fechaEmision) BETWEEN '{desde:yyyy-MM-dd}' AND '{hasta:yyyy-MM-dd}'
-                   ORDER BY f.fechaEmision DESC, f.nroComprobante ASC");
+                $@"SELECT * FROM dbo.FacturaElectronica
+                   WHERE CONVERT(DATE, fechaEmision) BETWEEN '{desde:yyyy-MM-dd}' AND '{hasta:yyyy-MM-dd}'
+                   ORDER BY fechaEmision DESC, nroComprobante ASC");
+        }
+
+        /// <summary>Actualiza los tokens de TusFacturas.app en ConfiguracionAFIP.</summary>
+        public Entidades.Resultado GuardarTokensTusFacturas(string apiKey, string apiToken, string userToken)
+        {
+            var resultado = new Entidades.Resultado();
+            try
+            {
+                string keySafe   = apiKey.Replace("'", "''").Trim();
+                string tokenSafe = apiToken.Replace("'", "''").Trim();
+                string userSafe  = userToken.Replace("'", "''").Trim();
+
+                string sql = $@"
+                    UPDATE dbo.ConfiguracionAFIP SET
+                        tfApiKey    = '{keySafe}',
+                        tfApiToken  = '{tokenSafe}',
+                        tfUserToken = '{userSafe}'
+                    WHERE id = 1";
+
+                SQLConnector.EjecutarConsulta(sql);
+                resultado.Modo    = 1;
+                resultado.Mensaje = "Tokens TusFacturas guardados correctamente.";
+            }
+            catch (Exception ex)
+            {
+                resultado.Modo    = -1;
+                resultado.Mensaje = "Error al guardar tokens TusFacturas: " + ex.Message;
+            }
+            return resultado;
         }
     }
 }

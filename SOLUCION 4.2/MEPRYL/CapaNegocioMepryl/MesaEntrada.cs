@@ -120,6 +120,18 @@ namespace CapaNegocioMepryl
             return mesaEntrada.Revisado(IdConsulta);
         }
 
+        /// <summary>Marca el turno como abonado (cobrado / facturado).</summary>
+        public void MarcarAbono(Guid idTurno)
+        {
+            mesaEntrada.MarcarAbono(idTurno);
+        }
+
+        /// <summary>Devuelve idTurno, precioBase, descripcion especialidad, nombre y DNI del paciente.</summary>
+        public DataTable ObtenerDatosParaFactura(Guid idConsulta)
+        {
+            return mesaEntrada.ObtenerDatosParaFactura(idConsulta);
+        }
+
         public DataTable cargarMesaEntradaPlanillaCompleta()
         {
             return mesaEntrada.cargarMesaEntradaPlanillaCompleta();

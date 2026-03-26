@@ -13,6 +13,34 @@ namespace CapaDatosMepryl
         string test;
         DataTable prueba;
 
+        /// <summary>
+        /// Marca abono='1' en el Turno → el paciente fue cobrado / facturado.
+        /// </summary>
+        public void MarcarAbono(Guid idTurno)
+        {
+            SQLConnector.EjecutarConsulta(
+                $"UPDATE dbo.Turno SET abono = '1' WHERE id = '{idTurno}'");
+        }
+
+        /// <summary>
+        /// Devuelve idTurno, precioBase de la especialidad e idPaciente para una consulta.
+        /// </summary>
+        public DataTable ObtenerDatosParaFactura(Guid idConsulta)
+        {
+            return SQLConnector.obtenerTablaSegunConsultaString($@"
+                SELECT te.idTurno, e.precioBase, e.descripcion,
+                       c.pacienteID,
+                       COALESCE(p.apellido, pl.apellido, '') + ' ' +
+                       COALESCE(p.nombres,  pl.nombres,  '') AS nombrePaciente,
+                       COALESCE(p.dni, pl.dni, '0')          AS dniPaciente
+                FROM dbo.Consulta c
+                INNER JOIN dbo.TipoExamenDePaciente te ON te.idConsulta = c.id
+                INNER JOIN dbo.Especialidad e           ON te.idEspecialidad = e.id
+                LEFT  JOIN dbo.Paciente       p  ON p.id  = c.pacienteID
+                LEFT  JOIN dbo.PacienteLaboral pl ON pl.id = c.pacienteID
+                WHERE c.id = '{idConsulta}'");
+        }
+
         public DataTable cargarTiposDeExamen(string idMotivoConsulta)
         {
             return SQLConnector.obtenerTablaSegunConsultaString(@"select id, descripcion

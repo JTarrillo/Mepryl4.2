@@ -1,394 +1,289 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Net;
-using System.Security.Cryptography;
-using System.Security.Cryptography.Pkcs;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
-using System.Xml;
 
 namespace CapaDatosMepryl
 {
-    // ═══════════════════════════════════════════════════════════════════════════
-    //  CÓMO AGREGAR LOS WEB SERVICES REALES EN VISUAL STUDIO
-    //  ─────────────────────────────────────────────────────
-    //  1. Clic derecho en el proyecto CapaDatosMepryl → "Agregar" → "Referencia de servicio"
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+    //  INTEGRACIÃ“N CON TUSFACTURAS.APP  (REST/JSON)
+    //  â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    //  Reemplaza la implementaciÃ³n SOAP directa contra AFIP (WSAA + WSFE).
+    //  TusFacturas actÃºa como intermediario y gestiona el certificado ARCA.
+    //  No se requiere archivo .p12 ni firma CMS.
     //
-    //  WSAA (Autenticación):
-    //     Homologación: https://wsaahomo.afip.gov.ar/ws/services/LoginCms?wsdl
-    //     Producción  : https://wsaa.afip.gov.ar/ws/services/LoginCms?wsdl
-    //     Namespace   : AfipWSAA
+    //  DocumentaciÃ³n: https://developers.tusfacturas.app/
     //
-    //  WSFE (Facturación electrónica):
-    //     Homologación: https://wswhomo.afip.gov.ar/wsfev1/service.asmx?WSDL
-    //     Producción  : https://servicios1.afip.gov.ar/wsfev1/service.asmx?WSDL
-    //     Namespace   : AfipWSFE
-    //
-    //  Una vez generadas las referencias, reemplazá el envío SOAP manual de esta
-    //  clase por las clases proxy generadas (LoginCmsClient / ServiceSoapClient).
-    // ═══════════════════════════════════════════════════════════════════════════
+    //  CONFIGURACIÃ“N (dbo.ConfiguracionAFIP):
+    //    tfUserToken â†’ User Token del punto de venta
+    //    tfApiToken  â†’ API Token
+    //    tfApiKey    â†’ API Key (ej: "71326")
+    //    puntoVenta  â†’ NÃºmero de PDV (ej: 1)
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+    // (eliminado: TicketAcceso â€” ya no se usa con TusFacturas)
+    // (eliminado: ItemFactura  â€” ya no se usa con TusFacturas)
+
+    // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    //  Nota: Â¡NO OLVIDAR! Configurar la conexiÃ³n ARCA en el portal TusFacturas:
+    //    Mi cuenta â†’ Configurar espacio de trabajo â†’ FacturaciÃ³n ARCA
+    //    Sin esa conexiÃ³n, las facturas no serÃ¡n enviadas a AFIP.
+    // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     /// <summary>
-    /// Resultado de autenticación AFIP (Ticket de Acceso).
-    /// Se obtiene del WSAA y dura 12 horas; conviene cachearlo.
-    /// </summary>
-    public class TicketAcceso
-    {
-        public string Token        { get; set; }
-        public string Sign         { get; set; }
-        public DateTime Generacion { get; set; }
-        public DateTime Expiracion { get; set; }
-
-        public bool EstaVigente()
-        {
-            return DateTime.Now < Expiracion.AddMinutes(-5);
-        }
-    }
-
-    /// <summary>
-    /// Respuesta del WSFE al autorizar un comprobante.
+    /// Respuesta de TusFacturas al autorizar un comprobante.
     /// </summary>
     public class RespuestaCAE
     {
-        public bool   Autorizado         { get; set; }
-        public string CAE                { get; set; }
+        public bool     Autorizado          { get; set; }
+        public string   CAE                 { get; set; }
         public DateTime FechaVencimientoCAE { get; set; }
-        public string Observaciones      { get; set; }
-        public string Errores            { get; set; }
+        public string   Observaciones       { get; set; }
+        public string   Errores             { get; set; }
+        /// <summary>Nro de comprobante asignado, ej: "00001-00000001"</summary>
+        public string   NroComprobante      { get; set; }
+        /// <summary>URL del PDF del comprobante en TusFacturas</summary>
+        public string   PdfUrl              { get; set; }
     }
 
     /// <summary>
-    /// Wrapper que agrupa los datos de un ítem de factura para AFIP.
-    /// </summary>
-    public class ItemFactura
-    {
-        public string Descripcion   { get; set; }
-        public int    Cantidad      { get; set; } = 1;
-        public decimal PrecioUnitario { get; set; }
-        public decimal ImporteTotal { get; set; }
-        public decimal AlicuotaIVA  { get; set; } = 21m; // 21%, 10.5% o 0%
-    }
-
-    /// <summary>
-    /// Integración con los dos web services de AFIP via SOAP manual.
-    /// 
-    /// FLUJO COMPLETO:
-    ///   1. ObtenerTicketAcceso()  → llama a WSAA con el certificado .p12
-    ///   2. AutorizarComprobante() → llama a WSFE con el Token+Sign del paso 1
+    /// IntegraciÃ³n con TusFacturas.app API REST/JSON para facturaciÃ³n electrÃ³nica AFIP.
+    /// No requiere .p12 ni WSAA â€” TusFacturas gestiona el certificado ARCA.
     /// </summary>
     public class ServiciosAfip
     {
-        // URLs de los servicios
-        private const string WSAA_HOMO = "https://wsaahomo.afip.gov.ar/ws/services/LoginCms";
-        private const string WSAA_PROD = "https://wsaa.afip.gov.ar/ws/services/LoginCms";
-        private const string WSFE_HOMO = "https://wswhomo.afip.gov.ar/wsfev1/service.asmx";
-        private const string WSFE_PROD = "https://servicios1.afip.gov.ar/wsfev1/service.asmx";
-        private const string SERVICIO  = "wsfe"; // nombre del servicio destino en el LoginTicketRequest
+        private const string URL_FACTURACION = "https://www.tusfacturas.app/app/api/v2/facturacion/nuevo";
 
-        private readonly char   _ambiente;       // 'H' u 'P'
-        private readonly string _rutaCertificado;
-        private readonly string _passwordCert;
+        private readonly string _userToken;
+        private readonly string _apiToken;
+        private readonly string _apiKey;
+        private readonly string _puntoVenta;   // 5 dÃ­gitos con ceros a la izquierda
 
-        // Cache del ticket durante su vigencia (evita llamar a WSAA en cada factura)
-        private static TicketAcceso _ticketCacheado;
-
-        public ServiciosAfip(char ambiente, string rutaCertificado, string passwordCert)
+        public ServiciosAfip(string userToken, string apiToken, string apiKey, int puntoVenta)
         {
-            _ambiente         = char.ToUpper(ambiente);
-            _rutaCertificado  = rutaCertificado;
-            _passwordCert     = passwordCert;
+            _userToken  = userToken;
+            _apiToken   = apiToken;
+            _apiKey     = apiKey;
+            _puntoVenta = puntoVenta.ToString().PadLeft(5, '0');
         }
 
-        // ─────────────────────────────────────────────────────────────────────
-        // PASO 1: WSAA — Obtener Ticket de Acceso
-        // ─────────────────────────────────────────────────────────────────────
+        // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        // EMISIÃ“N DE COMPROBANTE
+        // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
         /// <summary>
-        /// Autentica contra AFIP y devuelve un Ticket de Acceso (Token + Sign).
-        /// Usa caché: si el ticket sigue vigente no vuelve a llamar al WS.
+        /// Emite un comprobante C (Factura, Nota de Crédito o Nota de Débito) a través de TusFacturas.
+        /// El número de comprobante es asignado automáticamente (numero=0).
         /// </summary>
-        public TicketAcceso ObtenerTicketAcceso()
+        /// <param name="tipoComprobante">FACTURA C | NOTA DE CREDITO C | NOTA DE DEBITO C</param>
+        /// <param name="nroComprobanteAsociado">Para NC/ND: nro de la factura original. 0 si no aplica.</param>
+        /// <param name="medioPago">EFECTIVO | TARJETA_CREDITO | TARJETA_DEBITO | MERCADO_PAGO | TRANSFERENCIA</param>
+        public RespuestaCAE EmitirFacturaC(
+            string  descripcion,
+            decimal importeTotal,
+            string  nombreReceptor        = "Consumidor Final",
+            string  documentoReceptor     = "0",
+            string  tipoComprobante       = "FACTURA C",
+            long    nroComprobanteAsociado = 0,
+            string  medioPago             = "EFECTIVO")
         {
-            // Retornar ticket cacheado si sigue vigente
-            if (_ticketCacheado != null && _ticketCacheado.EstaVigente())
-                return _ticketCacheado;
+            string fechaHoy   = DateTime.Today.ToString("dd/MM/yyyy");
+            string importeStr = importeTotal.ToString("F2", System.Globalization.CultureInfo.InvariantCulture);
 
-            // 1. Cargar el certificado .p12
-            X509Certificate2 certificado = CargarCertificado();
+            // Si hay CUIT real → receptor identificado (RI); si no → Consumidor Final
+            bool   tieneCuit = documentoReceptor != "0" && !string.IsNullOrWhiteSpace(documentoReceptor);
+            string docTipo   = tieneCuit ? "CUIT"            : "CONSUMIDOR_FINAL";
+            string condIva   = tieneCuit ? "RI"              : "CF";
+            string docNro    = tieneCuit ? documentoReceptor : "0";
 
-            // 2. Armar el XML LoginTicketRequest
-            string loginTicketRequest = ArmarLoginTicketRequest();
-
-            // 3. Firmar el XML con CMS (PKCS#7) usando la clave privada del certificado
-            string cmsFirmadoBase64 = FirmarCMS(loginTicketRequest, certificado);
-
-            // 4. Llamar al WSAA via SOAP
-            string wsaaUrl = _ambiente == 'P' ? WSAA_PROD : WSAA_HOMO;
-            string respuestaXml = LlamarSOAP(
-                wsaaUrl,
-                "\"\"", // SOAPAction vacía para WSAA
-                ConstruirBodyWSAA(cmsFirmadoBase64));
-
-            // 5. Parsear la respuesta y devolver el ticket
-            _ticketCacheado = ParsearRespuestaWSAA(respuestaXml);
-            return _ticketCacheado;
-        }
-
-        private string ArmarLoginTicketRequest()
-        {
-            DateTime ahora      = DateTime.Now;
-            DateTime expiracion = ahora.AddHours(12);
-
-            return $@"<?xml version=""1.0"" encoding=""UTF-8""?>
-<loginTicketRequest version=""1.0"">
-  <header>
-    <uniqueId>{(long)(ahora - new DateTime(1970,1,1)).TotalSeconds}</uniqueId>
-    <generationTime>{ahora.AddMinutes(-5):yyyy-MM-ddTHH:mm:ss}</generationTime>
-    <expirationTime>{expiracion:yyyy-MM-ddTHH:mm:ss}</expirationTime>
-  </header>
-  <service>{SERVICIO}</service>
-</loginTicketRequest>";
-        }
-
-        private string FirmarCMS(string contenidoXml, X509Certificate2 certificado)
-        {
-            byte[] datos = Encoding.UTF8.GetBytes(contenidoXml);
-
-            ContentInfo contentInfo = new ContentInfo(datos);
-            SignedCms   signedCms   = new SignedCms(contentInfo, false);
-
-            CmsSigner firmante = new CmsSigner(SubjectIdentifierType.IssuerAndSerialNumber, certificado);
-            firmante.IncludeOption = X509IncludeOption.EndCertOnly;
-
-            signedCms.ComputeSignature(firmante, false);
-
-            return Convert.ToBase64String(signedCms.Encode());
-        }
-
-        private X509Certificate2 CargarCertificado()
-        {
-            if (!File.Exists(_rutaCertificado))
-                throw new FileNotFoundException($"Certificado AFIP no encontrado en: {_rutaCertificado}");
-
-            return new X509Certificate2(
-                _rutaCertificado,
-                _passwordCert,
-                X509KeyStorageFlags.MachineKeySet | X509KeyStorageFlags.PersistKeySet);
-        }
-
-        private string ConstruirBodyWSAA(string cmsFirmadoBase64)
-        {
-            return $@"<soapenv:Envelope xmlns:soapenv=""http://schemas.xmlsoap.org/soap/envelope/"" xmlns:wsaa=""http://wsaa.view.sua.dvadac.desein.afip.gov"">
-   <soapenv:Header/>
-   <soapenv:Body>
-      <wsaa:loginCms>
-         <wsaa:in0>{cmsFirmadoBase64}</wsaa:in0>
-      </wsaa:loginCms>
-   </soapenv:Body>
-</soapenv:Envelope>";
-        }
-
-        private TicketAcceso ParsearRespuestaWSAA(string respuestaXml)
-        {
-            XmlDocument doc = new XmlDocument();
-            doc.LoadXml(respuestaXml);
-
-            XmlNamespaceManager ns = new XmlNamespaceManager(doc.NameTable);
-            ns.AddNamespace("s", "http://schemas.xmlsoap.org/soap/envelope/");
-
-            // El XML de respuesta contiene un <loginCmsReturn> con otro XML embebido
-            string loginCmsReturn = doc.SelectSingleNode("//loginCmsReturn")?.InnerText
-                                 ?? doc.SelectSingleNode("//*[local-name()='loginCmsReturn']")?.InnerText;
-
-            if (string.IsNullOrEmpty(loginCmsReturn))
-                throw new Exception("WSAA: respuesta vacía o inesperada. XML recibido:\n" + respuestaXml);
-
-            XmlDocument ticketDoc = new XmlDocument();
-            ticketDoc.LoadXml(loginCmsReturn);
-
-            var ticket = new TicketAcceso
+            // Comprobantes asociados (requerido para NC y ND)
+            bool   esNcNd     = tipoComprobante.StartsWith("NOTA DE");
+            string asociados  = "";
+            if (esNcNd && nroComprobanteAsociado > 0)
             {
-                Token      = ticketDoc.SelectSingleNode("//token")?.InnerText,
-                Sign       = ticketDoc.SelectSingleNode("//sign")?.InnerText,
-                Generacion = DateTime.Parse(ticketDoc.SelectSingleNode("//generationTime")?.InnerText ?? DateTime.Now.ToString()),
-                Expiracion = DateTime.Parse(ticketDoc.SelectSingleNode("//expirationTime")?.InnerText ?? DateTime.Now.AddHours(12).ToString())
-            };
+                asociados = $@",
+    ""comprobantes_asociados"": [{{
+      ""tipo"": ""FACTURA C"",
+      ""punto_venta"": ""{_puntoVenta}"",
+      ""numero"": {nroComprobanteAsociado}
+    }}]";
+            }
 
-            if (string.IsNullOrEmpty(ticket.Token))
-                throw new Exception("WSAA: no se pudo obtener el Token del ticket de acceso.");
+            // Forma de pago
+            string formaPago = string.IsNullOrEmpty(medioPago) ? "EFECTIVO" : medioPago;
 
-            return ticket;
-        }
+            string json = $@"{{
+  ""usertoken"": ""{_userToken}"",
+  ""apitoken"": ""{_apiToken}"",
+  ""apikey"": ""{_apiKey}"",
+  ""cliente"": {{
+    ""documento_tipo"": ""{docTipo}"",
+    ""documento_nro"": ""{Esc(docNro)}"",
+    ""razon_social"": ""{Esc(nombreReceptor)}"",
+    ""email"": """",
+    ""domicilio"": """",
+    ""condicion_iva"": ""{condIva}""
+  }},
+  ""comprobante"": {{
+    ""fecha"": ""{fechaHoy}"",
+    ""tipo"": ""{tipoComprobante}"",
+    ""operacion"": ""V"",
+    ""punto_venta"": ""{_puntoVenta}"",
+    ""numero"": 0,
+    ""periodo_facturado_desde"": ""{fechaHoy}"",
+    ""periodo_facturado_hasta"": ""{fechaHoy}"",
+    ""rubro"": ""Servicios de salud"",
+    ""rubro_grupo_contable"": """",
+    ""forma_pago"": ""{formaPago}"",
+    ""detalle"": [{{
+      ""cantidad"": 1,
+      ""producto"": {{
+        ""descripcion"": ""{Esc(descripcion)}"",
+        ""unidad_bulto"": 1,
+        ""lista_precios"": """",
+        ""codigo"": """",
+        ""precio_unitario_sin_iva"": {importeStr},
+        ""alicuota"": 0,
+        ""unidad_medida"": ""94""
+      }},
+      ""iva"": {{
+        ""descripcion"": ""0%"",
+        ""porcentaje"": 0
+      }},
+      ""subtotal"": {importeStr}
+    }}],
+    ""bonificacion"": 0,
+    ""iva_array"": [],
+    ""subtotal"": {importeStr},
+    ""total"": {importeStr},
+    ""importe_neto"": {importeStr}{asociados}
+  }}}}";
 
-        // ─────────────────────────────────────────────────────────────────────
-        // PASO 2: WSFE — Autorizar comprobante (FECAESolicitar)
-        // ─────────────────────────────────────────────────────────────────────
-
-        /// <summary>
-        /// Envía un comprobante a AFIP para autorización y devuelve el CAE.
-        /// </summary>
-        /// <param name="cuitEmisor">CUIT del emisor (sin guiones)</param>
-        /// <param name="puntoVenta">Punto de venta habilitado en AFIP</param>
-        /// <param name="tipoComprobante">1=FactA, 6=FactB, 11=FactC</param>
-        /// <param name="nroComprobante">Nro consecutivo (último autorizado + 1)</param>
-        /// <param name="concepto">1=Productos, 2=Servicios, 3=Productos y Servicios</param>
-        /// <param name="cuitReceptor">CUIT del receptor (para FactA; "0" para FactB/C)</param>
-        /// <param name="importeTotal">Total del comprobante</param>
-        /// <param name="importeIVA">Importe de IVA</param>
-        /// <param name="alicuotaIVAId">5=21%, 4=10.5%, 3=0%</param>
-        public RespuestaCAE AutorizarComprobante(
-            string cuitEmisor, int puntoVenta, int tipoComprobante,
-            long nroComprobante, int concepto,
-            string cuitReceptor, decimal importeTotal, decimal importeIVA,
-            int alicuotaIVAId = 5)
-        {
-            TicketAcceso ticket = ObtenerTicketAcceso();
-            string wsfeUrl = _ambiente == 'P' ? WSFE_PROD : WSFE_HOMO;
-
-            string fechaHoy     = DateTime.Today.ToString("yyyyMMdd");
-            decimal importeNeto = importeTotal - importeIVA;
-
-            string soapBody = $@"<soapenv:Envelope xmlns:soapenv=""http://schemas.xmlsoap.org/soap/envelope/"" xmlns:ar=""http://ar.gov.afip.dif.FEV1/"">
-   <soapenv:Header/>
-   <soapenv:Body>
-      <ar:FECAESolicitar>
-         <ar:Auth>
-            <ar:Token>{ticket.Token}</ar:Token>
-            <ar:Sign>{ticket.Sign}</ar:Sign>
-            <ar:Cuit>{cuitEmisor}</ar:Cuit>
-         </ar:Auth>
-         <ar:FeCAEReq>
-            <ar:FeCabReq>
-               <ar:CantReg>1</ar:CantReg>
-               <ar:PtoVta>{puntoVenta}</ar:PtoVta>
-               <ar:CbteTipo>{tipoComprobante}</ar:CbteTipo>
-            </ar:FeCabReq>
-            <ar:FeDetReq>
-               <ar:FECAEDetRequest>
-                  <ar:Concepto>{concepto}</ar:Concepto>
-                  <ar:DocTipo>{(cuitReceptor == "0" ? 99 : 80)}</ar:DocTipo>
-                  <ar:DocNro>{(cuitReceptor == "0" ? "0" : cuitReceptor)}</ar:DocNro>
-                  <ar:CbteDesde>{nroComprobante}</ar:CbteDesde>
-                  <ar:CbteHasta>{nroComprobante}</ar:CbteHasta>
-                  <ar:CbteFch>{fechaHoy}</ar:CbteFch>
-                  <ar:ImpTotal>{importeTotal.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)}</ar:ImpTotal>
-                  <ar:ImpTotConc>0</ar:ImpTotConc>
-                  <ar:ImpNeto>{importeNeto.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)}</ar:ImpNeto>
-                  <ar:ImpOpEx>0</ar:ImpOpEx>
-                  <ar:ImpIVA>{importeIVA.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)}</ar:ImpIVA>
-                  <ar:ImpTrib>0</ar:ImpTrib>
-                  <ar:MonId>PES</ar:MonId>
-                  <ar:MonCotiz>1</ar:MonCotiz>
-                  <ar:Iva>
-                     <ar:AlicIva>
-                        <ar:Id>{alicuotaIVAId}</ar:Id>
-                        <ar:BaseImp>{importeNeto.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)}</ar:BaseImp>
-                        <ar:Importe>{importeIVA.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)}</ar:Importe>
-                     </ar:AlicIva>
-                  </ar:Iva>
-               </ar:FECAEDetRequest>
-            </ar:FeDetReq>
-         </ar:FeCAEReq>
-      </ar:FECAESolicitar>
-   </soapenv:Body>
-</soapenv:Envelope>";
-
-            string respuestaXml = LlamarSOAP(wsfeUrl, "http://ar.gov.afip.dif.FEV1/FECAESolicitar", soapBody);
-            return ParsearRespuestaWSFE(respuestaXml);
+            string respuestaJson = Post(URL_FACTURACION, json);
+            return Parsear(respuestaJson);
         }
 
         /// <summary>
-        /// Consulta el último nro de comprobante autorizado en AFIP (FECompUltimoAutorizado).
-        /// Útil para verificar sincronía antes de emitir.
+        /// Anula un comprobante ya emitido via TusFacturas.
         /// </summary>
-        public long ConsultarUltimoNroAutorizado(string cuitEmisor, int puntoVenta, int tipoComprobante)
+        /// <param name="tipoComprobante">FACTURA C | NOTA DE CREDITO C | NOTA DE DEBITO C</param>
+        public RespuestaCAE AnularComprobante(long nroComprobante, string tipoComprobante = "FACTURA C")
         {
-            TicketAcceso ticket = ObtenerTicketAcceso();
-            string wsfeUrl = _ambiente == 'P' ? WSFE_PROD : WSFE_HOMO;
+            string json = $@"{{
+  ""usertoken"": ""{_userToken}"",
+  ""apitoken"": ""{_apiToken}"",
+  ""apikey"": ""{_apiKey}"",
+  ""comprobante"": {{
+    ""tipo"": ""{tipoComprobante}"",
+    ""punto_venta"": ""{_puntoVenta}"",
+    ""numero"": {nroComprobante}
+  }}}}";
 
-            string soapBody = $@"<soapenv:Envelope xmlns:soapenv=""http://schemas.xmlsoap.org/soap/envelope/"" xmlns:ar=""http://ar.gov.afip.dif.FEV1/"">
-   <soapenv:Header/>
-   <soapenv:Body>
-      <ar:FECompUltimoAutorizado>
-         <ar:Auth>
-            <ar:Token>{ticket.Token}</ar:Token>
-            <ar:Sign>{ticket.Sign}</ar:Sign>
-            <ar:Cuit>{cuitEmisor}</ar:Cuit>
-         </ar:Auth>
-         <ar:PtoVta>{puntoVenta}</ar:PtoVta>
-         <ar:CbteTipo>{tipoComprobante}</ar:CbteTipo>
-      </ar:FECompUltimoAutorizado>
-   </soapenv:Body>
-</soapenv:Envelope>";
-
-            string respuesta = LlamarSOAP(wsfeUrl, "http://ar.gov.afip.dif.FEV1/FECompUltimoAutorizado", soapBody);
-
-            XmlDocument doc = new XmlDocument();
-            doc.LoadXml(respuesta);
-            string nro = doc.SelectSingleNode("//*[local-name()='CbteNro']")?.InnerText;
-            return string.IsNullOrEmpty(nro) ? 0 : Convert.ToInt64(nro);
+            string respuestaJson = Post("https://www.tusfacturas.app/app/api/v2/facturacion/anular", json);
+            return Parsear(respuestaJson);
         }
 
-        private RespuestaCAE ParsearRespuestaWSFE(string respuestaXml)
+        // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        // PARSEO DE RESPUESTA
+        // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+        private RespuestaCAE Parsear(string json)
         {
-            var resultado = new RespuestaCAE();
+            var r = new RespuestaCAE();
             try
             {
-                XmlDocument doc = new XmlDocument();
-                doc.LoadXml(respuestaXml);
+                r.Autorizado     = Valor(json, "error") == "N";
+                r.CAE            = Valor(json, "cae");
+                r.NroComprobante = Valor(json, "comprobante_nro");
+                r.Observaciones  = Valor(json, "rta");
+                r.PdfUrl         = Valor(json, "comprobante_pdf_url");
 
-                string resultado_str = doc.SelectSingleNode("//*[local-name()='Resultado']")?.InnerText;
-                resultado.Autorizado = resultado_str == "A";
-
-                resultado.CAE = doc.SelectSingleNode("//*[local-name()='CAE']")?.InnerText;
-
-                string fechaVenc = doc.SelectSingleNode("//*[local-name()='CAEFchVto']")?.InnerText;
+                string fechaVenc = Valor(json, "vencimiento_cae");
                 if (!string.IsNullOrEmpty(fechaVenc) && fechaVenc.Length == 8)
-                    resultado.FechaVencimientoCAE = DateTime.ParseExact(fechaVenc, "yyyyMMdd", null);
+                    r.FechaVencimientoCAE = DateTime.ParseExact(fechaVenc, "yyyyMMdd", null);
 
-                // Observaciones (código + mensaje)
-                var obs = new System.Text.StringBuilder();
-                foreach (XmlNode n in doc.SelectNodes("//*[local-name()='Obs']") ?? (XmlNodeList)null!)
-                    obs.AppendLine($"[{n.SelectSingleNode("*[local-name()='Code']")?.InnerText}] {n.SelectSingleNode("*[local-name()='Msg']")?.InnerText}");
-                resultado.Observaciones = obs.ToString().Trim();
-
-                // Errores
-                var err = new System.Text.StringBuilder();
-                foreach (XmlNode n in doc.SelectNodes("//*[local-name()='Err']") ?? (XmlNodeList)null!)
-                    err.AppendLine($"[{n.SelectSingleNode("*[local-name()='Code']")?.InnerText}] {n.SelectSingleNode("*[local-name()='Msg']")?.InnerText}");
-                resultado.Errores = err.ToString().Trim();
+                if (!r.Autorizado)
+                    r.Errores = ExtraerErrores(json);
             }
             catch (Exception ex)
             {
-                resultado.Autorizado = false;
-                resultado.Errores    = "Error al parsear respuesta WSFE: " + ex.Message;
+                r.Autorizado = false;
+                r.Errores    = "Error al parsear respuesta: " + ex.Message + "\n" + json;
             }
-            return resultado;
+            return r;
         }
 
-        // ─────────────────────────────────────────────────────────────────────
-        // HELPER: llamada SOAP via HTTP
-        // ─────────────────────────────────────────────────────────────────────
-
-        private string LlamarSOAP(string url, string soapAction, string soapEnvelope)
+        // Extrae "clave":"valor" o "clave":numero
+        private string Valor(string json, string clave)
         {
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11;
+            string patron = $"\"{clave}\":";
+            int idx = json.IndexOf(patron);
+            if (idx < 0) return string.Empty;
+            idx += patron.Length;
+            while (idx < json.Length && json[idx] == ' ') idx++;
+            if (idx >= json.Length) return string.Empty;
+            if (json[idx] == '"')
+            {
+                idx++;
+                int fin = json.IndexOf('"', idx);
+                return fin < 0 ? string.Empty : json.Substring(idx, fin - idx);
+            }
+            else
+            {
+                int fin = json.IndexOfAny(new[] { ',', '}', '\n' }, idx);
+                return fin < 0 ? json.Substring(idx).Trim() : json.Substring(idx, fin - idx).Trim();
+            }
+        }
 
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            request.Method      = "POST";
-            request.ContentType = "text/xml;charset=UTF-8";
-            request.Headers.Add("SOAPAction", soapAction);
-            request.Timeout     = 30000; // 30 segundos
+        // Extrae "errores":["msg1","msg2"] como string legible
+        private string ExtraerErrores(string json)
+        {
+            int idx = json.IndexOf("\"errores\":");
+            if (idx < 0) return string.Empty;
+            idx = json.IndexOf('[', idx);
+            if (idx < 0) return string.Empty;
+            int fin = json.IndexOf(']', idx);
+            if (fin < 0) return string.Empty;
+            return json.Substring(idx + 1, fin - idx - 1)
+                       .Replace("\"", "").Replace(",", " | ").Trim();
+        }
 
-            byte[] body = Encoding.UTF8.GetBytes(soapEnvelope);
-            request.ContentLength = body.Length;
+        // Escapa caracteres especiales JSON
+        private string Esc(string s) =>
+            string.IsNullOrEmpty(s) ? string.Empty
+                : s.Replace("\\", "\\\\").Replace("\"", "\\\"")
+                   .Replace("\n", "\\n").Replace("\r", "\\r");
 
-            using (Stream reqStream = request.GetRequestStream())
-                reqStream.Write(body, 0, body.Length);
+        // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        // HTTP POST
+        // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
-            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-            using (StreamReader reader = new StreamReader(response.GetResponseStream(), Encoding.UTF8))
-                return reader.ReadToEnd();
+        private string Post(string url, string jsonBody)
+        {
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
+            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
+            req.Method      = "POST";
+            req.ContentType = "application/json";
+            req.Timeout     = 30000;
+
+            byte[] body = Encoding.UTF8.GetBytes(jsonBody);
+            req.ContentLength = body.Length;
+
+            using (Stream s = req.GetRequestStream())
+                s.Write(body, 0, body.Length);
+
+            try
+            {
+                using (HttpWebResponse resp = (HttpWebResponse)req.GetResponse())
+                using (StreamReader reader = new StreamReader(resp.GetResponseStream(), Encoding.UTF8))
+                    return reader.ReadToEnd();
+            }
+            catch (WebException ex) when (ex.Response != null)
+            {
+                using (StreamReader reader = new StreamReader(ex.Response.GetResponseStream(), Encoding.UTF8))
+                    return reader.ReadToEnd();
+            }
         }
     }
 }

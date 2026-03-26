@@ -19,7 +19,7 @@ namespace CapaPresentacion
     {
         CapaNegocioMepryl.MesaEntrada mesaEntrada;
         CapaNegocioMepryl.PacientePreventiva PacientePre;
-        
+
         bool primeraVez;
         int puntero = -1;
         int intFilaSelecc = 0;
@@ -30,13 +30,13 @@ namespace CapaPresentacion
         {
             InitializeComponent();
             mesaEntrada = new MesaEntrada();
-            inicializar();                                
+            inicializar();
         }
 
         public frmAgendaMesaEntrada(frmBasePrincipal parentForm)
         {
             InitializeComponent();
-            this.MdiParent = parentForm;            
+            this.MdiParent = parentForm;
             mesaEntrada = new MesaEntrada();
             inicializar();
             //ActualizaTimer();
@@ -46,7 +46,7 @@ namespace CapaPresentacion
         {
             CargarDatos();
             PintarFilaGrilla();
-            mostrarDatos();            
+            mostrarDatos();
 
             //timerActualiza.Interval = 10000;
             //timerActualiza.Tick += new EventHandler(timerActualiza_Tick);
@@ -56,12 +56,12 @@ namespace CapaPresentacion
         private void dgvGrilla_CurrentCellChanged(object sender, EventArgs e)
         {
             if (dgvGrilla.CurrentCell != null)
-            {                
-                mostrarDatos();                
+            {
+                mostrarDatos();
                 MostrarFoto(txtDni.Text);
             }
         }
-        
+
         public void cargarGrilla()
         {
             primeraVez = true;
@@ -81,9 +81,9 @@ namespace CapaPresentacion
             //{
             //    //
             //}
-            
+
             this.ActiveControl = dgvGrilla;
-            
+
         }
 
         public void CargarGrillaEmpresaClub()
@@ -175,13 +175,14 @@ namespace CapaPresentacion
                         }
                     }
                 }
-            }catch (System.NullReferenceException ex)
+            }
+            catch (System.NullReferenceException ex)
             {
                 //
             }
-        
+
         }
-        
+
         private void colorearFila(DataGridViewRow row)
         {
             Color color = Color.White;
@@ -220,7 +221,7 @@ namespace CapaPresentacion
                     strResultado = (DateTime.Today.AddTicks(-dtNacimiento.Ticks).Year - 1).ToString();
                 else
                 {
-                    MessageBox.Show("Fecha de nacimiento no puede ser mayor a la fecha de hoy", "Laboral", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);                    
+                    MessageBox.Show("Fecha de nacimiento no puede ser mayor a la fecha de hoy", "Laboral", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 }
 
             }
@@ -244,7 +245,7 @@ namespace CapaPresentacion
             PintarFilaGrilla();
             SeleccinarFilaTurno();
             timerActualiza.Interval = 45000;
-            if(dgvGrilla.Rows.Count > 0)
+            if (dgvGrilla.Rows.Count > 0)
                 dgvGrilla.FirstDisplayedScrollingRowIndex = intPosScroll;
         }
 
@@ -263,17 +264,17 @@ namespace CapaPresentacion
 
         void ActualizaTimer()
         {
-            
+
             while (true)
             {
                 CargarDatos();
                 SeleccinarFilaTurno();
                 System.Threading.Thread.Sleep(5000);
             }
-            
+
         }
 
-        
+
 
         private void RefrescaRegistro()
         {
@@ -285,7 +286,7 @@ namespace CapaPresentacion
             if (dgvGrilla.Rows.Count > 0)
             {
 
-                dgvGrilla.Columns[0].Visible = false;                
+                dgvGrilla.Columns[0].Visible = false;
                 dgvGrilla.Columns[1].Visible = false;
                 dgvGrilla.Columns[2].Visible = false;
                 dgvGrilla.Columns[3].Visible = false;
@@ -339,7 +340,7 @@ namespace CapaPresentacion
                 //{
                 //    colorearFila(dgvR);
                 //}
-                
+
             }
         }
 
@@ -348,24 +349,25 @@ namespace CapaPresentacion
 
             //if (dgvGrilla.InvokeRequired)
             //{
-                if (dgvGrilla.Rows.Count > 0)
+            if (dgvGrilla.Rows.Count > 0)
+            {
+                for (int i = 0; i < dgvGrilla.Rows.Count; i++)
                 {
-                    for (int i = 0; i < dgvGrilla.Rows.Count; i++)
+                    try
                     {
-                        try
+                        if (mesaEntrada.Revisado(dgvGrilla.Rows[i].Cells[0].Value.ToString()) == true)
                         {
-                            if (mesaEntrada.Revisado(dgvGrilla.Rows[i].Cells[0].Value.ToString()) == true)
-                            {
-                                //MethodInvoker mi = new MethodInvoker(() => dgvGrilla.Rows[i].DefaultCellStyle.BackColor = Color.LightGreen);
-                                //dgvGrilla.Invoke(mi);
-                                dgvGrilla.Rows[i].DefaultCellStyle.BackColor = Color.LightGreen;
-                            }
-                        }catch(System.NullReferenceException ex)
-                        {
-                            dgvGrilla.DataSource = null;
+                            //MethodInvoker mi = new MethodInvoker(() => dgvGrilla.Rows[i].DefaultCellStyle.BackColor = Color.LightGreen);
+                            //dgvGrilla.Invoke(mi);
+                            dgvGrilla.Rows[i].DefaultCellStyle.BackColor = Color.LightGreen;
                         }
                     }
+                    catch (System.NullReferenceException ex)
+                    {
+                        dgvGrilla.DataSource = null;
+                    }
                 }
+            }
             //}
         }
 
@@ -401,14 +403,15 @@ namespace CapaPresentacion
                     if (intFilaSelecc >= 0)
                     {
                         //dgvGrilla.Rows[intFilaSelecc].Selected = true;
-                        
+
                         dgvGrilla.CurrentCell = dgvGrilla.Rows[intFilaSelecc].Cells[intColSelecc];
 
                         dgvGrilla.FirstDisplayedScrollingRowIndex = intPosScroll;
 
                     }
                 }
-            }catch(System.ArgumentOutOfRangeException ex)
+            }
+            catch (System.ArgumentOutOfRangeException ex)
             {
                 CargarDatos();
             }
@@ -434,7 +437,7 @@ namespace CapaPresentacion
                 {
                     cargarImagen("P:\\img-system\\mUsuario300x300.jpg");
                     return;
-                }                
+                }
             }
             else
             {
@@ -480,8 +483,8 @@ namespace CapaPresentacion
             {
                 ptbFoto.Image = null;
             }
-        }        
-        
+        }
+
         private void dgvGrilla_KeyDown(object sender, KeyEventArgs e)
         {
             intColSelecc = dgvGrilla.CurrentCell.ColumnIndex;
@@ -491,27 +494,28 @@ namespace CapaPresentacion
             {
                 if ((intFilaSelecc + 1) >= dgvGrilla.Rows.Count)
                 {
-                    intFilaSelecc = dgvGrilla.Rows.Count - 1;                    
+                    intFilaSelecc = dgvGrilla.Rows.Count - 1;
                     //SeleccinarFilaTurno();
                 }
                 else
                 {
-                    intFilaSelecc = dgvGrilla.CurrentCell.RowIndex + 1;                    
+                    intFilaSelecc = dgvGrilla.CurrentCell.RowIndex + 1;
                     //SeleccinarFilaTurno();
                 }
-            }else if (e.KeyData == Keys.Up)
+            }
+            else if (e.KeyData == Keys.Up)
             {
                 if (dgvGrilla.CurrentCell.RowIndex <= 0)
                 {
-                    intFilaSelecc = 0;                    
+                    intFilaSelecc = 0;
                     //SeleccinarFilaTurno();
                 }
                 else
                 {
-                    intFilaSelecc = dgvGrilla.CurrentCell.RowIndex - 1;                    
+                    intFilaSelecc = dgvGrilla.CurrentCell.RowIndex - 1;
                     //SeleccinarFilaTurno();
                 }
-            }           
+            }
 
             mostrarDatos();
         }
@@ -519,9 +523,9 @@ namespace CapaPresentacion
         //private void chkRevisado_CheckedChanged(object sender, EventArgs e)
         //{            
         //    mesaEntrada.RevisarPaciente(dgvGrilla.Rows[intFilaSelecc].Cells[0].Value.ToString(), chkRevisado.Checked);
-            
+
         //    dgvGrilla.Rows[intFilaSelecc].DefaultCellStyle.BackColor = Color.LightGreen;
-            
+
         //}
 
         private void chkRevisado_Click(object sender, EventArgs e)
@@ -537,7 +541,101 @@ namespace CapaPresentacion
                 mesaEntrada.RevisarPaciente(dgvGrilla.Rows[intFilaSelecc].Cells[0].Value.ToString(), chkRevisado.Checked);
                 chkRevisado.Image = Image.FromFile("P:\\img-system\\mCheck02_45x45.png");
                 dgvGrilla.Rows[intFilaSelecc].DefaultCellStyle.BackColor = Color.White;
-            }            
+            }
+        }
+
+        private void btnEmitirFactura_Click(object sender, EventArgs e)
+        {
+            if (dgvGrilla.Rows.Count == 0 || dgvGrilla.Rows[intFilaSelecc].Cells[0].Value == null)
+            {
+                MessageBox.Show("Seleccione un paciente de la grilla.", "Aviso",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            Guid idConsulta = new Guid(dgvGrilla.Rows[intFilaSelecc].Cells[0].Value.ToString());
+            Guid idTurno = new Guid(dgvGrilla.Rows[intFilaSelecc].Cells[3].Value.ToString());
+
+            // Verificar si ya tiene factura emitida
+            if (idTurno != Guid.Empty)
+            {
+                var negFactura = new CapaNegocioMepryl.FacturacionElectronica();
+                System.Data.DataTable dtFact = negFactura.ObtenerComprobantesPorTurno(idTurno);
+                if (dtFact != null && dtFact.Rows.Count > 0)
+                {
+                    string estado = dtFact.Rows[0]["estado"]?.ToString() ?? "";
+                    if (estado == "Autorizado")
+                    {
+                        MessageBox.Show(
+                            "Este paciente ya tiene factura electrónica emitida.\n" +
+                            "Nro: " + dtFact.Rows[0]["nroComprobante"] +
+                            " | CAE: " + dtFact.Rows[0]["cae"],
+                            "Ya facturado", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        return;
+                    }
+                }
+            }
+
+            // Obtener datos del turno: precio y nombre
+            System.Data.DataTable dtDatos = mesaEntrada.ObtenerDatosParaFactura(idConsulta);
+            if (dtDatos == null || dtDatos.Rows.Count == 0)
+            {
+                MessageBox.Show("No se pudieron obtener los datos del turno.", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            decimal precioBase = dtDatos.Rows[0]["precioBase"] == DBNull.Value ? 0m
+                                   : Convert.ToDecimal(dtDatos.Rows[0]["precioBase"]);
+            string especialidad = dtDatos.Rows[0]["descripcion"].ToString();
+            string nombrePac = dtDatos.Rows[0]["nombrePaciente"].ToString().Trim();
+            string dniPac = dtDatos.Rows[0]["dniPaciente"].ToString().Trim();
+
+            // Mostrar diálogo de confirmación/edición de importe
+            using (var dlg = new frmDialogoFactura(nombrePac, especialidad, precioBase))
+            {
+                if (dlg.ShowDialog() != DialogResult.OK) return;
+
+                decimal importeFinal = dlg.Importe;
+                string medioPago = dlg.MedioPago;
+
+                Cursor = Cursors.WaitCursor;
+                try
+                {
+                    var negFactura = new CapaNegocioMepryl.FacturacionElectronica();
+                    var res = negFactura.EmitirFactura(
+                        idTurno == Guid.Empty ? Guid.Empty : idTurno,
+                        11, "0", nombrePac, "CF",
+                        importeFinal, 0m, 2,
+                        "FACTURA C", 0, medioPago);
+
+                    if (res.Modo == 1)
+                    {
+                        // Marcar abono en el turno
+                        if (idTurno != Guid.Empty)
+                            mesaEntrada.MarcarAbono(idTurno);
+
+                        // Colorear fila en verde brillante
+                        dgvGrilla.Rows[intFilaSelecc].DefaultCellStyle.BackColor =
+                            Color.FromArgb(144, 238, 144);
+
+                        MessageBox.Show(
+                            "✓ Factura emitida correctamente.\n\n" + res.Mensaje,
+                            "Factura Electrónica AFIP",
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show(
+                            "✗ Error al emitir la factura:\n\n" + res.Mensaje,
+                            "Error AFIP", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+                finally
+                {
+                    Cursor = Cursors.Default;
+                }
+            }
         }
 
         private void chkRevisado_CheckedChanged(object sender, EventArgs e)
@@ -554,7 +652,7 @@ namespace CapaPresentacion
             //    m.MenuItems.Add(new MenuItem("Pegar"));
 
             //    int currentMouseOverRow = dgvGrilla.HitTest(e.X, e.Y).RowIndex;
-                
+
             //    m.Show(dgvGrilla, new Point(e.X, e.Y));
 
             //}

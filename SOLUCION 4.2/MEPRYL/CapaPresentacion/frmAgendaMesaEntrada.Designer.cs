@@ -37,6 +37,7 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel3 = new System.Windows.Forms.Panel();
             this.panel6 = new System.Windows.Forms.Panel();
+            this.btnEmitirFactura = new System.Windows.Forms.Button();
             this.chkRevisado = new System.Windows.Forms.CheckBox();
             this.label11 = new System.Windows.Forms.Label();
             this.panel5 = new System.Windows.Forms.Panel();
@@ -130,10 +131,26 @@
             // 
             this.panel6.Controls.Add(this.chkRevisado);
             this.panel6.Controls.Add(this.label11);
+            this.panel6.Controls.Add(this.btnEmitirFactura);
             this.panel6.Location = new System.Drawing.Point(17, 5);
             this.panel6.Name = "panel6";
-            this.panel6.Size = new System.Drawing.Size(79, 87);
+            this.panel6.Size = new System.Drawing.Size(185, 87);
             this.panel6.TabIndex = 321;
+            // 
+            // btnEmitirFactura
+            // 
+            this.btnEmitirFactura.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(150)))), ((int)(((byte)(64)))));
+            this.btnEmitirFactura.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnEmitirFactura.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold);
+            this.btnEmitirFactura.ForeColor = System.Drawing.Color.White;
+            this.btnEmitirFactura.Location = new System.Drawing.Point(90, 5);
+            this.btnEmitirFactura.Name = "btnEmitirFactura";
+            this.btnEmitirFactura.Size = new System.Drawing.Size(90, 56);
+            this.btnEmitirFactura.TabIndex = 323;
+            this.btnEmitirFactura.Text = "Cobrar\nFactura";
+            this.btnEmitirFactura.UseVisualStyleBackColor = false;
+            this.btnEmitirFactura.Click += new System.EventHandler(this.btnEmitirFactura_Click);
+            //
             // 
             // chkRevisado
             // 
@@ -626,5 +643,6 @@
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Panel panel6;
         private System.Windows.Forms.CheckBox chkRevisado;
+        private System.Windows.Forms.Button btnEmitirFactura;
     }
 }

@@ -109,6 +109,9 @@ namespace CapaPresentacion
         // Filtrar grilla por subtipo
         private void cboSubtipo_SelectionChangeCommitted(object sender, EventArgs e)
         {
+            // En modo edición no filtrar la grilla: el combo es solo para seleccionar el subtipo a guardar
+            if (edicion == ModoEdicion.AGREGANDO || edicion == ModoEdicion.MODIFICANDO) return;
+
             if (cboSubtipo.SelectedIndex != -1 && cboSubtipo.SelectedValue != null)
             {
                 string idSubtipo = cboSubtipo.SelectedValue.ToString();
@@ -1489,9 +1492,17 @@ namespace CapaPresentacion
 
                 if (dt.Rows.Count > 0)
                 {
-                    for (int i = 0; i < dt.Rows.Count; i++)
+                    ignorarEventoMotivo = true;
+                    try
                     {
-                        cboMotivo.Text = dt.Rows[i][1].ToString();
+                        for (int i = 0; i < dt.Rows.Count; i++)
+                        {
+                            cboMotivo.Text = dt.Rows[i][1].ToString();
+                        }
+                    }
+                    finally
+                    {
+                        ignorarEventoMotivo = false;
                     }
                 }
             }

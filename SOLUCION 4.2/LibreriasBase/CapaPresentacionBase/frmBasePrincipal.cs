@@ -379,6 +379,7 @@ namespace CapaPresentacionBase
             rbpExpLaboral.Visible = false;
             rbpMesaEntradas.Visible = false;
             rbpHistoricoMesa.Visible = false;
+            rbpFacturacionElectronica.Visible = false;
             //
             blnPrimerInicio = false;
         }
@@ -583,6 +584,16 @@ namespace CapaPresentacionBase
         }
 
         protected virtual void bbiConsultaSQL_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+
+        }
+
+        protected virtual void facturacionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        protected virtual void bbiFacturacionElectronica_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
 
         }
@@ -911,6 +922,12 @@ namespace CapaPresentacionBase
             rbpConfiguracionLaboral.Visible = true;
             rbpConfiguracionGeneral.Visible = true;// false
             rbpConfiguracionPreventiva.Visible = true;// false 
+            minimizarRibbon(false);
+        }
+
+        public void MostrarPestanaFacturacion()
+        {
+            rbpFacturacionElectronica.Visible = true;
             minimizarRibbon(false);
         }
 

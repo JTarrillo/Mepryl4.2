@@ -59,7 +59,7 @@ namespace CapaNegocioMepryl
         ///   4. Llama a AFIP (WSAA + WSFE).
         ///   5. Guarda el CAE o marca como rechazado.
         /// </summary>
-        /// <param name="idConsulta">ID de la consulta médica a facturar</param>
+        /// <param name="idTurno">ID del turno a facturar. Guid.Empty para emisión manual sin turno.</param>
         /// <param name="tipoComprobante">1=FactA, 6=FactB, 11=FactC</param>
         /// <param name="cuitReceptor">CUIT del paciente/empresa. "0" para consumidor final.</param>
         /// <param name="nombreReceptor">Razón social o nombre del receptor</param>
@@ -67,15 +67,21 @@ namespace CapaNegocioMepryl
         /// <param name="importeTotal">Total del comprobante en pesos</param>
         /// <param name="alicuotaIVA">Porcentaje de IVA: 21, 10.5 o 0</param>
         /// <param name="concepto">1=Productos, 2=Servicios (prestaciones médicas), 3=Ambos</param>
+        /// <param name="tipoTF">FACTURA C | NOTA DE CREDITO C | NOTA DE DEBITO C</param>
+        /// <param name="nroAsociado">Para NC/ND: nro de la factura original. 0 si no aplica.</param>
+        /// <param name="medioPago">EFECTIVO | TARJETA_CREDITO | TARJETA_DEBITO | MERCADO_PAGO | TRANSFERENCIA</param>
         public Entidades.Resultado EmitirFactura(
-            Guid    idConsulta,
+            Guid    idTurno,
             int     tipoComprobante,
             string  cuitReceptor,
             string  nombreReceptor,
             string  condicionIVAReceptor,
             decimal importeTotal,
-            decimal alicuotaIVA = 21m,
-            int     concepto    = 2)
+            decimal alicuotaIVA    = 21m,
+            int     concepto       = 2,
+            string  tipoTF         = "FACTURA C",
+            long    nroAsociado    = 0,
+            string  medioPago      = "EFECTIVO")
         {
             var resultado = new Entidades.Resultado();
             try
@@ -89,56 +95,42 @@ namespace CapaNegocioMepryl
                     return resultado;
                 }
 
-                DataRow cfg       = config.Rows[0];
-                string  cuitEmisor  = cfg["cuitEmisor"].ToString();
-                int     puntoVenta  = Convert.ToInt32(cfg["puntoVenta"]);
-                char    ambiente    = cfg["ambiente"].ToString()[0];
-                string  rutaCert    = cfg["rutaCertificado"].ToString();
-                string  passCert    = cfg["passwordCert"].ToString();
+                DataRow cfg = config.Rows[0];
+                string userToken = cfg["tfUserToken"].ToString();
+                string apiToken  = cfg["tfApiToken"].ToString();
+                string apiKey    = cfg["tfApiKey"].ToString();
+                int    puntoVenta = Convert.ToInt32(cfg["puntoVenta"]);
 
-                // 2. Calcular importe IVA
-                decimal coefIVA  = alicuotaIVA / 100m;
-                decimal impNeto  = tipoComprobante == 11
-                    ? importeTotal              // Factura C: no discrimina IVA
-                    : Math.Round(importeTotal / (1 + coefIVA), 2);
-                decimal impIVA   = tipoComprobante == 11
-                    ? 0m
-                    : Math.Round(importeTotal - impNeto, 2);
-
-                // Alícuota IVA para WSFE (ID interno AFIP)
-                int alicuotaId = alicuotaIVA == 21m ? 5
-                               : alicuotaIVA == 10.5m ? 4
-                               : 3; // 0%
-
-                // 3. Obtener próximo nro de comprobante
-                long ultimoLocal = _datos.ObtenerUltimoNroComprobante(tipoComprobante, puntoVenta);
-
-                // Verificar contra AFIP (evita desfase)
-                var wsAfip     = new ServiciosAfip(ambiente, rutaCert, passCert);
-                long ultimoAfip = wsAfip.ConsultarUltimoNroAutorizado(cuitEmisor, puntoVenta, tipoComprobante);
-
-                long proximoNro = Math.Max(ultimoLocal, ultimoAfip) + 1;
-
-                // 4. Insertar en BD como "Pendiente"
+                // 2. TusFacturas: siempre Factura C (Monotributo), sin IVA discriminado
+                // El número es asignado automáticamente por TusFacturas (nro=0)
                 Guid idFactura = _datos.InsertarComprobante(
-                    idConsulta, tipoComprobante, puntoVenta, proximoNro,
+                    idTurno, 11, puntoVenta, 0,
                     cuitReceptor, nombreReceptor, condicionIVAReceptor,
-                    impNeto, impIVA, importeTotal,
+                    importeTotal, 0m, importeTotal,
                     concepto, "");
 
-                // 5. Llamar a WSFE
-                RespuestaCAE respuesta = wsAfip.AutorizarComprobante(
-                    cuitEmisor, puntoVenta, tipoComprobante,
-                    proximoNro, concepto,
-                    cuitReceptor, importeTotal, impIVA, alicuotaId);
+                // 3. Llamar a TusFacturas API
+                var ws = new ServiciosAfip(userToken, apiToken, apiKey, puntoVenta);
+                RespuestaCAE respuesta = ws.EmitirFacturaC(
+                    "Prestación médica",
+                    importeTotal,
+                    nombreReceptor,
+                    cuitReceptor,
+                    tipoTF,
+                    nroAsociado,
+                    medioPago);
 
-                // 6. Guardar resultado
+                // 4. Guardar resultado
                 if (respuesta.Autorizado && !string.IsNullOrEmpty(respuesta.CAE))
                 {
-                    _datos.ActualizarConCAE(idFactura, respuesta.CAE, respuesta.FechaVencimientoCAE);
+                    long nroAsignado = ParsearNroComprobante(respuesta.NroComprobante);
+                    _datos.ActualizarConCAE(idFactura, respuesta.CAE, respuesta.FechaVencimientoCAE, nroAsignado, respuesta.PdfUrl);
                     resultado.Modo      = 1;
-                    resultado.Mensaje   = $"Factura autorizada. CAE: {respuesta.CAE} — Vence: {respuesta.FechaVencimientoCAE:dd/MM/yyyy}";
+                    resultado.Mensaje   = $"{tipoTF} autorizada. CAE: {respuesta.CAE} — Vence: {respuesta.FechaVencimientoCAE:dd/MM/yyyy} — Nro: {respuesta.NroComprobante}";
                     resultado.IdRetorno = idFactura;
+                    // Pasar URL del PDF al formulario via Tag
+                    if (!string.IsNullOrEmpty(respuesta.PdfUrl))
+                        resultado.Mensaje += $" — PDF:{respuesta.PdfUrl}";
                 }
                 else
                 {
@@ -147,7 +139,7 @@ namespace CapaNegocioMepryl
                         : respuesta.Errores;
                     _datos.MarcarComoRechazado(idFactura, motivo);
                     resultado.Modo    = 0;
-                    resultado.Mensaje = $"AFIP rechazó el comprobante: {motivo}";
+                    resultado.Mensaje = "TusFacturas rechazó el comprobante: " + motivo;
                 }
             }
             catch (Exception ex)
@@ -165,6 +157,11 @@ namespace CapaNegocioMepryl
         public DataTable ObtenerComprobantesPorConsulta(Guid idConsulta)
         {
             return _datos.ObtenerComprobantesPorConsulta(idConsulta);
+        }
+
+        public DataTable ObtenerComprobantesPorTurno(Guid idTurno)
+        {
+            return _datos.ObtenerComprobantesPorTurno(idTurno);
         }
 
         public DataTable ListarComprobantesDia()
@@ -214,23 +211,93 @@ namespace CapaNegocioMepryl
                     return resultado;
                 }
 
-                DataRow cfg    = config.Rows[0];
-                char ambiente  = cfg["ambiente"].ToString()[0];
-                string rutaCert = cfg["rutaCertificado"].ToString();
-                string passCert = cfg["passwordCert"].ToString();
+                DataRow cfg      = config.Rows[0];
+                string userToken = cfg["tfUserToken"].ToString();
+                string apiToken  = cfg["tfApiToken"].ToString();
+                string apiKey    = cfg["tfApiKey"].ToString();
+                int    puntoVenta = Convert.ToInt32(cfg["puntoVenta"]);
 
-                var ws     = new ServiciosAfip(ambiente, rutaCert, passCert);
-                var ticket = ws.ObtenerTicketAcceso();
+                if (string.IsNullOrEmpty(userToken) || string.IsNullOrEmpty(apiToken))
+                {
+                    resultado.Modo    = -1;
+                    resultado.Mensaje = "Tokens TusFacturas no configurados (tfUserToken / tfApiToken vacíos).";
+                    return resultado;
+                }
 
                 resultado.Modo    = 1;
-                resultado.Mensaje = $"Conexión OK. Token válido hasta: {ticket.Expiracion:dd/MM/yyyy HH:mm}";
+                resultado.Mensaje = $"Configuración TusFacturas OK. PDV: {puntoVenta.ToString().PadLeft(5,'0')} | ApiKey: {apiKey}";
             }
             catch (Exception ex)
             {
                 resultado.Modo    = -1;
-                resultado.Mensaje = "Error de conexión AFIP: " + ex.Message;
+                resultado.Mensaje = "Error al verificar configuración: " + ex.Message;
             }
             return resultado;
+        }
+
+        public Entidades.Resultado GuardarTokensTusFacturas(string apiKey, string apiToken, string userToken)
+        {
+            return _datos.GuardarTokensTusFacturas(apiKey, apiToken, userToken);
+        }
+
+        /// <summary>
+        /// Anula un comprobante en TusFacturas y lo marca como Anulado en la BD.
+        /// </summary>
+        public Entidades.Resultado AnularComprobante(Guid idFactura, long nroComprobante)
+        {
+            var resultado = new Entidades.Resultado();
+            try
+            {
+                DataTable config = _datos.ObtenerConfiguracion();
+                if (config.Rows.Count == 0)
+                {
+                    resultado.Modo    = -1;
+                    resultado.Mensaje = "Sin configuración AFIP.";
+                    return resultado;
+                }
+                DataRow cfg      = config.Rows[0];
+                string userToken = cfg["tfUserToken"].ToString();
+                string apiToken  = cfg["tfApiToken"].ToString();
+                string apiKey    = cfg["tfApiKey"].ToString();
+                int    puntoVenta = Convert.ToInt32(cfg["puntoVenta"]);
+
+                // Leer el tipo de comprobante real desde la BD
+                string tipoTF = "FACTURA C";
+                DataTable dtFact = _datos.ObtenerComprobantePorId(idFactura);
+                if (dtFact.Rows.Count > 0 && dtFact.Columns.Contains("tipoTF"))
+                    tipoTF = dtFact.Rows[0]["tipoTF"]?.ToString() ?? "FACTURA C";
+
+                var ws        = new ServiciosAfip(userToken, apiToken, apiKey, puntoVenta);
+                var respuesta = ws.AnularComprobante(nroComprobante, tipoTF);
+
+                if (respuesta.Autorizado)
+                {
+                    _datos.AnularComprobante(idFactura);
+                    resultado.Modo    = 1;
+                    resultado.Mensaje = "Comprobante anulado correctamente en AFIP y en el sistema.";
+                }
+                else
+                {
+                    resultado.Modo    = 0;
+                    resultado.Mensaje = "AFIP rechazó la anulación: " + (respuesta.Errores ?? respuesta.Observaciones);
+                }
+            }
+            catch (Exception ex)
+            {
+                resultado.Modo    = -1;
+                resultado.Mensaje = "Error al anular: " + ex.Message;
+            }
+            return resultado;
+        }
+
+        // Convierte "00001-00000001" → 1L
+        private long ParsearNroComprobante(string nroStr)
+        {
+            if (string.IsNullOrEmpty(nroStr)) return 0;
+            string[] partes = nroStr.Split('-');
+            if (partes.Length < 2) return 0;
+            long nro;
+            return long.TryParse(partes[1], out nro) ? nro : 0;
         }
     }
 }

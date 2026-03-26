@@ -106,6 +106,7 @@
     <Compile Include="ConsolidarReportes.cs" />
     <Compile Include="Empresa.cs" />
     <Compile Include="EnviadorMail.cs" />
+    <Compile Include="FacturacionElectronica.cs" />
     <Compile Include="HistoriaClinica.cs" />
     <Compile Include="Laboral.cs" />
     <Compile Include="LigaMantenimiento.cs" />
@@ -120,6 +121,7 @@
     <Compile Include="Profesional.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reportes.cs" />
+    <Compile Include="ServiciosAfip.cs" />
     <Compile Include="TipoExamen.cs" />
     <Compile Include="Turno.cs" />
     <Compile Include="UbicacionFotos.cs" />

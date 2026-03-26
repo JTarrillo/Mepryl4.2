@@ -6,7 +6,8 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using Comunes;
-using Excel = Microsoft.Office.Interop.Excel;
+using OfficeOpenXml;
+using OfficeOpenXml.Style;
 using System.Data.OleDb;
 using System.Threading;
 
@@ -33,8 +34,8 @@ namespace CapaPresentacion
             string month = mes.ToString();
             if (mes <= 9) { month = "0" + mes.ToString(); }
             string anio = tpHasta.Value.Year.ToString();
-            if (modo == 1) { saveFileDialog.Filter = "Excel (*.xls)|*.xls"; saveFileDialog.FileName = "EXAMINADOS AL " + day + "-" + month + "-" + anio; }
-            if (modo == 2) { saveFileDialog.Filter = "Excel (*.xls)|*.xls"; saveFileDialog.FileName = "LAFIJ AL " + day + "-" + month + "-" + anio; }
+            if (modo == 1) { saveFileDialog.Filter = "Excel (*.xlsx)|*.xlsx"; saveFileDialog.FileName = "EXAMINADOS AL " + day + "-" + month + "-" + anio; }
+            if (modo == 2) { saveFileDialog.Filter = "Excel (*.xlsx)|*.xlsx"; saveFileDialog.FileName = "LAFIJ AL " + day + "-" + month + "-" + anio; }
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
                 if (modo == 1) { tbExcel.Text = saveFileDialog.FileName; }
@@ -80,108 +81,65 @@ namespace CapaPresentacion
                     MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
         }
 
-        private void setearColorYBorde(Excel.Range rng)
-        {
-            //rng.Font.Bold = true;
-            //rng.Interior.Color = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.PowderBlue);
-            //rng.BorderAround(Excel.XlLineStyle.xlContinuous, Excel.XlBorderWeight.xlMedium,
-            //Excel.XlColorIndex.xlColorIndexAutomatic, Excel.XlColorIndex.xlColorIndexAutomatic);
-            //rng.HorizontalAlignment = Excel.XlHAlign.xlHAlignCenter;            
-        }
-
         private void guardarExportacionExcel()
         {
-            Microsoft.Office.Interop.Excel.Application excel = new Microsoft.Office.Interop.Excel.Application();
-            Microsoft.Office.Interop.Excel.Workbook excelworkBook;
-            Microsoft.Office.Interop.Excel.Worksheet excelSheet;
-
-            lblTarea.Visible = true;
-            excel.Visible = false;
-            excel.DisplayAlerts = false;
-            excel.SheetsInNewWorkbook = 1;
-            excelworkBook = (Microsoft.Office.Interop.Excel.Workbook)(excel.Workbooks.Add(Type.Missing));
-            excelSheet = (Microsoft.Office.Interop.Excel.Worksheet)excelworkBook.ActiveSheet;
-            excelSheet.Name = "Hoja 1";
-                        
-
-            excelSheet.Cells[1, 1] = "LIGA";
-            excelSheet.Cells[1, 2] = "CLUB";
-            excelSheet.Cells[1, 3] = "JUGADOR";
-            excelSheet.Cells[1, 4] = "CATEGORIA";
-            excelSheet.Cells[1, 5] = "NOMBRE";
-            excelSheet.Cells[1, 6] = "DICTAMEN";
-            excelSheet.Cells[1, 7] = "FECHA";
-
-
-            setearColorYBorde(excel.get_Range("A1", "A1"));
-            setearColorYBorde(excel.get_Range("B1", "B1"));
-            setearColorYBorde(excel.get_Range("C1", "C1"));
-            setearColorYBorde(excel.get_Range("D1", "D1"));
-            setearColorYBorde(excel.get_Range("E1", "E1"));
-            setearColorYBorde(excel.get_Range("F1", "F1"));
-            setearColorYBorde(excel.get_Range("G1", "G1"));
-
-
-
-            DataTable dt = cargarTablasExcel();
-
-            DataView dv = dt.DefaultView;
-            dv.Sort = "LIGA asc, CLUB asc, CATEGORIA asc, JUGADOR asc";
-            DataTable sortedDT = dv.ToTable();
-
-            progressBar.Visible = true;
-            progressBar.Minimum = 1;
-            progressBar.Maximum = dt.Rows.Count;
-            progressBar.Step = 1;
-
-            int i = 1;
-            int j = 0;
-            string strFecha = "";
-            foreach (DataRow dr in sortedDT.Rows)
-            {                
-                excelSheet.Cells[i + 1, j + 1] = dr.ItemArray[0].ToString();
-                j++;
-                excelSheet.Cells[i + 1, j + 1] = dr.ItemArray[1].ToString();
-                j++;
-                excelSheet.Cells[i + 1, j + 1] = dr.ItemArray[2].ToString();
-                j++;
-                excelSheet.Cells[i + 1, j + 1] = dr.ItemArray[3].ToString();
-                j++;
-                excelSheet.Cells[i + 1, j + 1] = dr.ItemArray[4].ToString();
-                j++;
-                excelSheet.Cells[i + 1, j + 1] = dr.ItemArray[5].ToString();
-                j++;
-                strFecha = "'" + dr.ItemArray[6].ToString();
-                excelSheet.Cells[i + 1, j + 1] = strFecha;
-
-                if (dr.ItemArray[5].ToString() == "APTITUD PENDIENTE" ||
-                dr.ItemArray[5].ToString() == "APTO CONDICIONAL VENCIDO"
-                    || dr.ItemArray[5].ToString() == "NO EFECTUADO"
-                    || dr.ItemArray[5].ToString() == "NO RENOVADO")
+            try
+            {
+                lblTarea.Visible = true;
+                string[] headers = { "LIGA", "CLUB", "JUGADOR", "CATEGORIA", "NOMBRE", "DICTAMEN", "FECHA" };
+                DataTable dt = cargarTablasExcel();
+                DataView dv = dt.DefaultView;
+                dv.Sort = "LIGA asc, CLUB asc, CATEGORIA asc, JUGADOR asc";
+                DataTable sortedDT = dv.ToTable();
+                progressBar.Visible = true;
+                progressBar.Minimum = 1;
+                progressBar.Maximum = sortedDT.Rows.Count;
+                progressBar.Step = 1;
+                using (var package = new ExcelPackage())
                 {
-                    setearColorRojoFuente(excel.get_Range("A" + (i + 1).ToString(), "G" + (i + 1).ToString()));
+                    var sheet = package.Workbook.Worksheets.Add("Hoja 1");
+                    for (int col = 0; col < headers.Length; col++)
+                        sheet.Cells[1, col + 1].Value = headers[col];
+                    int row = 2;
+                    foreach (DataRow dr in sortedDT.Rows)
+                    {
+                        sheet.Cells[row, 1].Value = dr.ItemArray[0];
+                        sheet.Cells[row, 2].Value = dr.ItemArray[1];
+                        sheet.Cells[row, 3].Value = long.TryParse(dr.ItemArray[2].ToString(), out long dniVal) ? (object)dniVal : dr.ItemArray[2];
+                        sheet.Cells[row, 4].Value = int.TryParse(dr.ItemArray[3].ToString(), out int catVal) ? (object)catVal : dr.ItemArray[3];
+                        sheet.Cells[row, 5].Value = dr.ItemArray[4];
+                        sheet.Cells[row, 6].Value = dr.ItemArray[5];
+                        if (DateTime.TryParse(dr.ItemArray[6].ToString(), out DateTime fechaVal))
+                        {
+                            sheet.Cells[row, 7].Value = fechaVal;
+                            sheet.Cells[row, 7].Style.Numberformat.Format = "dd/mm/yyyy";
+                        }
+                        else { sheet.Cells[row, 7].Value = dr.ItemArray[6]; }
+                        string dictamen = dr.ItemArray[5].ToString();
+                        if (dictamen == "APTITUD PENDIENTE" || dictamen == "APTO CONDICIONAL VENCIDO"
+                            || dictamen == "NO EFECTUADO" || dictamen == "NO RENOVADO")
+                        {
+                            sheet.Cells[row, 1, row, 7].Style.Font.Color.SetColor(System.Drawing.Color.Red);
+                        }
+                        row++;
+                        progressBar.PerformStep();
+                    }
+                    if (sheet.Dimension != null)
+                        sheet.Cells[sheet.Dimension.Address].AutoFitColumns();
+                    package.SaveAs(new System.IO.FileInfo(tbExcel.Text));
                 }
-
-                i++;
-                progressBar.PerformStep();
-                j = 0;
+                progressBar.Visible = false;
+                lblTarea.Visible = false;
+                MessageBox.Show("La exportación se a guardado correctamente: \n" + tbExcel.Text, "Exportar", MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+                this.Close();
             }
-            excel.get_Range("A1", "G1").EntireColumn.AutoFit();
-            excelworkBook.SaveAs(tbExcel.Text, Excel.XlFileFormat.xlAddIn,
-            Type.Missing, Type.Missing, Type.Missing, Type.Missing, Excel.XlSaveAsAccessMode.xlExclusive,
-            Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
-            excel.Quit();
-            progressBar.Visible = false;
-            lblTarea.Visible = false;
-
-            MessageBox.Show("La exportación se a guardado correctamente: \n" + tbExcel.Text, "Exportar", MessageBoxButtons.OK,
-                MessageBoxIcon.Information);
-            this.Close();
-        }
-
-        private void setearColorRojoFuente(Excel.Range rng)
-        {
-            rng.Font.Color = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.Red);
+            catch (Exception ex)
+            {
+                progressBar.Visible = false;
+                lblTarea.Visible = false;
+                MessageBox.Show("Error al exportar: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private DataTable cargarTablasExcel()
@@ -249,86 +207,65 @@ namespace CapaPresentacion
 
         private void guardarExportacionLafij()
         {
-            Microsoft.Office.Interop.Excel.Application excel = new Microsoft.Office.Interop.Excel.Application();
-            Microsoft.Office.Interop.Excel.Workbook excelworkBook;
-            Microsoft.Office.Interop.Excel.Worksheet excelSheet;
-
-            lblTarea.Visible = true;
-            
-            excel.Visible = false;
-            excel.DisplayAlerts = false;
-            excel.SheetsInNewWorkbook = 1;
-            excelworkBook = (Microsoft.Office.Interop.Excel.Workbook)(excel.Workbooks.Add(Type.Missing));
-            excelSheet = (Microsoft.Office.Interop.Excel.Worksheet)excelworkBook.ActiveSheet;
-            excelSheet.Name = "Hoja 1";
-
-
-            excelSheet.Cells[1, 1] = "LIGA";
-            excelSheet.Cells[1, 2] = "CLUB";
-            excelSheet.Cells[1, 3] = "CATEGORIA";
-            excelSheet.Cells[1, 4] = "APELLIDO";
-            excelSheet.Cells[1, 5] = "NOMBRE";
-            excelSheet.Cells[1, 6] = "FECHA DE VENC.";
-            excelSheet.Cells[1, 7] = "DNI";
-            
-            setearColorYBorde(excel.get_Range("A1", "G1"));
-            
-
-            DataTable dt = cargarTablaLafij();
-
-            DataView dv = dt.DefaultView;
-            dv.Sort = "LIGA asc, CLUB asc";
-            DataTable sortedDT = dv.ToTable();
-
-            progressBar.Visible = true;
-            progressBar.Minimum = 1;
-            progressBar.Maximum = dt.Rows.Count;
-            progressBar.Step = 1;
-
-            int i = 1;
-            int j = 0;
-            string strFecha = "";
-            foreach (DataRow dr in sortedDT.Rows)
+            try
             {
-                if (dr.ItemArray[7].ToString() == "APTITUD PENDIENTE" 
-                    || dr.ItemArray[7].ToString() == "APTO CONDICIONAL VENCIDO"
-                    || dr.ItemArray[7].ToString() == "NO EFECTUADO"
-                    || dr.ItemArray[7].ToString() == "APTO CLINICO"
-                    || dr.ItemArray[7].ToString() == "NO RENOVADO")
-                { }
-                else
+                lblTarea.Visible = true;
+                string[] headers = { "LIGA", "CLUB", "CATEGORIA", "APELLIDO", "NOMBRE", "FECHA DE VENC.", "DNI" };
+                DataTable dt = cargarTablaLafij();
+                DataView dv = dt.DefaultView;
+                dv.Sort = "LIGA asc, CLUB asc";
+                DataTable sortedDT = dv.ToTable();
+                progressBar.Visible = true;
+                progressBar.Minimum = 1;
+                progressBar.Maximum = dt.Rows.Count;
+                progressBar.Step = 1;
+                using (var package = new ExcelPackage())
                 {
-                    excelSheet.Cells[i + 1, j + 1] = dr.ItemArray[0].ToString();
-                    j++;
-                    excelSheet.Cells[i + 1, j + 1] = dr.ItemArray[1].ToString();
-                    j++;
-                    excelSheet.Cells[i + 1, j + 1] = dr.ItemArray[2].ToString();
-                    j++;
-                    excelSheet.Cells[i + 1, j + 1] = dr.ItemArray[3].ToString();
-                    j++;
-                    excelSheet.Cells[i + 1, j + 1] = dr.ItemArray[4].ToString();
-                    j++;
-                    strFecha = "'" + dr.ItemArray[5].ToString();
-                    excelSheet.Cells[i + 1, j + 1] = strFecha;
-                    j++;
-                    excelSheet.Cells[i + 1, j + 1] = dr.ItemArray[6].ToString();
-
-                    i++;
-                    progressBar.PerformStep();
-                    j = 0;
+                    var sheet = package.Workbook.Worksheets.Add("Hoja 1");
+                    for (int col = 0; col < headers.Length; col++)
+                        sheet.Cells[1, col + 1].Value = headers[col];
+                    int row = 2;
+                    foreach (DataRow dr in sortedDT.Rows)
+                    {
+                        string dictamen = dr.ItemArray[7].ToString();
+                        if (dictamen == "APTITUD PENDIENTE" || dictamen == "APTO CONDICIONAL VENCIDO"
+                            || dictamen == "NO EFECTUADO" || dictamen == "APTO CLINICO"
+                            || dictamen == "NO RENOVADO")
+                        {
+                            progressBar.PerformStep();
+                            continue;
+                        }
+                        sheet.Cells[row, 1].Value = dr.ItemArray[0];
+                        sheet.Cells[row, 2].Value = dr.ItemArray[1];
+                        sheet.Cells[row, 3].Value = int.TryParse(dr.ItemArray[2].ToString(), out int catLafij) ? (object)catLafij : dr.ItemArray[2];
+                        sheet.Cells[row, 4].Value = dr.ItemArray[3];
+                        sheet.Cells[row, 5].Value = dr.ItemArray[4];
+                        if (DateTime.TryParse(dr.ItemArray[5].ToString(), out DateTime vtoVal))
+                        {
+                            sheet.Cells[row, 6].Value = vtoVal;
+                            sheet.Cells[row, 6].Style.Numberformat.Format = "dd/mm/yyyy";
+                        }
+                        else { sheet.Cells[row, 6].Value = dr.ItemArray[5]; }
+                        sheet.Cells[row, 7].Value = long.TryParse(dr.ItemArray[6].ToString(), out long dniLafij) ? (object)dniLafij : dr.ItemArray[6];
+                        row++;
+                        progressBar.PerformStep();
+                    }
+                    if (sheet.Dimension != null)
+                        sheet.Cells[sheet.Dimension.Address].AutoFitColumns();
+                    package.SaveAs(new System.IO.FileInfo(tbLafij.Text));
                 }
+                progressBar.Visible = false;
+                lblTarea.Visible = false;
+                MessageBox.Show("La exportación se a generado correctamente en: \n" + tbLafij.Text, "Exportar", MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+                this.Close();
             }
-            excel.get_Range("A1", "G1").EntireColumn.AutoFit();
-            excelworkBook.SaveAs(tbLafij.Text, Excel.XlFileFormat.xlAddIn,
-            Type.Missing, Type.Missing, Type.Missing, Type.Missing, Excel.XlSaveAsAccessMode.xlExclusive,
-            Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
-            excel.Quit();
-            progressBar.Visible = false;
-            lblTarea.Visible = false;
-
-            MessageBox.Show("La exportación se a generado correctamente en: \n" + tbLafij.Text, "Exportar", MessageBoxButtons.OK,
-                MessageBoxIcon.Information);
-            this.Close();
+            catch (Exception ex)
+            {
+                progressBar.Visible = false;
+                lblTarea.Visible = false;
+                MessageBox.Show("Error al exportar: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private DataTable cargarTablaLafij()

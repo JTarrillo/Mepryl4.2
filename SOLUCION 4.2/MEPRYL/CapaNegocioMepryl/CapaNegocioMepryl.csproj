@@ -135,6 +135,7 @@
     <Compile Include="EnviarCorreoConOutlook.cs" />
     <Compile Include="Examen.cs" />
     <Compile Include="ExamenPreventiva.cs" />
+    <Compile Include="FacturacionElectronica.cs" />
     <Compile Include="LigaMantenimiento.cs" />
     <Compile Include="ListaPrecios.cs" />
     <Compile Include="LocalidadesYPrestaciones.cs" />

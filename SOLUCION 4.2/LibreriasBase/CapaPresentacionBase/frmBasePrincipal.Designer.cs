@@ -105,6 +105,7 @@ namespace CapaPresentacionBase
             this.toolStripMenuItem20 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem21 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem22 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem23 = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.configuracionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.configBasicaDelSistemaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -178,6 +179,9 @@ namespace CapaPresentacionBase
             this.popupMenu1 = new DevExpress.XtraBars.PopupMenu(this.components);
             this.bbiTransferenciaLegajos = new DevExpress.XtraBars.BarButtonItem();
             this.bbiConfiguracionesPrestaciones2 = new DevExpress.XtraBars.BarButtonItem();
+            this.bbiFacturacionElectronica = new DevExpress.XtraBars.BarButtonItem();
+            this.rbpFacturacionElectronica = new DevExpress.XtraBars.Ribbon.RibbonPage();
+            this.rpgFacturacionGrp = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
             this.rbpPacientePre = new DevExpress.XtraBars.Ribbon.RibbonPage();
             this.ribbonPageGroup12 = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
             this.ribbonPageGroup1 = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
@@ -623,7 +627,8 @@ namespace CapaPresentacionBase
             this.toolStripMenuItem17,
             this.toolStripMenuItem18,
             this.toolStripMenuItem21,
-            this.toolStripMenuItem22});
+            this.toolStripMenuItem22,
+            this.toolStripMenuItem23});
             this.menuStrip2.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.VerticalStackWithOverflow;
             this.menuStrip2.Location = new System.Drawing.Point(152, 0);
             this.menuStrip2.Name = "menuStrip2";
@@ -868,6 +873,17 @@ namespace CapaPresentacionBase
             this.toolStripMenuItem22.Size = new System.Drawing.Size(43, 45);
             this.toolStripMenuItem22.ToolTipText = "Audiometría";
             this.toolStripMenuItem22.Click += new System.EventHandler(this.informeAudiometriaToolStripMenuItem_Click);
+            // 
+            // toolStripMenuItem23
+            // 
+            this.toolStripMenuItem23.Image = ((System.Drawing.Image)(resources.GetObject("facturacionToolStripMenuItem.Image")));
+            this.toolStripMenuItem23.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.toolStripMenuItem23.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.toolStripMenuItem23.Name = "toolStripMenuItem23";
+            this.toolStripMenuItem23.Padding = new System.Windows.Forms.Padding(0, 0, 4, 5);
+            this.toolStripMenuItem23.Size = new System.Drawing.Size(43, 45);
+            this.toolStripMenuItem23.ToolTipText = "Facturación";
+            this.toolStripMenuItem23.Click += new System.EventHandler(this.facturacionToolStripMenuItem_Click);
             // 
             // menuStrip1
             // 
@@ -1135,6 +1151,7 @@ namespace CapaPresentacionBase
             this.facturacionToolStripMenuItem.Name = "facturacionToolStripMenuItem";
             this.facturacionToolStripMenuItem.Size = new System.Drawing.Size(142, 40);
             this.facturacionToolStripMenuItem.Text = "Facturacion";
+            this.facturacionToolStripMenuItem.Click += new System.EventHandler(this.facturacionToolStripMenuItem_Click);
             // 
             // navBarGroup1
             // 
@@ -1271,9 +1288,10 @@ namespace CapaPresentacionBase
             this.barButtonItem1,
             this.barButtonItem4,
             this.bbiTransferenciaLegajos,
-            this.bbiConfiguracionesPrestaciones2});
+            this.bbiConfiguracionesPrestaciones2,
+            this.bbiFacturacionElectronica});
             this.rbcControlMenu.Location = new System.Drawing.Point(0, 0);
-            this.rbcControlMenu.MaxItemId = 55;
+            this.rbcControlMenu.MaxItemId = 57;
             this.rbcControlMenu.Name = "rbcControlMenu";
             this.rbcControlMenu.Pages.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPage[] {
             this.rbpPacientePre,
@@ -1288,7 +1306,8 @@ namespace CapaPresentacionBase
             this.rbpExpPreventiva,
             this.rbpExpLaboral,
             this.rbpMesaEntradas,
-            this.rbpHistoricoMesa});
+            this.rbpHistoricoMesa,
+            this.rbpFacturacionElectronica});
             this.rbcControlMenu.RibbonStyle = DevExpress.XtraBars.Ribbon.RibbonControlStyle.Office2007;
             this.rbcControlMenu.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.True;
             this.rbcControlMenu.ShowExpandCollapseButton = DevExpress.Utils.DefaultBoolean.False;
@@ -1777,6 +1796,16 @@ namespace CapaPresentacionBase
             this.bbiConfiguracionesPrestaciones2.Name = "bbiConfiguracionesPrestaciones2";
             this.bbiConfiguracionesPrestaciones2.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.bbiConfiguracionesPrestaciones2_ItemClick);
             // 
+            // bbiFacturacionElectronica
+            // 
+            this.bbiFacturacionElectronica.Caption = "Facturaci\u00f3n\nElectr\u00f3nica";
+            this.bbiFacturacionElectronica.Id = 57;
+            this.bbiFacturacionElectronica.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("bbiConfigurarIva.ImageOptions.Image")));
+            this.bbiFacturacionElectronica.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("bbiConfigurarIva.ImageOptions.LargeImage")));
+            this.bbiFacturacionElectronica.LargeWidth = 72;
+            this.bbiFacturacionElectronica.Name = "bbiFacturacionElectronica";
+            this.bbiFacturacionElectronica.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.bbiFacturacionElectronica_ItemClick);
+            // 
             // rbpPacientePre
             // 
             this.rbpPacientePre.Groups.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPageGroup[] {
@@ -2069,6 +2098,22 @@ namespace CapaPresentacionBase
             this.ribbonPageGroupPrestaciones.Name = "ribbonPageGroupPrestaciones";
             this.ribbonPageGroupPrestaciones.ShowCaptionButton = false;
             // 
+            // rbpFacturacionElectronica
+            // 
+            this.rbpFacturacionElectronica.Groups.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPageGroup[] {
+            this.rpgFacturacionGrp});
+            this.rbpFacturacionElectronica.Image = ((System.Drawing.Image)(resources.GetObject("rbpConfiguracionGeneral.Image")));
+            this.rbpFacturacionElectronica.Name = "rbpFacturacionElectronica";
+            this.rbpFacturacionElectronica.Text = "Facturaci\u00f3n Electr\u00f3nica";
+            this.rbpFacturacionElectronica.Visible = false;
+            // 
+            // rpgFacturacionGrp
+            // 
+            this.rpgFacturacionGrp.ItemLinks.Add(this.bbiFacturacionElectronica);
+            this.rpgFacturacionGrp.Name = "rpgFacturacionGrp";
+            this.rpgFacturacionGrp.ShowCaptionButton = false;
+            this.rpgFacturacionGrp.Text = "Facturaci\u00f3n";
+            // 
             // ribbonPageGroup11
             // 
             this.ribbonPageGroup11.Name = "ribbonPageGroup11";
@@ -2300,6 +2345,7 @@ namespace CapaPresentacionBase
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem20;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem21;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem22;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem23;
         private DevExpress.XtraBars.Ribbon.RibbonPage rbpAgendaTurnos;
         public DevExpress.XtraBars.Ribbon.RibbonPage rbpTurnos;
         public DevExpress.XtraBars.Ribbon.RibbonControl rbcControlMenu;
@@ -2329,6 +2375,9 @@ namespace CapaPresentacionBase
         private DevExpress.XtraBars.PopupMenu popupMenu1;
         private DevExpress.XtraBars.BarButtonItem bbiTransferenciaLegajos;
         public DevExpress.XtraBars.BarButtonItem bbiConfiguracionesPrestaciones2;
+        public DevExpress.XtraBars.BarButtonItem bbiFacturacionElectronica;
+        public DevExpress.XtraBars.Ribbon.RibbonPage rbpFacturacionElectronica;
+        public DevExpress.XtraBars.Ribbon.RibbonPageGroup rpgFacturacionGrp;
         private System.Windows.Forms.ToolStripMenuItem facturacionToolStripMenuItem;
     }
 }

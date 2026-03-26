@@ -363,12 +363,6 @@
     <Compile Include="frmAgendaMesaEntrada2.Designer.cs">
       <DependentUpon>frmAgendaMesaEntrada2.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmAgendaMesaEntrada.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="frmAgendaMesaEntrada.Designer.cs">
-      <DependentUpon>frmAgendaMesaEntrada.cs</DependentUpon>
-    </Compile>
     <Compile Include="frmAgregaItemsExamenes.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -467,6 +461,9 @@
     </Compile>
     <Compile Include="frmConsultasSQL.Designer.cs">
       <DependentUpon>frmConsultasSQL.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmDialogoFactura.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="frmEdicionItemExamen.cs">
       <SubType>Form</SubType>
@@ -1254,6 +1251,12 @@
     <Compile Include="frmClub.Designer.cs">
       <DependentUpon>frmClub.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmFacturacionElectronica.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmFacturacionElectronica.Designer.cs">
+      <DependentUpon>frmFacturacionElectronica.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmHorario.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1351,9 +1354,6 @@
     <EmbeddedResource Include="frmAgendaMesaEntrada2.resx">
       <DependentUpon>frmAgendaMesaEntrada2.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmAgendaMesaEntrada.resx">
-      <DependentUpon>frmAgendaMesaEntrada.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="frmAgregaItemsExamenes.resx">
       <DependentUpon>frmAgregaItemsExamenes.cs</DependentUpon>
     </EmbeddedResource>
@@ -1417,6 +1417,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmExportacionesPreventiva.resx">
       <DependentUpon>frmExportacionesPreventiva.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmFacturacionElectronica.resx">
+      <DependentUpon>frmFacturacionElectronica.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmFacturacionPrestaciones.resx">
       <DependentUpon>frmFacturacionPrestaciones.cs</DependentUpon>
@@ -1861,8 +1864,6 @@
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="bin\Release\CapaPresentacion.dll.config" />
-    <None Include="bin\Release\Comunes.dll.config" />
     <None Include="ClassDiagram2.cd" />
     <None Include="ClassDiagram3.cd" />
     <None Include="dsAgenda.xsc">
@@ -2020,217 +2021,6 @@
     <None Include="Resources\CancelarSalir.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="bin\Release\ADODB.dll" />
-    <Content Include="bin\Release\AForge.Video.DirectShow.dll" />
-    <Content Include="bin\Release\AForge.Video.dll" />
-    <Content Include="bin\Release\AxInterop.MOZILLACONTROLLib.dll" />
-    <Content Include="bin\Release\AxShockwaveFlashObjects.dll" />
-    <Content Include="bin\Release\CapaDatos.dll" />
-    <Content Include="bin\Release\CapaDatos.pdb" />
-    <Content Include="bin\Release\CapaDatosBase.dll" />
-    <Content Include="bin\Release\CapaDatosBase.pdb" />
-    <Content Include="bin\Release\CapaDatosMepryl.dll" />
-    <Content Include="bin\Release\CapaDatosMepryl.pdb" />
-    <Content Include="bin\Release\CapaNegocio.dll" />
-    <Content Include="bin\Release\CapaNegocio.pdb" />
-    <Content Include="bin\Release\CapaNegocioBase.dll" />
-    <Content Include="bin\Release\CapaNegocioBase.pdb" />
-    <Content Include="bin\Release\CapaNegocioMepryl.dll" />
-    <Content Include="bin\Release\CapaNegocioMepryl.pdb" />
-    <Content Include="bin\Release\CapaPresentacion.dll" />
-    <Content Include="bin\Release\CapaPresentacion.pdb" />
-    <Content Include="bin\Release\CapaPresentacionBase.dll" />
-    <Content Include="bin\Release\CapaPresentacionBase.pdb" />
-    <Content Include="bin\Release\Common.Logging.Core.dll" />
-    <Content Include="bin\Release\Common.Logging.Core.pdb" />
-    <Content Include="bin\Release\Common.Logging.Core.xml" />
-    <Content Include="bin\Release\Common.Logging.dll" />
-    <Content Include="bin\Release\Common.Logging.pdb" />
-    <Content Include="bin\Release\Common.Logging.xml" />
-    <Content Include="bin\Release\Comunes.dll" />
-    <Content Include="bin\Release\Comunes.pdb" />
-    <Content Include="bin\Release\CrystalDecisions.CrystalReports.Design.dll" />
-    <Content Include="bin\Release\CrystalDecisions.CrystalReports.Engine.dll" />
-    <Content Include="bin\Release\CrystalDecisions.Data.AdoDotNetInterop.dll" />
-    <Content Include="bin\Release\CrystalDecisions.ReportAppServer.DataSetConversion.dll" />
-    <Content Include="bin\Release\CrystalDecisions.ReportSource.dll" />
-    <Content Include="bin\Release\CrystalDecisions.Shared.dll" />
-    <Content Include="bin\Release\CrystalDecisions.VSDesigner.dll" />
-    <Content Include="bin\Release\CrystalDecisions.Web.dll" />
-    <Content Include="bin\Release\CrystalDecisions.Windows.Forms.dll" />
-    <Content Include="bin\Release\datasms.mdf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="bin\Release\datasms_log.ldf">
-      <DependentUpon>datasms.mdf</DependentUpon>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="bin\Release\DevExpress.BonusSkins.v17.1.dll" />
-    <Content Include="bin\Release\DevExpress.Charts.v17.1.Core.dll" />
-    <Content Include="bin\Release\DevExpress.Data.v17.1.dll" />
-    <Content Include="bin\Release\DevExpress.DataAccess.v17.1.dll" />
-    <Content Include="bin\Release\DevExpress.DataAccess.v17.1.UI.dll" />
-    <Content Include="bin\Release\DevExpress.Office.v17.1.Core.dll" />
-    <Content Include="bin\Release\DevExpress.Pdf.v17.1.Core.resources.dll" />
-    <Content Include="bin\Release\DevExpress.Printing.v17.1.Core.dll" />
-    <Content Include="bin\Release\DevExpress.RichEdit.v17.1.Core.dll" />
-    <Content Include="bin\Release\DevExpress.Spreadsheet.v17.1.Core.dll" />
-    <Content Include="bin\Release\DevExpress.Utils.v17.1.dll" />
-    <Content Include="bin\Release\DevExpress.Utils.v17.1.UI.dll" />
-    <Content Include="bin\Release\DevExpress.XtraBars.v17.1.dll" />
-    <Content Include="bin\Release\DevExpress.XtraCharts.v17.1.dll" />
-    <Content Include="bin\Release\DevExpress.XtraEditors.v17.1.dll" />
-    <Content Include="bin\Release\DevExpress.XtraGrid.v17.1.dll" />
-    <Content Include="bin\Release\DevExpress.XtraLayout.v17.1.dll" />
-    <Content Include="bin\Release\DevExpress.XtraNavBar.v17.1.dll" />
-    <Content Include="bin\Release\DevExpress.XtraPrinting.v17.1.dll" />
-    <Content Include="bin\Release\DevExpress.XtraRichEdit.v17.1.dll" />
-    <Content Include="bin\Release\DevExpress.XtraSpreadsheet.v17.1.dll" />
-    <Content Include="bin\Release\DevExpress.XtraTreeList.v17.1.dll" />
-    <Content Include="bin\Release\de\DevExpress.Data.v17.1.resources.dll" />
-    <Content Include="bin\Release\de\DevExpress.DataAccess.v17.1.resources.dll" />
-    <Content Include="bin\Release\de\DevExpress.DataAccess.v17.1.UI.resources.dll" />
-    <Content Include="bin\Release\de\DevExpress.Office.v17.1.Core.resources.dll" />
-    <Content Include="bin\Release\de\DevExpress.Printing.v17.1.Core.resources.dll" />
-    <Content Include="bin\Release\de\DevExpress.RichEdit.v17.1.Core.resources.dll" />
-    <Content Include="bin\Release\de\DevExpress.Spreadsheet.v17.1.Core.resources.dll" />
-    <Content Include="bin\Release\de\DevExpress.Utils.v17.1.resources.dll" />
-    <Content Include="bin\Release\de\DevExpress.Utils.v17.1.UI.resources.dll" />
-    <Content Include="bin\Release\de\DevExpress.XtraBars.v17.1.resources.dll" />
-    <Content Include="bin\Release\de\DevExpress.XtraCharts.v17.1.resources.dll" />
-    <Content Include="bin\Release\de\DevExpress.XtraEditors.v17.1.resources.dll" />
-    <Content Include="bin\Release\de\DevExpress.XtraGrid.v17.1.resources.dll" />
-    <Content Include="bin\Release\de\DevExpress.XtraLayout.v17.1.resources.dll" />
-    <Content Include="bin\Release\de\DevExpress.XtraNavBar.v17.1.resources.dll" />
-    <Content Include="bin\Release\de\DevExpress.XtraPrinting.v17.1.resources.dll" />
-    <Content Include="bin\Release\de\DevExpress.XtraRichEdit.v17.1.resources.dll" />
-    <Content Include="bin\Release\de\DevExpress.XtraSpreadsheet.v17.1.resources.dll" />
-    <Content Include="bin\Release\de\DevExpress.XtraTreeList.v17.1.resources.dll" />
-    <Content Include="bin\Release\Entidades.dll" />
-    <Content Include="bin\Release\Entidades.pdb" />
-    <Content Include="bin\Release\EnvDTE.dll" />
-    <Content Include="bin\Release\EnvDTE.xml" />
-    <Content Include="bin\Release\EnvDTE80.dll" />
-    <Content Include="bin\Release\EnvDTE80.xml" />
-    <Content Include="bin\Release\EPPlus.dll" />
-    <Content Include="bin\Release\es\DevExpress.Data.v17.1.resources.dll" />
-    <Content Include="bin\Release\es\DevExpress.DataAccess.v17.1.resources.dll" />
-    <Content Include="bin\Release\es\DevExpress.DataAccess.v17.1.UI.resources.dll" />
-    <Content Include="bin\Release\es\DevExpress.Office.v17.1.Core.resources.dll" />
-    <Content Include="bin\Release\es\DevExpress.Printing.v17.1.Core.resources.dll" />
-    <Content Include="bin\Release\es\DevExpress.RichEdit.v17.1.Core.resources.dll" />
-    <Content Include="bin\Release\es\DevExpress.Spreadsheet.v17.1.Core.resources.dll" />
-    <Content Include="bin\Release\es\DevExpress.Utils.v17.1.resources.dll" />
-    <Content Include="bin\Release\es\DevExpress.Utils.v17.1.UI.resources.dll" />
-    <Content Include="bin\Release\es\DevExpress.XtraBars.v17.1.resources.dll" />
-    <Content Include="bin\Release\es\DevExpress.XtraCharts.v17.1.resources.dll" />
-    <Content Include="bin\Release\es\DevExpress.XtraEditors.v17.1.resources.dll" />
-    <Content Include="bin\Release\es\DevExpress.XtraGrid.v17.1.resources.dll" />
-    <Content Include="bin\Release\es\DevExpress.XtraLayout.v17.1.resources.dll" />
-    <Content Include="bin\Release\es\DevExpress.XtraNavBar.v17.1.resources.dll" />
-    <Content Include="bin\Release\es\DevExpress.XtraPrinting.v17.1.resources.dll" />
-    <Content Include="bin\Release\es\DevExpress.XtraRichEdit.v17.1.resources.dll" />
-    <Content Include="bin\Release\es\DevExpress.XtraSpreadsheet.v17.1.resources.dll" />
-    <Content Include="bin\Release\es\DevExpress.XtraTreeList.v17.1.resources.dll" />
-    <Content Include="bin\Release\FontAwesome.Sharp.dll" />
-    <Content Include="bin\Release\Google.Apis.Auth.dll" />
-    <Content Include="bin\Release\Google.Apis.Auth.pdb" />
-    <Content Include="bin\Release\Google.Apis.Auth.xml" />
-    <Content Include="bin\Release\Google.Apis.Core.dll" />
-    <Content Include="bin\Release\Google.Apis.Core.pdb" />
-    <Content Include="bin\Release\Google.Apis.Core.xml" />
-    <Content Include="bin\Release\Google.Apis.dll" />
-    <Content Include="bin\Release\Google.Apis.pdb" />
-    <Content Include="bin\Release\Google.Apis.Sheets.v4.dll" />
-    <Content Include="bin\Release\Google.Apis.Sheets.v4.pdb" />
-    <Content Include="bin\Release\Google.Apis.Sheets.v4.xml" />
-    <Content Include="bin\Release\Google.Apis.xml" />
-    <Content Include="bin\Release\InputSimulator.dll" />
-    <Content Include="bin\Release\Interop.Microsoft.Office.Core.dll" />
-    <Content Include="bin\Release\Interop.MOZILLACONTROLLib.dll" />
-    <Content Include="bin\Release\itext.barcodes.dll" />
-    <Content Include="bin\Release\itext.barcodes.xml" />
-    <Content Include="bin\Release\itext.forms.dll" />
-    <Content Include="bin\Release\itext.forms.xml" />
-    <Content Include="bin\Release\itext.io.dll" />
-    <Content Include="bin\Release\itext.io.xml" />
-    <Content Include="bin\Release\itext.kernel.dll" />
-    <Content Include="bin\Release\itext.kernel.xml" />
-    <Content Include="bin\Release\itext.layout.dll" />
-    <Content Include="bin\Release\itext.layout.xml" />
-    <Content Include="bin\Release\itext.pdfa.dll" />
-    <Content Include="bin\Release\itext.pdfa.xml" />
-    <Content Include="bin\Release\itext.sign.dll" />
-    <Content Include="bin\Release\itext.sign.xml" />
-    <Content Include="bin\Release\itext.styledxmlparser.dll" />
-    <Content Include="bin\Release\itext.styledxmlparser.xml" />
-    <Content Include="bin\Release\itext.svg.dll" />
-    <Content Include="bin\Release\itext.svg.xml" />
-    <Content Include="bin\Release\itextsharp.dll" />
-    <Content Include="bin\Release\ja\DevExpress.Data.v17.1.resources.dll" />
-    <Content Include="bin\Release\ja\DevExpress.DataAccess.v17.1.resources.dll" />
-    <Content Include="bin\Release\ja\DevExpress.DataAccess.v17.1.UI.resources.dll" />
-    <Content Include="bin\Release\ja\DevExpress.Office.v17.1.Core.resources.dll" />
-    <Content Include="bin\Release\ja\DevExpress.Printing.v17.1.Core.resources.dll" />
-    <Content Include="bin\Release\ja\DevExpress.RichEdit.v17.1.Core.resources.dll" />
-    <Content Include="bin\Release\ja\DevExpress.Spreadsheet.v17.1.Core.resources.dll" />
-    <Content Include="bin\Release\ja\DevExpress.Utils.v17.1.resources.dll" />
-    <Content Include="bin\Release\ja\DevExpress.Utils.v17.1.UI.resources.dll" />
-    <Content Include="bin\Release\ja\DevExpress.XtraBars.v17.1.resources.dll" />
-    <Content Include="bin\Release\ja\DevExpress.XtraCharts.v17.1.resources.dll" />
-    <Content Include="bin\Release\ja\DevExpress.XtraEditors.v17.1.resources.dll" />
-    <Content Include="bin\Release\ja\DevExpress.XtraGrid.v17.1.resources.dll" />
-    <Content Include="bin\Release\ja\DevExpress.XtraLayout.v17.1.resources.dll" />
-    <Content Include="bin\Release\ja\DevExpress.XtraNavBar.v17.1.resources.dll" />
-    <Content Include="bin\Release\ja\DevExpress.XtraPrinting.v17.1.resources.dll" />
-    <Content Include="bin\Release\ja\DevExpress.XtraRichEdit.v17.1.resources.dll" />
-    <Content Include="bin\Release\ja\DevExpress.XtraSpreadsheet.v17.1.resources.dll" />
-    <Content Include="bin\Release\ja\DevExpress.XtraTreeList.v17.1.resources.dll" />
-    <Content Include="bin\Release\KMCurrencyTextBox.dll" />
-    <Content Include="bin\Release\log4net.dll" />
-    <Content Include="bin\Release\Microsoft.ApplicationBlocks.Data.dll" />
-    <Content Include="bin\Release\Microsoft.mshtml.dll" />
-    <Content Include="bin\Release\Microsoft.Office.Interop.Excel.dll" />
-    <Content Include="bin\Release\Microsoft.Office.Interop.Word.dll" />
-    <Content Include="bin\Release\Microsoft.ReportViewer.Common.dll" />
-    <Content Include="bin\Release\Microsoft.ReportViewer.WinForms.dll" />
-    <Content Include="bin\Release\Microsoft.Vbe.Interop.dll" />
-    <Content Include="bin\Release\Newtonsoft.Json.dll" />
-    <Content Include="bin\Release\Newtonsoft.Json.xml" />
-    <Content Include="bin\Release\office.dll" />
-    <Content Include="bin\Release\RawPrint.dll" />
-    <Content Include="bin\Release\ru\DevExpress.Data.v17.1.resources.dll" />
-    <Content Include="bin\Release\ru\DevExpress.DataAccess.v17.1.resources.dll" />
-    <Content Include="bin\Release\ru\DevExpress.DataAccess.v17.1.UI.resources.dll" />
-    <Content Include="bin\Release\ru\DevExpress.Office.v17.1.Core.resources.dll" />
-    <Content Include="bin\Release\ru\DevExpress.Printing.v17.1.Core.resources.dll" />
-    <Content Include="bin\Release\ru\DevExpress.RichEdit.v17.1.Core.resources.dll" />
-    <Content Include="bin\Release\ru\DevExpress.Spreadsheet.v17.1.Core.resources.dll" />
-    <Content Include="bin\Release\ru\DevExpress.Utils.v17.1.resources.dll" />
-    <Content Include="bin\Release\ru\DevExpress.Utils.v17.1.UI.resources.dll" />
-    <Content Include="bin\Release\ru\DevExpress.XtraBars.v17.1.resources.dll" />
-    <Content Include="bin\Release\ru\DevExpress.XtraCharts.v17.1.resources.dll" />
-    <Content Include="bin\Release\ru\DevExpress.XtraEditors.v17.1.resources.dll" />
-    <Content Include="bin\Release\ru\DevExpress.XtraGrid.v17.1.resources.dll" />
-    <Content Include="bin\Release\ru\DevExpress.XtraLayout.v17.1.resources.dll" />
-    <Content Include="bin\Release\ru\DevExpress.XtraNavBar.v17.1.resources.dll" />
-    <Content Include="bin\Release\ru\DevExpress.XtraPrinting.v17.1.resources.dll" />
-    <Content Include="bin\Release\ru\DevExpress.XtraRichEdit.v17.1.resources.dll" />
-    <Content Include="bin\Release\ru\DevExpress.XtraSpreadsheet.v17.1.resources.dll" />
-    <Content Include="bin\Release\ru\DevExpress.XtraTreeList.v17.1.resources.dll" />
-    <Content Include="bin\Release\SAPBusinessObjects.WPF.Viewer.dll" />
-    <Content Include="bin\Release\SAPBusinessObjects.WPF.ViewerShared.dll" />
-    <Content Include="bin\Release\Spire.Doc.dll" />
-    <Content Include="bin\Release\Spire.License.dll" />
-    <Content Include="bin\Release\Spire.License.xml" />
-    <Content Include="bin\Release\Spire.Pdf.dll" />
-    <Content Include="bin\Release\stdole.dll" />
-    <Content Include="bin\Release\UserControls.dll" />
-    <Content Include="bin\Release\UserControls.pdb" />
-    <Content Include="bin\Release\VSLangProj.dll" />
-    <Content Include="bin\Release\VSLangProj.xml" />
-    <Content Include="bin\Release\VsWebSite.Interop.dll" />
-    <Content Include="bin\Release\VsWebSite.Interop.xml" />
     <Content Include="Imagenes\Iconos\ClubesLigas\mCambioClub237x237.png" />
     <Content Include="Imagenes\Iconos\ClubesLigas\mCambioClub36x36.png" />
     <Content Include="Imagenes\Iconos\ClubesLigas\mClub36x36.png" />
@@ -2296,12 +2086,7 @@
     <None Include="Resources\jumpy.png" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="bin\Release\bin\Debug\" />
-    <Folder Include="bin\Release\bin\x86\Debug\" />
-    <Folder Include="bin\Release\bin\x86\Release\" />
-    <Folder Include="bin\Release\fr\" />
-    <Folder Include="bin\Release\it\" />
-    <Folder Include="bin\Release\pt-BR\" />
+    <Folder Include="bin\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

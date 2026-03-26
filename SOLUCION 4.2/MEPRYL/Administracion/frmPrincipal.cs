@@ -935,12 +935,12 @@ namespace CapaPresentacion
             Utilidades.abrirFormulario(this, new frmTurnos(this), this.configuracion);
         }
 
-        protected override void nbiAgenda_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
-        {
-            OcultarPestanasRibbon();
-            ColorRibbonPreventiva();
-            Utilidades.abrirFormulario(this, new frmAgendaMesaEntrada(this), this.configuracion);
-        }
+        //protected override void nbiAgenda_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
+        //{
+        //    OcultarPestanasRibbon();
+        //    ColorRibbonPreventiva();
+        //    Utilidades.abrirFormulario(this, new frmAgendaMesaEntrada(this), this.configuracion);
+        //}
 
         protected override void nbiExamenes_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
         {
@@ -1047,6 +1047,24 @@ namespace CapaPresentacion
             MostrarPestanaConfigLaboral();
             LimpiarEstadoIcono();
             //bbiEmpresas.Down = true;
+        }
+
+        protected override void facturacionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OcultarPestanasRibbon();
+            MostrarPestanaFacturacion();
+            LimpiarEstadoIcono();
+            bbiFacturacionElectronica.Down = true;
+            Utilidades.abrirFormulario(this, new frmFacturacionElectronica(), this.configuracion);
+        }
+
+        protected override void bbiFacturacionElectronica_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            OcultarPestanasRibbon();
+            MostrarPestanaFacturacion();
+            LimpiarEstadoIcono();
+            bbiFacturacionElectronica.Down = true;
+            Utilidades.abrirFormulario(this, new frmFacturacionElectronica(), this.configuracion);
         }
         #endregion
         // --------------------------------------------------
