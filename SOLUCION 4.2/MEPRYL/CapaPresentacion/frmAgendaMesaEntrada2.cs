@@ -19,7 +19,9 @@ namespace CapaPresentacion
     {
         CapaNegocioMepryl.MesaEntrada mesaEntrada;
         CapaNegocioMepryl.PacientePreventiva PacientePre;
-        
+        string _pathFotoLab = null;
+        string _pathFotoPre = null;
+
         bool primeraVez;
         int puntero = -1;
         int intFilaSelecc = 0;
@@ -44,13 +46,24 @@ namespace CapaPresentacion
 
         private void inicializar()
         {
-            CargarDatos();
-            PintarFilaGrilla();
-            mostrarDatos();            
+            var sw = System.Diagnostics.Stopwatch.StartNew();
+            System.Diagnostics.Debug.WriteLine("[AGENDA] --- inicializar() start ---");
 
-            //timerActualiza.Interval = 10000;
-            //timerActualiza.Tick += new EventHandler(timerActualiza_Tick);
-            //timerActualiza.Enabled = true;
+            CargarDatos();
+            sw.Stop();
+            System.Diagnostics.Debug.WriteLine($"[AGENDA] CargarDatos(): {sw.ElapsedMilliseconds} ms");
+
+            sw.Restart();
+            PintarFilaGrilla();
+            sw.Stop();
+            System.Diagnostics.Debug.WriteLine($"[AGENDA] PintarFilaGrilla(): {sw.ElapsedMilliseconds} ms");
+
+            sw.Restart();
+            mostrarDatos();
+            sw.Stop();
+            System.Diagnostics.Debug.WriteLine($"[AGENDA] mostrarDatos(): {sw.ElapsedMilliseconds} ms");
+
+            System.Diagnostics.Debug.WriteLine("[AGENDA] --- inicializar() end ---");
         }
 
         private void dgvGrilla_CurrentCellChanged(object sender, EventArgs e)
@@ -115,31 +128,30 @@ namespace CapaPresentacion
 
         private void CargarDatos()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             DataTable dt = mesaEntrada.cargarMesaEntradaPlanillaCompleta();
+            sw.Stop();
+            System.Diagnostics.Debug.WriteLine($"[AGENDA]   SQL cargarMesaEntradaPlanillaCompleta: {sw.ElapsedMilliseconds} ms ({dt.Rows.Count} filas)");
 
             if (dt.Rows.Count > 0)
             {
+                sw.Restart();
                 dgvGrilla.DataSource = dt;
+                sw.Stop();
+                System.Diagnostics.Debug.WriteLine($"[AGENDA]   dgvGrilla.DataSource asignado: {sw.ElapsedMilliseconds} ms");
 
                 if (dgvGrilla.Rows.Count > 0)
                 {
-                    //dgvGrilla.CurrentCell = dgvGrilla.Rows[intFilaSelecc].Cells[intColSelecc];
-
-                    //if (dgvGrilla.InvokeRequired)
-                    //{
-                    //    MethodInvoker mi = new MethodInvoker(() => dgvGrilla.FirstDisplayedScrollingRowIndex = intPosScroll);
-                    //    dgvGrilla.Invoke(mi);
-                    //}
-
-                    //dgvGrilla.FirstDisplayedScrollingRowIndex = intPosScroll;
+                    sw.Restart();
                     cargarGrilla();
-                    //PintarFilaGrilla();
+                    sw.Stop();
+                    System.Diagnostics.Debug.WriteLine($"[AGENDA]   cargarGrilla (DatosBasicosGrilla): {sw.ElapsedMilliseconds} ms");
                 }
                 else
                 {
                     dgvGrilla.DataSource = null;
                 }
-            }            
+            }
         }
 
         public void mostrarDatos()
@@ -387,28 +399,25 @@ namespace CapaPresentacion
 
         private void PintarFilaGrilla()
         {
-
-            //if (dgvGrilla.InvokeRequired)
-            //{
-                if (dgvGrilla.Rows.Count > 0)
+            if (dgvGrilla.Rows.Count > 0)
+            {
+                for (int i = 0; i < dgvGrilla.Rows.Count; i++)
                 {
-                    for (int i = 0; i < dgvGrilla.Rows.Count; i++)
+                    try
                     {
-                        try
+                        // Cells[17] = Revisado, ya viene en la consulta principal — sin llamada extra a la BD
+                        var val = dgvGrilla.Rows[i].Cells[17].Value;
+                        if (val != null && val != DBNull.Value && Convert.ToBoolean(val))
                         {
-                            if (mesaEntrada.Revisado(dgvGrilla.Rows[i].Cells[0].Value.ToString()) == true)
-                            {
-                                //MethodInvoker mi = new MethodInvoker(() => dgvGrilla.Rows[i].DefaultCellStyle.BackColor = Color.LightGreen);
-                                //dgvGrilla.Invoke(mi);
-                                dgvGrilla.Rows[i].DefaultCellStyle.BackColor = Color.LightGreen;
-                            }
-                        }catch(System.NullReferenceException ex)
-                        {
-                            dgvGrilla.DataSource = null;
+                            dgvGrilla.Rows[i].DefaultCellStyle.BackColor = Color.LightGreen;
                         }
                     }
+                    catch (System.NullReferenceException)
+                    {
+                        // fila sin datos, ignorar
+                    }
                 }
-            //}
+            }
         }
 
         private void dgvGrilla_CellContentClick(object sender, DataGridViewCellEventArgs e)
@@ -461,12 +470,27 @@ namespace CapaPresentacion
 
         }
 
+        private void CargarDirectoriosFotos()
+        {
+            if (_pathFotoLab != null) return; // ya cargado
+            try
+            {
+                var sw = System.Diagnostics.Stopwatch.StartNew();
+                CapaNegocioMepryl.UbicacionFotos UbiFoto = new UbicacionFotos();
+                DataTable dt = UbiFoto.RecuperarDirectorioFotos();
+                sw.Stop();
+                System.Diagnostics.Debug.WriteLine($"[AGENDA]   RecuperarDirectorioFotos (SQL): {sw.ElapsedMilliseconds} ms");
+                _pathFotoPre = dt.Rows[0][0].ToString();
+                _pathFotoLab = dt.Rows[0][1].ToString();
+            }
+            catch { _pathFotoPre = ""; _pathFotoLab = ""; }
+        }
+
         private void MostrarFoto(string strDNI)
         {
-            CapaNegocioMepryl.UbicacionFotos UbiFoto = new UbicacionFotos();
-
-            string strPathFotoPre = UbiFoto.RecuperarDirectorioFotos().Rows[0][0].ToString();
-            string strPathFotoLab = UbiFoto.RecuperarDirectorioFotos().Rows[0][1].ToString();
+            CargarDirectoriosFotos();
+            string strPathFotoPre = _pathFotoPre;
+            string strPathFotoLab = _pathFotoLab;
                          
             if (!string.IsNullOrEmpty(strPathFotoLab))
             {

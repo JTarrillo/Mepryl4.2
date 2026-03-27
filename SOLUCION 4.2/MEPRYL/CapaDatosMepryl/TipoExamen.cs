@@ -1236,6 +1236,122 @@ namespace CapaDatosMepryl
             }
             return retorno;
         }
+        public Dictionary<string, Entidades.TipoExamen> cargarEstudiosBatch(List<string> tipoExamenIds)
+        {
+            var resultado = new Dictionary<string, Entidades.TipoExamen>(StringComparer.OrdinalIgnoreCase);
+            if (tipoExamenIds == null || tipoExamenIds.Count == 0) return resultado;
+
+            // Dictionary O(1) desde items ya cargados en memoria: codigo -> (nombreInformes, ordenFormulario)
+            // ordenFormulario: 1=Clínico, 2-7=Laboratorio, 8-11=Rx, 12=Complementarios
+            var itemsDict = new Dictionary<int, (string nombre, int orden)>(items.Rows.Count);
+            foreach (DataRow r in items.Rows)
+            {
+                if (int.TryParse(r[0].ToString(), out int cod))
+                    itemsDict[cod] = (r[3].ToString(), r[4] == DBNull.Value ? 0 : Convert.ToInt32(r[4]));
+            }
+
+            string idListIn = "'" + string.Join("','", tipoExamenIds) + "'";
+
+            DataTable todosEstudios = SQLConnector.obtenerTablaSegunConsultaString(@"
+        SELECT 
+            epe.item1, epe.item2, epe.item3, epe.item4, epe.item5, epe.item6, epe.item7, epe.item8, 
+            epe.item9, epe.item10, epe.item11, epe.item12, epe.item13, epe.item14, epe.item15, epe.item16, 
+            epe.item17, epe.item18, epe.item19, epe.item20, epe.item21, epe.item22, epe.item23, epe.item24, 
+            epe.item25, epe.item26, epe.item27, epe.item28, epe.item29, epe.item30, epe.item31, epe.item32, 
+            epe.item33, epe.item34, epe.item35, epe.item36, epe.item37, epe.item38, epe.item39, epe.item40,
+            epe.item41, epe.item42, epe.item43, epe.item44, epe.item45, epe.item46, epe.item47, epe.item48,
+            epe.item49, epe.item50, epe.item51, epe.item52, epe.item53, epe.item54, epe.item55, epe.item56,
+            epe.item57, epe.item58, epe.item59, epe.item60, epe.item61, epe.item62, epe.item63, epe.item64,
+            epe.item65, epe.item66, epe.item67, epe.item68, epe.item69, epe.item70, epe.item71, epe.item72,
+            epe.item73, epe.item74, epe.item75, epe.item76, epe.item77, epe.item78, epe.item79, epe.item80,
+            epe.item81, epe.item82, epe.item83, epe.item84, epe.item85, epe.item86, epe.item87, epe.item88,
+            epe.item89, epe.item90, epe.item91, epe.item92, epe.item93, epe.item94, epe.item95, epe.item96,
+            epe.item97, epe.item98, epe.item99, epe.item100, epe.item101, epe.item102, epe.item103, epe.item104,
+            epe.item105, epe.item106, epe.item107, epe.item108, epe.item109, epe.item110, epe.item111, epe.item112,
+            epe.item113, epe.item114, epe.item115, epe.item116, epe.item117, epe.item118, epe.item119, epe.item120,
+            epe.item121, epe.item122, epe.item123, epe.item124, epe.item125, epe.item126, epe.item127, epe.item128,
+            epe.item129, epe.item130, epe.item131, epe.item132, epe.item133, epe.item134, epe.item135, epe.item136,
+            epe.item137, epe.item138, epe.item139, epe.item140, epe.item141, epe.item142, epe.item143, epe.item144,
+            epe.item145, epe.item146, epe.item147, epe.item148, epe.item149, epe.item150, epe.item151, epe.item152,
+            epe.item153, epe.item154, epe.item155, epe.item156, epe.item157, epe.item158, epe.item159, epe.item160,
+            epe.item161, epe.item162, epe.item163, epe.item164, epe.item165, epe.item166, epe.item167, epe.item168,
+            epe.item169, epe.item170, epe.item171, epe.item172, epe.item173, epe.item174, epe.item175, epe.item176,
+            epe.item177, epe.item178, epe.item179, epe.item180, epe.item181, epe.item182, epe.item183, epe.item184,
+            epe.item185, epe.item186, epe.item187, epe.item188, epe.item189, epe.item190, epe.item191, epe.item192,
+            epe.item193, epe.item194, epe.item195, epe.item196, epe.item197, epe.item198, epe.item199, epe.item200,
+            epe.item201, epe.item202, epe.item203, epe.item204, epe.item205, epe.item206, epe.item207,
+            tep.id AS IdTipoExamenPaciente,
+            e.id AS IdEspecialidad,
+            e.descripcion,
+            tep.precioExamen,
+            tep.modificado
+        FROM dbo.TipoExamenDePaciente tep 
+        INNER JOIN dbo.EstudiosPorExamen epe ON tep.id = epe.idTipoExamen
+        INNER JOIN dbo.Especialidad e ON tep.idEspecialidad = e.id 
+        WHERE tep.id IN (" + idListIn + ")");
+
+            if (todosEstudios == null || todosEstudios.Rows.Count == 0) return resultado;
+
+            // Pre-calcular índices de columnas item1..item207 una sola vez
+            var colItemIndices = new List<(int colIndex, int itemCode)>(207);
+            foreach (DataColumn col in todosEstudios.Columns)
+            {
+                if (col.ColumnName.StartsWith("item", StringComparison.OrdinalIgnoreCase) &&
+                    int.TryParse(col.ColumnName.Substring(4), out int code))
+                {
+                    colItemIndices.Add((col.Ordinal, code));
+                }
+            }
+
+            foreach (DataRow rawRow in todosEstudios.Rows)
+            {
+                string idTE = rawRow["IdTipoExamenPaciente"].ToString();
+                if (resultado.ContainsKey(idTE)) continue;
+
+                Entidades.TipoExamen retorno = new Entidades.TipoExamen();
+                retorno.IdTipoExamenPaciente = new Guid(idTE);
+                retorno.Id = new Guid(rawRow["IdEspecialidad"].ToString());
+                retorno.Descripcion = rawRow["descripcion"].ToString();
+
+                if (Double.TryParse(rawRow["precioExamen"].ToString(), out double precio))
+                    retorno.PrecioBase = precio;
+
+                if (!string.IsNullOrEmpty(rawRow["modificado"].ToString()))
+                    retorno.Modificado = true;
+
+                // Un solo pase sobre los 207 items — sin DataTable.Select, sin DataTables intermedios
+                var sbClinico = new System.Text.StringBuilder();
+                var sbLab     = new System.Text.StringBuilder();
+                var sbRx      = new System.Text.StringBuilder();
+                var sbComp    = new System.Text.StringBuilder();
+
+                foreach (var (colIdx, code) in colItemIndices)
+                {
+                    object val = rawRow[colIdx];
+                    if (val == DBNull.Value || !Convert.ToBoolean(val)) continue;
+                    if (!itemsDict.TryGetValue(code, out var info)) continue;
+
+                    System.Text.StringBuilder sb;
+                    if      (info.orden == 1)                    sb = sbClinico;
+                    else if (info.orden >= 2 && info.orden <= 7) sb = sbLab;
+                    else if (info.orden >= 8 && info.orden <= 11) sb = sbRx;
+                    else if (info.orden == 12)                    sb = sbComp;
+                    else continue;
+
+                    if (sb.Length > 0) sb.Append(" - ");
+                    sb.Append(info.nombre);
+                }
+
+                retorno.TextoClinico       = sbClinico.ToString();
+                retorno.TextoLaboratorio   = sbLab.ToString();
+                retorno.TextoRx            = sbRx.ToString();
+                retorno.TextoEstComplement = sbComp.ToString();
+
+                resultado[idTE] = retorno;
+            }
+            return resultado;
+        }
+
         private string estudiosString(ref List<DataTable> lista)
         {
             string texto = string.Empty;

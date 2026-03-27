@@ -1285,19 +1285,172 @@ namespace CapaDatosMepryl
         public DataTable cargarMesaEntradaPlanillaCompleta()
         {
             DataTable retorno = crearTablaRetornoGrillaPlanillaCompleta();
-            string fechaSql = DateTime.Today.ToString("yyyy-MM-dd");
+
+            // Sargable date range (avoids CONVERT on column, allows index use on c.fecha)
+            // yyyyMMdd (sin separadores) es el único formato que SQL Server siempre interpreta correctamente
+            string fechaDesde = DateTime.Today.ToString("yyyyMMdd");
+            string fechaHasta = DateTime.Today.AddDays(1).ToString("yyyyMMdd");
+
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             DataTable consulta = SQLConnector.obtenerTablaSegunConsultaString(
-                @"select c.id as IdConsulta, c.pacienteID as IdPaciente, 
-        te.id as IdTipoExamen, te.idTurno as IdTurno, Format(c.fecha, 'dd-MM-yyyy hh:mm', 'en-US') as Fecha, c.nroOrden as 'Nº Ingreso', c.tipo as Tipo, c.identificador as 'Nº Orden',
-        c.observaciones as Observaciones, e.descripcion as 'Subtipo de Exámen', te.rm, te.modificado, c.revisado
+                @"select c.id as IdConsulta, c.pacienteID as IdPaciente,
+        te.id as IdTipoExamen, te.idTurno as IdTurno, c.fecha as Fecha, c.nroOrden as NroOrden, c.tipo as Tipo, c.identificador as Identificador,
+        c.observaciones as Observaciones, e.descripcion as SubtipoExamen, te.rm, te.modificado, c.revisado
         from Consulta c
         inner join dbo.TipoExamenDePaciente te on te.idConsulta = c.id
         inner join dbo.Especialidad e on te.idEspecialidad = e.id
-        where convert(Date,c.fecha) = '" + fechaSql + "' and c.valido = '1' and c.nroOrden != '0' and c.tipo != 'V' order by c.nroOrden"
+        where c.fecha >= '" + fechaDesde + @"' and c.fecha < '" + fechaHasta + "' and c.valido = '1' and c.nroOrden != '0' and c.tipo != 'V' order by c.nroOrden"
             );
-            foreach (DataRow row in consulta.Rows)
+            sw.Stop();
+            System.Diagnostics.Debug.WriteLine($"[AGENDA-OPT] Query principal: {sw.ElapsedMilliseconds} ms ({consulta.Rows.Count} filas)");
+
+            if (consulta.Rows.Count == 0) return retorno;
+
+            // Collect unique IDs for batch queries
+            var pacienteIds = consulta.AsEnumerable()
+                .Select(r => r["IdPaciente"].ToString()).Where(s => !string.IsNullOrEmpty(s)).Distinct().ToList();
+            var turnoIds = consulta.AsEnumerable()
+                .Select(r => r["IdTurno"].ToString())
+                .Where(s => !string.IsNullOrEmpty(s) && s != Guid.Empty.ToString())
+                .Distinct().ToList();
+            var tipoExamenIds = consulta.AsEnumerable()
+                .Select(r => r["IdTipoExamen"].ToString()).Where(s => !string.IsNullOrEmpty(s)).Distinct().ToList();
+
+            string pIn = "'" + string.Join("','", pacienteIds) + "'";
+            string teIn = "'" + string.Join("','", tipoExamenIds) + "'";
+
+            sw.Restart();
+            // Batch: pacientes preventiva
+            DataTable pacientesP = SQLConnector.obtenerTablaSegunConsultaString(
+                "select id, dni, apellido, nombres, CONVERT(VARCHAR(10), fechaNacimiento, 103) as fechaNacimiento from dbo.Paciente where id in (" + pIn + ")");
+            // Batch: pacientes laborales
+            DataTable pacientesL = SQLConnector.obtenerTablaSegunConsultaString(
+                "select id, dni, apellido, nombres, CONVERT(VARCHAR(10), fechaNacimiento, 103) as fechaNacimiento from dbo.PacienteLaboral where id in (" + pIn + ")");
+            sw.Stop();
+            System.Diagnostics.Debug.WriteLine($"[AGENDA-OPT] Batch pacientes: {sw.ElapsedMilliseconds} ms");
+
+            sw.Restart();
+            // Batch: observaciones de turno
+            DataTable turnos = new DataTable();
+            turnos.Columns.Add("id"); turnos.Columns.Add("observaciones");
+            if (turnoIds.Count > 0)
             {
-                procesarFilaTablaGrillaPlanillaCompleta(ref retorno, row);
+                string tIn = "'" + string.Join("','", turnoIds) + "'";
+                turnos = SQLConnector.obtenerTablaSegunConsultaString(
+                    "select id, observaciones from dbo.Turno where id in (" + tIn + ")");
+            }
+            // Batch: clubes por tipo examen
+            DataTable clubes = SQLConnector.obtenerTablaSegunConsultaString(
+                @"select cte.idTipoExamen, l.descripcion as Liga, c.descripcion as Club
+                from dbo.clubesPorTipoExamen cte
+                inner join dbo.Club c on cte.idClub = c.id
+                inner join dbo.Liga l on c.ligaID = l.id
+                where cte.idTipoExamen in (" + teIn + ")");
+            // Batch: empresas por tipo examen
+            DataTable empresas = SQLConnector.obtenerTablaSegunConsultaString(
+                @"select ete.idTipoExamen, e.razonSocial as Empresa, ete.tarea as Tarea
+                from dbo.empresaPorTipoDeExamen ete
+                inner join dbo.Empresa e on ete.idEmpresa = e.id
+                where ete.idTipoExamen in (" + teIn + ")");
+            sw.Stop();
+            System.Diagnostics.Debug.WriteLine($"[AGENDA-OPT] Batch turnos/clubes/empresas: {sw.ElapsedMilliseconds} ms");
+
+            sw.Restart();
+            // Batch: estudios por examen (replaces 1 heavy query per row)
+            TipoExamen tipoExBatch = new TipoExamen();
+            Dictionary<string, Entidades.TipoExamen> dictTipoExamen = tipoExBatch.cargarEstudiosBatch(tipoExamenIds);
+            sw.Stop();
+            System.Diagnostics.Debug.WriteLine($"[AGENDA-OPT] Batch estudios: {sw.ElapsedMilliseconds} ms");
+
+            // Build in-memory lookup dictionaries (no more per-row DB calls)
+            var dictPaciente = new Dictionary<string, DataRow>(StringComparer.OrdinalIgnoreCase);
+            foreach (DataRow r in pacientesP.Rows) dictPaciente[r["id"].ToString()] = r;
+            foreach (DataRow r in pacientesL.Rows)
+            {
+                string id = r["id"].ToString();
+                if (!dictPaciente.ContainsKey(id)) dictPaciente[id] = r;
+            }
+
+            var dictTurno = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            foreach (DataRow r in turnos.Rows)
+                dictTurno[r["id"].ToString()] = r["observaciones"] == DBNull.Value ? string.Empty : r["observaciones"].ToString();
+
+            var dictClub = new Dictionary<string, (string, string)>(StringComparer.OrdinalIgnoreCase);
+            foreach (DataRow r in clubes.Rows)
+            {
+                string key = r["idTipoExamen"].ToString();
+                if (!dictClub.ContainsKey(key)) dictClub[key] = (r["Liga"].ToString(), r["Club"].ToString());
+            }
+
+            var dictEmpresa = new Dictionary<string, (string, string)>(StringComparer.OrdinalIgnoreCase);
+            foreach (DataRow r in empresas.Rows)
+            {
+                string key = r["idTipoExamen"].ToString();
+                if (!dictEmpresa.ContainsKey(key)) dictEmpresa[key] = (r["Empresa"].ToString(), r["Tarea"].ToString());
+            }
+
+            // Process all rows in-memory (zero additional DB queries)
+            foreach (DataRow fila in consulta.Rows)
+            {
+                try
+                {
+                    string idPaciente = fila["IdPaciente"].ToString();
+                    string idTipoExamen = fila["IdTipoExamen"].ToString();
+                    string idTurno = fila["IdTurno"].ToString();
+
+                    string dni = string.Empty, apellido = string.Empty, nombre = string.Empty, fechaNaci = string.Empty;
+                    if (dictPaciente.TryGetValue(idPaciente, out DataRow pacRow))
+                    {
+                        dni = pacRow["dni"].ToString();
+                        apellido = pacRow["apellido"].ToString();
+                        nombre = pacRow["nombres"].ToString();
+                        fechaNaci = pacRow["fechaNacimiento"].ToString();
+                    }
+
+                    string observTurno = string.Empty;
+                    dictTurno.TryGetValue(idTurno, out observTurno);
+
+                    string ligaEmpresa = string.Empty, clubTarea = string.Empty;
+                    if (dictClub.TryGetValue(idTipoExamen, out var clubData))
+                    { ligaEmpresa = clubData.Item1; clubTarea = clubData.Item2; }
+                    else if (dictEmpresa.TryGetValue(idTipoExamen, out var empresaData))
+                    { ligaEmpresa = empresaData.Item1; clubTarea = empresaData.Item2; }
+
+                    string textoClinico = string.Empty, textoLab = string.Empty, textoRx = string.Empty, textoComplement = string.Empty;
+                    bool modificado = false;
+                    if (dictTipoExamen.TryGetValue(idTipoExamen, out Entidades.TipoExamen te))
+                    {
+                        textoClinico = te.TextoClinico ?? string.Empty;
+                        textoLab = te.TextoLaboratorio ?? string.Empty;
+                        textoRx = te.TextoRx ?? string.Empty;
+                        textoComplement = te.TextoEstComplement ?? string.Empty;
+                        modificado = te.Modificado;
+                    }
+
+                    DateTime fechaDt = Convert.ToDateTime(fila["Fecha"]);
+
+                    retorno.Rows.Add(
+                        fila["IdConsulta"], fila["IdPaciente"], fila["IdTipoExamen"], fila["IdTurno"],
+                        fechaDt.ToShortDateString(),
+                        fechaDt.ToString("HH:mm"),
+                        fila["NroOrden"], fila["Tipo"],
+                        fila["SubtipoExamen"].ToString() + " " + fila["modificado"].ToString(),
+                        fila["Identificador"],
+                        dni, apellido, nombre,
+                        observTurno,
+                        fila["Observaciones"],
+                        devolverBooleano(fila["rm"]),
+                        fechaNaci,
+                        fila["revisado"].ToString(),
+                        textoClinico, textoLab, textoRx, textoComplement,
+                        ligaEmpresa, clubTarea,
+                        modificado
+                    );
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[AGENDA-OPT] Error procesando fila: {ex.Message}");
+                }
             }
             return retorno;
         }

@@ -1123,16 +1123,27 @@ namespace CapaPresentacion
 
         protected override void planillaDelDiaToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            var swTotal = System.Diagnostics.Stopwatch.StartNew();
+            System.Diagnostics.Debug.WriteLine("[PLANILLA] === INICIO CARGA ===");
+
             OcultarPestanasRibbon();
             ColorRibbonPreventiva();
 
-            foreach (Form frm in this.MdiChildren)
+            var swClose = System.Diagnostics.Stopwatch.StartNew();
+            foreach (Form frm in this.MdiChildren.ToArray())
             {
-                frm.Dispose();
                 frm.Close();
             }
+            swClose.Stop();
+            System.Diagnostics.Debug.WriteLine($"[PLANILLA] Cerrar formularios anteriores: {swClose.ElapsedMilliseconds} ms");
 
+            var swOpen = System.Diagnostics.Stopwatch.StartNew();
             Utilidades.abrirFormulario(this, new frmAgendaMesaEntrada2(this), this.configuracion);
+            swOpen.Stop();
+            System.Diagnostics.Debug.WriteLine($"[PLANILLA] Crear+Abrir frmAgendaMesaEntrada2: {swOpen.ElapsedMilliseconds} ms");
+
+            swTotal.Stop();
+            System.Diagnostics.Debug.WriteLine($"[PLANILLA] === TOTAL: {swTotal.ElapsedMilliseconds} ms ===");
         }
 
         protected override void prevenExportToolStripMenuItem_Click(object sender, EventArgs e)

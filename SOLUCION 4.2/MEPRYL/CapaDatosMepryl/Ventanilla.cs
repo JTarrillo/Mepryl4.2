@@ -20,26 +20,206 @@ namespace CapaDatosMepryl
 
         public DataTable cargar(DateTime desde, DateTime hasta, bool blnPrimerImgreso)
         {
-            string strFiltro = "";
-            DataTable dt;
+            string strFiltro = blnPrimerImgreso ? "AND ocultar <> 1" : "";
 
-            if (blnPrimerImgreso)
-                strFiltro = "AND ocultar <> 1";
+            // Sargable: usar rango en lugar de CONVERT en columna
+            string fechaDesde = desde.Date.ToString("yyyyMMdd");
+            string fechaHasta = hasta.Date.AddDays(1).ToString("yyyyMMdd");
 
-            DataTable ventanilla = SQLConnector.obtenerTablaSegunConsultaString(@"select t.id as Id,
-            Convert(date,t.fecha) as Fecha, t.horaReferencia as Hora, t.nroOrden as Orden, 
-            e.descripcion as 'Subtipo de Examen', 
-            t.observaciones as Observaciones, t.codigo as Código, t.asistio, t.reserva, t.pacienteID, t.abono, t.reservado, t.ocultar
-            from dbo.Turno t inner join dbo.Horario h on t.horarioID = h.id
-            inner join dbo.Especialidad e on h.especialidadID = e.id 
-            inner join dbo.MotivoDeConsulta mc on e.idMotivoConsulta = mc.id
-            where Convert(Date,t.fecha) >= '" + desde.ToString("yyyy-MM-dd") + @"' and Convert(Date,t.fecha) <= '" + hasta.ToString("yyyy-MM-dd") +
-             "' and (t.recepcion = '0' or t.recepcion is NULL) and t.habilitado = '1' " + strFiltro + " order  by t.fecha asc, t.hora asc, t.nroOrden asc");
+            var sw = System.Diagnostics.Stopwatch.StartNew();
+            DataTable rawTurnos = SQLConnector.obtenerTablaSegunConsultaString(
+                @"select t.id as Id, t.fecha as Fecha, t.horaReferencia as Hora, t.nroOrden as Orden,
+                e.descripcion as SubtipoExamen, e.precioBase as PrecioBase,
+                t.observaciones as Observaciones, t.codigo as Codigo,
+                t.asistio, t.reserva, t.pacienteID, t.abono, t.reservado, t.ocultar
+                from dbo.Turno t
+                inner join dbo.Horario h on t.horarioID = h.id
+                inner join dbo.Especialidad e on h.especialidadID = e.id
+                where t.fecha >= '" + fechaDesde + "' and t.fecha < '" + fechaHasta +
+                "' and (t.recepcion = '0' or t.recepcion is NULL) and t.habilitado = '1' " +
+                strFiltro + " order by t.fecha asc, t.hora asc, t.nroOrden asc");
+            sw.Stop();
+            System.Diagnostics.Debug.WriteLine($"[VENTANILLA] Query principal: {sw.ElapsedMilliseconds} ms ({rawTurnos.Rows.Count} filas)");
 
-            dt = generarTablaRetornoVentanilla(ventanilla);
+            DataTable dt = generarTablaRetornoVentanillaBatch(rawTurnos);
             intTotalOcultos = dt.Rows.Count;
-            //return generarTablaRetornoVentanilla(ventanilla);
             return dt;
+        }
+
+        private DataTable generarTablaRetornoVentanillaBatch(DataTable rawTurnos)
+        {
+            DataTable retorno = crearTablaRetornoVentanilla();
+
+            if (rawTurnos.Rows.Count == 0) return retorno;
+
+            // Recolectar IDs únicos para batch queries
+            var turnoIds   = rawTurnos.AsEnumerable().Select(r => r["Id"].ToString()).Distinct().ToList();
+            var pacienteIds = rawTurnos.AsEnumerable()
+                .Select(r => r["pacienteID"].ToString())
+                .Where(s => !string.IsNullOrEmpty(s) && s != Guid.Empty.ToString())
+                .Distinct().ToList();
+
+            string tIn = "'" + string.Join("','", turnoIds) + "'";
+            string pIn = pacienteIds.Count > 0 ? "'" + string.Join("','", pacienteIds) + "'" : "'00000000-0000-0000-0000-000000000000'";
+
+            var sw = System.Diagnostics.Stopwatch.StartNew();
+
+            // Batch: pacientes preventiva y laboral en una sola query UNION
+            DataTable pacientes = SQLConnector.obtenerTablaSegunConsultaString(
+                "select id, dni, apellido + ' ' + nombres as Paciente from dbo.Paciente where id in (" + pIn + ")" +
+                " UNION ALL " +
+                "select id, dni, apellido + ' ' + nombres as Paciente from dbo.PacienteLaboral where id in (" + pIn + ")");
+
+            // Batch: TipoExamenDePaciente (trae idTurno, id, precioExamen, modificado)
+            DataTable tipoExamenBatch = SQLConnector.obtenerTablaSegunConsultaString(
+                @"select tep.idTurno, tep.id, tep.precioExamen, tep.modificado
+                from dbo.TipoExamenDePaciente tep
+                where tep.idTurno in (" + tIn + ")");
+
+            sw.Stop();
+            System.Diagnostics.Debug.WriteLine($"[VENTANILLA] Batch pacientes+TipoExamen: {sw.ElapsedMilliseconds} ms");
+            sw.Restart();
+
+            // IDs de TipoExamen para batch clubes/empresas
+            var teIds = tipoExamenBatch.AsEnumerable().Select(r => r["id"].ToString()).Distinct().ToList();
+            string teIn = teIds.Count > 0 ? "'" + string.Join("','", teIds) + "'" : "'00000000-0000-0000-0000-000000000000'";
+
+            // precioBase ya viene en rawTurnos (columna PrecioBase desde Especialidad)
+
+            // Batch: clubes por tipo examen
+            DataTable clubesBatch = SQLConnector.obtenerTablaSegunConsultaString(
+                @"select cte.idTipoExamen, c.descripcion as Club
+                from dbo.clubesPorTipoExamen cte inner join dbo.Club c on cte.idClub = c.id
+                where cte.idTipoExamen in (" + teIn + ")");
+
+            // Batch: empresas por tipo examen
+            DataTable empresasBatch = SQLConnector.obtenerTablaSegunConsultaString(
+                @"select ete.idTipoExamen, e.razonSocial as Empresa, e.id as IdEmpresa
+                from dbo.empresaPorTipoDeExamen ete inner join dbo.Empresa e on ete.idEmpresa = e.id
+                where ete.idTipoExamen in (" + teIn + ")");
+
+            sw.Stop();
+            System.Diagnostics.Debug.WriteLine($"[VENTANILLA] Batch precios+clubes+empresas: {sw.ElapsedMilliseconds} ms");
+
+            // Armar diccionarios en memoria O(1)
+            var dictPaciente = new Dictionary<string, DataRow>(StringComparer.OrdinalIgnoreCase);
+            foreach (DataRow r in pacientes.Rows)
+            {
+                string id = r["id"].ToString();
+                if (!dictPaciente.ContainsKey(id)) dictPaciente[id] = r;
+            }
+
+            // turnoId -> (idTE, precioExamen, modificado)
+            var dictTE = new Dictionary<string, (string idTE, string precio, string modificado)>(StringComparer.OrdinalIgnoreCase);
+            foreach (DataRow r in tipoExamenBatch.Rows)
+            {
+                string idTurno = r["idTurno"].ToString();
+                if (!dictTE.ContainsKey(idTurno))
+                    dictTE[idTurno] = (r["id"].ToString(), r["precioExamen"].ToString(), r["modificado"].ToString());
+            }
+
+            // precioBase por turno tomado directamente de rawTurnos
+            var dictPrecioBase = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            foreach (DataRow r in rawTurnos.Rows)
+                dictPrecioBase[r["Id"].ToString()] = r["PrecioBase"].ToString();
+
+            // idTE -> (empresaClub, idEmpresa) — clubes tienen prioridad sobre empresas
+            var dictEmpresaClub = new Dictionary<string, (string nombre, string id)>(StringComparer.OrdinalIgnoreCase);
+            foreach (DataRow r in empresasBatch.Rows)
+            {
+                string key = r["idTipoExamen"].ToString();
+                if (!dictEmpresaClub.ContainsKey(key))
+                    dictEmpresaClub[key] = (r["Empresa"].ToString(), r["IdEmpresa"].ToString());
+            }
+            // Clubes sobreescriben empresas si existen
+            var dictClubes = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            foreach (DataRow r in clubesBatch.Rows)
+            {
+                string key = r["idTipoExamen"].ToString();
+                if (dictClubes.ContainsKey(key))
+                    dictClubes[key] = dictClubes[key] + " / " + r["Club"].ToString();
+                else
+                    dictClubes[key] = r["Club"].ToString();
+            }
+
+            // Procesar filas en memoria — cero queries adicionales
+            foreach (DataRow r in rawTurnos.Rows)
+            {
+                bool asistio   = r["asistio"].ToString() == "1";
+                bool abono     = r["abono"].ToString() == "1";
+                bool reservado = r["reservado"].ToString() == "1";
+                bool ocultar   = r["ocultar"].ToString() == "1";
+
+                string idTurno    = r["Id"].ToString();
+                string idPaciente = r["pacienteID"].ToString();
+                string fecha      = Convert.ToDateTime(r["Fecha"]).ToShortDateString();
+
+                dictTE.TryGetValue(idTurno, out var teData);
+                string idTE       = teData.idTE ?? string.Empty;
+                string modificado = teData.modificado ?? string.Empty;
+                string importe    = string.Empty;
+                if (!string.IsNullOrEmpty(teData.precio)) importe = teData.precio;
+                else dictPrecioBase.TryGetValue(idTurno, out importe);
+
+                string empresaClub = string.Empty, idEmpresa = string.Empty;
+                if (!string.IsNullOrEmpty(idTE))
+                {
+                    if (dictClubes.TryGetValue(idTE, out string clubNombre))
+                        empresaClub = clubNombre;
+                    else if (dictEmpresaClub.TryGetValue(idTE, out var empData))
+                    { empresaClub = empData.nombre; idEmpresa = empData.id; }
+                }
+
+                if (!string.IsNullOrEmpty(idPaciente) && idPaciente != Guid.Empty.ToString())
+                {
+                    string dni = string.Empty, paciente = string.Empty;
+                    if (dictPaciente.TryGetValue(idPaciente, out DataRow pacRow))
+                    { dni = pacRow["dni"].ToString(); paciente = pacRow["Paciente"].ToString(); }
+
+                    retorno.Rows.Add(asistio, abono, idTurno, fecha, r["Hora"],
+                        r["Orden"], r["SubtipoExamen"].ToString() + " " + modificado,
+                        dni, paciente, importe, empresaClub,
+                        r["Observaciones"], r["Codigo"], idPaciente,
+                        reservado, idEmpresa, ocultar);
+                }
+                else if (reservado)
+                {
+                    string paciente = "RESERVA " + r["reserva"].ToString().ToUpper();
+                    retorno.Rows.Add(asistio, abono, idTurno, fecha, r["Hora"],
+                        r["Orden"], r["SubtipoExamen"],
+                        string.Empty, paciente, importe, string.Empty,
+                        string.Empty, r["Codigo"], Guid.Empty,
+                        reservado, string.Empty, ocultar);
+                }
+            }
+            return retorno;
+        }
+
+        private DataTable crearTablaRetornoVentanilla()
+        {
+            DataTable retorno = new DataTable();
+            retorno.Columns.Add("Asistio");
+            retorno.Columns.Add("Abono");
+            retorno.Columns.Add("IdTurno");
+            retorno.Columns.Add("Fecha");
+            retorno.Columns.Add("Hora");
+            retorno.Columns.Add("Nro");
+            retorno.Columns.Add("Subtipo de Examen");
+            retorno.Columns.Add("Dni");
+            retorno.Columns.Add("Paciente");
+            retorno.Columns.Add("Importe");
+            retorno.Columns.Add("EmpresaClub");
+            retorno.Columns.Add("Observaciones");
+            retorno.Columns.Add("Codigo");
+            retorno.Columns.Add("IdPaciente");
+            retorno.Columns.Add("Reservado");
+            retorno.Columns.Add("IdEmpresa");
+            retorno.Columns.Add("Ocultar");
+            retorno.Columns[0].DataType = typeof(bool);
+            retorno.Columns[1].DataType = typeof(bool);
+            retorno.Columns[14].DataType = typeof(bool);
+            retorno.Columns[16].DataType = typeof(bool);
+            return retorno;
         }
                 
 

@@ -50,6 +50,7 @@ namespace CapaPresentacion
         private void cargarDgv()
         {
             DataView dv = null;
+            var sw = System.Diagnostics.Stopwatch.StartNew();
 
             if (tpHasta.Enabled)
             {
@@ -62,6 +63,9 @@ namespace CapaPresentacion
                 dv = new DataView(ventanilla.cargar(tpFecha.Value, tpFecha.Value, blnPrimerIngreso));
                 dgv.DataSource = dv;
             }
+
+            sw.Stop();
+            System.Diagnostics.Debug.WriteLine($"[VENTANILLA] cargarDgv total: {sw.ElapsedMilliseconds} ms ({dv?.Count} filas)");
 
             dv.Sort = "Hora, Nro, Paciente";
 
@@ -673,6 +677,82 @@ namespace CapaPresentacion
         private void dgv_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
 
+        }
+
+        private void btnEmitirFactura_Click(object sender, EventArgs e)
+        {
+            if (dgv.SelectedRows.Count == 0)
+            {
+                MessageBox.Show("Seleccione un paciente de la grilla.", "Aviso",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            Guid idTurno = new Guid(dgv.SelectedRows[0].Cells[2].Value.ToString());
+            string nombrePac = dgv.SelectedRows[0].Cells[8].Value.ToString().Trim();
+            string dniPac = dgv.SelectedRows[0].Cells[7].Value.ToString().Trim();
+            string especialidad = dgv.SelectedRows[0].Cells[6].Value.ToString().Trim();
+
+            decimal precioBase = 0m;
+            if (dgv.SelectedRows[0].Cells[9].Value != null && dgv.SelectedRows[0].Cells[9].Value != DBNull.Value)
+                decimal.TryParse(dgv.SelectedRows[0].Cells[9].Value.ToString(), out precioBase);
+
+            // Verificar si ya tiene factura emitida
+            var negFactura = new CapaNegocioMepryl.FacturacionElectronica();
+            System.Data.DataTable dtFact = negFactura.ObtenerComprobantesPorTurno(idTurno);
+            if (dtFact != null && dtFact.Rows.Count > 0)
+            {
+                string estado = dtFact.Rows[0]["estado"]?.ToString() ?? "";
+                if (estado == "Autorizado")
+                {
+                    MessageBox.Show(
+                        "Este paciente ya tiene factura electronica emitida.\n" +
+                        "Nro: " + dtFact.Rows[0]["nroComprobante"] +
+                        " | CAE: " + dtFact.Rows[0]["cae"],
+                        "Ya facturado", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+            }
+
+            using (var dlg = new frmDialogoFactura(nombrePac, especialidad, precioBase))
+            {
+                if (dlg.ShowDialog() != DialogResult.OK) return;
+
+                decimal importeFinal = dlg.Importe;
+                string medioPago = dlg.MedioPago;
+
+                Cursor = Cursors.WaitCursor;
+                try
+                {
+                    var res = negFactura.EmitirFactura(
+                        idTurno,
+                        11, "0", nombrePac, "CF",
+                        importeFinal, 0m, 2,
+                        "FACTURA C", 0, medioPago);
+
+                    if (res.Modo == 1)
+                    {
+                        ventanilla.actualizarAbono(idTurno, true);
+                        dgv.SelectedRows[0].Cells[1].Value = true;
+                        dgv.SelectedRows[0].DefaultCellStyle.BackColor = Color.LightGreen;
+
+                        MessageBox.Show(
+                            "Factura emitida correctamente.\n\n" + res.Mensaje,
+                            "Factura Electronica AFIP",
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show(
+                            "Error al emitir la factura:\n\n" + res.Mensaje,
+                            "Error AFIP", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+                finally
+                {
+                    Cursor = Cursors.Default;
+                }
+            }
         }
     }
 }
