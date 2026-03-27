@@ -86,20 +86,35 @@ namespace CapaPresentacion
             pnlPie.Enabled = false;
         }
 
+        // Caché estática: el template se lee de red una sola vez por sesión
+        private static byte[] _templateExcelCache = null;
+
+        public static void PreWarmCache()
+        {
+            try
+            {
+                if (_templateExcelCache == null)
+                    _templateExcelCache = System.IO.File.ReadAllBytes(@"P:\Temporal\PLANTILLA REPORTE INFORMES\Informe Audio Digitalizada3.xlsx");
+            }
+            catch { }
+        }
+
         private void AbrirArchivoExcel()
         {
-            using (FileStream stream = new FileStream(@"P:\Temporal\PLANTILLA REPORTE INFORMES\Informe Audio Digitalizada3.xlsx", FileMode.Open))
+            if (_templateExcelCache == null)
             {
-                spreadsheetControl1.LoadDocument(stream, DocumentFormat.OpenXml);
-                workbook = spreadsheetControl1.Document;
-                
-                workbook.Worksheets[0].ActiveView.ShowGridlines = false;
-                workbook.Worksheets[0].ActiveView.ShowHeadings = false;
-                worksheet = workbook.Worksheets[0]; // 1era Hoja del libro de excel
-
-                spreadsheetControl1 = null;
-                //spreadsheetCommandBarCheckItem2.Checked = false;                
+                _templateExcelCache = System.IO.File.ReadAllBytes(@"P:\Temporal\PLANTILLA REPORTE INFORMES\Informe Audio Digitalizada3.xlsx");
             }
+
+            using (var ms = new System.IO.MemoryStream(_templateExcelCache))
+            {
+                spreadsheetControl1.LoadDocument(ms, DocumentFormat.OpenXml);
+            }
+
+            workbook = spreadsheetControl1.Document;
+            workbook.Worksheets[0].ActiveView.ShowGridlines = false;
+            workbook.Worksheets[0].ActiveView.ShowHeadings = false;
+            worksheet = workbook.Worksheets[0];
         }
 
         public void GuardarDatosPdf()
@@ -524,7 +539,10 @@ namespace CapaPresentacion
 
         private void CargarDatosPaciente()
         {            
+            var swCDP = System.Diagnostics.Stopwatch.StartNew();
             DataTable dt = reporte.AudiometriaDiagnostico(dtFecha, strNroOrden);
+            swCDP.Stop();
+            System.Diagnostics.Debug.WriteLine($"[AUDIOMETRIA] AudiometriaDiagnostico (CargarDatosPaciente): {swCDP.ElapsedMilliseconds} ms");
 
             LimpiarVariablesGlobales();
 
@@ -558,8 +576,11 @@ namespace CapaPresentacion
                          
       private void CargarListView()
       {
+            var swLV = System.Diagnostics.Stopwatch.StartNew();
             dtDatosAudiometria = null;
             dtDatosAudiometria = reporte.AudiometriaEstablcerDatos(dtFecha);
+            swLV.Stop();
+            System.Diagnostics.Debug.WriteLine($"[AUDIOMETRIA] AudiometriaEstablcerDatos (CargarListView): {swLV.ElapsedMilliseconds} ms ({dtDatosAudiometria.Rows.Count} filas)");
             //lstListaPaciente.DataSource = dtDatosAudiometria;
             //lstListaPaciente.DisplayMember = "NombreApellido";
             //lstListaPaciente.ValueMember = "NroOrden";
@@ -792,41 +813,47 @@ namespace CapaPresentacion
 
         private void frmReporteAudiometria_Shown(object sender, EventArgs e)
         {
+            var swShown = System.Diagnostics.Stopwatch.StartNew();
+            System.Diagnostics.Debug.WriteLine("[AUDIOMETRIA] === INICIO Shown ===");
+
+            var sw1 = System.Diagnostics.Stopwatch.StartNew();
             AbrirArchivoExcel();
+            sw1.Stop();
+            System.Diagnostics.Debug.WriteLine($"[AUDIOMETRIA] AbrirArchivoExcel: {sw1.ElapsedMilliseconds} ms");
 
             if (panel3.Visible == true)
             {
+                var sw2 = System.Diagnostics.Stopwatch.StartNew();
                 CargarListView();
+                sw2.Stop();
+                System.Diagnostics.Debug.WriteLine($"[AUDIOMETRIA] CargarListView: {sw2.ElapsedMilliseconds} ms");
             }
             else
             {
+                var sw2 = System.Diagnostics.Stopwatch.StartNew();
                 EstablcerDatos();
+                sw2.Stop();
+                System.Diagnostics.Debug.WriteLine($"[AUDIOMETRIA] EstablcerDatos: {sw2.ElapsedMilliseconds} ms");
             }            
             
             gbActualizando.Visible = false;
+            swShown.Stop();
+            System.Diagnostics.Debug.WriteLine($"[AUDIOMETRIA] === TOTAL Shown: {swShown.ElapsedMilliseconds} ms ===");
         }
 
         private void frmReporteAudiometria_Load(object sender, EventArgs e)
         {
             //EstablcerDatos(); 
+            var swLoad = System.Diagnostics.Stopwatch.StartNew();
             MostrarPanelActualiza();
-            //AbrirArchivoExcel();
-            //blnItemsCargados = true;
-            
+            swLoad.Stop();
+            System.Diagnostics.Debug.WriteLine($"[AUDIOMETRIA] Load/MostrarPanelActualiza: {swLoad.ElapsedMilliseconds} ms");
         }
 
         private void MostrarPanelActualiza()
         {
             gbActualizando.Visible = true;
-            pbActualizando.Value = 0;
-            pbActualizando.Maximum = 101;
-            for (int i = 1; i <= 100; i++)
-            {
-                pbActualizando.Value = i;
-                Thread.Sleep(25);
-            }
-            gbActualizando.Visible = true;
-            
+            Application.DoEvents();
         }
 
         // OIDO Izquierdo

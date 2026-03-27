@@ -19,7 +19,8 @@ namespace CapaPresentacion
         public frmPrincipal()
         {
             InitializeComponent();
-
+            // Pre-calentar cache del template Excel de Audiometría en background
+            System.Threading.Tasks.Task.Run(() => frmReporteAudiometria2.PreWarmCache());
         }
 
         [STAThread]
@@ -1167,26 +1168,17 @@ namespace CapaPresentacion
             OcultarPestanasRibbon();
             ColorRibbonLaboral();
 
-            //foreach (Form frm in Application.OpenForms)
-            //{
-            //    if ((frm.GetType() == typeof(frmAgendaMesaEntrada2)) || (frm.GetType() == typeof(frmMesaDeEntrada)))
-            //    {
-            //        frm.Dispose();
-            //        frm.Close();
-            //        break;
-            //    }               
-            //}
-
-            //foreach (Form frm in Application.OpenForms)
-            //{
-            //    if ((frm.GetType() == typeof(frmAgendaMesaEntrada2)) || (frm.GetType() == typeof(frmMesaDeEntrada)))
-            //    {
-            //        frm.Dispose();
-            //        frm.Close();
-            //        break;
-            //    }
-            //}
+            // Si ya está abierto, solo traer al frente (evita re-parsear Excel ~1700ms)
             foreach (Form frm in this.MdiChildren)
+            {
+                if (frm is frmReporteAudiometria2)
+                {
+                    frm.BringToFront();
+                    return;
+                }
+            }
+
+            foreach (Form frm in this.MdiChildren.ToArray())
             {
                 frm.Dispose();
                 frm.Close();
