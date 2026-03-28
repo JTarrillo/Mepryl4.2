@@ -97,20 +97,24 @@ namespace CapaPresentacion
             System.Diagnostics.Debug.WriteLine(sb.ToString());
         }
 
+        private static int _syncCallCount = 0;
         public void SincronizarCombosDesde(int idMotivo, string idTipo, string idSubtipo)
         {
+            int callId = System.Threading.Interlocked.Increment(ref _syncCallCount);
+            var swTotal = System.Diagnostics.Stopwatch.StartNew();
+            System.Diagnostics.Debug.WriteLine($"[SYNC #{callId}] ===INICIO=== Instancia={this.Name ?? this.GetHashCode().ToString()} | idMotivo={idMotivo}, idTipo={idTipo}, idSubtipo={idSubtipo}");
             try
             {
-                System.Diagnostics.Debug.WriteLine($"[SYNC] Iniciando SincronizarCombosDesde: idMotivo={idMotivo}, idTipo={idTipo}, idSubtipo={idSubtipo}");
                 permitirEventoSubtipo = false;
                 permitirSincronizacion = false;
 
                 try
                 {
                     // 1. Cargar motivos y seleccionar
+                    var sw1 = System.Diagnostics.Stopwatch.StartNew();
                     CargarMotivosConsulta();
-
-                    System.Diagnostics.Debug.WriteLine($"[SYNC] Motivos cargados. SelectedValue={cmbMotivoConsulta.SelectedValue}");
+                    sw1.Stop();
+                    System.Diagnostics.Debug.WriteLine($"[SYNC #{callId}] Motivos cargados en {sw1.ElapsedMilliseconds}ms. SelectedValue={cmbMotivoConsulta.SelectedValue}");
 
                     if (idMotivo > 0)
                     {
@@ -118,19 +122,33 @@ namespace CapaPresentacion
                         {
                             cmbMotivoConsulta.SelectedValue = idMotivo;
                             idMotivoConsultaSeleccionado = idMotivo;
-                            System.Diagnostics.Debug.WriteLine($"[SYNC] Motivo seleccionado: {idMotivo}");
+                            System.Diagnostics.Debug.WriteLine($"[SYNC #{callId}] Motivo seleccionado: {idMotivo}");
+                        }
+                        else
+                        {
+                            System.Diagnostics.Debug.WriteLine($"[SYNC #{callId}] Motivo ya estaba seleccionado: {idMotivo} (sin cambio)");
                         }
                     }
-
 
                     // 2. Cargar tipos y seleccionar
                     if (idMotivo > 0)
                     {
+                        var sw2 = System.Diagnostics.Stopwatch.StartNew();
                         CargarTiposExamen();
-                        Application.DoEvents();
-                        System.Diagnostics.Debug.WriteLine($"[SYNC] Tipos de examen cargados. SelectedValue={cmbTipoExamen.SelectedValue}");
-                        if (idMotivo > 0)
+                        sw2.Stop();
+                        System.Diagnostics.Debug.WriteLine($"[SYNC #{callId}] TiposExamen cargados en {sw2.ElapsedMilliseconds}ms. SelectedValue={cmbTipoExamen.SelectedValue}");
+
+                        if (tabControl.TabPages.Contains(tabGestionar))
+                        {
+                            var sw2b = System.Diagnostics.Stopwatch.StartNew();
                             MostrarGestionMotivoTipoSubtipo(idMotivo);
+                            sw2b.Stop();
+                            System.Diagnostics.Debug.WriteLine($"[SYNC #{callId}] MostrarGestion ejecutado en {sw2b.ElapsedMilliseconds}ms");
+                        }
+                        else
+                        {
+                            System.Diagnostics.Debug.WriteLine($"[SYNC #{callId}] MostrarGestion OMITIDO (tabGestionar no presente)");
+                        }
 
                         if (!evitarSeleccionTipoExamenAutomatico)
                         {
@@ -140,69 +158,91 @@ namespace CapaPresentacion
                                 {
                                     cmbTipoExamen.SelectedValue = idTipo;
                                     idTipoExamenSeleccionado = idTipo;
-                                    System.Diagnostics.Debug.WriteLine($"[SYNC] Tipo de examen seleccionado: {idTipo}");
+                                    bool ok = cmbTipoExamen.SelectedValue?.ToString() == idTipo;
+                                    System.Diagnostics.Debug.WriteLine($"[SYNC #{callId}] Tipo seleccionado: {idTipo} | éxito={ok}");
+                                }
+                                else
+                                {
+                                    System.Diagnostics.Debug.WriteLine($"[SYNC #{callId}] Tipo ya estaba seleccionado: {idTipo} (sin cambio)");
                                 }
                             }
                             else
                             {
-                                // Si no hay tipo, limpiar selección
                                 cmbTipoExamen.SelectedIndex = -1;
                                 idTipoExamenSeleccionado = "";
+                                System.Diagnostics.Debug.WriteLine($"[SYNC #{callId}] Tipo limpiado (idTipo vacío)");
                             }
+                        }
+                        else
+                        {
+                            System.Diagnostics.Debug.WriteLine($"[SYNC #{callId}] Selección de tipo OMITIDA (evitarSeleccionTipoExamenAutomatico=true)");
                         }
                     }
 
                     // 3. Cargar subtipos y seleccionar
                     if (!string.IsNullOrEmpty(idTipo))
                     {
+                        var sw3 = System.Diagnostics.Stopwatch.StartNew();
                         CargarSubtipos();
-                        Application.DoEvents();
-                        System.Diagnostics.Debug.WriteLine($"[SYNC] Subtipos cargados. SelectedValue={cmbSubtipo.SelectedValue}");
+                        sw3.Stop();
+                        System.Diagnostics.Debug.WriteLine($"[SYNC #{callId}] Subtipos cargados en {sw3.ElapsedMilliseconds}ms. Items={cmbSubtipo.Items.Count}, SelectedValue={cmbSubtipo.SelectedValue}");
+
                         if (!string.IsNullOrEmpty(idSubtipo))
                         {
                             if (cmbSubtipo.SelectedValue == null || cmbSubtipo.SelectedValue.ToString() != idSubtipo)
                             {
                                 cmbSubtipo.SelectedValue = idSubtipo;
                                 idSubtipoActualmenteCargado = idSubtipo;
-                                System.Diagnostics.Debug.WriteLine($"[SYNC] Subtipo seleccionado: {idSubtipo}");
+                                bool ok = cmbSubtipo.SelectedValue?.ToString() == idSubtipo;
+                                System.Diagnostics.Debug.WriteLine($"[SYNC #{callId}] Subtipo seleccionado: {idSubtipo} | éxito={ok}{(ok ? "" : " <-- NO ENCONTRADO en combo!")}");
+                            }
+                            else
+                            {
+                                System.Diagnostics.Debug.WriteLine($"[SYNC #{callId}] Subtipo ya estaba seleccionado: {idSubtipo} (sin cambio)");
                             }
                         }
                         else
                         {
-                            // Si no hay subtipo, limpiar selección
                             cmbSubtipo.SelectedIndex = -1;
                             idSubtipoActualmenteCargado = "";
+                            System.Diagnostics.Debug.WriteLine($"[SYNC #{callId}] Subtipo limpiado (idSubtipo vacío)");
                         }
                     }
 
                     ActualizarEstadoControles();
-                    System.Diagnostics.Debug.WriteLine($"[SYNC] Estado de controles actualizado");
+                    System.Diagnostics.Debug.WriteLine($"[SYNC #{callId}] Estado de controles actualizado");
                 }
                 finally
                 {
                     permitirEventoSubtipo = true;
                     permitirSincronizacion = true;
-                    evitarSeleccionTipoExamenAutomatico = false; // Siempre resetear tras sincronizar
+                    evitarSeleccionTipoExamenAutomatico = false;
 
-                    Application.DoEvents();
-                    System.Diagnostics.Debug.WriteLine($"[SYNC] Finalizando sincronización. idSubtipo={idSubtipo}, cmbSubtipo.SelectedIndex={cmbSubtipo.SelectedIndex}, idTipo={idTipo}, cmbTipoExamen.SelectedIndex={cmbTipoExamen.SelectedIndex}");
-                    if (!string.IsNullOrEmpty(idSubtipo) && cmbSubtipo.SelectedIndex != -1)
+                    bool dispararSubtipo = !string.IsNullOrEmpty(idSubtipo) && cmbSubtipo.SelectedIndex != -1;
+                    bool dispararTipo   = !string.IsNullOrEmpty(idTipo) && cmbTipoExamen.SelectedIndex != -1;
+                    System.Diagnostics.Debug.WriteLine($"[SYNC #{callId}] finally: dispararSubtipo={dispararSubtipo}, dispararTipo={dispararTipo}");
+
+                    if (dispararSubtipo)
                     {
-                        System.Diagnostics.Debug.WriteLine($"[SYNC] Lanzando CmbSubtipo_SelectedIndexChanged por sincronización");
+                        System.Diagnostics.Debug.WriteLine($"[SYNC #{callId}] Lanzando CmbSubtipo_SelectedIndexChanged");
                         CmbSubtipo_SelectedIndexChanged(cmbSubtipo, EventArgs.Empty);
                     }
-                    else if (!string.IsNullOrEmpty(idTipo) && cmbTipoExamen.SelectedIndex != -1)
+                    else if (dispararTipo)
                     {
-                        System.Diagnostics.Debug.WriteLine($"[SYNC] Lanzando CmbTipoExamen_SelectedIndexChanged por sincronización");
+                        System.Diagnostics.Debug.WriteLine($"[SYNC #{callId}] Lanzando CmbTipoExamen_SelectedIndexChanged");
                         CmbTipoExamen_SelectedIndexChanged(cmbTipoExamen, EventArgs.Empty);
                     }
+
+                    swTotal.Stop();
+                    System.Diagnostics.Debug.WriteLine($"[SYNC #{callId}] ===FIN=== Tiempo total: {swTotal.ElapsedMilliseconds}ms");
                 }
             }
             catch (Exception ex)
             {
                 permitirEventoSubtipo = true;
                 permitirSincronizacion = true;
-                System.Diagnostics.Debug.WriteLine($"[SYNC][ERROR] Excepción en SincronizarCombosDesde: {ex.Message}\n{ex.StackTrace}");
+                swTotal.Stop();
+                System.Diagnostics.Debug.WriteLine($"[SYNC #{callId}][ERROR] Excepción: {ex.Message}\n{ex.StackTrace}");
             }
         }
 
@@ -533,11 +573,10 @@ namespace CapaPresentacion
             this.btnGuardar.Click += BtnGuardar_Click;
             this.btnCancelar.Click += BtnCancelar_Click;
             this.cmbMotivoConsulta.SelectedIndexChanged += CmbMotivoConsulta_SelectedIndexChanged;
-            this.cmbTipoExamen.SelectedIndexChanged += CmbTipoExamen_SelectedIndexChanged;
-            this.cmbSubtipo.SelectedIndexChanged += CmbSubtipo_SelectedIndexChanged;
+            // cmbTipoExamen y cmbSubtipo ya suscritos en Designer.cs
             this.dgvTiposExamenes.SelectionChanged += DgvTiposExamenes_SelectionChanged;
             this.btnMotivodeConsulta.Click += button1_Click;
-            this.button2.Click += button2_Click;
+            // button2.Click ya suscrito en Designer.cs
             this.dgvTiposExamenes.DataBindingComplete += DgvTiposExamenes_DataBindingComplete;
             // Eventos CellValueChanged y CurrentCellDirtyStateChanged ya están suscritos en Designer.cs
 
@@ -1245,6 +1284,7 @@ namespace CapaPresentacion
         }
         private void CargarSubtipos()
         {
+            bool estadoPrevioPermitir = permitirEventoSubtipo;
             try
             {
                 permitirEventoSubtipo = false;
@@ -1301,7 +1341,7 @@ namespace CapaPresentacion
             }
             finally
             {
-                permitirEventoSubtipo = true;
+                permitirEventoSubtipo = estadoPrevioPermitir; // restaurar estado previo
             }
         }
 
