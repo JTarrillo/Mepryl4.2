@@ -307,10 +307,25 @@ namespace CapaPresentacion
 
                     System.Diagnostics.Debug.WriteLine($"Estado: {valor}");
 
-                    if (valor == 2)
+                    switch (valor)
                     {
-                        fila.DefaultCellStyle.BackColor = System.Drawing.Color.MistyRose;
-                        System.Diagnostics.Debug.WriteLine($"✅ Coloreada fila con estado 2");
+                        case 2:
+                            fila.DefaultCellStyle.BackColor = System.Drawing.Color.MistyRose;      // Asignado
+                            System.Diagnostics.Debug.WriteLine($"✅ Coloreada fila con estado 2");
+                            break;
+                        case 3:
+                            fila.DefaultCellStyle.BackColor = System.Drawing.Color.LightGray;      // Bloqueado / Inhabilitado
+                            System.Diagnostics.Debug.WriteLine($"[COLOR] Fila pintada LightGray (Inhabilitado, estado 3)");
+                            break;
+                        case 4:
+                            fila.DefaultCellStyle.BackColor = System.Drawing.Color.LightSteelBlue; // Reservado
+                            break;
+                        case 5:
+                            fila.DefaultCellStyle.BackColor = System.Drawing.Color.LightGray;      // Otro estado bloqueado
+                            break;
+                        default:
+                            fila.DefaultCellStyle.BackColor = System.Drawing.Color.White;          // Libre
+                            break;
                     }
                 }
             }
@@ -1334,7 +1349,24 @@ namespace CapaPresentacion
         private void botInhabilitar_Click(object sender, EventArgs e)
         {
             int intFila = dgv.CurrentCell.RowIndex;
+
+            List<int> filasLibres = new List<int>();
+            foreach (DataGridViewRow dgvR in dgv.SelectedRows)
+            {
+                if (turnoLibre(dgvR.Index))
+                    filasLibres.Add(dgvR.Index);
+            }
+
+            nroFila = intFila;
+            nroColumna = 1;
             inhabilitarTurnos();
+
+            foreach (int fila in filasLibres)
+            {
+                if (fila < dgv.Rows.Count)
+                    dgv.Rows[fila].DefaultCellStyle.BackColor = System.Drawing.Color.LightGray;
+            }
+
             dgv.Rows[intFila].Selected = true;
             dgv.CurrentCell = dgv.Rows[intFila].Cells[1];
         }
@@ -1343,11 +1375,20 @@ namespace CapaPresentacion
         {
             MessageBox.Show("Aviso: Se van a inhabilitar los turnos seleccionados que estén libres",
                 "Inhabilitar Turnos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            System.Diagnostics.Debug.WriteLine($"[INHABILITAR] inhabilitarTurnos() | Total filas seleccionadas: {dgv.SelectedRows.Count}");
             foreach (DataGridViewRow dgvR in dgv.SelectedRows)
             {
-                if (turnoLibre(dgvR.Index))
+                string estadoFila = dgvR.Cells[18].Value?.ToString() ?? "null";
+                bool esLibre = turnoLibre(dgvR.Index);
+                System.Diagnostics.Debug.WriteLine($"[INHABILITAR] Fila {dgvR.Index} | ID: {dgvR.Cells[0].Value} | Estado col18: {estadoFila} | turnoLibre: {esLibre}");
+                if (esLibre)
                 {
                     turno.inhabilitarTurno(new Guid(dgvR.Cells[0].Value.ToString()));
+                    System.Diagnostics.Debug.WriteLine($"[INHABILITAR] ✅ inhabilitarTurno() llamado para fila {dgvR.Index}");
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine($"[INHABILITAR] ❌ Fila {dgvR.Index} NO es libre, no se inhabilita");
                 }
             }
             cargarGrillaTurnosSinFiltro();
@@ -1668,6 +1709,14 @@ namespace CapaPresentacion
             // GRV - Modificado
             // asignar();
             LimpiaVariableDatos();
+
+            // No permitir asignar si el turno no está libre (estado 1)
+            if (!turnoLibre(dgv.CurrentCell.RowIndex))
+            {
+                MessageBox.Show("El turno seleccionado no está disponible para asignar.",
+                    "Turno no disponible", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
 
             if (!VerificaIDTurnoLibre())
             {
@@ -2287,7 +2336,7 @@ namespace CapaPresentacion
         {
             CapaNegocioMepryl.ConfigPlantillaReporte Reporte = new CapaNegocioMepryl.ConfigPlantillaReporte();
             string strPathArchivo = Reporte.GetPathMensajePorSubtipo(idSubtipo);
-            MessageBox.Show(strPathArchivo, "Archivo de plantilla usado");
+            // MessageBox.Show(strPathArchivo, "Archivo de plantilla usado");
 
             if (string.IsNullOrEmpty(strPathArchivo) || !System.IO.File.Exists(strPathArchivo))
             {

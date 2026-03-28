@@ -1,54 +1,54 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Net;
 using System.Text;
 
 namespace CapaDatosMepryl
 {
-    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-    //  INTEGRACIÃ“N CON TUSFACTURAS.APP  (REST/JSON)
-    //  â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-    //  Reemplaza la implementaciÃ³n SOAP directa contra AFIP (WSAA + WSFE).
-    //  TusFacturas actÃºa como intermediario y gestiona el certificado ARCA.
+    // ═══════════════════════════════════════════════════════════════════════════
+    //  INTEGRACIÓN CON TUSFACTURAS.APP  (REST/JSON)
+    //  ───────────────────────────────────────────────────────────────────────
+    //  Reemplaza la implementación SOAP directa contra AFIP (WSAA + WSFE).
+    //  TusFacturas actúa como intermediario y gestiona el certificado ARCA.
     //  No se requiere archivo .p12 ni firma CMS.
     //
-    //  DocumentaciÃ³n: https://developers.tusfacturas.app/
+    //  Documentación: https://developers.tusfacturas.app/
     //
-    //  CONFIGURACIÃ“N (dbo.ConfiguracionAFIP):
-    //    tfUserToken â†’ User Token del punto de venta
-    //    tfApiToken  â†’ API Token
-    //    tfApiKey    â†’ API Key (ej: "71326")
-    //    puntoVenta  â†’ NÃºmero de PDV (ej: 1)
-    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+    //  CONFIGURACIÓN (dbo.ConfiguracionAFIP):
+    //    tfUserToken → User Token del punto de venta
+    //    tfApiToken  → API Token
+    //    tfApiKey    → API Key (ej: "71326")
+    //    puntoVenta  → Número de PDV (ej: 1)
+    // ═══════════════════════════════════════════════════════════════════════════
 
-    // (eliminado: TicketAcceso â€” ya no se usa con TusFacturas)
-    // (eliminado: ItemFactura  â€” ya no se usa con TusFacturas)
+    // (eliminado: TicketAcceso — ya no se usa con TusFacturas)
+    // (eliminado: ItemFactura  — ya no se usa con TusFacturas)
 
-    // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-    //  Nota: Â¡NO OLVIDAR! Configurar la conexiÃ³n ARCA en el portal TusFacturas:
-    //    Mi cuenta â†’ Configurar espacio de trabajo â†’ FacturaciÃ³n ARCA
-    //    Sin esa conexiÃ³n, las facturas no serÃ¡n enviadas a AFIP.
-    // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ─────────────────────────────────────────────────────────────────────────
+    //  Nota: ¡NO OLVIDAR! Configurar la conexión ARCA en el portal TusFacturas:
+    //    Mi cuenta → Configurar espacio de trabajo → Facturación ARCA
+    //    Sin esa conexión, las facturas no serán enviadas a AFIP.
+    // ─────────────────────────────────────────────────────────────────────────
 
     /// <summary>
     /// Respuesta de TusFacturas al autorizar un comprobante.
     /// </summary>
     public class RespuestaCAE
     {
-        public bool     Autorizado          { get; set; }
-        public string   CAE                 { get; set; }
+        public bool Autorizado { get; set; }
+        public string CAE { get; set; }
         public DateTime FechaVencimientoCAE { get; set; }
-        public string   Observaciones       { get; set; }
-        public string   Errores             { get; set; }
+        public string Observaciones { get; set; }
+        public string Errores { get; set; }
         /// <summary>Nro de comprobante asignado, ej: "00001-00000001"</summary>
-        public string   NroComprobante      { get; set; }
+        public string NroComprobante { get; set; }
         /// <summary>URL del PDF del comprobante en TusFacturas</summary>
-        public string   PdfUrl              { get; set; }
+        public string PdfUrl { get; set; }
     }
 
     /// <summary>
-    /// IntegraciÃ³n con TusFacturas.app API REST/JSON para facturaciÃ³n electrÃ³nica AFIP.
-    /// No requiere .p12 ni WSAA â€” TusFacturas gestiona el certificado ARCA.
+    /// Integración con TusFacturas.app API REST/JSON para facturación electrónica AFIP.
+    /// No requiere .p12 ni WSAA — TusFacturas gestiona el certificado ARCA.
     /// </summary>
     public class ServiciosAfip
     {
@@ -57,48 +57,52 @@ namespace CapaDatosMepryl
         private readonly string _userToken;
         private readonly string _apiToken;
         private readonly string _apiKey;
-        private readonly string _puntoVenta;   // 5 dÃ­gitos con ceros a la izquierda
+        private readonly string _puntoVenta;   // 5 dígitos con ceros a la izquierda
 
         public ServiciosAfip(string userToken, string apiToken, string apiKey, int puntoVenta)
         {
-            _userToken  = userToken;
-            _apiToken   = apiToken;
-            _apiKey     = apiKey;
+            _userToken = userToken;
+            _apiToken = apiToken;
+            _apiKey = apiKey;
             _puntoVenta = puntoVenta.ToString().PadLeft(5, '0');
         }
 
-        // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-        // EMISIÃ“N DE COMPROBANTE
-        // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        // ─────────────────────────────────────────────────────────────────────
+        // EMISIÓN DE COMPROBANTE
+        // ─────────────────────────────────────────────────────────────────────
 
         /// <summary>
-        /// Emite un comprobante C (Factura, Nota de Crédito o Nota de Débito) a través de TusFacturas.
-        /// El número de comprobante es asignado automáticamente (numero=0).
+        /// Emite un comprobante C (Factura, Nota de Cr�dito o Nota de D�bito) a trav�s de TusFacturas.
+        /// El n�mero de comprobante es asignado autom�ticamente (numero=0).
         /// </summary>
         /// <param name="tipoComprobante">FACTURA C | NOTA DE CREDITO C | NOTA DE DEBITO C</param>
         /// <param name="nroComprobanteAsociado">Para NC/ND: nro de la factura original. 0 si no aplica.</param>
         /// <param name="medioPago">EFECTIVO | TARJETA_CREDITO | TARJETA_DEBITO | MERCADO_PAGO | TRANSFERENCIA</param>
         public RespuestaCAE EmitirFacturaC(
-            string  descripcion,
+            string descripcion,
             decimal importeTotal,
-            string  nombreReceptor        = "Consumidor Final",
-            string  documentoReceptor     = "0",
-            string  tipoComprobante       = "FACTURA C",
-            long    nroComprobanteAsociado = 0,
-            string  medioPago             = "EFECTIVO")
+            string nombreReceptor = "Consumidor Final",
+            string documentoReceptor = "0",
+            string tipoComprobante = "FACTURA C",
+            long nroComprobanteAsociado = 0,
+            string medioPago = "EFECTIVO",
+            string codArticulo = "")
         {
-            string fechaHoy   = DateTime.Today.ToString("dd/MM/yyyy");
+            string fechaHoy = DateTime.Today.ToString("dd/MM/yyyy");
+            string fechaVencPago = DateTime.Today.AddDays(30).ToString("dd/MM/yyyy");
             string importeStr = importeTotal.ToString("F2", System.Globalization.CultureInfo.InvariantCulture);
 
-            // Si hay CUIT real → receptor identificado (RI); si no → Consumidor Final
-            bool   tieneCuit = documentoReceptor != "0" && !string.IsNullOrWhiteSpace(documentoReceptor);
-            string docTipo   = tieneCuit ? "CUIT"            : "CONSUMIDOR_FINAL";
-            string condIva   = tieneCuit ? "RI"              : "CF";
-            string docNro    = tieneCuit ? documentoReceptor : "0";
+            // Si hay CUIT real ? receptor identificado (RI); si no ? Consumidor Final
+            string docClean = System.Text.RegularExpressions.Regex.Replace(documentoReceptor ?? "", @"[^0-9]", "");
+            bool tieneCuit = docClean.Length == 11;
+            bool tieneDni = docClean.Length >= 7 && docClean.Length <= 8;
+            string docTipo = tieneCuit ? "CUIT" : (tieneDni ? "DNI" : "CONSUMIDOR_FINAL");
+            string condIva = tieneCuit ? "RI" : "CF";
+            string docNro = (tieneCuit || tieneDni) ? docClean : "0";
 
             // Comprobantes asociados (requerido para NC y ND)
-            bool   esNcNd     = tipoComprobante.StartsWith("NOTA DE");
-            string asociados  = "";
+            bool esNcNd = tipoComprobante.StartsWith("NOTA DE");
+            string asociados = "";
             if (esNcNd && nroComprobanteAsociado > 0)
             {
                 asociados = $@",
@@ -121,11 +125,13 @@ namespace CapaDatosMepryl
     ""documento_nro"": ""{Esc(docNro)}"",
     ""razon_social"": ""{Esc(nombreReceptor)}"",
     ""email"": """",
-    ""domicilio"": """",
+    ""domicilio"": ""Sin especificar"",
+    ""provincia"": ""1"",
     ""condicion_iva"": ""{condIva}""
   }},
   ""comprobante"": {{
     ""fecha"": ""{fechaHoy}"",
+    ""vencimiento"": ""{fechaVencPago}"",
     ""tipo"": ""{tipoComprobante}"",
     ""operacion"": ""V"",
     ""punto_venta"": ""{_puntoVenta}"",
@@ -141,7 +147,7 @@ namespace CapaDatosMepryl
         ""descripcion"": ""{Esc(descripcion)}"",
         ""unidad_bulto"": 1,
         ""lista_precios"": """",
-        ""codigo"": """",
+        ""codigo"": ""{Esc(codArticulo)}"",
         ""precio_unitario_sin_iva"": {importeStr},
         ""alicuota"": 0,
         ""unidad_medida"": ""94""
@@ -159,7 +165,9 @@ namespace CapaDatosMepryl
     ""importe_neto"": {importeStr}{asociados}
   }}}}";
 
+            System.Diagnostics.Debug.WriteLine("[TUSFACTURAS] JSON ENVIADO:\n" + json);
             string respuestaJson = Post(URL_FACTURACION, json);
+            System.Diagnostics.Debug.WriteLine("[TUSFACTURAS] RESPUESTA:\n" + respuestaJson);
             return Parsear(respuestaJson);
         }
 
@@ -183,20 +191,20 @@ namespace CapaDatosMepryl
             return Parsear(respuestaJson);
         }
 
-        // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        // ─────────────────────────────────────────────────────────────────────
         // PARSEO DE RESPUESTA
-        // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        // ─────────────────────────────────────────────────────────────────────
 
         private RespuestaCAE Parsear(string json)
         {
             var r = new RespuestaCAE();
             try
             {
-                r.Autorizado     = Valor(json, "error") == "N";
-                r.CAE            = Valor(json, "cae");
+                r.Autorizado = Valor(json, "error") == "N";
+                r.CAE = Valor(json, "cae");
                 r.NroComprobante = Valor(json, "comprobante_nro");
-                r.Observaciones  = Valor(json, "rta");
-                r.PdfUrl         = Valor(json, "comprobante_pdf_url");
+                r.Observaciones = Valor(json, "rta");
+                r.PdfUrl = Valor(json, "comprobante_pdf_url");
 
                 string fechaVenc = Valor(json, "vencimiento_cae");
                 if (!string.IsNullOrEmpty(fechaVenc) && fechaVenc.Length == 8)
@@ -208,7 +216,7 @@ namespace CapaDatosMepryl
             catch (Exception ex)
             {
                 r.Autorizado = false;
-                r.Errores    = "Error al parsear respuesta: " + ex.Message + "\n" + json;
+                r.Errores = "Error al parsear respuesta: " + ex.Message + "\n" + json;
             }
             return r;
         }
@@ -254,18 +262,18 @@ namespace CapaDatosMepryl
                 : s.Replace("\\", "\\\\").Replace("\"", "\\\"")
                    .Replace("\n", "\\n").Replace("\r", "\\r");
 
-        // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        // ─────────────────────────────────────────────────────────────────────
         // HTTP POST
-        // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        // ─────────────────────────────────────────────────────────────────────
 
         private string Post(string url, string jsonBody)
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
             HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
-            req.Method      = "POST";
+            req.Method = "POST";
             req.ContentType = "application/json";
-            req.Timeout     = 30000;
+            req.Timeout = 30000;
 
             byte[] body = Encoding.UTF8.GetBytes(jsonBody);
             req.ContentLength = body.Length;

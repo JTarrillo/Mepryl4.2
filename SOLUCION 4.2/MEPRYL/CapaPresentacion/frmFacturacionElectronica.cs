@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.Windows.Forms;
+using Comunes;
 
 namespace CapaPresentacion
 {
@@ -12,6 +13,8 @@ namespace CapaPresentacion
         private readonly CapaNegocioMepryl.FacturacionElectronica _negocio;
 
         private string _ultimoPdfUrl = null;
+        private System.Data.DataTable _dtEspecialidades = null;
+        private ComboBox _cboEspecialidad = null;
 
         public frmFacturacionElectronica()
         {
@@ -27,6 +30,63 @@ namespace CapaPresentacion
             dtpHasta.Value = DateTime.Today;
             CargarHistorial();
             CargarConfiguracion();
+            InicializarComboEspecialidad();
+        }
+
+        private void InicializarComboEspecialidad()
+        {
+            try
+            {
+                _dtEspecialidades = _negocio.ObtenerEspecialidadesConPrecio();
+
+                // Label encima del combo
+                var lbl = new Label();
+                lbl.Text = "Especialidad / Artículo:";
+                lbl.Font = new System.Drawing.Font("Segoe UI", 9f);
+                lbl.AutoSize = true;
+                lbl.Location = new System.Drawing.Point(12, 18);
+                grpImporte.Controls.Add(lbl);
+
+                // ComboBox de especialidades
+                _cboEspecialidad = new ComboBox();
+                _cboEspecialidad.DropDownStyle = ComboBoxStyle.DropDownList;
+                _cboEspecialidad.Font = new System.Drawing.Font("Segoe UI", 10f);
+                _cboEspecialidad.Location = new System.Drawing.Point(12, 38);
+                _cboEspecialidad.Size = new System.Drawing.Size(400, 28);
+                _cboEspecialidad.Name = "cboEspecialidad";
+
+                // item vacío al inicio
+                _cboEspecialidad.Items.Add("-- Ingreso manual --");
+                foreach (System.Data.DataRow row in _dtEspecialidades.Rows)
+                    _cboEspecialidad.Items.Add(row["nombre"].ToString());
+
+                _cboEspecialidad.SelectedIndex = 0;
+                _cboEspecialidad.SelectedIndexChanged += cboEspecialidad_SelectedIndexChanged;
+                grpImporte.Controls.Add(_cboEspecialidad);
+
+                // Mover txtImporte y lblImporteLabel hacia abajo para que entren
+                lblImporteLabel.Top  = 72;
+                txtImporte.Top       = 92;
+                lblIVANota.Top       = txtImporte.Top + txtImporte.Height + 4;
+                lblMedioPagoLabel.Top = lblIVANota.Top + lblIVANota.Height + 4;
+                cboMedioPago.Top     = lblMedioPagoLabel.Top + lblMedioPagoLabel.Height + 2;
+
+                // Ampliar el GroupBox si es necesario
+                if (grpImporte.Height < cboMedioPago.Bottom + 20)
+                    grpImporte.Height = cboMedioPago.Bottom + 20;
+            }
+            catch { /* Si falla no bloquea el formulario */ }
+        }
+
+        private void cboEspecialidad_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_cboEspecialidad == null || _dtEspecialidades == null) return;
+            int idx = _cboEspecialidad.SelectedIndex - 1; // -1 = item vacío
+            if (idx < 0) return;
+            DataRow row = _dtEspecialidades.Rows[idx];
+            decimal precio = row["precio"] == DBNull.Value ? 0m : Convert.ToDecimal(row["precio"]);
+            if (precio > 0)
+                txtImporte.Text = precio.ToString(System.Globalization.CultureInfo.InvariantCulture);
         }
 
         // ─── TAB EMISIÓN ──────────────────────────────────────────────────────
@@ -53,6 +113,92 @@ namespace CapaPresentacion
                     txtNombreReceptor.Text = "";
                 txtCuitReceptor.Text = "";
                 txtCuitReceptor.Focus();
+            }
+        }
+
+        private void btnBuscarPaciente_Click(object sender, EventArgs e)
+        {
+            using (var frm = new Form())
+            {
+                frm.Text = "Buscar Paciente";
+                frm.Size = new Size(640, 490);
+                frm.StartPosition = FormStartPosition.CenterParent;
+                frm.FormBorderStyle = FormBorderStyle.FixedDialog;
+                frm.MaximizeBox = false;
+                frm.MinimizeBox = false;
+
+                var lbl = new Label  { Text = "Nombre o DNI:", AutoSize = true, Location = new Point(12, 15), Font = new Font("Segoe UI", 9f) };
+                var txt = new TextBox { Location = new Point(108, 11), Size = new Size(330, 25), Font = new Font("Segoe UI", 10f) };
+                var btnBuscar = new Button { Text = "Buscar", Location = new Point(445, 10), Size = new Size(80, 28) };
+
+                var dgv = new DataGridView
+                {
+                    Location = new Point(12, 50), Size = new Size(606, 340),
+                    ReadOnly = true,
+                    SelectionMode = DataGridViewSelectionMode.FullRowSelect,
+                    MultiSelect = false,
+                    AllowUserToAddRows = false,
+                    AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
+                };
+
+                var btnOk     = new Button { Text = "Seleccionar", Location = new Point(466, 410), Size = new Size(140, 32), DialogResult = DialogResult.OK, Enabled = false };
+                var btnCancel = new Button { Text = "Cancelar",    Location = new Point(316, 410), Size = new Size(140, 32), DialogResult = DialogResult.Cancel };
+
+                DataTable dtRes = new DataTable();
+
+                Action buscar = () =>
+                {
+                    string q = txt.Text.Trim();
+                    if (string.IsNullOrEmpty(q)) return;
+                    string safe = q.Replace("'", "''");
+                    string like = "%" + safe + "%";
+                    try
+                    {
+                        dtRes = SQLConnector.obtenerTablaSegunConsultaString(
+                            "SELECT apellido + ' ' + nombres AS Paciente, dni AS Documento, '' AS CUIL, 'Preventiva' AS Tipo " +
+                            "FROM dbo.Paciente " +
+                            "WHERE dni LIKE '" + like + "' OR LTRIM(RTRIM(apellido + ' ' + nombres)) LIKE '" + like + "' " +
+                            "UNION ALL " +
+                            "SELECT apellido + ' ' + nombres, dni, ISNULL(cuil,''), 'Laboral' " +
+                            "FROM dbo.PacienteLaboral " +
+                            "WHERE dni LIKE '" + like + "' OR LTRIM(RTRIM(apellido + ' ' + nombres)) LIKE '" + like + "' " +
+                            "ORDER BY 1");
+                        dgv.DataSource = dtRes;
+                        btnOk.Enabled = false;
+                    }
+                    catch (Exception ex) { MessageBox.Show("Error en búsqueda: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
+                };
+
+                btnBuscar.Click      += (s, ev) => buscar();
+                txt.KeyDown          += (s, ev) => { if (ev.KeyCode == Keys.Enter) { buscar(); } };
+                dgv.SelectionChanged += (s, ev) => btnOk.Enabled = dgv.SelectedRows.Count > 0;
+                dgv.CellDoubleClick  += (s, ev) => { if (dgv.SelectedRows.Count > 0) { frm.DialogResult = DialogResult.OK; frm.Close(); } };
+
+                frm.Controls.AddRange(new Control[] { lbl, txt, btnBuscar, dgv, btnOk, btnCancel });
+                frm.AcceptButton = btnBuscar;
+
+                if (frm.ShowDialog(this) == DialogResult.OK && dgv.SelectedRows.Count > 0)
+                {
+                    DataGridViewRow fila = dgv.SelectedRows[0];
+                    string nombre  = fila.Cells["Paciente"].Value?.ToString()  ?? "";
+                    string dniVal  = fila.Cells["Documento"].Value?.ToString() ?? "";
+                    string cuilVal = fila.Cells["CUIL"].Value?.ToString()      ?? "";
+
+                    // Preferir CUIL si existe; si no, usar DNI
+                    string doc = !string.IsNullOrWhiteSpace(cuilVal) && cuilVal != "0" ? cuilVal : dniVal;
+
+                    txtNombreReceptor.Text = nombre;
+
+                    if (!string.IsNullOrWhiteSpace(doc) && doc != "0")
+                    {
+                        rbConCuit.Checked    = true;
+                        txtCuitReceptor.Text = doc;
+                    }
+                    else
+                    {
+                        rbConsumidorFinal.Checked = true;
+                    }
+                }
             }
         }
 
@@ -90,6 +236,20 @@ namespace CapaPresentacion
             string nombre  = txtNombreReceptor.Text.Trim();
             string condIVA = rbConsumidorFinal.Checked ? "CF" : "RI";
 
+            // Descripción y código de artículo de la especialidad seleccionada
+            string descArticulo = "Prestación médica";
+            string codArticulo  = "";
+            if (_cboEspecialidad != null && _dtEspecialidades != null)
+            {
+                int idx = _cboEspecialidad.SelectedIndex - 1;
+                if (idx >= 0)
+                {
+                    DataRow row = _dtEspecialidades.Rows[idx];
+                    descArticulo = row["nombreFacturacion"].ToString();
+                    codArticulo  = row["codigo"].ToString();
+                }
+            }
+
             // Tipo de comprobante y comprobante asociado
             string tipoTF = cboTipoComprobante.SelectedItem?.ToString() ?? "FACTURA C";
             long   nroAsociado = 0;
@@ -107,7 +267,8 @@ namespace CapaPresentacion
             {
                 var res = _negocio.EmitirFactura(
                     Guid.Empty, 11, cuit, nombre, condIVA, importe, 0m, 2,
-                    tipoTF, nroAsociado, medioPago);
+                    tipoTF, nroAsociado, medioPago,
+                    descArticulo, codArticulo);
 
                 panelResultado.Visible = true;
 
@@ -189,6 +350,7 @@ namespace CapaPresentacion
             cboTipoComprobante.SelectedIndex = 0;
             txtNroAsociado.Text       = "";
             cboMedioPago.SelectedIndex = 0;
+            if (_cboEspecialidad != null) _cboEspecialidad.SelectedIndex = 0;
             panelResultado.Visible    = false;
             btnVerPdf.Visible         = false;
             _ultimoPdfUrl             = null;

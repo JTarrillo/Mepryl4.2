@@ -46,6 +46,7 @@
             this.dgv = new System.Windows.Forms.DataGridView();
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel4 = new System.Windows.Forms.Panel();
+            this.tbHora = new System.Windows.Forms.TextBox();
             this.botEditarExamen = new System.Windows.Forms.Button();
             this.btnSalir = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
@@ -55,7 +56,6 @@
             this.panel3 = new System.Windows.Forms.Panel();
             this.rdbMostrarTodo = new System.Windows.Forms.RadioButton();
             this.label20 = new System.Windows.Forms.Label();
-            this.tbHora = new System.Windows.Forms.TextBox();
             this.timer = new System.Windows.Forms.Timer(this.components);
             this.rbcMenu = new DevExpress.XtraBars.Ribbon.RibbonControl();
             this.ribbonPage1 = new DevExpress.XtraBars.Ribbon.RibbonPage();
@@ -113,7 +113,7 @@
             this.btnEmitirFactura.ForeColor = System.Drawing.Color.Green;
             this.btnEmitirFactura.Image = ((System.Drawing.Image)(resources.GetObject("btnEmitirFactura.Image")));
             this.btnEmitirFactura.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnEmitirFactura.Location = new System.Drawing.Point(327, 14);
+            this.btnEmitirFactura.Location = new System.Drawing.Point(909, 53);
             this.btnEmitirFactura.Name = "btnEmitirFactura";
             this.btnEmitirFactura.Size = new System.Drawing.Size(137, 57);
             this.btnEmitirFactura.TabIndex = 266;
@@ -121,7 +121,8 @@
             this.btnEmitirFactura.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btnEmitirFactura.UseCompatibleTextRendering = true;
             this.btnEmitirFactura.UseVisualStyleBackColor = false;
-            this.btnEmitirFactura.Click += new System.EventHandler(this.botonRegistrar_Click);
+            this.btnEmitirFactura.Visible = false;
+            this.btnEmitirFactura.Click += new System.EventHandler(this.btnEmitirFactura_Click);
             // 
             // tbBusqueda
             // 
@@ -205,7 +206,7 @@
             this.botonRegistrar.ForeColor = System.Drawing.Color.Green;
             this.botonRegistrar.Image = ((System.Drawing.Image)(resources.GetObject("botonRegistrar.Image")));
             this.botonRegistrar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.botonRegistrar.Location = new System.Drawing.Point(180, 14);
+            this.botonRegistrar.Location = new System.Drawing.Point(170, 11);
             this.botonRegistrar.Name = "botonRegistrar";
             this.botonRegistrar.Size = new System.Drawing.Size(137, 57);
             this.botonRegistrar.TabIndex = 266;
@@ -241,13 +242,13 @@
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
             dataGridViewCellStyle1.Font = new System.Drawing.Font("Tahoma", 8.25F);
-            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(31)))), ((int)(((byte)(53)))));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
             dataGridViewCellStyle1.SelectionForeColor = System.Drawing.Color.Black;
             dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.dgv.DefaultCellStyle = dataGridViewCellStyle1;
             this.dgv.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgv.Location = new System.Drawing.Point(0, 287);
+            this.dgv.Location = new System.Drawing.Point(0, 285);
             this.dgv.MultiSelect = false;
             this.dgv.Name = "dgv";
             this.dgv.RowHeadersVisible = false;
@@ -257,7 +258,7 @@
             this.dgv.RowsDefaultCellStyle = dataGridViewCellStyle2;
             this.dgv.RowTemplate.Height = 25;
             this.dgv.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgv.Size = new System.Drawing.Size(1238, 337);
+            this.dgv.Size = new System.Drawing.Size(1238, 339);
             this.dgv.TabIndex = 276;
             this.dgv.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgv_CellClick);
             this.dgv.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgv_CellContentClick);
@@ -272,7 +273,7 @@
             this.panel1.Controls.Add(this.panel2);
             this.panel1.Controls.Add(this.panel3);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel1.Location = new System.Drawing.Point(0, 166);
+            this.panel1.Location = new System.Drawing.Point(0, 164);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(1238, 95);
             this.panel1.TabIndex = 277;
@@ -280,14 +281,27 @@
             // panel4
             // 
             this.panel4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel4.Controls.Add(this.tbHora);
             this.panel4.Controls.Add(this.botonRegistrar);
-            this.panel4.Controls.Add(this.btnEmitirFactura);
             this.panel4.Controls.Add(this.botEditarExamen);
             this.panel4.Controls.Add(this.botEditarPaciente);
             this.panel4.Location = new System.Drawing.Point(765, -1);
             this.panel4.Name = "panel4";
             this.panel4.Size = new System.Drawing.Size(473, 90);
             this.panel4.TabIndex = 279;
+            // 
+            // tbHora
+            // 
+            this.tbHora.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbHora.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(235)))), ((int)(((byte)(236)))), ((int)(((byte)(239)))));
+            this.tbHora.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tbHora.ForeColor = System.Drawing.Color.Black;
+            this.tbHora.Location = new System.Drawing.Point(329, 19);
+            this.tbHora.Name = "tbHora";
+            this.tbHora.ReadOnly = true;
+            this.tbHora.Size = new System.Drawing.Size(119, 44);
+            this.tbHora.TabIndex = 278;
+            this.tbHora.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // botEditarExamen
             // 
@@ -418,20 +432,6 @@
             this.label20.TabIndex = 268;
             this.label20.Text = "Búsqueda Libre";
             // 
-            // tbHora
-            // 
-            this.tbHora.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbHora.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(235)))), ((int)(((byte)(236)))), ((int)(((byte)(239)))));
-            this.tbHora.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbHora.ForeColor = System.Drawing.Color.Black;
-            this.tbHora.Location = new System.Drawing.Point(1076, 103);
-            this.tbHora.Name = "tbHora";
-            this.tbHora.ReadOnly = true;
-            this.tbHora.Size = new System.Drawing.Size(74, 44);
-            this.tbHora.TabIndex = 278;
-            this.tbHora.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.tbHora.Visible = false;
-            // 
             // timer
             // 
             this.timer.Enabled = true;
@@ -451,8 +451,8 @@
             this.rbcMenu.MaxItemId = 5;
             this.rbcMenu.Name = "rbcMenu";
             this.rbcMenu.Pages.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPage[] {
-            this.ribbonPage1});
-            this.rbcMenu.Size = new System.Drawing.Size(1238, 141);
+            ((DevExpress.XtraBars.Ribbon.RibbonPage)(this.ribbonPage1))});
+            this.rbcMenu.Size = new System.Drawing.Size(1238, 139);
             // 
             // ribbonPage1
             // 
@@ -476,7 +476,7 @@
             this.lbTitulo.Dock = System.Windows.Forms.DockStyle.Top;
             this.lbTitulo.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbTitulo.ForeColor = System.Drawing.Color.White;
-            this.lbTitulo.Location = new System.Drawing.Point(0, 141);
+            this.lbTitulo.Location = new System.Drawing.Point(0, 139);
             this.lbTitulo.Name = "lbTitulo";
             this.lbTitulo.Size = new System.Drawing.Size(1238, 25);
             this.lbTitulo.TabIndex = 280;
@@ -502,7 +502,7 @@
             this.panel5.Controls.Add(this.lblResultado);
             this.panel5.Controls.Add(this.lblOcultos);
             this.panel5.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel5.Location = new System.Drawing.Point(0, 261);
+            this.panel5.Location = new System.Drawing.Point(0, 259);
             this.panel5.Name = "panel5";
             this.panel5.Size = new System.Drawing.Size(1238, 26);
             this.panel5.TabIndex = 284;
@@ -538,7 +538,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1238, 624);
-            this.Controls.Add(this.tbHora);
+            this.Controls.Add(this.btnEmitirFactura);
             this.Controls.Add(this.dgv);
             this.Controls.Add(this.panel5);
             this.Controls.Add(this.panel1);
@@ -554,6 +554,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.dgv)).EndInit();
             this.panel1.ResumeLayout(false);
             this.panel4.ResumeLayout(false);
+            this.panel4.PerformLayout();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             this.panel3.ResumeLayout(false);

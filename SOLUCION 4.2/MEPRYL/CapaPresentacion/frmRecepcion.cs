@@ -161,7 +161,8 @@ namespace CapaPresentacion
             dni = dgv.SelectedRows[0].Cells[7].Value.ToString();
             apellido = dgv.SelectedRows[0].Cells[8].Value.ToString();
             nombre = dgv.SelectedRows[0].Cells[9].Value.ToString();
-            if ((bool)dgv.SelectedRows[0].Cells[0].Value)
+            object asistioVal = dgv.SelectedRows[0].Cells[0].Value;
+            if (asistioVal != null && asistioVal != DBNull.Value && Convert.ToBoolean(asistioVal))
             {
                 DialogResult result = MessageBox.Show("El siguiente paciente: \n\n\t " + apellido + "\n\t (DNI): " + dni + "\n\nVa a ser ingresado\n ¿Desea continuar?", "Confirmar Ingreso", MessageBoxButtons.YesNo);
                 if (result == DialogResult.Yes)
@@ -374,11 +375,15 @@ namespace CapaPresentacion
             {
                 botEditarPaciente.Enabled = false;
                 botEditarExamen.Enabled = false;
-                if (dgv.CurrentCell != null && dgv.SelectedRows.Count > 0
-                    && !Convert.ToBoolean(dgv.SelectedRows[0].Cells[14].Value.ToString()))
+                if (dgv.CurrentCell != null && dgv.SelectedRows.Count > 0)
                 {
-                    botEditarPaciente.Enabled = true;
-                    botEditarExamen.Enabled = true;
+                    object reservado14 = dgv.SelectedRows[0].Cells[14].Value;
+                    bool esReservado14 = reservado14 != null && reservado14 != DBNull.Value && Convert.ToBoolean(reservado14);
+                    if (!esReservado14)
+                    {
+                        botEditarPaciente.Enabled = true;
+                        botEditarExamen.Enabled = true;
+                    }
                 }
             }
             catch (System.ArgumentOutOfRangeException ex)
@@ -429,12 +434,18 @@ namespace CapaPresentacion
                     }
                     else
                     {
+                        var cm = (CurrencyManager)this.BindingContext[dgv.DataSource];
+                        cm.SuspendBinding();
                         dgv.Rows[e.RowIndex].Visible = false;
+                        cm.ResumeBinding();
                     }
                 }
                 else
                 {
+                    var cm = (CurrencyManager)this.BindingContext[dgv.DataSource];
+                    cm.SuspendBinding();
                     dgv.Rows[e.RowIndex].Visible = true;
+                    cm.ResumeBinding();
                     dgv.Rows[e.RowIndex].DefaultCellStyle.BackColor = Color.White;
                     dgv.Rows[e.RowIndex].Cells[16].Value = false;
                 }
@@ -445,7 +456,10 @@ namespace CapaPresentacion
 
         private bool obtenerValorBooleano(int nroFila, int nroColumna)
         {
-            if ((bool)dgv.Rows[nroFila].Cells[nroColumna].Value)
+            object val = dgv.Rows[nroFila].Cells[nroColumna].Value;
+            if (val == null || val == DBNull.Value)
+                return false;
+            if (Convert.ToBoolean(val))
             {
                 return false;
             }
@@ -471,7 +485,9 @@ namespace CapaPresentacion
         {
             if (dgv.SelectedRows.Count > 0)
             {
-                if (!Convert.ToBoolean(dgv.SelectedRows[0].Cells[14].Value.ToString()))
+                object reservadoVal = dgv.SelectedRows[0].Cells[14].Value;
+                bool esReservado = reservadoVal != null && reservadoVal != DBNull.Value && Convert.ToBoolean(reservadoVal);
+                if (!esReservado)
                 {
                     frmAvisoExamenModificado fExamen = new frmAvisoExamenModificado(false);
                     fExamen.cargarEstudiosSegunIdTurno(new Guid(dgv.SelectedRows[0].Cells[2].Value.ToString()));
@@ -487,7 +503,8 @@ namespace CapaPresentacion
                     }
                     else
                     {
-                        if ((bool)dgv.SelectedRows[0].Cells[0].Value)
+                        object asistioVal2 = dgv.SelectedRows[0].Cells[0].Value;
+                        if (asistioVal2 != null && asistioVal2 != DBNull.Value && Convert.ToBoolean(asistioVal2))
                         {
                             DialogResult result2 = MessageBox.Show("La siguiente reserva va a ser ingresada. ¿Desea continuar?", "Registrar Ingreso",
                                 MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -533,29 +550,22 @@ namespace CapaPresentacion
             {
                 if (!rdbMostrarTodo.Checked)
                 {
-                    for (int fila = 0; fila < dgv.Rows.Count - 1; fila++)
-                    //for (int fila = 0; fila < intFilas - 1; fila++)
+                    CurrencyManager cm = (CurrencyManager)BindingContext[dgv.DataSource];
+                    cm.SuspendBinding();
+                    for (int fila = 0; fila < dgv.Rows.Count; fila++)
                     {
-                        blnOcultar = Convert.ToBoolean(dgv.Rows[fila].Cells[16].Value.ToString());
-                        //dgv.CurrentCell = null;
-                        if (blnOcultar)
-                        {
-                            CurrencyManager cm = (CurrencyManager)BindingContext[dgv.DataSource];
-                            cm.SuspendBinding();
-                            dgv.Rows[fila].Visible = false;
-                        }
-                        else
-                        {
-                            dgv.Rows[fila].Visible = true;
-                        }
+                        object ocultar16a = dgv.Rows[fila].Cells[16].Value;
+                        blnOcultar = ocultar16a != null && ocultar16a != DBNull.Value && Convert.ToBoolean(ocultar16a);
+                        dgv.Rows[fila].Visible = !blnOcultar;
                     }
+                    cm.ResumeBinding();
                 }
                 else
                 {
-                    for (int fila = 0; fila < dgv.Rows.Count - 1; fila++)
-                    //for (int fila = 0; fila < intFilas - 1; fila++)
+                    for (int fila = 0; fila < dgv.Rows.Count; fila++)
                     {
-                        blnOcultar = Convert.ToBoolean(dgv.Rows[fila].Cells[16].Value.ToString());
+                        object ocultar16b = dgv.Rows[fila].Cells[16].Value;
+                        blnOcultar = ocultar16b != null && ocultar16b != DBNull.Value && Convert.ToBoolean(ocultar16b);
 
                         if (blnOcultar)
                         {
@@ -726,9 +736,10 @@ namespace CapaPresentacion
                 {
                     var res = negFactura.EmitirFactura(
                         idTurno,
-                        11, "0", nombrePac, "CF",
+                        11, dniPac, nombrePac, "CF",
                         importeFinal, 0m, 2,
-                        "FACTURA C", 0, medioPago);
+                        "FACTURA C", 0, medioPago,
+                        especialidad);
 
                     if (res.Modo == 1)
                     {
@@ -740,6 +751,10 @@ namespace CapaPresentacion
                             "Factura emitida correctamente.\n\n" + res.Mensaje,
                             "Factura Electronica AFIP",
                             MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                        // Abrir PDF en el navegador si TusFacturas lo devuelve
+                        if (!string.IsNullOrEmpty(res.PdfUrl))
+                            System.Diagnostics.Process.Start(res.PdfUrl);
                     }
                     else
                     {
@@ -756,3 +771,7 @@ namespace CapaPresentacion
         }
     }
 }
+
+
+
+

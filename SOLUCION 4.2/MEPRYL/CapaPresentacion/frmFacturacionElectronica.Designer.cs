@@ -32,6 +32,7 @@ namespace CapaPresentacion
         private System.Windows.Forms.TextBox txtNombreReceptor;
         private System.Windows.Forms.Label lblCuitReceptorLabel;
         private System.Windows.Forms.TextBox txtCuitReceptor;
+        private System.Windows.Forms.Button btnBuscarPaciente;
 
         private System.Windows.Forms.GroupBox grpImporte;
         private System.Windows.Forms.Label lblImporteLabel;
@@ -100,10 +101,10 @@ namespace CapaPresentacion
             this.tabEmision = new System.Windows.Forms.TabPage();
             this.grpComprobante = new System.Windows.Forms.GroupBox();
             this.lblTipoLabel = new System.Windows.Forms.Label();
-            this.lblTipoValor = new System.Windows.Forms.Label();
             this.cboTipoComprobante = new System.Windows.Forms.ComboBox();
             this.lblNroAsociadoLabel = new System.Windows.Forms.Label();
             this.txtNroAsociado = new System.Windows.Forms.TextBox();
+            this.lblTipoValor = new System.Windows.Forms.Label();
             this.grpReceptor = new System.Windows.Forms.GroupBox();
             this.rbConsumidorFinal = new System.Windows.Forms.RadioButton();
             this.rbConCuit = new System.Windows.Forms.RadioButton();
@@ -111,6 +112,7 @@ namespace CapaPresentacion
             this.txtNombreReceptor = new System.Windows.Forms.TextBox();
             this.lblCuitReceptorLabel = new System.Windows.Forms.Label();
             this.txtCuitReceptor = new System.Windows.Forms.TextBox();
+            this.btnBuscarPaciente = new System.Windows.Forms.Button();
             this.grpImporte = new System.Windows.Forms.GroupBox();
             this.lblImporteLabel = new System.Windows.Forms.Label();
             this.txtImporte = new System.Windows.Forms.TextBox();
@@ -190,12 +192,13 @@ namespace CapaPresentacion
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(1204, 560);
+            this.tabControl1.Size = new System.Drawing.Size(1376, 773);
             this.tabControl1.TabIndex = 0;
             // 
             // tabEmision
             // 
             this.tabEmision.Controls.Add(this.grpComprobante);
+            this.tabEmision.Controls.Add(this.lblTipoValor);
             this.tabEmision.Controls.Add(this.grpReceptor);
             this.tabEmision.Controls.Add(this.grpImporte);
             this.tabEmision.Controls.Add(this.grpResumen);
@@ -206,7 +209,7 @@ namespace CapaPresentacion
             this.tabEmision.Location = new System.Drawing.Point(4, 26);
             this.tabEmision.Name = "tabEmision";
             this.tabEmision.Padding = new System.Windows.Forms.Padding(3);
-            this.tabEmision.Size = new System.Drawing.Size(1196, 530);
+            this.tabEmision.Size = new System.Drawing.Size(1368, 743);
             this.tabEmision.TabIndex = 0;
             this.tabEmision.Text = "  Emisión Manual  ";
             this.tabEmision.UseVisualStyleBackColor = true;
@@ -214,14 +217,13 @@ namespace CapaPresentacion
             // grpComprobante
             // 
             this.grpComprobante.Controls.Add(this.lblTipoLabel);
-            this.grpComprobante.Controls.Add(this.lblTipoValor);
             this.grpComprobante.Controls.Add(this.cboTipoComprobante);
             this.grpComprobante.Controls.Add(this.lblNroAsociadoLabel);
             this.grpComprobante.Controls.Add(this.txtNroAsociado);
             this.grpComprobante.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             this.grpComprobante.Location = new System.Drawing.Point(8, 8);
             this.grpComprobante.Name = "grpComprobante";
-            this.grpComprobante.Size = new System.Drawing.Size(440, 100);
+            this.grpComprobante.Size = new System.Drawing.Size(632, 100);
             this.grpComprobante.TabIndex = 0;
             this.grpComprobante.TabStop = false;
             this.grpComprobante.Text = "Tipo de Comprobante";
@@ -235,18 +237,6 @@ namespace CapaPresentacion
             this.lblTipoLabel.TabIndex = 0;
             this.lblTipoLabel.Text = "Tipo:";
             // 
-            // lblTipoValor
-            // 
-            this.lblTipoValor.AutoSize = true;
-            this.lblTipoValor.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
-            this.lblTipoValor.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(130)))), ((int)(((byte)(55)))));
-            this.lblTipoValor.Location = new System.Drawing.Point(67, 66);
-            this.lblTipoValor.Name = "lblTipoValor";
-            this.lblTipoValor.Size = new System.Drawing.Size(342, 20);
-            this.lblTipoValor.TabIndex = 1;
-            this.lblTipoValor.Text = "Factura C  —  Monotributo (sin discriminar IVA)";
-            this.lblTipoValor.Visible = false;
-            // 
             // cboTipoComprobante
             // 
             this.cboTipoComprobante.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -256,9 +246,9 @@ namespace CapaPresentacion
             "FACTURA C",
             "NOTA DE CREDITO C",
             "NOTA DE DEBITO C"});
-            this.cboTipoComprobante.Location = new System.Drawing.Point(12, 26);
+            this.cboTipoComprobante.Location = new System.Drawing.Point(50, 25);
             this.cboTipoComprobante.Name = "cboTipoComprobante";
-            this.cboTipoComprobante.Size = new System.Drawing.Size(242, 25);
+            this.cboTipoComprobante.Size = new System.Drawing.Size(376, 25);
             this.cboTipoComprobante.TabIndex = 0;
             this.cboTipoComprobante.SelectedIndexChanged += new System.EventHandler(this.cboTipoComprobante_SelectedIndexChanged);
             // 
@@ -266,7 +256,7 @@ namespace CapaPresentacion
             // 
             this.lblNroAsociadoLabel.AutoSize = true;
             this.lblNroAsociadoLabel.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.lblNroAsociadoLabel.Location = new System.Drawing.Point(262, 30);
+            this.lblNroAsociadoLabel.Location = new System.Drawing.Point(448, 30);
             this.lblNroAsociadoLabel.Name = "lblNroAsociadoLabel";
             this.lblNroAsociadoLabel.Size = new System.Drawing.Size(102, 15);
             this.lblNroAsociadoLabel.TabIndex = 2;
@@ -276,11 +266,23 @@ namespace CapaPresentacion
             // txtNroAsociado
             // 
             this.txtNroAsociado.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.txtNroAsociado.Location = new System.Drawing.Point(370, 26);
+            this.txtNroAsociado.Location = new System.Drawing.Point(566, 25);
             this.txtNroAsociado.Name = "txtNroAsociado";
             this.txtNroAsociado.Size = new System.Drawing.Size(60, 25);
             this.txtNroAsociado.TabIndex = 1;
             this.txtNroAsociado.Visible = false;
+            // 
+            // lblTipoValor
+            // 
+            this.lblTipoValor.AutoSize = true;
+            this.lblTipoValor.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
+            this.lblTipoValor.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(130)))), ((int)(((byte)(55)))));
+            this.lblTipoValor.Location = new System.Drawing.Point(656, 219);
+            this.lblTipoValor.Name = "lblTipoValor";
+            this.lblTipoValor.Size = new System.Drawing.Size(342, 20);
+            this.lblTipoValor.TabIndex = 1;
+            this.lblTipoValor.Text = "Factura C  —  Monotributo (sin discriminar IVA)";
+            this.lblTipoValor.Visible = false;
             // 
             // grpReceptor
             // 
@@ -290,6 +292,7 @@ namespace CapaPresentacion
             this.grpReceptor.Controls.Add(this.txtNombreReceptor);
             this.grpReceptor.Controls.Add(this.lblCuitReceptorLabel);
             this.grpReceptor.Controls.Add(this.txtCuitReceptor);
+            this.grpReceptor.Controls.Add(this.btnBuscarPaciente);
             this.grpReceptor.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             this.grpReceptor.Location = new System.Drawing.Point(8, 116);
             this.grpReceptor.Name = "grpReceptor";
@@ -345,9 +348,9 @@ namespace CapaPresentacion
             this.lblCuitReceptorLabel.AutoSize = true;
             this.lblCuitReceptorLabel.Location = new System.Drawing.Point(12, 106);
             this.lblCuitReceptorLabel.Name = "lblCuitReceptorLabel";
-            this.lblCuitReceptorLabel.Size = new System.Drawing.Size(117, 17);
+            this.lblCuitReceptorLabel.Size = new System.Drawing.Size(152, 17);
             this.lblCuitReceptorLabel.TabIndex = 3;
-            this.lblCuitReceptorLabel.Text = "CUIT del Receptor:";
+            this.lblCuitReceptorLabel.Text = "DNI / CUIT del Receptor:";
             // 
             // txtCuitReceptor
             // 
@@ -358,6 +361,17 @@ namespace CapaPresentacion
             this.txtCuitReceptor.Size = new System.Drawing.Size(190, 25);
             this.txtCuitReceptor.TabIndex = 3;
             this.txtCuitReceptor.Text = "0";
+            // 
+            // btnBuscarPaciente
+            // 
+            this.btnBuscarPaciente.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.btnBuscarPaciente.Location = new System.Drawing.Point(210, 120);
+            this.btnBuscarPaciente.Name = "btnBuscarPaciente";
+            this.btnBuscarPaciente.Size = new System.Drawing.Size(218, 25);
+            this.btnBuscarPaciente.TabIndex = 10;
+            this.btnBuscarPaciente.Text = "🔍  Buscar paciente...";
+            this.btnBuscarPaciente.UseVisualStyleBackColor = true;
+            this.btnBuscarPaciente.Click += new System.EventHandler(this.btnBuscarPaciente_Click);
             // 
             // grpImporte
             // 
@@ -439,7 +453,7 @@ namespace CapaPresentacion
             this.grpResumen.Controls.Add(this.lblTotalLabel);
             this.grpResumen.Controls.Add(this.lblTotalValor);
             this.grpResumen.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            this.grpResumen.Location = new System.Drawing.Point(458, 8);
+            this.grpResumen.Location = new System.Drawing.Point(660, 16);
             this.grpResumen.Name = "grpResumen";
             this.grpResumen.Size = new System.Drawing.Size(426, 145);
             this.grpResumen.TabIndex = 3;
@@ -516,7 +530,7 @@ namespace CapaPresentacion
             // 
             this.btnLimpiar.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.btnLimpiar.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            this.btnLimpiar.Location = new System.Drawing.Point(902, 162);
+            this.btnLimpiar.Location = new System.Drawing.Point(597, 462);
             this.btnLimpiar.Name = "btnLimpiar";
             this.btnLimpiar.Size = new System.Drawing.Size(134, 34);
             this.btnLimpiar.TabIndex = 5;
@@ -531,7 +545,7 @@ namespace CapaPresentacion
             this.btnVerPdf.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnVerPdf.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.btnVerPdf.ForeColor = System.Drawing.Color.White;
-            this.btnVerPdf.Location = new System.Drawing.Point(902, 49);
+            this.btnVerPdf.Location = new System.Drawing.Point(1130, 52);
             this.btnVerPdf.Name = "btnVerPdf";
             this.btnVerPdf.Size = new System.Drawing.Size(134, 34);
             this.btnVerPdf.TabIndex = 8;
@@ -547,7 +561,7 @@ namespace CapaPresentacion
             this.btnEmitir.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnEmitir.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
             this.btnEmitir.ForeColor = System.Drawing.Color.White;
-            this.btnEmitir.Location = new System.Drawing.Point(458, 204);
+            this.btnEmitir.Location = new System.Drawing.Point(851, 552);
             this.btnEmitir.Name = "btnEmitir";
             this.btnEmitir.Size = new System.Drawing.Size(426, 58);
             this.btnEmitir.TabIndex = 6;
@@ -565,9 +579,9 @@ namespace CapaPresentacion
             this.panelResultado.Controls.Add(this.lblNroComprobanteValor);
             this.panelResultado.Controls.Add(this.lblVencimientoLabel);
             this.panelResultado.Controls.Add(this.lblVencimientoValor);
-            this.panelResultado.Location = new System.Drawing.Point(8, 342);
+            this.panelResultado.Location = new System.Drawing.Point(23, 565);
             this.panelResultado.Name = "panelResultado";
-            this.panelResultado.Size = new System.Drawing.Size(876, 108);
+            this.panelResultado.Size = new System.Drawing.Size(711, 108);
             this.panelResultado.TabIndex = 7;
             this.panelResultado.Visible = false;
             // 
@@ -649,7 +663,7 @@ namespace CapaPresentacion
             this.tabHistorial.Location = new System.Drawing.Point(4, 26);
             this.tabHistorial.Name = "tabHistorial";
             this.tabHistorial.Padding = new System.Windows.Forms.Padding(3);
-            this.tabHistorial.Size = new System.Drawing.Size(892, 530);
+            this.tabHistorial.Size = new System.Drawing.Size(1368, 743);
             this.tabHistorial.TabIndex = 1;
             this.tabHistorial.Text = "  Historial  ";
             this.tabHistorial.UseVisualStyleBackColor = true;
@@ -666,7 +680,7 @@ namespace CapaPresentacion
             this.panelFiltros.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             this.panelFiltros.Location = new System.Drawing.Point(3, 3);
             this.panelFiltros.Name = "panelFiltros";
-            this.panelFiltros.Size = new System.Drawing.Size(886, 48);
+            this.panelFiltros.Size = new System.Drawing.Size(1362, 48);
             this.panelFiltros.TabIndex = 0;
             // 
             // lblDesdeLabel
@@ -758,7 +772,7 @@ namespace CapaPresentacion
             this.tabConfiguracion.Location = new System.Drawing.Point(4, 26);
             this.tabConfiguracion.Name = "tabConfiguracion";
             this.tabConfiguracion.Padding = new System.Windows.Forms.Padding(3);
-            this.tabConfiguracion.Size = new System.Drawing.Size(892, 530);
+            this.tabConfiguracion.Size = new System.Drawing.Size(1368, 743);
             this.tabConfiguracion.TabIndex = 2;
             this.tabConfiguracion.Text = "  Configuración  ";
             this.tabConfiguracion.UseVisualStyleBackColor = true;
@@ -942,7 +956,7 @@ namespace CapaPresentacion
             this.Appearance.Options.UseFont = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1204, 560);
+            this.ClientSize = new System.Drawing.Size(1376, 773);
             this.Controls.Add(this.tabControl1);
             this.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             this.MinimumSize = new System.Drawing.Size(916, 599);
@@ -952,6 +966,7 @@ namespace CapaPresentacion
             this.Load += new System.EventHandler(this.frmFacturacionElectronica_Load);
             this.tabControl1.ResumeLayout(false);
             this.tabEmision.ResumeLayout(false);
+            this.tabEmision.PerformLayout();
             this.grpComprobante.ResumeLayout(false);
             this.grpComprobante.PerformLayout();
             this.grpReceptor.ResumeLayout(false);

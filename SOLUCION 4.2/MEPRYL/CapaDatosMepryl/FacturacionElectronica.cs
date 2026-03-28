@@ -154,7 +154,8 @@ namespace CapaDatosMepryl
             Guid idTurno, int tipoComprobante, int puntoVenta, long nroComprobante,
             string cuitReceptor, string nombreReceptor, string condicionIVAReceptor,
             decimal importeNeto, decimal importeIVA, decimal importeTotal,
-            int concepto, string observaciones)
+            int concepto, string observaciones,
+            string tipoTF = "FACTURA C")
         {
             Guid nuevoId = Guid.NewGuid();
 
@@ -162,6 +163,7 @@ namespace CapaDatosMepryl
             string nombreSafe = nombreReceptor.Replace("'", "''");
             string condSafe   = condicionIVAReceptor.Replace("'", "''");
             string obsSafe    = (observaciones ?? "").Replace("'", "''");
+            string tipoTFSafe = (tipoTF ?? "FACTURA C").Replace("'", "''");
 
             // Si no hay turno asociado (emisión manual en ventanilla), guardar NULL
             string idTurnoSql = (idTurno == Guid.Empty) ? "NULL" : $"'{idTurno}'";
@@ -171,14 +173,14 @@ namespace CapaDatosMepryl
                     (id, idTurno, tipoComprobante, puntoVenta, nroComprobante,
                      cuitReceptor, nombreReceptor, condicionIVAReceptor,
                      importeNeto, importeIVA, importeTotal,
-                     concepto, estado, observaciones, fechaEmision, fechaCreacion)
+                     concepto, estado, observaciones, tipoTF, fechaEmision, fechaCreacion)
                 VALUES
                     ('{nuevoId}', {idTurnoSql}, {tipoComprobante}, {puntoVenta}, {nroComprobante},
                      '{cuitSafe}', '{nombreSafe}', '{condSafe}',
                      {importeNeto.ToString(System.Globalization.CultureInfo.InvariantCulture)},
                      {importeIVA.ToString(System.Globalization.CultureInfo.InvariantCulture)},
                      {importeTotal.ToString(System.Globalization.CultureInfo.InvariantCulture)},
-                     {concepto}, 'Pendiente', '{obsSafe}', GETDATE(), GETDATE())";
+                     {concepto}, 'Pendiente', '{obsSafe}', '{tipoTFSafe}', GETDATE(), GETDATE())";
 
             SQLConnector.EjecutarConsulta(sql);
             return nuevoId;
@@ -301,6 +303,30 @@ namespace CapaDatosMepryl
                 resultado.Mensaje = "Error al guardar tokens TusFacturas: " + ex.Message;
             }
             return resultado;
+        }
+
+        // ─────────────────────────────────────────────────────────────────────
+        // ESPECIALIDADES PARA FACTURACIÓN
+        // ─────────────────────────────────────────────────────────────────────
+
+        /// <summary>
+        /// Retorna las especialidades (subtipos, Padre=0) que tienen precio > 0,
+        /// para usarlas como artículos en la factura electrónica.
+        /// Columnas: id, codigo, nombre, nombreFacturacion, precio
+        /// </summary>
+        public DataTable ObtenerEspecialidadesConPrecio()
+        {
+            return SQLConnector.obtenerTablaSegunConsultaString(@"
+                SELECT e.id,
+                       e.codigo,
+                       e.descripcion AS nombre,
+                       e.descripcion AS nombreFacturacion,
+                       e.precioBase  AS precio
+                FROM dbo.Especialidad e
+                WHERE e.Padre = 0
+                  AND e.precioBase > 0
+                  AND e.id NOT IN (SELECT id FROM dbo.EspecialidadesEliminadas)
+                ORDER BY e.descripcion");
         }
     }
 }

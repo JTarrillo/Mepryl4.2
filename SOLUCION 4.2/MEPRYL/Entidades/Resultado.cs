@@ -10,6 +10,7 @@ namespace Entidades
         private int modo;
         private string mensaje;
         private Guid idRetorno;
+        private string pdfUrl;
 
 
         public Resultado()
@@ -17,6 +18,7 @@ namespace Entidades
             modo = 0;
             mensaje = "";
             idRetorno = Guid.Empty;
+            pdfUrl = "";
         }
 
         #region Getters&Setters
@@ -36,6 +38,12 @@ namespace Entidades
         {
             get { return idRetorno; }
             set { idRetorno = value; }
+        }
+
+        public string PdfUrl
+        {
+            get { return pdfUrl; }
+            set { pdfUrl = value; }
         }
 
         #endregion

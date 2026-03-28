@@ -81,7 +81,9 @@ namespace CapaNegocioMepryl
             int     concepto       = 2,
             string  tipoTF         = "FACTURA C",
             long    nroAsociado    = 0,
-            string  medioPago      = "EFECTIVO")
+            string  medioPago      = "EFECTIVO",
+            string  descripcion    = "Prestación médica",
+            string  codArticulo    = "")
         {
             var resultado = new Entidades.Resultado();
             try
@@ -107,18 +109,19 @@ namespace CapaNegocioMepryl
                     idTurno, 11, puntoVenta, 0,
                     cuitReceptor, nombreReceptor, condicionIVAReceptor,
                     importeTotal, 0m, importeTotal,
-                    concepto, "");
+                    concepto, "", tipoTF);
 
                 // 3. Llamar a TusFacturas API
                 var ws = new ServiciosAfip(userToken, apiToken, apiKey, puntoVenta);
                 RespuestaCAE respuesta = ws.EmitirFacturaC(
-                    "Prestación médica",
+                    string.IsNullOrWhiteSpace(descripcion) ? "Prestación médica" : descripcion,
                     importeTotal,
                     nombreReceptor,
                     cuitReceptor,
                     tipoTF,
                     nroAsociado,
-                    medioPago);
+                    medioPago,
+                    codArticulo);
 
                 // 4. Guardar resultado
                 if (respuesta.Autorizado && !string.IsNullOrEmpty(respuesta.CAE))
@@ -128,6 +131,7 @@ namespace CapaNegocioMepryl
                     resultado.Modo      = 1;
                     resultado.Mensaje   = $"{tipoTF} autorizada. CAE: {respuesta.CAE} — Vence: {respuesta.FechaVencimientoCAE:dd/MM/yyyy} — Nro: {respuesta.NroComprobante}";
                     resultado.IdRetorno = idFactura;
+                    resultado.PdfUrl    = respuesta.PdfUrl ?? "";
                     // Pasar URL del PDF al formulario via Tag
                     if (!string.IsNullOrEmpty(respuesta.PdfUrl))
                         resultado.Mensaje += $" — PDF:{respuesta.PdfUrl}";
@@ -288,6 +292,11 @@ namespace CapaNegocioMepryl
                 resultado.Mensaje = "Error al anular: " + ex.Message;
             }
             return resultado;
+        }
+
+        public DataTable ObtenerEspecialidadesConPrecio()
+        {
+            return _datos.ObtenerEspecialidadesConPrecio();
         }
 
         // Convierte "00001-00000001" → 1L
