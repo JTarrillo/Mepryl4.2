@@ -1686,7 +1686,6 @@ namespace CapaPresentacion
                 // Si ya existe una instancia, no crear otra
                 if (frmGestionarEspecialidadInstance != null && !frmGestionarEspecialidadInstance.IsDisposed)
                 {
-                    frmGestionarEspecialidadInstance.RecargarDatos();
                     return;
                 }
 
@@ -1718,25 +1717,12 @@ namespace CapaPresentacion
                 frmGestionarEspecialidadInstance.Show();
                 frmGestionarEspecialidadInstance.BringToFront();
 
-                // Sincronizar selección desde "Agregar" si existe
-                if (frmAgregarEspecialidadInstance != null && !frmAgregarEspecialidadInstance.IsDisposed)
-                {
-                    int idMotivo = frmAgregarEspecialidadInstance.ObtenerIdMotivoConsultaSeleccionado;
-                    string idTipo = frmAgregarEspecialidadInstance.ObtenerIdTipoExamenSeleccionado;
-                    string idSubtipo = frmAgregarEspecialidadInstance.ObtenerIdSubtipoActualmenteCargado;
-                    System.Diagnostics.Debug.WriteLine($"[SYNC][NAV] Sincronizando a Gestionar (al crear): Motivo={idMotivo}, Tipo={idTipo}, Subtipo={idSubtipo}");
-                    frmGestionarEspecialidadInstance.SincronizarCombosDesde(idMotivo, idTipo, idSubtipo);
-                }
-
                 // ✅ SUSCRIBIRSE AL EVENTO: Cuando se crea un subtipo, mostrar botón Grabar
                 frmGestionarEspecialidadInstance.SubtipoCreado += (s, e) =>
                 {
                     BtnGrabar.Visible = true;
                     BtnGrabar.BackColor = System.Drawing.Color.Green;
                 };
-
-                // ✅ NUEVO: Recargar datos después de mostrar
-                frmGestionarEspecialidadInstance.RecargarDatos();
             }
             catch (Exception ex)
             {
