@@ -7,6 +7,7 @@ using System.Windows.Forms;
 
 namespace CapaPresentacionBase
 {
+    [System.ComponentModel.DesignerCategory("Form")]
     public partial class frmBasePrincipal : DevExpress.XtraBars.Ribbon.RibbonForm
     {
         public Configuracion configuracion; // = new Configuracion();
@@ -24,9 +25,10 @@ namespace CapaPresentacionBase
 
         public frmBasePrincipal(bool conectarBaseDatos)
         {
-            this.configuracion = new Configuracion(conectarBaseDatos);
             InitializeComponent();
             this.IsMdiContainer = true;  // GRV
+            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime) return;
+            this.configuracion = new Configuracion(conectarBaseDatos);
             this.login = conectarBaseDatos;
             AbrirLogin();
         }
@@ -89,6 +91,7 @@ namespace CapaPresentacionBase
 
         public void frmBasePrincipal_Load(object sender, EventArgs e)
         {
+            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime) return;
             this.Text = $"MEPRYL {VersionApp.VERSION}  - {strApellidoUsuario}, {strNombreUsuario}";
             //try
             //{

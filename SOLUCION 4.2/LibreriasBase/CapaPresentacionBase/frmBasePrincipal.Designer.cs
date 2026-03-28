@@ -580,7 +580,7 @@ namespace CapaPresentacionBase
             this.nbiExamenes,
             this.nbiAgenda});
             this.navBarControl1.Location = new System.Drawing.Point(0, 169);
-            this.navBarControl1.LookAndFeel.SkinName = "Office 2016 Colorful";
+            //this.navBarControl1.LookAndFeel.SkinName = "Office 2016 Colorful"; // El DefaultLookAndFeel aplica el skin globalmente
             this.navBarControl1.Name = "navBarControl1";
             this.navBarControl1.OptionsLayout.StoreAppearance = true;
             this.navBarControl1.OptionsNavPane.CollapsedNavPaneContentControl = this.menuStrip2;

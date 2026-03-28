@@ -28,8 +28,8 @@ namespace CapaPresentacion
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmTurnos));
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmTurnos));
             this.lbTitulo = new System.Windows.Forms.Label();
             this.labelSubTipoExamen = new System.Windows.Forms.Label();
             this.cboSubTipoExamen = new System.Windows.Forms.ComboBox();
@@ -38,7 +38,6 @@ namespace CapaPresentacion
             this.cboMotivoConsulta = new System.Windows.Forms.ComboBox();
             this.cboTipoExamen = new System.Windows.Forms.ComboBox();
             this.botonLaboratorio = new System.Windows.Forms.Panel();
-            this.btnWhatsApp = new System.Windows.Forms.Button();
             this.btnCancelarMover = new System.Windows.Forms.Button();
             this.btnMoverTurno = new System.Windows.Forms.Button();
             this.btnVerEstudio = new System.Windows.Forms.Button();
@@ -160,6 +159,7 @@ namespace CapaPresentacion
             this.botHabilitar = new System.Windows.Forms.Button();
             this.LblTurnos = new System.Windows.Forms.Label();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.btnWhatsApp = new System.Windows.Forms.Button();
             this.botonLaboratorio.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panelLaboral.SuspendLayout();
@@ -291,20 +291,6 @@ namespace CapaPresentacion
             this.botonLaboratorio.Name = "botonLaboratorio";
             this.botonLaboratorio.Size = new System.Drawing.Size(134, 682);
             this.botonLaboratorio.TabIndex = 129;
-            // 
-            // btnWhatsApp
-            // 
-            this.btnWhatsApp.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold);
-            this.btnWhatsApp.Image = ((System.Drawing.Image)(resources.GetObject("btnWhatsApp.Image")));
-            this.btnWhatsApp.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnWhatsApp.Location = new System.Drawing.Point(9, 136);
-            this.btnWhatsApp.Name = "btnWhatsApp";
-            this.btnWhatsApp.Size = new System.Drawing.Size(120, 45);
-            this.btnWhatsApp.TabIndex = 135;
-            this.btnWhatsApp.Text = "Whatsapp";
-            this.btnWhatsApp.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.btnWhatsApp.UseVisualStyleBackColor = true;
-            this.btnWhatsApp.Click += new System.EventHandler(this.btnWhatsApp_Click);
             // 
             // btnCancelarMover
             // 
@@ -1635,7 +1621,7 @@ namespace CapaPresentacion
             // 
             this.rbcMenu.ExpandCollapseItem.Id = 0;
             this.rbcMenu.Items.AddRange(new DevExpress.XtraBars.BarItem[] {
-            this.rbcMenu.ExpandCollapseItem});
+            ((DevExpress.XtraBars.BarItem)(this.rbcMenu.ExpandCollapseItem))});
             this.rbcMenu.Location = new System.Drawing.Point(0, 358);
             this.rbcMenu.MaxItemId = 1;
             this.rbcMenu.Name = "rbcMenu";
@@ -1851,6 +1837,20 @@ namespace CapaPresentacion
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(1190, 25);
             this.panel3.TabIndex = 137;
+            // 
+            // btnWhatsApp
+            // 
+            this.btnWhatsApp.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold);
+            this.btnWhatsApp.Image = ((System.Drawing.Image)(resources.GetObject("btnWhatsApp.Image")));
+            this.btnWhatsApp.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnWhatsApp.Location = new System.Drawing.Point(9, 136);
+            this.btnWhatsApp.Name = "btnWhatsApp";
+            this.btnWhatsApp.Size = new System.Drawing.Size(120, 45);
+            this.btnWhatsApp.TabIndex = 135;
+            this.btnWhatsApp.Text = "WhatsApp";
+            this.btnWhatsApp.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btnWhatsApp.UseVisualStyleBackColor = true;
+            this.btnWhatsApp.Click += new System.EventHandler(this.btnWhatsApp_Click);
             // 
             // frmTurnos
             // 

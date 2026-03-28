@@ -1598,8 +1598,7 @@ namespace CapaPresentacion
                 // Si ya existe una instancia, no crear otra
                 if (frmAgregarEspecialidadInstance != null && !frmAgregarEspecialidadInstance.IsDisposed)
                 {
-                    System.Diagnostics.Debug.WriteLine("[DEBUG] Ya existe instancia de FrmAñadirEspecialidad. Recargando datos y retornando.");
-                    frmAgregarEspecialidadInstance.RecargarDatos();
+                    System.Diagnostics.Debug.WriteLine("[DEBUG] Ya existe instancia de FrmAñadirEspecialidad. Retornando.");
                     return;
                 }
 
@@ -1633,16 +1632,6 @@ namespace CapaPresentacion
                 System.Diagnostics.Debug.WriteLine("[DEBUG] Mostrando FrmAñadirEspecialidad incrustado");
                 frmAgregarEspecialidadInstance.Show();
 
-                // Sincronizar selección desde "Gestionar" si existe
-                if (frmGestionarEspecialidadInstance != null && !frmGestionarEspecialidadInstance.IsDisposed)
-                {
-                    int idMotivo = frmGestionarEspecialidadInstance.ObtenerIdMotivoConsultaSeleccionado;
-                    string idTipo = frmGestionarEspecialidadInstance.ObtenerIdTipoExamenSeleccionado;
-                    string idSubtipo = frmGestionarEspecialidadInstance.ObtenerIdSubtipoActualmenteCargado;
-                    System.Diagnostics.Debug.WriteLine($"[SYNC][NAV] Sincronizando a Agregar (al crear): Motivo={idMotivo}, Tipo={idTipo}, Subtipo={idSubtipo}");
-                    frmAgregarEspecialidadInstance.SincronizarCombosDesde(idMotivo, idTipo, idSubtipo);
-                }
-
                 // ✅ SUSCRIBIRSE AL EVENTO: Cuando se crea un subtipo, mostrar botón Grabar y navegar a tabItemsSecciones en FrmAñadirEspecialidad
                 frmAgregarEspecialidadInstance.SubtipoCreado += (s, e) =>
                 {
@@ -1666,9 +1655,6 @@ namespace CapaPresentacion
                     }
                 };
 
-                // ✅ NUEVO: Recargar datos después de mostrar
-                System.Diagnostics.Debug.WriteLine("[DEBUG] Recargando datos en FrmAñadirEspecialidad");
-                frmAgregarEspecialidadInstance.RecargarDatos();
                 System.Diagnostics.Debug.WriteLine("[DEBUG] Fin de abrirFrmAgregarEspecialidades");
             }
             catch (Exception ex)

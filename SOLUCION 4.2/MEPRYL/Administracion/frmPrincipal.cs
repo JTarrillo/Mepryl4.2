@@ -19,6 +19,38 @@ namespace CapaPresentacion
         public frmPrincipal()
         {
             InitializeComponent();
+            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime) return;
+            // Suscribir eventos de controles heredados de frmBasePrincipal
+            this.botonExamenes.Click += botonExamenes_Click;
+            this.botonNotificaciones.Click += botonNotificaciones_Click;
+            this.botonAsignarTurnos.Click += botonAsignarTurnos_Click;
+            this.botonAgenda.Click += botonAgenda_Click;
+            this.botonLigas.Click += botonLigas_Click;
+            this.botonClubes.Click += botonClubes_Click;
+            this.botonProfesionales.Click += botonProfesionales_Click;
+            this.botonHorarios.Click += botonHorarios_Click;
+            this.botonRayosX.Click += botonRayosX_Click;
+            this.botonMesaDeEntrada.Click += botonMesaDeEntrada_Click;
+            this.botonEmpresas.Click += botonEmpresas_Click;
+            this.botonHistorico.Click += botonHistorico_Click;
+            this.botonValidaciones.Click += botonValidaciones_Click;
+            this.botonReportes.Click += botonReportes_Click;
+            this.botValidacionesAutomaticas.Click += botValidacionesAutomaticas_Click;
+            this.botPacientes.Click += botPacientes_Click;
+            this.botonVentanilla.Click += botonVentanilla_Click;
+            this.botUtilidadesPagina.Click += botUtilidadesPagina_Click;
+            this.botUtilidadesDataSMS.Click += botUtilidadesDataSMS_Click;
+            this.botControl.Click += botControl_Click;
+            this.botLaboral.Click += botLaboral_Click;
+            this.botCondicionesLaborales.Click += botCondicionesLaborales_Click;
+            this.botVisitasDomicilio.Click += botVisitasDomicilio_Click;
+            this.botLocalidadesYPrestaciones.Click += botLocalidadesYPrestaciones_Click;
+            this.botZonas.Click += botZonas_Click;
+            this.botNacionalidades.Click += botNacionalidades_Click;
+            this.botUbicacionFotos.Click += botUbicacionFotos_Click;
+            this.botExportaMesaEntrada.Click += botExportaMesaEntrada_Click;
+            this.botConsolidacionInformes.Click += botConsolidacionInformes_Click;
+            this.botConsolidarEstudios.Click += botConsolidarEstudios_Click;
             // Pre-calentar cache del template Excel de Audiometría en background
             System.Threading.Tasks.Task.Run(() => frmReporteAudiometria2.PreWarmCache());
         }
@@ -1056,7 +1088,7 @@ namespace CapaPresentacion
             MostrarPestanaFacturacion();
             LimpiarEstadoIcono();
             bbiFacturacionElectronica.Down = true;
-            Utilidades.abrirFormulario(this, new frmFacturacionElectronica(), this.configuracion);
+            //Utilidades.abrirFormulario(this, new frmFacturacionElectronica(), this.configuracion);
         }
 
         protected override void bbiFacturacionElectronica_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
