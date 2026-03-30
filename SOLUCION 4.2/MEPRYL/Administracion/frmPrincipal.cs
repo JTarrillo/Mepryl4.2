@@ -1,3 +1,4 @@
+
 using CapaPresentacion;
 using CapaPresentacionBase;
 using Comunes;
@@ -484,7 +485,7 @@ namespace CapaPresentacion
         }
 
 
-  
+
 
         //protected override void bbiTipoExamen_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         //{
@@ -1080,6 +1081,13 @@ namespace CapaPresentacion
             MostrarPestanaConfigLaboral();
             LimpiarEstadoIcono();
             //bbiEmpresas.Down = true;
+        }
+
+        protected override void configMensajesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OcultarPestanasRibbon();
+            MostrarPestanaConfigMensajes();
+            LimpiarEstadoIcono();
         }
 
         protected override void facturacionToolStripMenuItem_Click(object sender, EventArgs e)

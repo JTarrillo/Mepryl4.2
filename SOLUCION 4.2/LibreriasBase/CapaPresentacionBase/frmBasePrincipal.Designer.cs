@@ -87,6 +87,7 @@ namespace CapaPresentacionBase
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem24 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem6 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem7 = new System.Windows.Forms.ToolStripMenuItem();
@@ -111,6 +112,7 @@ namespace CapaPresentacionBase
             this.configBasicaDelSistemaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.configPreventivaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.configLaboralToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.configMensajesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pacienteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.preventivaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.laboralToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -182,6 +184,8 @@ namespace CapaPresentacionBase
             this.bbiFacturacionElectronica = new DevExpress.XtraBars.BarButtonItem();
             this.rbpFacturacionElectronica = new DevExpress.XtraBars.Ribbon.RibbonPage();
             this.rpgFacturacionGrp = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
+            this.rbpConfiguracionMensajes = new DevExpress.XtraBars.Ribbon.RibbonPage();
+            this.rpgConfiguracionMensajes = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
             this.rbpPacientePre = new DevExpress.XtraBars.Ribbon.RibbonPage();
             this.ribbonPageGroup12 = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
             this.ribbonPageGroup1 = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
@@ -644,7 +648,8 @@ namespace CapaPresentacionBase
             this.toolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripMenuItem2,
             this.toolStripMenuItem3,
-            this.toolStripMenuItem4});
+            this.toolStripMenuItem4,
+            this.toolStripMenuItem24});
             this.toolStripMenuItem1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripMenuItem1.Image")));
             this.toolStripMenuItem1.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.toolStripMenuItem1.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
@@ -680,6 +685,15 @@ namespace CapaPresentacionBase
             this.toolStripMenuItem4.Size = new System.Drawing.Size(231, 42);
             this.toolStripMenuItem4.Text = "Config. laboral";
             this.toolStripMenuItem4.Click += new System.EventHandler(this.configLaboralToolStripMenuItem_Click);
+            // 
+            // toolStripMenuItem24
+            // 
+            this.toolStripMenuItem24.Image = ((System.Drawing.Image)(resources.GetObject("configPreventivaToolStripMenuItem.Image")));
+            this.toolStripMenuItem24.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.toolStripMenuItem24.Name = "toolStripMenuItem24";
+            this.toolStripMenuItem24.Size = new System.Drawing.Size(231, 42);
+            this.toolStripMenuItem24.Text = "Config. mensajes";
+            this.toolStripMenuItem24.Click += new System.EventHandler(this.configMensajesToolStripMenuItem_Click);
             // 
             // toolStripMenuItem5
             // 
@@ -915,7 +929,8 @@ namespace CapaPresentacionBase
             this.configuracionToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.configBasicaDelSistemaToolStripMenuItem,
             this.configPreventivaToolStripMenuItem,
-            this.configLaboralToolStripMenuItem});
+            this.configLaboralToolStripMenuItem,
+            this.configMensajesToolStripMenuItem});
             this.configuracionToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("configuraciónToolStripMenuItem.Image")));
             this.configuracionToolStripMenuItem.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.configuracionToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
@@ -951,6 +966,15 @@ namespace CapaPresentacionBase
             this.configLaboralToolStripMenuItem.Size = new System.Drawing.Size(231, 42);
             this.configLaboralToolStripMenuItem.Text = "Config. laboral";
             this.configLaboralToolStripMenuItem.Click += new System.EventHandler(this.configLaboralToolStripMenuItem_Click);
+            // 
+            // configMensajesToolStripMenuItem
+            // 
+            this.configMensajesToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("configPreventivaToolStripMenuItem.Image")));
+            this.configMensajesToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.configMensajesToolStripMenuItem.Name = "configMensajesToolStripMenuItem";
+            this.configMensajesToolStripMenuItem.Size = new System.Drawing.Size(231, 42);
+            this.configMensajesToolStripMenuItem.Text = "Config. mensajes";
+            this.configMensajesToolStripMenuItem.Click += new System.EventHandler(this.configMensajesToolStripMenuItem_Click);
             // 
             // pacienteToolStripMenuItem
             // 
@@ -1307,6 +1331,7 @@ namespace CapaPresentacionBase
             this.rbpExpLaboral,
             this.rbpMesaEntradas,
             this.rbpHistoricoMesa,
+            this.rbpConfiguracionMensajes,
             this.rbpFacturacionElectronica});
             this.rbcControlMenu.RibbonStyle = DevExpress.XtraBars.Ribbon.RibbonControlStyle.Office2007;
             this.rbcControlMenu.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.True;
@@ -2298,6 +2323,7 @@ namespace CapaPresentacionBase
         private System.Windows.Forms.ToolStripMenuItem configBasicaDelSistemaToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem configPreventivaToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem configLaboralToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem configMensajesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem pacienteToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem preventivaToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem laboralToolStripMenuItem;
@@ -2379,5 +2405,8 @@ namespace CapaPresentacionBase
         public DevExpress.XtraBars.Ribbon.RibbonPage rbpFacturacionElectronica;
         public DevExpress.XtraBars.Ribbon.RibbonPageGroup rpgFacturacionGrp;
         private System.Windows.Forms.ToolStripMenuItem facturacionToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem24;
+        public DevExpress.XtraBars.Ribbon.RibbonPage rbpConfiguracionMensajes;
+        private DevExpress.XtraBars.Ribbon.RibbonPageGroup rpgConfiguracionMensajes;
     }
 }

@@ -29,20 +29,20 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmPrincipal));
-            
+
             // 
             // frmPrincipal
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.ClientSize = new System.Drawing.Size(1024, 483);
-            
+
             //this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Location = new System.Drawing.Point(0, 0);
             this.Name = "frmPrincipal";
             this.Text = "MEPRYL";
             this.ResumeLayout(false);
             this.PerformLayout();
-           //this.botonEspecialidades.Click += new System.EventHandler(this.botonEspecialidades_Click);
+            //this.botonEspecialidades.Click += new System.EventHandler(this.botonEspecialidades_Click);
             //this.nbiTurnos.LinkClicked += new DevExpress.XtraNavBar.NavBarLinkEventHandler(this.nbiTurnos_LinkClicked);
             //this.nbiVentanilla.LinkClicked += new DevExpress.XtraNavBar.NavBarLinkEventHandler(this.nbiVentanilla_LinkClicked);
             //this.nbiMesaEntrada.LinkClicked += new DevExpress.XtraNavBar.NavBarLinkEventHandler(this.nbiMesaEntrada_LinkClicked);
@@ -55,12 +55,12 @@
             //this.bbiLaboralExamen.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.bbiLaboralExamen_ItemClick);
 
             //this.bbiPlantillaReportes.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.bbiPlantillaReportes_ItemClick);
-           
+
 
 
             //this.bbiConfigMedico.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.bbiConfigMedico_ItemClick);            
             //this.bbiArchivoConsolidar.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.bbiArchivoConsolidar_ItemClick);
-            
+
             //this.bbiTipoExamen.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.bbiTipoExamen_ItemClick);
             //this.bbiEmpresas.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.bbiEmpresas_ItemClick);
             //this.bbiCondicionLaboral.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.bbiCondicionLaboral_ItemClick);
@@ -70,9 +70,11 @@
             //this.bbiUbicarFotos.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.bbiUbicarFotos_ItemClick);
             //this.bbiConfigHorarios.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.bbiConfigHorarios_ItemClick);
             //this.bbiConfigUsuarios.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.bbiConfigUsuarios_ItemClick);
+            // Botón para Configuración de Mensajes (general)
+            //this.bbiConfigMensajes.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.bbiConfigMensajes_ItemClick);
         }
 
         #endregion
-   
+
     }
 }

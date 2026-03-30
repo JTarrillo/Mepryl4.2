@@ -383,6 +383,7 @@ namespace CapaPresentacionBase
             rbpMesaEntradas.Visible = false;
             rbpHistoricoMesa.Visible = false;
             rbpFacturacionElectronica.Visible = false;
+            rbpConfiguracionMensajes.Visible = false;
             //
             blnPrimerInicio = false;
         }
@@ -547,8 +548,8 @@ namespace CapaPresentacionBase
         }
 
 
-      
-      
+
+
 
 
         protected virtual void bbiTipoUsuario_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
@@ -572,6 +573,11 @@ namespace CapaPresentacionBase
         }
 
         protected virtual void configLaboralToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        protected virtual void configMensajesToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
         }
@@ -931,6 +937,12 @@ namespace CapaPresentacionBase
         public void MostrarPestanaFacturacion()
         {
             rbpFacturacionElectronica.Visible = true;
+            minimizarRibbon(false);
+        }
+
+        public void MostrarPestanaConfigMensajes()
+        {
+            rbpConfiguracionMensajes.Visible = true;
             minimizarRibbon(false);
         }
 
