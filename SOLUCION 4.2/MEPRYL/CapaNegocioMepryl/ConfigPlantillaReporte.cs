@@ -63,5 +63,15 @@ namespace CapaNegocioMepryl
             Plantilla.GuardarPathMensajePorSubtipo(idSubtipo, pathArchivo);
         }
 
+        public string GetPathMensajePorSubtipoLaboral(string idSubtipo)
+        {
+            return Plantilla.GetPathMensajePorSubtipoLaboral(idSubtipo);
+        }
+
+        public void GuardarPathMensajePorSubtipoLaboral(string idSubtipo, string pathArchivo)
+        {
+            Plantilla.GuardarPathMensajePorSubtipoLaboral(idSubtipo, pathArchivo);
+        }
+
         }
 }

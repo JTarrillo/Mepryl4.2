@@ -151,5 +151,26 @@ namespace CapaDatosMepryl
                     INSERT INTO dbo.ConfigMensajeSubtipoPreventiva (IdSubtipo, PathArchivo) VALUES ('" + idSubtipo + @"', '" + pathArchivo.Replace("'", "''") + @"')";
             SQLConnector.obtenerTablaSegunConsultaString(strSQL);
         }
+
+        /// Devuelve el PathArchivo laboral para un subtipo; vacío si no está configurado
+        public string GetPathMensajePorSubtipoLaboral(string idSubtipo)
+        {
+            string strSQL = "SELECT ISNULL(PathArchivo,'') FROM dbo.ConfigMensajeSubtipoLaboral WHERE IdSubtipo = '" + idSubtipo + "'";
+            DataTable dt = SQLConnector.obtenerTablaSegunConsultaString(strSQL);
+            if (dt.Rows.Count > 0)
+                return dt.Rows[0][0].ToString();
+            return string.Empty;
+        }
+
+        /// Guarda o actualiza el PathArchivo laboral para un subtipo (upsert)
+        public void GuardarPathMensajePorSubtipoLaboral(string idSubtipo, string pathArchivo)
+        {
+            string strSQL = @"
+                IF EXISTS (SELECT 1 FROM dbo.ConfigMensajeSubtipoLaboral WHERE IdSubtipo = '" + idSubtipo + @"')
+                    UPDATE dbo.ConfigMensajeSubtipoLaboral SET PathArchivo = '" + pathArchivo.Replace("'", "''") + @"' WHERE IdSubtipo = '" + idSubtipo + @"'
+                ELSE
+                    INSERT INTO dbo.ConfigMensajeSubtipoLaboral (IdSubtipo, PathArchivo) VALUES ('" + idSubtipo + @"', '" + pathArchivo.Replace("'", "''") + @"')";
+            SQLConnector.obtenerTablaSegunConsultaString(strSQL);
+        }
     }
 }

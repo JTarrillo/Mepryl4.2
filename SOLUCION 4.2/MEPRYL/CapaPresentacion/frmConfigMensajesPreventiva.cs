@@ -101,19 +101,43 @@ namespace CapaPresentacion
             CargarArchivoDelSubtipoSeleccionado();
         }
 
-        private const string STR_RUTA_DEFAULT = @"P:\Temporal\PLANTILLA REPORTE INFORMES";
+        private const string STR_RUTA_DEFAULT           = @"P:\Temporal\PLANTILLA REPORTE INFORMES";
+        private const string STR_RUTA_PREVENTIVA        = @"P:\Temporal\PLANTILLA REPORTE INFORMES\Preventiva";
+        private const string STR_RUTA_LABORAL           = @"P:\Temporal\PLANTILLA REPORTE INFORMES\Laboral";
+
+        private string GetRutaDefault() => EsMotivoLaboral() ? STR_RUTA_LABORAL : STR_RUTA_PREVENTIVA;
+
+        private bool EsMotivoLaboral()
+        {
+            if (cmbMotivoConsulta.SelectedIndex < 0 || dtMotivosConsulta == null) return false;
+            string nombre = dtMotivosConsulta.Rows[cmbMotivoConsulta.SelectedIndex]["nombre"].ToString().ToUpper();
+            return nombre == "LABORAL";
+        }
 
         private void CargarArchivoDelSubtipoSeleccionado()
         {
             if (cmbSubtipos.SelectedIndex < 0 || dtSubtipos == null || dtSubtipos.Rows.Count == 0) return;
             string idSubtipo = dtSubtipos.Rows[cmbSubtipos.SelectedIndex]["id"].ToString();
-            string path = Reporte.GetPathMensajePorSubtipo(idSubtipo);
+            string path = EsMotivoLaboral()
+                ? Reporte.GetPathMensajePorSubtipoLaboral(idSubtipo)
+                : Reporte.GetPathMensajePorSubtipo(idSubtipo);
+
+            string rutaCorrecta = GetRutaDefault();
+
+            // Migrar paths antiguos (guardados en la raíz) al subfolder (Preventiva / Laboral)
+            if (!string.IsNullOrEmpty(path))
+            {
+                string dir = System.IO.Path.GetDirectoryName(path) ?? "";
+                if (!string.Equals(dir, rutaCorrecta, StringComparison.OrdinalIgnoreCase))
+                    path = System.IO.Path.Combine(rutaCorrecta, System.IO.Path.GetFileName(path));
+            }
+
             if (string.IsNullOrEmpty(path))
             {
                 string nombreSubtipo = dtSubtipos.Rows[cmbSubtipos.SelectedIndex]["descripcion"].ToString();
                 foreach (char c in System.IO.Path.GetInvalidFileNameChars())
                     nombreSubtipo = nombreSubtipo.Replace(c.ToString(), "");
-                path = System.IO.Path.Combine(STR_RUTA_DEFAULT, "PlantillaMensajeTurnos" + nombreSubtipo + ".txt");
+                path = System.IO.Path.Combine(rutaCorrecta, "PlantillaMensajeTurnos" + nombreSubtipo + ".txt");
             }
             txtUbicacionArchivoTurno.Text = path;
             if (System.IO.File.Exists(path))
@@ -153,7 +177,10 @@ namespace CapaPresentacion
                 string idSubtipo = GetIdSubtipoSeleccionado();
                 if (!string.IsNullOrEmpty(idSubtipo))
                 {
-                    Reporte.GuardarPathMensajePorSubtipo(idSubtipo, txtUbicacionArchivoTurno.Text);
+                    if (EsMotivoLaboral())
+                        Reporte.GuardarPathMensajePorSubtipoLaboral(idSubtipo, txtUbicacionArchivoTurno.Text);
+                    else
+                        Reporte.GuardarPathMensajePorSubtipo(idSubtipo, txtUbicacionArchivoTurno.Text);
                     GuardarArchivoTextbox();
                     MessageBox.Show("Plantilla guardada correctamente.", "Configuración", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
@@ -257,7 +284,7 @@ namespace CapaPresentacion
             fbdMostrarDirectorio.FilterIndex = 2;
             fbdMostrarDirectorio.RestoreDirectory = true;
             fbdMostrarDirectorio.Title = "Seleccione un archivo";
-            fbdMostrarDirectorio.InitialDirectory = STR_RUTA_DEFAULT;
+            fbdMostrarDirectorio.InitialDirectory = GetRutaDefault();
 
             if (fbdMostrarDirectorio.ShowDialog() == DialogResult.OK)
             {
