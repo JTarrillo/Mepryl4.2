@@ -27,7 +27,7 @@ namespace CapaDatosMepryl
             strSQL = @"INSERT INTO dbo.Usuario 
                      (id, username, password, apellido, nombre, email1, Tipo, 
                       VentConfiguracion, VentExamenes, VentMesa, VentPacientes, VentVentanilla, VentResumen,
-                      PermisoVer, PermisoModificar, PermisoEliminar, VentTurnos, Activo, VentAudiometria)
+                      PermisoVer, PermisoModificar, PermisoEliminar, VentTurnos, Activo, VentAudiometria, VentFacturacion)
                      VALUES
                      (NEWID(), 
                         '" + valores[0].ToString() +@"', 
@@ -48,7 +48,8 @@ namespace CapaDatosMepryl
                         '" + Convert.ToBoolean(valores[14].ToString()) + @"',
                         '" + Convert.ToBoolean(valores[15].ToString()) + @"',
                         '" + Convert.ToBoolean(valores[16].ToString()) + @"',
-                        '" + Convert.ToBoolean(valores[17].ToString()) + @"'                        
+                        '" + Convert.ToBoolean(valores[17].ToString()) + @"',
+                        '" + Convert.ToBoolean(valores[18].ToString()) + @"'
                         )";
             try
             {
@@ -133,7 +134,8 @@ namespace CapaDatosMepryl
 
                           VentTurnos = '" + Convert.ToBoolean(valores[15].ToString()) + @"' ,
                           Activo = '" + Convert.ToBoolean(valores[16].ToString()) + @"' ,
-                          VentAudiometria = '" + Convert.ToBoolean(valores[17].ToString()) + @"' 
+                          VentAudiometria = '" + Convert.ToBoolean(valores[17].ToString()) + @"' ,
+                          VentFacturacion = '" + Convert.ToBoolean(valores[18].ToString()) + @"'
                       WHERE id = '" + strId + @"'";
             try
             {

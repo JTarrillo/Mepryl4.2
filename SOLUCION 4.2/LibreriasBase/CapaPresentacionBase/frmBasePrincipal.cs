@@ -867,6 +867,12 @@ namespace CapaPresentacionBase
 
             informeAudiometriaToolStripMenuItem.Visible = blnLista[10];
             toolStripMenuItem22.Visible = blnLista[10];  //Audiometria
+
+            if (blnLista.Count > 11)
+            {
+                facturacionToolStripMenuItem.Visible = blnLista[11];
+                toolStripMenuItem23.Visible = blnLista[11];  //Facturacion
+            }
         }
 
         public void PermisosUsuario(string strUsuario)

@@ -36,6 +36,7 @@ namespace Comunes
 
                 blnLista.Add(Convert.ToBoolean(dt.Rows[0][22].ToString())); // Turnos
                 blnLista.Add(Convert.ToBoolean(dt.Rows[0][24].ToString())); // Audiometria
+                blnLista.Add(Convert.ToBoolean(dt.Rows[0][27].ToString())); // Facturacion
             }
 
             return blnLista;

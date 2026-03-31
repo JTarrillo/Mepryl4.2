@@ -23,7 +23,7 @@ namespace CapaPresentacion
 
         bool blnNuevo = false;
 
-        bool blnVConfiguracion, blnVExamenes, blnVMesa, blnVPacientes, blnVVentanilla, blnVResumen, blnVTurno, blnVerAudio;
+        bool blnVConfiguracion, blnVExamenes, blnVMesa, blnVPacientes, blnVVentanilla, blnVResumen, blnVTurno, blnVerAudio, blnVFacturacion;
         bool blnPVer, blnPModificar, blnPEliminar;
         int intFilaSelecc = 0;
         bool blnEstadoInicial = false;
@@ -112,6 +112,7 @@ namespace CapaPresentacion
             strDatos.Add(chkTurnos.Checked);
             strDatos.Add(chkActivo.Checked);
             strDatos.Add(chkVerAudiometria.Checked);
+            strDatos.Add(chkverfacturacion.Checked);
         }
 
         private void cargarGrilla()
@@ -361,6 +362,7 @@ namespace CapaPresentacion
             chkEliminar.ForeColor = Color.Black;
 
             chkVerAudiometria.ForeColor = Color.Black;
+            chkverfacturacion.ForeColor = Color.Black;
             pbFoto.Image = null;
         }
 
@@ -385,6 +387,7 @@ namespace CapaPresentacion
                 chkVer.Enabled = false;
                 chkModificar.Enabled = false;
                 chkEliminar.Enabled = false;
+                chkverfacturacion.Enabled = false;
             }
         }
 
@@ -655,6 +658,7 @@ namespace CapaPresentacion
                         blnPEliminar = Convert.ToBoolean(dt.Rows[i][11].ToString());
 
                         blnVerAudio = Convert.ToBoolean(dt.Rows[i][12].ToString());
+                        blnVFacturacion = dt.Columns.Count > 13 ? Convert.ToBoolean(dt.Rows[i][13].ToString()) : false;
 
                         // ---
 
@@ -670,6 +674,7 @@ namespace CapaPresentacion
                         chkModificar.Checked = Convert.ToBoolean(dt.Rows[i][10].ToString());
                         chkEliminar.Checked = Convert.ToBoolean(dt.Rows[i][11].ToString());
                         chkVerAudiometria.Checked = Convert.ToBoolean(dt.Rows[i][12].ToString());
+                        chkverfacturacion.Checked = dt.Columns.Count > 13 ? Convert.ToBoolean(dt.Rows[i][13].ToString()) : false;
                     }
                     else
                     {
@@ -685,6 +690,7 @@ namespace CapaPresentacion
                         chkModificar.Checked = Convert.ToBoolean(dt.Rows[i][10].ToString());
                         chkEliminar.Checked = Convert.ToBoolean(dt.Rows[i][11].ToString());
                         chkVerAudiometria.Checked = Convert.ToBoolean(dt.Rows[i][12].ToString());
+                        chkverfacturacion.Checked = dt.Columns.Count > 13 ? Convert.ToBoolean(dt.Rows[i][13].ToString()) : false;
                     }
                 }
             }
@@ -714,6 +720,7 @@ namespace CapaPresentacion
                         chkModificar.Checked = Convert.ToBoolean(dt.Rows[i][20].ToString());
                         chkEliminar.Checked = Convert.ToBoolean(dt.Rows[i][21].ToString());
                         chkVerAudiometria.Checked = Convert.ToBoolean(dt.Rows[i][24].ToString());
+                        chkverfacturacion.Checked = Convert.ToBoolean(dt.Rows[i]["VentFacturacion"].ToString());
 
                         if (chkConfiguracion.Checked != blnVConfiguracion)
                             chkConfiguracion.ForeColor = Color.Red;
@@ -737,6 +744,8 @@ namespace CapaPresentacion
                             chkModificar.ForeColor = Color.Red;
                         if (chkEliminar.Checked != blnPEliminar)
                             chkEliminar.ForeColor = Color.Red;
+                        if (chkverfacturacion.Checked != blnVFacturacion)
+                            chkverfacturacion.ForeColor = Color.Red;
                     }
                 }
             }
@@ -793,6 +802,11 @@ namespace CapaPresentacion
                 frm.ShowDialog();
                 CargarDatosDGV();
             }
+        }
+
+        private void chkResumen_CheckedChanged(object sender, EventArgs e)
+        {
+
         }
 
         private void AccesoOperador()

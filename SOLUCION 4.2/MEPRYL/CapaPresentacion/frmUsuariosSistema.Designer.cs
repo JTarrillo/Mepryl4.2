@@ -81,6 +81,7 @@
             this.botCancelar = new System.Windows.Forms.Button();
             this.botAceptar = new System.Windows.Forms.Button();
             this.defaultLookAndFeel1 = new DevExpress.LookAndFeel.DefaultLookAndFeel(this.components);
+            this.chkverfacturacion = new System.Windows.Forms.CheckBox();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.tblBuscar.SuspendLayout();
@@ -148,7 +149,7 @@
             this.chkMedico.AutoSize = true;
             this.chkMedico.Location = new System.Drawing.Point(307, 270);
             this.chkMedico.Name = "chkMedico";
-            this.chkMedico.Size = new System.Drawing.Size(140, 20);
+            this.chkMedico.Size = new System.Drawing.Size(139, 20);
             this.chkMedico.TabIndex = 171;
             this.chkMedico.Text = "Medico Asosciado";
             this.chkMedico.UseVisualStyleBackColor = true;
@@ -162,7 +163,7 @@
             this.chkActivo.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkActivo.Location = new System.Drawing.Point(161, 270);
             this.chkActivo.Name = "chkActivo";
-            this.chkActivo.Size = new System.Drawing.Size(114, 20);
+            this.chkActivo.Size = new System.Drawing.Size(113, 20);
             this.chkActivo.TabIndex = 166;
             this.chkActivo.Text = "Usuario Activo";
             this.chkActivo.UseVisualStyleBackColor = true;
@@ -247,7 +248,7 @@
             this.chkEliminar.AutoSize = true;
             this.chkEliminar.Location = new System.Drawing.Point(118, 30);
             this.chkEliminar.Name = "chkEliminar";
-            this.chkEliminar.Size = new System.Drawing.Size(75, 20);
+            this.chkEliminar.Size = new System.Drawing.Size(74, 20);
             this.chkEliminar.TabIndex = 2;
             this.chkEliminar.Text = "Eliminar";
             this.chkEliminar.UseVisualStyleBackColor = true;
@@ -257,7 +258,7 @@
             this.chkModificar.AutoSize = true;
             this.chkModificar.Location = new System.Drawing.Point(118, 67);
             this.chkModificar.Name = "chkModificar";
-            this.chkModificar.Size = new System.Drawing.Size(82, 20);
+            this.chkModificar.Size = new System.Drawing.Size(81, 20);
             this.chkModificar.TabIndex = 1;
             this.chkModificar.Text = "Modificar";
             this.chkModificar.UseVisualStyleBackColor = true;
@@ -267,13 +268,14 @@
             this.chkVer.AutoSize = true;
             this.chkVer.Location = new System.Drawing.Point(29, 30);
             this.chkVer.Name = "chkVer";
-            this.chkVer.Size = new System.Drawing.Size(48, 20);
+            this.chkVer.Size = new System.Drawing.Size(47, 20);
             this.chkVer.TabIndex = 0;
             this.chkVer.Text = "Ver";
             this.chkVer.UseVisualStyleBackColor = true;
             // 
             // gpbAccesoPantallas
             // 
+            this.gpbAccesoPantallas.Controls.Add(this.chkverfacturacion);
             this.gpbAccesoPantallas.Controls.Add(this.chkVerAudiometria);
             this.gpbAccesoPantallas.Controls.Add(this.chkResumen);
             this.gpbAccesoPantallas.Controls.Add(this.chkTurnos);
@@ -294,7 +296,7 @@
             this.chkVerAudiometria.AutoSize = true;
             this.chkVerAudiometria.Location = new System.Drawing.Point(487, 67);
             this.chkVerAudiometria.Name = "chkVerAudiometria";
-            this.chkVerAudiometria.Size = new System.Drawing.Size(123, 20);
+            this.chkVerAudiometria.Size = new System.Drawing.Size(122, 20);
             this.chkVerAudiometria.TabIndex = 13;
             this.chkVerAudiometria.Text = "Ver Audiometria";
             this.chkVerAudiometria.UseVisualStyleBackColor = true;
@@ -304,17 +306,18 @@
             this.chkResumen.AutoSize = true;
             this.chkResumen.Location = new System.Drawing.Point(487, 30);
             this.chkResumen.Name = "chkResumen";
-            this.chkResumen.Size = new System.Drawing.Size(115, 20);
+            this.chkResumen.Size = new System.Drawing.Size(114, 20);
             this.chkResumen.TabIndex = 12;
             this.chkResumen.Text = "Planilla del día";
             this.chkResumen.UseVisualStyleBackColor = true;
+            this.chkResumen.CheckedChanged += new System.EventHandler(this.chkResumen_CheckedChanged);
             // 
             // chkTurnos
             // 
             this.chkTurnos.AutoSize = true;
             this.chkTurnos.Location = new System.Drawing.Point(357, 67);
             this.chkTurnos.Name = "chkTurnos";
-            this.chkTurnos.Size = new System.Drawing.Size(69, 20);
+            this.chkTurnos.Size = new System.Drawing.Size(68, 20);
             this.chkTurnos.TabIndex = 11;
             this.chkTurnos.Text = "Turnos";
             this.chkTurnos.UseVisualStyleBackColor = true;
@@ -324,7 +327,7 @@
             this.chkVentanilla.AutoSize = true;
             this.chkVentanilla.Location = new System.Drawing.Point(38, 30);
             this.chkVentanilla.Name = "chkVentanilla";
-            this.chkVentanilla.Size = new System.Drawing.Size(86, 20);
+            this.chkVentanilla.Size = new System.Drawing.Size(85, 20);
             this.chkVentanilla.TabIndex = 6;
             this.chkVentanilla.Text = "Ventanilla";
             this.chkVentanilla.UseVisualStyleBackColor = true;
@@ -334,7 +337,7 @@
             this.chkMesaEntrada.AutoSize = true;
             this.chkMesaEntrada.Location = new System.Drawing.Point(38, 67);
             this.chkMesaEntrada.Name = "chkMesaEntrada";
-            this.chkMesaEntrada.Size = new System.Drawing.Size(129, 20);
+            this.chkMesaEntrada.Size = new System.Drawing.Size(128, 20);
             this.chkMesaEntrada.TabIndex = 7;
             this.chkMesaEntrada.Text = "Mesa de entrada";
             this.chkMesaEntrada.UseVisualStyleBackColor = true;
@@ -344,7 +347,7 @@
             this.chkConfiguracion.AutoSize = true;
             this.chkConfiguracion.Location = new System.Drawing.Point(207, 67);
             this.chkConfiguracion.Name = "chkConfiguracion";
-            this.chkConfiguracion.Size = new System.Drawing.Size(109, 20);
+            this.chkConfiguracion.Size = new System.Drawing.Size(108, 20);
             this.chkConfiguracion.TabIndex = 9;
             this.chkConfiguracion.Text = "Configuración";
             this.chkConfiguracion.UseVisualStyleBackColor = true;
@@ -354,7 +357,7 @@
             this.chkExamenes.AutoSize = true;
             this.chkExamenes.Location = new System.Drawing.Point(207, 30);
             this.chkExamenes.Name = "chkExamenes";
-            this.chkExamenes.Size = new System.Drawing.Size(91, 20);
+            this.chkExamenes.Size = new System.Drawing.Size(90, 20);
             this.chkExamenes.TabIndex = 8;
             this.chkExamenes.Text = "Examenes";
             this.chkExamenes.UseVisualStyleBackColor = true;
@@ -364,7 +367,7 @@
             this.chkPacientes.AutoSize = true;
             this.chkPacientes.Location = new System.Drawing.Point(357, 30);
             this.chkPacientes.Name = "chkPacientes";
-            this.chkPacientes.Size = new System.Drawing.Size(87, 20);
+            this.chkPacientes.Size = new System.Drawing.Size(86, 20);
             this.chkPacientes.TabIndex = 10;
             this.chkPacientes.Text = "Pacientes";
             this.chkPacientes.UseVisualStyleBackColor = true;
@@ -453,7 +456,7 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(95, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(64, 16);
+            this.label2.Size = new System.Drawing.Size(63, 16);
             this.label2.TabIndex = 2;
             this.label2.Text = "Apellido: ";
             // 
@@ -471,7 +474,7 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(95, 49);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(63, 16);
+            this.label1.Size = new System.Drawing.Size(62, 16);
             this.label1.TabIndex = 0;
             this.label1.Text = "Nombre: ";
             // 
@@ -489,7 +492,7 @@
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(507, 49);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(68, 16);
+            this.label4.Size = new System.Drawing.Size(67, 16);
             this.label4.TabIndex = 36;
             this.label4.Text = "Correo-E: ";
             // 
@@ -513,7 +516,7 @@
             this.label5.AutoSize = true;
             this.label5.Location = new System.Drawing.Point(95, 147);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(83, 16);
+            this.label5.Size = new System.Drawing.Size(82, 16);
             this.label5.TabIndex = 38;
             this.label5.Text = "Contraseña: ";
             // 
@@ -529,7 +532,7 @@
             this.label7.AutoSize = true;
             this.label7.Location = new System.Drawing.Point(95, 98);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(132, 16);
+            this.label7.Size = new System.Drawing.Size(131, 16);
             this.label7.TabIndex = 48;
             this.label7.Text = "Nombre de Usuario: ";
             // 
@@ -552,7 +555,7 @@
             this.label6.AutoSize = true;
             this.label6.Location = new System.Drawing.Point(507, 98);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(111, 16);
+            this.label6.Size = new System.Drawing.Size(110, 16);
             this.label6.TabIndex = 46;
             this.label6.Text = "Tipo de Usuario: ";
             // 
@@ -701,6 +704,16 @@
             // 
             this.defaultLookAndFeel1.LookAndFeel.SkinName = "Office 2016 Colorful";
             // 
+            // chkverfacturacion
+            // 
+            this.chkverfacturacion.AutoSize = true;
+            this.chkverfacturacion.Location = new System.Drawing.Point(657, 29);
+            this.chkverfacturacion.Name = "chkverfacturacion";
+            this.chkverfacturacion.Size = new System.Drawing.Size(120, 20);
+            this.chkverfacturacion.TabIndex = 14;
+            this.chkverfacturacion.Text = "Ver Facturación";
+            this.chkverfacturacion.UseVisualStyleBackColor = true;
+            // 
             // frmUsuariosSistema
             // 
             this.Appearance.Options.UseFont = true;
@@ -791,5 +804,6 @@
         private System.Windows.Forms.Label label3;
         private DevExpress.LookAndFeel.DefaultLookAndFeel defaultLookAndFeel1;
         private System.Windows.Forms.TextBox txtDNI;
+        private System.Windows.Forms.CheckBox chkverfacturacion;
     }
 }

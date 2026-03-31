@@ -29,6 +29,7 @@ namespace Entidades
         private bool ventResumen;
         private bool ventTurnos;
         private bool ventAudiometria;
+        private bool ventFacturacion;
         private bool permisoVer;
         private bool permisoModificar;
         private bool permisoEliminar;
@@ -59,6 +60,7 @@ namespace Entidades
             this.ventResumen = false;
             this.ventTurnos = false;
             this.ventAudiometria = false;
+            this.ventFacturacion = false;
             this.permisoVer = false;
             this.permisoModificar = false;
             this.permisoEliminar = false;
@@ -190,6 +192,12 @@ namespace Entidades
         {
             get { return ventAudiometria; }
             set { ventAudiometria = value; }
+        }
+
+        public bool VentFacturacion
+        {
+            get { return ventFacturacion; }
+            set { ventFacturacion = value; }
         }
 
         public bool PermisoVer
