@@ -1084,8 +1084,8 @@ namespace CapaPresentacion
 
         protected override void facturacionToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OcultarPestanasRibbon();
-            MostrarPestanaFacturacion();
+            //OcultarPestanasRibbon();
+            //MostrarPestanaFacturacion();
             LimpiarEstadoIcono();
             bbiFacturacionElectronica.Down = true;
             //Utilidades.abrirFormulario(this, new frmFacturacionElectronica(), this.configuracion);
@@ -1094,7 +1094,7 @@ namespace CapaPresentacion
         protected override void bbiFacturacionElectronica_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             OcultarPestanasRibbon();
-            MostrarPestanaFacturacion();
+            //MostrarPestanaFacturacion();
             LimpiarEstadoIcono();
             bbiFacturacionElectronica.Down = true;
             Utilidades.abrirFormulario(this, new frmFacturacionElectronica(), this.configuracion);
