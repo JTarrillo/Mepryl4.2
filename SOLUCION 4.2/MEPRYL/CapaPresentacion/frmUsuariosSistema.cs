@@ -269,6 +269,14 @@ namespace CapaPresentacion
                 MessageBox.Show("Usuario actualizado correctamente", "Usuarios", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
 
+            // Si el usuario editado es el usuario actualmente logueado, refrescar visibilidad en tiempo real
+            if (txtNombreUsuario.Text.Trim().Equals(Comunes.UsuarioDatos.UsuarioSistema, StringComparison.OrdinalIgnoreCase))
+            {
+                var frmPadre = this.MdiParent as CapaPresentacionBase.frmBasePrincipal;
+                if (frmPadre != null)
+                    frmPadre.PermisosUsuario(Comunes.UsuarioDatos.UsuarioSistema);
+            }
+
             CargarDatosDGV();
 
             if (dgv.Rows.Count > 0)
@@ -702,7 +710,7 @@ namespace CapaPresentacion
 
             try
             {
-                dt = UserSistema.ListaPermisoUsuarios(dgwDatos.Rows[dgwDatos.CurrentCell.RowIndex].Cells[0].Value.ToString());
+                dt = UserSistema.ListaPermisoUsuarios(dgv.Rows[intFilaSelecc].Cells[0].Value.ToString());
 
                 if (dt.Rows.Count > 0)
                 {

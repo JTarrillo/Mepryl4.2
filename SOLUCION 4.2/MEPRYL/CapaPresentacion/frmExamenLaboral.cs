@@ -713,6 +713,17 @@ namespace CapaPresentacion
             }
 
 
+            // Mostrar mapeo de RX activos (ID y Label) para depuración
+            if (labelsUsados.Count > 0 && textBoxsIdUsados.Count == labelsUsados.Count)
+            {
+                string debugRX = "MAPEO RX ACTIVO:\n";
+                for (int i = 0; i < labelsUsados.Count; i++)
+                {
+                    debugRX += $"Posición {i + 1}: ID={textBoxsIdUsados[i].Text} | Label={labelsUsados[i].Text}\n";
+                }
+                System.Diagnostics.Debug.WriteLine(debugRX);
+            }
+
 
         }
 
@@ -1107,7 +1118,6 @@ namespace CapaPresentacion
             examen.ToraxP = obtenerValorTb("55");
             examen.PCostalFyO = obtenerValorTb("56");
             examen.ColDorsalFyP = obtenerValorTb("57");
-            examen.DorsalF = obtenerValorTb("228");
             examen.PelvisF = obtenerValorTb("58");
             examen.CaderaF = obtenerValorTb("59");
             examen.CaderaP = obtenerValorTb("60");
@@ -1126,6 +1136,7 @@ namespace CapaPresentacion
             examen.Eeg = obtenerValorTb("76");
             examen.ITorg = obtenerValorTb("77");
             examen.Ecg = obtenerValorTb("78");
+            examen.DorsalF = obtenerValorTb("99");
             examen.Observaciones = tbObservaciones.Text;
             examen.ObservacionesLab = txtObservacionesLaboratorio.Text;
 
@@ -1487,7 +1498,6 @@ namespace CapaPresentacion
             setearTbSegunId("55", examen.ToraxP, "");
             setearTbSegunId("56", examen.PCostalFyO, "");
             setearTbSegunId("57", examen.ColDorsalFyP, "");
-            setearTbSegunId("228", examen.DorsalF, "SIN PARTICULARIDADES");
             setearTbSegunId("58", examen.PelvisF, "");
             setearTbSegunId("59", examen.CaderaF, "");
             setearTbSegunId("60", examen.CaderaP, "");
@@ -1506,6 +1516,7 @@ namespace CapaPresentacion
             setearTbSegunId("76", examen.Eeg, "DENTRO DE LOS PARAMETROS NORMALES");
             setearTbSegunId("77", examen.ITorg, "");
             setearTbSegunId("78", examen.Ecg, "SIN VALOR PATOLOGICO");
+            setearTbSegunId("99", examen.DorsalF, "SIN PARTICULARIDADES");
             tbObservaciones.Text = examen.Observaciones;
             txtObservacionesLaboratorio.Text = examen.ObservacionesLab;
             if (examen.Dictamen != "") { cboDictamenFinal.SelectedValue = examen.Dictamen; }

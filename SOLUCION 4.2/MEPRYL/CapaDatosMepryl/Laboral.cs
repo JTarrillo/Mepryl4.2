@@ -443,7 +443,7 @@ namespace CapaDatosMepryl
                 "@munecaFyP", "@manoFyP", "@toraxP", "@pCostalFyO", "@colDorsalFyP", "@pelvisF", "@caderaF", "@caderaP", "@femurFyP",
                 "@rodillaF", "@rodillaP", "@piernaFyP", "@tobilloFyP", "@axialDeCalcaneo", "@pieFyP", "@audio", "@ergo", "@eco", "@psico",
                 "@espiro", "@eeg", "@iTorg", "@ecg", "@observaciones", "@dictamen", "@na", "@k", "@protTotal", "@albumina", "@alfa1", "@alfa2", "@beta1", "@beta2", "@gammaglob", 
-                "@relacAlbGlob", "@creat");
+                "@relacAlbGlob", "@creat", "@dorsalF");
 
                 SQLConnector.executeProcedure("sp_ExamenLaboral_Update", update, examen.Id, examen.AntCli, examen.AntQui,
                     examen.AntTrau, examen.Talla, examen.Peso, examen.EntradaAire, examen.RuidosAgre, examen.RuidosCard,
@@ -465,7 +465,7 @@ namespace CapaDatosMepryl
                     examen.RodillaP, examen.PiernaFyP, examen.TobilloFyP, examen.AxialDeCalcaneo, examen.PieFyP,
                     examen.Audio, examen.Ergo, examen.Eco, examen.Psico, examen.Espiro, examen.Eeg, examen.ITorg,
                     examen.Ecg, examen.Observaciones, examen.Dictamen, examen.Na, examen.K, examen.ProtTotales, examen.Albumina,
-                    examen.ALFA1, examen.ALFA2, examen.BETA1, examen.BETA2, examen.Gammaglob, examen.RelacAlbGlob, examen.Creat);
+                    examen.ALFA1, examen.ALFA2, examen.BETA1, examen.BETA2, examen.Gammaglob, examen.RelacAlbGlob, examen.Creat, examen.DorsalF);
                 resul.Modo = 1;
                 return resul;
             }
@@ -782,7 +782,7 @@ namespace CapaDatosMepryl
             puntTxtEncab = 0;
 
             TipoExamen te = new TipoExamen();
-            Entidades.TipoExamen entidad = te.cargarEstudiosPorExamen(consulta.Rows[0].ItemArray[140].ToString());
+            Entidades.TipoExamen entidad = te.cargarEstudiosPorExamen(consulta.Rows[0].ItemArray[141].ToString());
 
 
             if (entidad.Clinico.Select("Id = 1 and Estado = true").Length > 0)
@@ -859,18 +859,16 @@ namespace CapaDatosMepryl
             consulta.Rows[0].ItemArray[108].ToString(), "RX. ");
             setearValoresDinamicos(entidad.TroncoYPelvis, "Id = 60", encabezados, txtencabezados,
             consulta.Rows[0].ItemArray[109].ToString(), "RX. ");
-                // Mapeo para DORSAL (F) (Id=99)
-                setearValoresDinamicos(entidad.TroncoYPelvis, "Id = 99", encabezados, txtencabezados,
-                consulta.Rows[0].ItemArray[99].ToString(), "RX. ");
-                setearValoresDinamicos(entidad.MiembroInferior, "Id = 61", encabezados, txtencabezados, 
+              
+            setearValoresDinamicos(entidad.MiembroInferior, "Id = 61", encabezados, txtencabezados, 
             consulta.Rows[0].ItemArray[110].ToString(), "RX. ");
             setearValoresDinamicos(entidad.MiembroInferior, "Id = 62", encabezados, txtencabezados, 
-            consulta.Rows[0].ItemArray[111].ToString(), "RX. ");
+                consulta.Rows[0].ItemArray[111].ToString(), "RX. ");
             setearValoresDinamicos(entidad.MiembroInferior, "Id = 63", encabezados, txtencabezados, 
-            consulta.Rows[0].ItemArray[112].ToString(), "RX. ");
+                consulta.Rows[0].ItemArray[112].ToString(), "RX. ");
             setearValoresDinamicos(entidad.MiembroInferior, "Id = 64", encabezados, txtencabezados, 
             consulta.Rows[0].ItemArray[113].ToString(), "RX. ");
-            setearValoresDinamicos(entidad.MiembroInferior, "Id = 65", encabezados, txtencabezados, 
+            setearValoresDinamicos(entidad.LaboralesBasicas, "Id = 65", encabezados, txtencabezados, 
             consulta.Rows[0].ItemArray[114].ToString(), "RX. ");
             setearValoresDinamicos(entidad.MiembroInferior, "Id = 66", encabezados, txtencabezados, 
             consulta.Rows[0].ItemArray[115].ToString(), "RX. ");
@@ -891,8 +889,10 @@ namespace CapaDatosMepryl
             consulta.Rows[0].ItemArray[122].ToString(), "");
             setearValoresDinamicos(entidad.EstComplementarios, "Id = 77", encabezados, txtencabezados, 
             consulta.Rows[0].ItemArray[123].ToString(), "");
+                // Mapeo para DORSAL (F) (Id=99)
+                setearValoresDinamicos(entidad.TroncoYPelvis, "Id = 99", encabezados, txtencabezados, consulta.Rows[0].ItemArray[140].ToString(), "RX. ");
 
-            string encabezadoEquilibriometrico = "";
+                string encabezadoEquilibriometrico = "";
             string resultadoEquilibriometrico = "";
             if (entidad.Clinico.Select("Id = 69 and Estado = true").Length > 0)
             {

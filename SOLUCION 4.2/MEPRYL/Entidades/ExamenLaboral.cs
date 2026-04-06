@@ -683,6 +683,14 @@ namespace Entidades
             get { return dorsalF; }
             set { dorsalF = value; }
         }
+
+        // Nueva propiedad para ESPINOGRAMA (P)
+        private string espinogramaP;
+        public string EspinogramaP
+        {
+            get { return espinogramaP; }
+            set { espinogramaP = value; }
+        }
         private string pelvisF;
 
         public string PelvisF
@@ -1010,6 +1018,7 @@ namespace Entidades
             this.pCostalFyO = string.Empty;
             this.colDorsalFyP = string.Empty;
             this.dorsalF = string.Empty;
+            this.espinogramaP = string.Empty;
             this.pelvisF = string.Empty;
             this.caderaF = string.Empty;
             this.caderaP = string.Empty;
