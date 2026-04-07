@@ -92,7 +92,7 @@ namespace CapaPresentacion
         }
 
         public string exportarAPDF(DataTable parametros, DataSet ds, DataTable contenidoDs,string ubicacion)
-        {
+          {
             this.setearDataSource(ds, contenidoDs);
             this.setearParametrosReporte(parametros);
             rpt.ExportToDisk(CrystalDecisions.Shared.ExportFormatType.PortableDocFormat,

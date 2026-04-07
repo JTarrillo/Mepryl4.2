@@ -253,7 +253,7 @@ namespace CapaDatosMepryl
             retorno.Columns.Add("Fecha");       // 3
             retorno.Columns.Add("Hora");        // 4
             retorno.Columns.Add("Nro");         // 5
-            retorno.Columns.Add("Examen");      // 6
+            retorno.Columns.Add("Subtipo de Examen");      // 6
             retorno.Columns.Add("Dni");         // 7
             retorno.Columns.Add("Paciente");    // 8
             retorno.Columns.Add("Importe");     // 9
@@ -277,7 +277,7 @@ namespace CapaDatosMepryl
             else
             {
                 procesarFiltro(ref retorno, tabla, filtro, "Paciente");
-                procesarFiltro(ref retorno, tabla, filtro, "Examen");
+                procesarFiltro(ref retorno, tabla, filtro, "Subtipo de Examen");
                 procesarFiltro(ref retorno, tabla, filtro, "EmpresaClub");
             }
             return retorno;
@@ -285,7 +285,7 @@ namespace CapaDatosMepryl
 
         private void procesarFiltro(ref DataTable retorno, DataTable tablaAFiltrar, string filtro, string columna)
         {
-            DataRow[] drColect = tablaAFiltrar.Select(columna + " like '%" + filtro + "%'");
+            DataRow[] drColect = tablaAFiltrar.Select("[" + columna + "] like '%" + filtro + "%'");
             foreach (DataRow dr in drColect)
             {
                 if (retorno.Select("IdTurno = '" + dr[2].ToString() + "'").Length == 0)

@@ -1137,6 +1137,7 @@ namespace CapaPresentacion
             examen.ITorg = obtenerValorTb("77");
             examen.Ecg = obtenerValorTb("78");
             examen.DorsalF = obtenerValorTb("99");
+            examen.EspinogramaP = obtenerValorTb("103");
             examen.Observaciones = tbObservaciones.Text;
             examen.ObservacionesLab = txtObservacionesLaboratorio.Text;
 
@@ -1517,6 +1518,7 @@ namespace CapaPresentacion
             setearTbSegunId("77", examen.ITorg, "");
             setearTbSegunId("78", examen.Ecg, "SIN VALOR PATOLOGICO");
             setearTbSegunId("99", examen.DorsalF, "SIN PARTICULARIDADES");
+            setearTbSegunId("103", examen.EspinogramaP, "SIN PARTICULARIDADES");
             tbObservaciones.Text = examen.Observaciones;
             txtObservacionesLaboratorio.Text = examen.ObservacionesLab;
             if (examen.Dictamen != "") { cboDictamenFinal.SelectedValue = examen.Dictamen; }
