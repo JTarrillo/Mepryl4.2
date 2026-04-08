@@ -1174,6 +1174,7 @@ namespace CapaPresentacion
                 negEntidadFac = null;
 
                 PacientePre.ActualizarMail(tbDNI.Text, txtMail.Text); // GRV - Modificado
+                GuardaActualizaPacientePreventiva();
             }
             catch (Exception ex)
             {
@@ -1195,12 +1196,78 @@ namespace CapaPresentacion
                 //if (bool.Parse(this.configuracion.obtenerParametro("ES_MOVIL").ToString()))
                 //    SqlHelper.ExecuteNonQuery(this.configuracion.getConectionString(), CommandType.Text, "UPDATE Paciente SET sincronizado=NULL WHERE id='" + rglEntidad.id.ToString() + "'");
                 PacientePre.ActualizarMail(tbDNI.Text, txtMail.Text); // GRV - Modificado
+                GuardaActualizaPacientePreventiva();
             }
             catch (Exception ex)
             {
                 ManejadorErrores.escribirLog(ex, true, this.configuracion);
             }
             return resultado;
+        }
+
+        private Entidades.UsuarioSistema cargarDatosUsuariosPreventiva()
+        {
+            DataTable dt = null;
+            string strIdUsuario = "";
+            string strIdServer = "";
+            string strSucursalID = "";
+            CapaNegocioMepryl.UsuarioSistema usuario = new CapaNegocioMepryl.UsuarioSistema();
+            Entidades.UsuarioSistema retorno = new Entidades.UsuarioSistema();
+
+            dt = usuario.ListarUsuarios(tbDNI.Text);
+
+            strIdUsuario = tbId.Text;
+            retorno.Tipo = "PACIENTE PREVENTIVA";
+
+            if (dt.Rows.Count > 0)
+            {
+                strIdUsuario = dt.Rows[0].ItemArray[0].ToString();
+                retorno.Tipo = dt.Rows[0].ItemArray[22].ToString();
+                retorno.Username = dt.Rows[0].ItemArray[14].ToString();
+                retorno.Password = Utilidades.desencriptar(dt.Rows[0].ItemArray[15].ToString());
+                strSucursalID = dt.Rows[0].ItemArray[16].ToString();
+                if (strSucursalID != string.Empty) { retorno.SucursalId = new Guid(strSucursalID); }
+                retorno.Actualiza_Local = Convert.ToDateTime(dt.Rows[0].ItemArray[19].ToString());
+                retorno.Operacion_Local = dt.Rows[0].ItemArray[20].ToString();
+                strIdServer = dt.Rows[0].ItemArray[21].ToString();
+                if (strIdServer != string.Empty) { retorno.ServerId = new Guid(strIdServer); }
+                retorno.VentConfiguracion = Convert.ToBoolean(dt.Rows[0].ItemArray[23].ToString());
+                retorno.VentExamenes = Convert.ToBoolean(dt.Rows[0].ItemArray[24].ToString());
+                retorno.VentMesa = Convert.ToBoolean(dt.Rows[0].ItemArray[25].ToString());
+                retorno.VentPacientes = Convert.ToBoolean(dt.Rows[0].ItemArray[26].ToString());
+                retorno.VentVentanilla = Convert.ToBoolean(dt.Rows[0].ItemArray[27].ToString());
+                retorno.VentResumen = Convert.ToBoolean(dt.Rows[0].ItemArray[28].ToString());
+                retorno.VentTurnos = Convert.ToBoolean(dt.Rows[0].ItemArray[29].ToString());
+                retorno.VentAudiometria = Convert.ToBoolean(dt.Rows[0].ItemArray[30].ToString());
+                retorno.PermisoVer = Convert.ToBoolean(dt.Rows[0].ItemArray[31].ToString());
+                retorno.PermisoModificar = Convert.ToBoolean(dt.Rows[0].ItemArray[32].ToString());
+                retorno.PermisoEliminar = Convert.ToBoolean(dt.Rows[0].ItemArray[33].ToString());
+                retorno.Activo = Convert.ToBoolean(dt.Rows[0].ItemArray[34].ToString());
+            }
+
+            if (strIdUsuario != string.Empty) { retorno.Id = new Guid(strIdUsuario); }
+            retorno.Nombre = tbNombres.Text;
+            retorno.Apellido = tbApellido.Text;
+            retorno.DNI = tbDNI.Text;
+            retorno.Email = txtMail.Text;
+            if (retorno.Username == string.Empty) { retorno.Username = tbNombres.Text.Replace(" ", "").ToLower(); }
+
+            return retorno;
+        }
+
+        private void GuardaActualizaPacientePreventiva()
+        {
+            CapaNegocioMepryl.UsuarioSistema usuarios = new CapaNegocioMepryl.UsuarioSistema();
+            Entidades.UsuarioSistema usuario = cargarDatosUsuariosPreventiva();
+
+            if (usuarios.ListarUsuarios(tbDNI.Text).Rows.Count > 0)
+            {
+                usuarios.ActualizarUsuario(usuario);
+            }
+            else
+            {
+                usuarios.GuardarUsuario(usuario);
+            }
         }
 
         public override string borrar(string id)

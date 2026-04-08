@@ -1351,7 +1351,7 @@ namespace CapaPresentacion
                 retorno.Tipo = "MEDICOS";
             }else
             {
-                retorno.Tipo = "OPERADOR";
+                retorno.Tipo = "PACIENTE LABORAL LABORAL";
             }
 
             if(!string.IsNullOrEmpty(strIdProfesional))

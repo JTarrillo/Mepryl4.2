@@ -285,6 +285,7 @@ namespace CapaPresentacion
             }
 
             ModoLectura(false);
+            LimpiarValores();
             botModificar.Visible = true;
             botCancelar.Visible = true;
             botAceptar.Visible = false;
@@ -457,13 +458,56 @@ namespace CapaPresentacion
         {
             if (txtNombreUsuario.Text != string.Empty)
             {
-                frmFotoPaciente fFoto = new frmFotoPaciente(txtDNI.Text, 'L');
-                fFoto.ShowDialog();
-                cargarImagen();
+                DialogResult opcion = MessageBox.Show(
+                    "¿Desea adjuntar una imagen desde archivo?\n\nSeleccione 'Sí' para adjuntar archivo o 'No' para tomar fotografía con cámara.",
+                    "Foto usuario",
+                    MessageBoxButtons.YesNoCancel,
+                    MessageBoxIcon.Question);
+
+                if (opcion == DialogResult.Yes)
+                {
+                    AdjuntarImagen();
+                }
+                else if (opcion == DialogResult.No)
+                {
+                    frmFotoPaciente fFoto = new frmFotoPaciente(txtDNI.Text, 'L');
+                    fFoto.ShowDialog();
+                    cargarImagen();
+                }
             }
             else
             {
                 MessageBox.Show("Debe ingresar primero el nombre de usuario", "Foto usuario", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
+        }
+
+        private void AdjuntarImagen()
+        {
+            using (OpenFileDialog openDialog = new OpenFileDialog())
+            {
+                openDialog.Title = "Seleccionar imagen";
+                openDialog.Filter = "Imágenes|*.jpg;*.jpeg;*.png;*.bmp;*.gif|Todos los archivos|*.*";
+                openDialog.FilterIndex = 1;
+
+                if (openDialog.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        string destino = DirectorioFotos.UbicacionFotoLaboral() + "\\" + txtDNI.Text + ".jpg";
+
+                        using (Image img = Image.FromFile(openDialog.FileName))
+                        {
+                            img.Save(destino, System.Drawing.Imaging.ImageFormat.Jpeg);
+                        }
+
+                        cargarImagen();
+                        MessageBox.Show("Imagen adjuntada correctamente.", "Foto usuario", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Error al adjuntar la imagen: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
             }
         }
 
@@ -946,7 +990,8 @@ namespace CapaPresentacion
 
             botAceptar.Visible = blnActivo;            
             botModificar.Visible = blnActivo;
-            btnNuevo.Enabled = blnActivo;
+            btnNuevo.Visible = UsuarioActualEsAdministrador();
+            btnNuevo.Enabled = UsuarioActualEsAdministrador() && !blnActivo;
             botCancelar.Visible = blnActivo;
 
             chkActivo.Enabled = blnActivo;

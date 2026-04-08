@@ -367,17 +367,13 @@ namespace CapaDatosMepryl
         {
             DataTable dt = null;
             string strSQL = "";
-            
-            //strSQL = "SELECT TOP 50 id, password, username as 'Usuario', nombre as 'Nombre', apellido as 'Apellido', email1 as 'E-Mail', Tipo as 'Tipo Usuario', Activo, ProfesionalAsignado, apellido + ' ' + nombre as 'NombreApellido', Tipo as 'TipoUsuario', dni FROM dbo.Usuario WHERE apellido like '%" + strApellido + "%'  ORDER BY apellido";
 
-            strSQL = "SELECT TOP 50 USU.id, USU.password, USU.username as 'Usuario', USU.nombre as 'Nombre', USU.apellido as 'Apellido', USU.email1 as 'E-Mail', " +
-                     "USU.Tipo as 'Tipo Usuario', USU.Activo, USU.ProfesionalAsignado, USU.apellido + ' ' + USU.nombre as 'NombreApellido', " +
-                     "USU.Tipo as 'TipoUsuario', USU.dni " + 
-                     "FROM dbo.Usuario USU " +
-                     "INNER JOIN PacienteLaboral PAL ON USU.dni = PAL.dni " +
-                     "INNER JOIN EmpresasPorPaciente EPP ON EPP.idPaciente = PAL.id " +
-                     "INNER JOIN Empresa EMP ON EMP.id = EPP.idEmpresa " +
-                     "WHERE EMP.Principal = 1 and USU.apellido like '%" + strApellido + "%'  ORDER BY apellido";
+            strSQL = "SELECT TOP 50 id, password, username as 'Usuario', nombre as 'Nombre', apellido as 'Apellido', " +
+                     "email1 as 'E-Mail', Tipo as 'Tipo Usuario', Activo, ProfesionalAsignado, " +
+                     "apellido + ' ' + nombre as 'NombreApellido', Tipo as 'TipoUsuario', dni " +
+                     "FROM dbo.Usuario " +
+                     "WHERE apellido like '%" + strApellido + "%' " +
+                     "ORDER BY apellido";
 
             dt = SQLConnector.obtenerTablaSegunConsultaString(strSQL);
 
