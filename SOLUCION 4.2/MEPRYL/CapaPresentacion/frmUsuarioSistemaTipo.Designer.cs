@@ -39,6 +39,7 @@
             this.chkVer = new System.Windows.Forms.CheckBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.chkAudiometria = new System.Windows.Forms.CheckBox();
+            this.chkFacturacion = new System.Windows.Forms.CheckBox();
             this.chkResumen = new System.Windows.Forms.CheckBox();
             this.chkTurnos = new System.Windows.Forms.CheckBox();
             this.chkVentanilla = new System.Windows.Forms.CheckBox();
@@ -152,6 +153,7 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.chkFacturacion);
             this.groupBox2.Controls.Add(this.chkAudiometria);
             this.groupBox2.Controls.Add(this.chkResumen);
             this.groupBox2.Controls.Add(this.chkTurnos);
@@ -166,6 +168,16 @@
             this.groupBox2.TabIndex = 314;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Accesos Pantallas";
+            // 
+            // chkFacturacion
+            // 
+            this.chkFacturacion.AutoSize = true;
+            this.chkFacturacion.Location = new System.Drawing.Point(225, 175);
+            this.chkFacturacion.Name = "chkFacturacion";
+            this.chkFacturacion.Size = new System.Drawing.Size(121, 20);
+            this.chkFacturacion.TabIndex = 14;
+            this.chkFacturacion.Text = "Ver Facturación";
+            this.chkFacturacion.UseVisualStyleBackColor = true;
             // 
             // chkAudiometria
             // 
@@ -412,6 +424,7 @@
         protected System.Windows.Forms.Button botAceptar;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.CheckBox chkAudiometria;
+        private System.Windows.Forms.CheckBox chkFacturacion;
         protected System.Windows.Forms.Button btnSalir;
     }
 }

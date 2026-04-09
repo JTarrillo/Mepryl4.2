@@ -53,6 +53,7 @@ namespace CapaPresentacion
             strDatos.Add(chkEliminar.Checked);
 
             strDatos.Add(chkAudiometria.Checked);
+            strDatos.Add(chkFacturacion.Checked);
         }
 
         private void Guardar()
@@ -81,6 +82,8 @@ namespace CapaPresentacion
             dgvLista.Columns[10].Visible = false;
             dgvLista.Columns[11].Visible = false;
             dgvLista.Columns[12].Visible = false;
+            if (dgvLista.Columns.Count > 13)
+                dgvLista.Columns[13].Visible = false;
 
             dgvLista.Columns[1].HeaderText = "Tipo Usuario";
             dgvLista.Columns[1].Width = 300;
@@ -126,6 +129,7 @@ namespace CapaPresentacion
             chkModificar.Checked = false;
             chkEliminar.Checked = false;
             chkAudiometria.Checked = false;
+            chkFacturacion.Checked = false;
         }
 
         private void botAceptar_Click(object sender, EventArgs e)
@@ -178,6 +182,9 @@ namespace CapaPresentacion
                 chkEliminar.Checked = Convert.ToBoolean(dgvLista.Rows[dgvLista.CurrentCell.RowIndex].Cells[11].Value.ToString());
 
                 chkAudiometria.Checked = Convert.ToBoolean(dgvLista.Rows[dgvLista.CurrentCell.RowIndex].Cells[12].Value.ToString());
+
+                if (dgvLista.Columns.Count > 13)
+                    chkFacturacion.Checked = Convert.ToBoolean(dgvLista.Rows[dgvLista.CurrentCell.RowIndex].Cells[13].Value.ToString());
             }
         }
 

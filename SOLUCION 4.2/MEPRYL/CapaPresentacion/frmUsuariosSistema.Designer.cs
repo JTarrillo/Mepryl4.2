@@ -33,7 +33,6 @@
             this.lbTitulo = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.txtDNI = new System.Windows.Forms.TextBox();
             this.chkMedico = new System.Windows.Forms.CheckBox();
             this.chkActivo = new System.Windows.Forms.CheckBox();
             this.label3 = new System.Windows.Forms.Label();
@@ -46,6 +45,7 @@
             this.chkModificar = new System.Windows.Forms.CheckBox();
             this.chkVer = new System.Windows.Forms.CheckBox();
             this.gpbAccesoPantallas = new System.Windows.Forms.GroupBox();
+            this.chkverfacturacion = new System.Windows.Forms.CheckBox();
             this.chkVerAudiometria = new System.Windows.Forms.CheckBox();
             this.chkResumen = new System.Windows.Forms.CheckBox();
             this.chkTurnos = new System.Windows.Forms.CheckBox();
@@ -71,6 +71,8 @@
             this.label7 = new System.Windows.Forms.Label();
             this.cmbTipoUsuario = new System.Windows.Forms.ComboBox();
             this.label6 = new System.Windows.Forms.Label();
+            this.lblDNI = new System.Windows.Forms.Label();
+            this.txtDNI = new System.Windows.Forms.TextBox();
             this.pbFoto = new System.Windows.Forms.PictureBox();
             this.lblFaltanCargar = new System.Windows.Forms.Panel();
             this.botModificar = new System.Windows.Forms.Button();
@@ -81,7 +83,6 @@
             this.botCancelar = new System.Windows.Forms.Button();
             this.botAceptar = new System.Windows.Forms.Button();
             this.defaultLookAndFeel1 = new DevExpress.LookAndFeel.DefaultLookAndFeel(this.components);
-            this.chkverfacturacion = new System.Windows.Forms.CheckBox();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.tblBuscar.SuspendLayout();
@@ -120,7 +121,6 @@
             // 
             // panel2
             // 
-            this.panel2.Controls.Add(this.txtDNI);
             this.panel2.Controls.Add(this.chkMedico);
             this.panel2.Controls.Add(this.chkActivo);
             this.panel2.Controls.Add(this.label3);
@@ -135,14 +135,6 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(1092, 534);
             this.panel2.TabIndex = 2;
-            // 
-            // txtDNI
-            // 
-            this.txtDNI.Location = new System.Drawing.Point(965, 276);
-            this.txtDNI.Name = "txtDNI";
-            this.txtDNI.Size = new System.Drawing.Size(100, 22);
-            this.txtDNI.TabIndex = 173;
-            this.txtDNI.Visible = false;
             // 
             // chkMedico
             // 
@@ -291,6 +283,16 @@
             this.gpbAccesoPantallas.TabStop = false;
             this.gpbAccesoPantallas.Text = "Acceso a Pantallas";
             // 
+            // chkverfacturacion
+            // 
+            this.chkverfacturacion.AutoSize = true;
+            this.chkverfacturacion.Location = new System.Drawing.Point(657, 29);
+            this.chkverfacturacion.Name = "chkverfacturacion";
+            this.chkverfacturacion.Size = new System.Drawing.Size(120, 20);
+            this.chkverfacturacion.TabIndex = 14;
+            this.chkverfacturacion.Text = "Ver Facturación";
+            this.chkverfacturacion.UseVisualStyleBackColor = true;
+            // 
             // chkVerAudiometria
             // 
             this.chkVerAudiometria.AutoSize = true;
@@ -418,6 +420,8 @@
             this.tableLayoutPanel1.Controls.Add(this.label7, 2, 4);
             this.tableLayoutPanel1.Controls.Add(this.cmbTipoUsuario, 3, 5);
             this.tableLayoutPanel1.Controls.Add(this.label6, 3, 4);
+            this.tableLayoutPanel1.Controls.Add(this.lblDNI, 3, 6);
+            this.tableLayoutPanel1.Controls.Add(this.txtDNI, 3, 7);
             this.tableLayoutPanel1.Location = new System.Drawing.Point(3, 3);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 8;
@@ -559,6 +563,22 @@
             this.label6.TabIndex = 46;
             this.label6.Text = "Tipo de Usuario: ";
             // 
+            // lblDNI
+            // 
+            this.lblDNI.AutoSize = true;
+            this.lblDNI.Location = new System.Drawing.Point(507, 147);
+            this.lblDNI.Name = "lblDNI";
+            this.lblDNI.Size = new System.Drawing.Size(36, 16);
+            this.lblDNI.TabIndex = 174;
+            this.lblDNI.Text = "DNI: ";
+            // 
+            // txtDNI
+            // 
+            this.txtDNI.Location = new System.Drawing.Point(507, 167);
+            this.txtDNI.Name = "txtDNI";
+            this.txtDNI.Size = new System.Drawing.Size(170, 22);
+            this.txtDNI.TabIndex = 173;
+            // 
             // pbFoto
             // 
             this.pbFoto.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
@@ -598,7 +618,7 @@
             this.botModificar.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.botModificar.Image = ((System.Drawing.Image)(resources.GetObject("botModificar.Image")));
             this.botModificar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.botModificar.Location = new System.Drawing.Point(8, 111);
+            this.botModificar.Location = new System.Drawing.Point(11, 223);
             this.botModificar.Name = "botModificar";
             this.botModificar.Size = new System.Drawing.Size(120, 45);
             this.botModificar.TabIndex = 276;
@@ -629,7 +649,7 @@
             this.btnTipoUsuario.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnTipoUsuario.Image = ((System.Drawing.Image)(resources.GetObject("btnTipoUsuario.Image")));
             this.btnTipoUsuario.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnTipoUsuario.Location = new System.Drawing.Point(5, 398);
+            this.btnTipoUsuario.Location = new System.Drawing.Point(5, 274);
             this.btnTipoUsuario.Name = "btnTipoUsuario";
             this.btnTipoUsuario.Size = new System.Drawing.Size(123, 45);
             this.btnTipoUsuario.TabIndex = 274;
@@ -644,7 +664,7 @@
             this.btnNuevo.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnNuevo.Image = ((System.Drawing.Image)(resources.GetObject("btnNuevo.Image")));
             this.btnNuevo.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnNuevo.Location = new System.Drawing.Point(8, 289);
+            this.btnNuevo.Location = new System.Drawing.Point(5, 59);
             this.btnNuevo.Name = "btnNuevo";
             this.btnNuevo.Size = new System.Drawing.Size(123, 45);
             this.btnNuevo.TabIndex = 273;
@@ -660,7 +680,7 @@
             this.btnEliminar.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnEliminar.Image = ((System.Drawing.Image)(resources.GetObject("btnEliminar.Image")));
             this.btnEliminar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnEliminar.Location = new System.Drawing.Point(5, 340);
+            this.btnEliminar.Location = new System.Drawing.Point(12, 365);
             this.btnEliminar.Name = "btnEliminar";
             this.btnEliminar.Size = new System.Drawing.Size(123, 45);
             this.btnEliminar.TabIndex = 14;
@@ -676,7 +696,7 @@
             this.botCancelar.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.botCancelar.Image = ((System.Drawing.Image)(resources.GetObject("botCancelar.Image")));
             this.botCancelar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.botCancelar.Location = new System.Drawing.Point(8, 170);
+            this.botCancelar.Location = new System.Drawing.Point(8, 172);
             this.botCancelar.Name = "botCancelar";
             this.botCancelar.Size = new System.Drawing.Size(123, 45);
             this.botCancelar.TabIndex = 13;
@@ -691,7 +711,7 @@
             this.botAceptar.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.botAceptar.Image = ((System.Drawing.Image)(resources.GetObject("botAceptar.Image")));
             this.botAceptar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.botAceptar.Location = new System.Drawing.Point(5, 53);
+            this.botAceptar.Location = new System.Drawing.Point(5, 121);
             this.botAceptar.Name = "botAceptar";
             this.botAceptar.Size = new System.Drawing.Size(123, 45);
             this.botAceptar.TabIndex = 12;
@@ -703,16 +723,6 @@
             // defaultLookAndFeel1
             // 
             this.defaultLookAndFeel1.LookAndFeel.SkinName = "Office 2016 Colorful";
-            // 
-            // chkverfacturacion
-            // 
-            this.chkverfacturacion.AutoSize = true;
-            this.chkverfacturacion.Location = new System.Drawing.Point(657, 29);
-            this.chkverfacturacion.Name = "chkverfacturacion";
-            this.chkverfacturacion.Size = new System.Drawing.Size(120, 20);
-            this.chkverfacturacion.TabIndex = 14;
-            this.chkverfacturacion.Text = "Ver Facturación";
-            this.chkverfacturacion.UseVisualStyleBackColor = true;
             // 
             // frmUsuariosSistema
             // 
@@ -804,6 +814,7 @@
         private System.Windows.Forms.Label label3;
         private DevExpress.LookAndFeel.DefaultLookAndFeel defaultLookAndFeel1;
         private System.Windows.Forms.TextBox txtDNI;
+        private System.Windows.Forms.Label lblDNI;
         private System.Windows.Forms.CheckBox chkverfacturacion;
     }
 }

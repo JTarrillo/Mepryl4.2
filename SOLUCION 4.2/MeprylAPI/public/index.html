@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mepryl - Portal Pacientes</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f4c75 0%, #1b262c 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ===== LOGIN ===== */
+        .login-container {
+            background: #fff;
+            border-radius: 20px;
+            padding: 40px;
+            width: 380px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .login-container .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-container .logo h1 {
+            font-size: 28px;
+            color: #0f4c75;
+            font-weight: 800;
+            letter-spacing: 2px;
+        }
+
+        .login-container .logo p {
+            color: #888;
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s;
+            outline: none;
+            background: #f8f9fa;
+        }
+
+        .form-group input:focus {
+            border-color: #0f4c75;
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(15, 76, 117, 0.1);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #0f4c75, #3282b8);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-login:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(15, 76, 117, 0.4); }
+        .btn-login:active { transform: translateY(0); }
+        .btn-login:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+        .error-msg {
+            background: #fff5f5;
+            color: #c0392b;
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 14px;
+            margin-bottom: 16px;
+            display: none;
+            border: 1px solid #fed7d7;
+        }
+
+        /* ===== DASHBOARD ===== */
+        .dashboard {
+            display: none;
+            width: 95%;
+            max-width: 800px;
+            animation: slideUp 0.5s ease;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+
+        .header h2 {
+            color: white;
+            font-size: 22px;
+        }
+
+        .header .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header .user-info span {
+            color: rgba(255,255,255,0.8);
+            font-size: 14px;
+        }
+
+        .btn-logout {
+            padding: 8px 18px;
+            background: rgba(255,255,255,0.15);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.3s;
+        }
+
+        .btn-logout:hover { background: rgba(255,255,255,0.25); }
+
+        .welcome-card {
+            background: linear-gradient(135deg, #3282b8, #0f4c75);
+            border-radius: 16px;
+            padding: 24px 28px;
+            color: white;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+        }
+
+        .welcome-card h3 { font-size: 20px; margin-bottom: 4px; }
+        .welcome-card p { opacity: 0.8; font-size: 14px; }
+
+        .exams-card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        }
+
+        .exams-card h3 {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .exam-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 16px;
+            border-radius: 12px;
+            margin-bottom: 8px;
+            transition: all 0.2s;
+            background: #f8f9fa;
+            border: 1px solid #eee;
+        }
+
+        .exam-item:hover { background: #eef5ff; border-color: #c8ddf5; }
+
+        .exam-info { flex: 1; }
+        .exam-info .exam-orden { font-weight: 700; color: #0f4c75; font-size: 15px; }
+        .exam-info .exam-fecha { color: #888; font-size: 13px; margin-top: 2px; }
+        .exam-info .exam-tipo {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            margin-top: 4px;
+            text-transform: uppercase;
+        }
+        .exam-tipo.laboral { background: #fff3e0; color: #e65100; }
+        .exam-tipo.preventiva { background: #e8f5e9; color: #2e7d32; }
+
+        .btn-pdf {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-pdf:hover { transform: translateY(-1px); box-shadow: 0 4px 15px rgba(231,76,60,0.4); }
+
+        .btn-pdf svg {
+            width: 16px;
+            height: 16px;
+            fill: white;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #888;
+        }
+
+        .spinner {
+            width: 40px; height: 40px;
+            border: 4px solid #e0e0e0;
+            border-top-color: #0f4c75;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 12px;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .no-exams {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+
+        .no-exams svg { width: 48px; height: 48px; fill: #ccc; margin-bottom: 12px; }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #333;
+            color: white;
+            padding: 14px 24px;
+            border-radius: 10px;
+            font-size: 14px;
+            display: none;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            z-index: 1000;
+            animation: slideUp 0.3s ease;
+        }
+
+        .toast.error { background: #c0392b; }
+        .toast.success { background: #27ae60; }
+
+        @media (max-width: 480px) {
+            .login-container { width: 92%; padding: 28px; }
+            .dashboard { width: 96%; }
+            .exam-item { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .btn-pdf { width: 100%; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- LOGIN -->
+    <div class="login-container" id="loginView">
+        <div class="logo">
+            <h1>MEPRYL</h1>
+            <p>Portal de Pacientes</p>
+        </div>
+
+        <div class="error-msg" id="errorMsg"></div>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label>DNI</label>
+                <input type="text" id="inputDni" placeholder="Ingrese su DNI" autocomplete="off" inputmode="numeric" maxlength="10">
+            </div>
+            <div class="form-group">
+                <label>Contraseña</label>
+                <input type="password" id="inputPassword" placeholder="Ingrese su contraseña">
+            </div>
+            <button type="submit" class="btn-login" id="btnLogin">Ingresar</button>
+        </form>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div class="dashboard" id="dashboardView">
+        <div class="header">
+            <h2>Mis Estudios</h2>
+            <div class="user-info">
+                <span id="userName"></span>
+                <button class="btn-logout" onclick="logout()">Cerrar sesión</button>
+            </div>
+        </div>
+
+        <div class="welcome-card">
+            <h3 id="welcomeName"></h3>
+            <p>Desde aquí podés descargar los PDF de tus estudios consolidados.</p>
+        </div>
+
+        <div class="exams-card">
+            <h3>Exámenes realizados</h3>
+            <div id="examsList">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    Cargando exámenes...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        const API = '';  // mismo origen
+        let token = null;
+
+        // ===== LOGIN =====
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const dni = document.getElementById('inputDni').value.trim();
+            const password = document.getElementById('inputPassword').value;
+            const btn = document.getElementById('btnLogin');
+            const errorEl = document.getElementById('errorMsg');
+
+            if (!dni || !password) {
+                showError('Ingrese DNI y contraseña');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'Ingresando...';
+            errorEl.style.display = 'none';
+
+            try {
+                const res = await fetch(`${API}/api/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ dni, password }),
+                });
+
+                const data = await res.json();
+
+                if (!res.ok) {
+                    showError(data.error || 'Error al iniciar sesión');
+                    return;
+                }
+
+                token = data.token;
+                sessionStorage.setItem('token', token);
+                sessionStorage.setItem('usuario', JSON.stringify(data.usuario));
+
+                showDashboard(data.usuario);
+            } catch (err) {
+                showError('No se pudo conectar con el servidor');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Ingresar';
+            }
+        });
+
+        function showError(msg) {
+            const el = document.getElementById('errorMsg');
+            el.textContent = msg;
+            el.style.display = 'block';
+        }
+
+        // ===== DASHBOARD =====
+        function showDashboard(usuario) {
+            document.getElementById('loginView').style.display = 'none';
+            document.getElementById('dashboardView').style.display = 'block';
+            document.getElementById('userName').textContent = `${usuario.apellido} ${usuario.nombre}`;
+            document.getElementById('welcomeName').textContent = `Hola, ${usuario.nombre}`;
+            loadExams();
+        }
+
+        async function loadExams() {
+            const container = document.getElementById('examsList');
+            try {
+                const res = await fetch(`${API}/api/examenes`, {
+                    headers: { 'Authorization': `Bearer ${token}` },
+                });
+
+                if (res.status === 401) { logout(); return; }
+
+                const data = await res.json();
+
+                if (!data.examenes || data.examenes.length === 0) {
+                    container.innerHTML = `
+                        <div class="no-exams">
+                            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zM6 20V4h7v5h5v11H6z"/></svg>
+                            <p>No se encontraron exámenes</p>
+                        </div>`;
+                    return;
+                }
+
+                container.innerHTML = data.examenes.map(ex => {
+                    const fecha = new Date(ex.fecha);
+                    const fechaStr = fecha.toLocaleDateString('es-AR', {
+                        day: '2-digit', month: '2-digit', year: 'numeric'
+                    });
+                    const horaStr = fecha.toLocaleTimeString('es-AR', {
+                        hour: '2-digit', minute: '2-digit'
+                    });
+                    const tipoClass = ex.tipo.toLowerCase();
+
+                    return `
+                        <div class="exam-item">
+                            <div class="exam-info">
+                                <div class="exam-orden">Orden #${ex.nroOrden}</div>
+                                <div class="exam-fecha">${fechaStr} - ${horaStr}</div>
+                                <span class="exam-tipo ${tipoClass}">${ex.tipo}</span>
+                            </div>
+                            <button class="btn-pdf" onclick="downloadPdf('${ex.id}', ${ex.nroOrden})">
+                                <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 18H8v-1h5v1zm3-4H8v-1h8v1zm0-3H8V12h8v1zm-2-4V3.5L18.5 9H14z"/></svg>
+                                PDF
+                            </button>
+                        </div>`;
+                }).join('');
+
+            } catch (err) {
+                container.innerHTML = '<div class="no-exams"><p>Error al cargar exámenes</p></div>';
+            }
+        }
+
+        async function downloadPdf(id, nroOrden) {
+            showToast('Descargando PDF...', '');
+            try {
+                const res = await fetch(`${API}/api/examenes/${id}/pdf`, {
+                    headers: { 'Authorization': `Bearer ${token}` },
+                });
+
+                if (res.status === 401) { logout(); return; }
+
+                if (!res.ok) {
+                    const data = await res.json();
+                    showToast(data.error || 'PDF no encontrado', 'error');
+                    return;
+                }
+
+                const blob = await res.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `Orden_${nroOrden}.pdf`;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                window.URL.revokeObjectURL(url);
+                showToast('PDF descargado correctamente', 'success');
+            } catch {
+                showToast('Error al descargar el PDF', 'error');
+            }
+        }
+
+        function logout() {
+            token = null;
+            sessionStorage.clear();
+            document.getElementById('dashboardView').style.display = 'none';
+            document.getElementById('loginView').style.display = 'block';
+            document.getElementById('inputDni').value = '';
+            document.getElementById('inputPassword').value = '';
+            document.getElementById('errorMsg').style.display = 'none';
+        }
+
+        function showToast(msg, type) {
+            const el = document.getElementById('toast');
+            el.textContent = msg;
+            el.className = 'toast ' + (type || '');
+            el.style.display = 'block';
+            setTimeout(() => { el.style.display = 'none'; }, 3000);
+        }
+
+        // Restaurar sesión
+        (function() {
+            const savedToken = sessionStorage.getItem('token');
+            const savedUser = sessionStorage.getItem('usuario');
+            if (savedToken && savedUser) {
+                token = savedToken;
+                showDashboard(JSON.parse(savedUser));
+            }
+        })();
+    </script>
+</body>
+</html>

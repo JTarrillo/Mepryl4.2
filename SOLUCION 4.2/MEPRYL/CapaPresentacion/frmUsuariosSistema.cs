@@ -49,7 +49,33 @@ namespace CapaPresentacion
             //ListarUsuarios();
             cargarGrilla();
             CargarDatosDGV();
-            
+            //agregarBotonPortal();
+        }
+
+        private void agregarBotonPortal()
+        {
+            Button btnPortal = new Button();
+            btnPortal.BackColor = System.Drawing.SystemColors.ButtonFace;
+            btnPortal.Font = new Font("Microsoft Sans Serif", 9.75F, FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            try
+            {
+                string rutaImagen = Path.Combine(Application.StartupPath, @"..\..\Imagenes\Iconos\Pacientes\mUsers36x36.png");
+                if (File.Exists(rutaImagen))
+                    btnPortal.Image = Image.FromFile(rutaImagen);
+            }
+            catch { }
+            btnPortal.ImageAlign = ContentAlignment.MiddleLeft;
+            btnPortal.Text = "Portal\r\nPacientes";
+            btnPortal.TextAlign = ContentAlignment.MiddleRight;
+            btnPortal.UseVisualStyleBackColor = true;
+            btnPortal.Size = new System.Drawing.Size(123, 45);
+            btnPortal.Location = new System.Drawing.Point(5, 450);
+            btnPortal.Click += (s, ev) =>
+            {
+                frmPortalPacientes frm = new frmPortalPacientes();
+                frm.ShowDialog();
+            };
+            lblFaltanCargar.Controls.Add(btnPortal);
         }
 
         private void actualizar()
@@ -113,6 +139,7 @@ namespace CapaPresentacion
             strDatos.Add(chkActivo.Checked);
             strDatos.Add(chkVerAudiometria.Checked);
             strDatos.Add(chkverfacturacion.Checked);
+            strDatos.Add(txtDNI.Text);
         }
 
         private void cargarGrilla()
@@ -127,6 +154,7 @@ namespace CapaPresentacion
             AgregarColumnaDGV("Tipo", "Tipo Usuario", true, "Text");
             AgregarColumnaDGV("Activo", "Activo", true, "CheckBox");
             AgregarColumnaDGV("ProfesionalAsignado", "ProfesionalAsignado", false, "Text");
+            AgregarColumnaDGV("dni", "DNI", false, "Text");
             AgregarColumnaDGV("Medico", "Medico", true, "Image");
 
             dgwDatos.Columns[0].Visible = false;
@@ -357,6 +385,7 @@ namespace CapaPresentacion
             txtContrasena.Text = "";
             txtCorreo.Text = "";
             txtNombreUsuario.Text = "";
+            txtDNI.Text = "";
 
             chkConfiguracion.ForeColor = Color.Black;
             chkExamenes.ForeColor = Color.Black;
@@ -983,6 +1012,7 @@ namespace CapaPresentacion
             txtNombreUsuario.Enabled = blnActivo;
             txtNombre.Enabled = blnActivo; 
             txtCorreo.Enabled = blnActivo;
+            txtDNI.Enabled = blnActivo;
             cmbTipoUsuario.Enabled = blnActivo;
             pbFoto.Enabled = blnActivo;
             gpbAccesoPantallas.Enabled = blnActivo;

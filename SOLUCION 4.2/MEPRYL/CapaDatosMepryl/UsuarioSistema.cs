@@ -27,7 +27,7 @@ namespace CapaDatosMepryl
             strSQL = @"INSERT INTO dbo.Usuario 
                      (id, username, password, apellido, nombre, email1, Tipo, 
                       VentConfiguracion, VentExamenes, VentMesa, VentPacientes, VentVentanilla, VentResumen,
-                      PermisoVer, PermisoModificar, PermisoEliminar, VentTurnos, Activo, VentAudiometria, VentFacturacion)
+                      PermisoVer, PermisoModificar, PermisoEliminar, VentTurnos, Activo, VentAudiometria, VentFacturacion, dni)
                      VALUES
                      (NEWID(), 
                         '" + valores[0].ToString() +@"', 
@@ -49,7 +49,8 @@ namespace CapaDatosMepryl
                         '" + Convert.ToBoolean(valores[15].ToString()) + @"',
                         '" + Convert.ToBoolean(valores[16].ToString()) + @"',
                         '" + Convert.ToBoolean(valores[17].ToString()) + @"',
-                        '" + Convert.ToBoolean(valores[18].ToString()) + @"'
+                        '" + Convert.ToBoolean(valores[18].ToString()) + @"',
+                        '" + valores[19].ToString() + @"'
                         )";
             try
             {
@@ -135,7 +136,8 @@ namespace CapaDatosMepryl
                           VentTurnos = '" + Convert.ToBoolean(valores[15].ToString()) + @"' ,
                           Activo = '" + Convert.ToBoolean(valores[16].ToString()) + @"' ,
                           VentAudiometria = '" + Convert.ToBoolean(valores[17].ToString()) + @"' ,
-                          VentFacturacion = '" + Convert.ToBoolean(valores[18].ToString()) + @"'
+                          VentFacturacion = '" + Convert.ToBoolean(valores[18].ToString()) + @"' ,
+                          dni = '" + valores[19].ToString() + @"'
                       WHERE id = '" + strId + @"'";
             try
             {
@@ -228,7 +230,7 @@ namespace CapaDatosMepryl
             DataTable dt = null;
             string strSQL = "";
 
-            strSQL = "SELECT TOP 50 id, password, username as 'Usuario', nombre as 'Nombre', apellido as 'Apellido', email1 as 'E-Mail', Tipo as 'Tipo Usuario', Activo, ProfesionalAsignado FROM dbo.Usuario ORDER BY username";
+            strSQL = "SELECT TOP 50 id, password, username as 'Usuario', nombre as 'Nombre', apellido as 'Apellido', email1 as 'E-Mail', Tipo as 'Tipo Usuario', Activo, ProfesionalAsignado, dni FROM dbo.Usuario ORDER BY username";
 
             dt = SQLConnector.obtenerTablaSegunConsultaString(strSQL);
 
