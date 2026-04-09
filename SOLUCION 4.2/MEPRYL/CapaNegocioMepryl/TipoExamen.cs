@@ -45,6 +45,11 @@ namespace CapaNegocioMepryl
             return tipoExamen.ActualizarNombreSubtipo(idSubtipo, nuevoNombre);
         }
 
+        public Entidades.Resultado ActualizarNombreTipoExamen(string idTipoExamen, string nuevoNombre)
+        {
+            return tipoExamen.ActualizarNombreTipoExamen(idTipoExamen, nuevoNombre);
+        }
+
         // Devuelve el ID del padre de una especialidad (subtipo)
         public string ObtenerIdPadreEspecialidad(string idSubtipo)
         {

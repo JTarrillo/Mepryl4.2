@@ -477,6 +477,12 @@
     <Compile Include="FrmEditarSubtipo.Designer.cs">
       <DependentUpon>FrmEditarSubtipo.cs</DependentUpon>
     </Compile>
+    <Compile Include="FrmEditarTipoExamen.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmEditarTipoExamen.Designer.cs">
+      <DependentUpon>FrmEditarTipoExamen.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmEstudioComplementario.cs">
       <SubType>Form</SubType>
     </Compile>

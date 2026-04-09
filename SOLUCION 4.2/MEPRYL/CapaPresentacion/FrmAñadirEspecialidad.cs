@@ -817,7 +817,7 @@ namespace CapaPresentacion
             {
                 Name = "Acciones",
                 HeaderText = "Acciones",
-                Text = "✎ Editar",
+                Text = "✎ Subtipo",
                 UseColumnTextForButtonValue = true,
                 Width = 90,
                 ReadOnly = true,
@@ -834,6 +834,26 @@ namespace CapaPresentacion
             colAcciones.FlatStyle = FlatStyle.Flat;
 
             dgvTiposExamenes.Columns.Add(colAcciones);
+
+            // ✅ NUEVA COLUMNA: EDITAR TIPO DE EXAMEN
+            DataGridViewButtonColumn colEditarTipo = new DataGridViewButtonColumn
+            {
+                Name = "EditarTipo",
+                HeaderText = "Editar Tipo",
+                Text = "✎ Tipo",
+                UseColumnTextForButtonValue = true,
+                Width = 90,
+                ReadOnly = true,
+                DefaultCellStyle = new DataGridViewCellStyle
+                {
+                    BackColor = Color.FromArgb(255, 152, 0),  // Naranja
+                    ForeColor = Color.White,
+                    Font = new Font("Segoe UI", 9, FontStyle.Bold),
+                    Alignment = DataGridViewContentAlignment.MiddleCenter
+                }
+            };
+            colEditarTipo.FlatStyle = FlatStyle.Flat;
+            dgvTiposExamenes.Columns.Add(colEditarTipo);
 
 
             // Estilo visual para el encabezado de "TURNO GENERAL"
@@ -871,6 +891,7 @@ namespace CapaPresentacion
             if (dgvTiposExamenes.Columns.Contains("Vie")) dgvTiposExamenes.Columns["Vie"].FillWeight = 20;
             if (dgvTiposExamenes.Columns.Contains("TurnoGeneral")) dgvTiposExamenes.Columns["TurnoGeneral"].FillWeight = 40;
             if (dgvTiposExamenes.Columns.Contains("Acciones")) dgvTiposExamenes.Columns["Acciones"].FillWeight = 50;
+            if (dgvTiposExamenes.Columns.Contains("EditarTipo")) dgvTiposExamenes.Columns["EditarTipo"].FillWeight = 50;
 
 
 
@@ -953,6 +974,67 @@ namespace CapaPresentacion
                     else
                     {
                         // Si hay un motivo específico seleccionado, recargar solo ese
+                        MostrarGestionMotivoTipoSubtipo(idMotivoConsultaSeleccionado);
+                    }
+                }
+            }
+
+            // ✅ Detectar clic en columna "EditarTipo" para editar tipo de examen
+            if (
+                e.RowIndex >= 0 &&
+                e.ColumnIndex >= 0 &&
+                dgvTiposExamenes.Columns.Contains("EditarTipo") &&
+                dgvTiposExamenes.Columns[e.ColumnIndex].Name == "EditarTipo"
+            )
+            {
+                var row = dgvTiposExamenes.Rows[e.RowIndex];
+                string nombreTipo = row.Cells["TipoExamen"]?.Value?.ToString();
+
+                if (string.IsNullOrEmpty(nombreTipo))
+                {
+                    MessageBox.Show("Esta fila no tiene un tipo de examen asociado.", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                // Obtener el IdTipo desde el DataBoundItem
+                string idTipo = null;
+                var drv = row.DataBoundItem as DataRowView;
+                if (drv != null && drv.Row.Table.Columns.Contains("IdTipo"))
+                {
+                    idTipo = drv["IdTipo"]?.ToString();
+                }
+
+                // Fallback: si es fila padre (Padre=1), el id de la fila es el IdTipo
+                if (string.IsNullOrEmpty(idTipo))
+                {
+                    object padreVal = row.Cells["Padre"]?.Value;
+                    if (padreVal != null && Convert.ToInt32(padreVal) == 1)
+                    {
+                        idTipo = row.Cells["id"]?.Value?.ToString();
+                    }
+                }
+
+                if (string.IsNullOrEmpty(idTipo))
+                {
+                    MessageBox.Show("No se pudo obtener el ID del tipo de examen.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                System.Diagnostics.Debug.WriteLine($"[DEBUG] Abriendo ventana de edición para tipo: {nombreTipo} (ID: {idTipo})");
+
+                FrmEditarTipoExamen frmEditar = new FrmEditarTipoExamen(idTipo, nombreTipo);
+                DialogResult resultado = frmEditar.ShowDialog(this);
+
+                if (resultado == DialogResult.OK)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[DEBUG] Cambios guardados en tipo: {nombreTipo}. Refrescando grilla...");
+
+                    if (idMotivoConsultaSeleccionado == 0)
+                    {
+                        MostrarGestionMotivoTipoSubtipo(0);
+                    }
+                    else
+                    {
                         MostrarGestionMotivoTipoSubtipo(idMotivoConsultaSeleccionado);
                     }
                 }

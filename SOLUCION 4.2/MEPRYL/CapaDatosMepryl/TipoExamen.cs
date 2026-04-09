@@ -364,6 +364,39 @@ namespace CapaDatosMepryl
             return resultado;
         }
 
+        public Entidades.Resultado ActualizarNombreTipoExamen(string idTipoExamen, string nuevoNombre)
+        {
+            var resultado = new Entidades.Resultado();
+            try
+            {
+                if (string.IsNullOrWhiteSpace(nuevoNombre))
+                {
+                    resultado.Modo = -1;
+                    resultado.Mensaje = "El nombre del tipo de examen no puede estar vacío.";
+                    return resultado;
+                }
+
+                string nombreSeguro = nuevoNombre.Replace("'", "''").Trim();
+
+                string sql = $@"UPDATE dbo.Especialidad 
+                 SET descripcion = '{nombreSeguro}' 
+                 WHERE id = '{idTipoExamen}' AND Padre = 1";
+
+                SQLConnector.EjecutarConsulta(sql);
+                resultado.Modo = 1;
+                resultado.Mensaje = $"Tipo de examen actualizado a: '{nuevoNombre}'";
+
+                System.Diagnostics.Debug.WriteLine($"✓ Tipo de examen actualizado: {idTipoExamen} -> {nuevoNombre}");
+            }
+            catch (Exception ex)
+            {
+                resultado.Modo = -1;
+                resultado.Mensaje = $"Error al actualizar el nombre del tipo de examen: {ex.Message}";
+                System.Diagnostics.Debug.WriteLine($"ERROR en ActualizarNombreTipoExamen: {ex.Message}");
+            }
+            return resultado;
+        }
+
 
 
         public DataTable cargarTiposDeExamenHijo(string idMotivoConsulta)
