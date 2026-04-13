@@ -49,7 +49,7 @@ namespace CapaPresentacion
             //ListarUsuarios();
             cargarGrilla();
             CargarDatosDGV();
-            //agregarBotonPortal();
+            agregarBotonPortal();
         }
 
         private void agregarBotonPortal()

@@ -60,6 +60,8 @@ namespace CapaPresentacion
             strIdMotivoSeleccionado = dtMotivosConsulta.Rows[cmbMotivoConsulta.SelectedIndex]["id"].ToString();
 
             dtTiposExamen = tipoExamen.cargarTiposDeExamenPadre(strIdMotivoSeleccionado);
+            dtTiposExamen.DefaultView.Sort = "descripcion ASC";
+            dtTiposExamen = dtTiposExamen.DefaultView.ToTable();
             cmbTipoExamen.Items.Clear();
             foreach (DataRow row in dtTiposExamen.Rows)
                 cmbTipoExamen.Items.Add(row["descripcion"].ToString());
@@ -70,6 +72,8 @@ namespace CapaPresentacion
         private void CargarSubtipos(string idPadre)
         {
             dtSubtipos = tipoExamen.cargarTiposDeExamenHijo(strIdMotivoSeleccionado, idPadre);
+            dtSubtipos.DefaultView.Sort = "descripcion ASC";
+            dtSubtipos = dtSubtipos.DefaultView.ToTable();
             cmbSubtipos.Items.Clear();
             foreach (DataRow row in dtSubtipos.Rows)
                 cmbSubtipos.Items.Add(row["descripcion"].ToString());

@@ -630,8 +630,8 @@ namespace CapaPresentacion
                     botAsignar.Visible = false;
                     botModificar.Visible = true;
                     botLiberar.Visible = true;
-                    btnCopiarInfo.Visible = panelPacientePreventiva.Visible; //GRV - Solo visible para turnos Preventiva
-                    btnWhatsApp.Visible = panelPacientePreventiva.Visible; // WhatsApp solo visible para turnos Preventiva
+                    btnCopiarInfo.Visible = true; //GRV - Visible para todos los tipos de turno
+                    btnWhatsApp.Visible = true; // WhatsApp visible para todos los tipos de turno
                     btnVerEstudio.Visible = true;
                     btnMoverTurno.Visible = true; // GRV - Modificado
                     if (blnActivoMoverTurno)
@@ -2253,17 +2253,7 @@ namespace CapaPresentacion
         }
         private void btnCopiarInfo_Click(object sender, EventArgs e)
         {
-            char strTipoPaciente;
-
-            strTipoPaciente = turno.verificarTipoTurno(new Guid(dgv.Rows[dgv.CurrentCell.RowIndex].Cells[0].Value.ToString()));
-
-            if (strTipoPaciente == 'P')
-                CopiarTexto();
-            else
-            {
-                strTextoPlantilla = "";
-                Clipboard.Clear();
-            }
+            CopiarTexto();
         }
 
         private void reemplazarTexto()
@@ -2276,7 +2266,7 @@ namespace CapaPresentacion
             string strIdSubtipo = "";
             DateTime dtDiaSemana;
 
-            strPrecio = tbImportePreventiva.Text;
+            strPrecio = panelPacientePreventiva.Visible ? tbImportePreventiva.Text : tbImporteLaboral.Text;
             strHorario = dgv.Rows[dgv.CurrentCell.RowIndex].Cells[5].Value.ToString();    // HORA [5]
             strFechaTurno = dgv.Rows[dgv.CurrentCell.RowIndex].Cells[4].Value.ToString(); // FECHA [4]
             strCodSeg = dgv.Rows[dgv.CurrentCell.RowIndex].Cells[11].Value.ToString();    // CODIGO [11]
@@ -2335,8 +2325,13 @@ namespace CapaPresentacion
         private void RecuperarTextoPorSubtipo(string idSubtipo)
         {
             CapaNegocioMepryl.ConfigPlantillaReporte Reporte = new CapaNegocioMepryl.ConfigPlantillaReporte();
-            string strPathArchivo = Reporte.GetPathMensajePorSubtipo(idSubtipo);
-            // MessageBox.Show(strPathArchivo, "Archivo de plantilla usado");
+
+            // Buscar plantilla según tipo: Laboral o Preventiva
+            string strPathArchivo;
+            if (panelLaboral.Visible)
+                strPathArchivo = Reporte.GetPathMensajePorSubtipoLaboral(idSubtipo);
+            else
+                strPathArchivo = Reporte.GetPathMensajePorSubtipo(idSubtipo);
 
             if (string.IsNullOrEmpty(strPathArchivo) || !System.IO.File.Exists(strPathArchivo))
             {
