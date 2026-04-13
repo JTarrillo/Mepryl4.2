@@ -180,6 +180,9 @@ namespace CapaPresentacionBase
             this.bbiTransferenciaLegajos = new DevExpress.XtraBars.BarButtonItem();
             this.bbiConfiguracionesPrestaciones2 = new DevExpress.XtraBars.BarButtonItem();
             this.bbiFacturacionElectronica = new DevExpress.XtraBars.BarButtonItem();
+            this.rbpConfiguracionMensajes = new DevExpress.XtraBars.Ribbon.RibbonPage();
+            this.rpgConfigMensajesGrp = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
+            this.configMensajesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.rbpFacturacionElectronica = new DevExpress.XtraBars.Ribbon.RibbonPage();
             this.rpgFacturacionGrp = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
             this.rbpPacientePre = new DevExpress.XtraBars.Ribbon.RibbonPage();
@@ -915,7 +918,8 @@ namespace CapaPresentacionBase
             this.configuracionToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.configBasicaDelSistemaToolStripMenuItem,
             this.configPreventivaToolStripMenuItem,
-            this.configLaboralToolStripMenuItem});
+            this.configLaboralToolStripMenuItem,
+            this.configMensajesToolStripMenuItem});
             this.configuracionToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("configuraciónToolStripMenuItem.Image")));
             this.configuracionToolStripMenuItem.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.configuracionToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
@@ -951,6 +955,15 @@ namespace CapaPresentacionBase
             this.configLaboralToolStripMenuItem.Size = new System.Drawing.Size(231, 42);
             this.configLaboralToolStripMenuItem.Text = "Config. laboral";
             this.configLaboralToolStripMenuItem.Click += new System.EventHandler(this.configLaboralToolStripMenuItem_Click);
+            // 
+            // configMensajesToolStripMenuItem
+            // 
+            this.configMensajesToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("configLaboralToolStripMenuItem.Image")));
+            this.configMensajesToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.configMensajesToolStripMenuItem.Name = "configMensajesToolStripMenuItem";
+            this.configMensajesToolStripMenuItem.Size = new System.Drawing.Size(231, 42);
+            this.configMensajesToolStripMenuItem.Text = "Config. Mensajes";
+            this.configMensajesToolStripMenuItem.Click += new System.EventHandler(this.configMensajesToolStripMenuItem_Click);
             // 
             // pacienteToolStripMenuItem
             // 
@@ -1307,6 +1320,7 @@ namespace CapaPresentacionBase
             this.rbpExpLaboral,
             this.rbpMesaEntradas,
             this.rbpHistoricoMesa,
+            this.rbpConfiguracionMensajes,
             this.rbpFacturacionElectronica});
             this.rbcControlMenu.RibbonStyle = DevExpress.XtraBars.Ribbon.RibbonControlStyle.Office2007;
             this.rbcControlMenu.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.True;
@@ -2098,6 +2112,22 @@ namespace CapaPresentacionBase
             this.ribbonPageGroupPrestaciones.Name = "ribbonPageGroupPrestaciones";
             this.ribbonPageGroupPrestaciones.ShowCaptionButton = false;
             // 
+            // rbpConfiguracionMensajes
+            // 
+            this.rbpConfiguracionMensajes.Groups.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPageGroup[] {
+            this.rpgConfigMensajesGrp});
+            this.rbpConfiguracionMensajes.Image = ((System.Drawing.Image)(resources.GetObject("rbpConfiguracionGeneral.Image")));
+            this.rbpConfiguracionMensajes.Name = "rbpConfiguracionMensajes";
+            this.rbpConfiguracionMensajes.Text = "Configuraci\u00f3n de Mensajes";
+            this.rbpConfiguracionMensajes.Visible = false;
+            // 
+            // rpgConfigMensajesGrp
+            // 
+            this.rpgConfigMensajesGrp.ItemLinks.Add(this.bbiConfigMensajePre);
+            this.rpgConfigMensajesGrp.Name = "rpgConfigMensajesGrp";
+            this.rpgConfigMensajesGrp.ShowCaptionButton = false;
+            this.rpgConfigMensajesGrp.Text = "";
+            // 
             // rbpFacturacionElectronica
             // 
             this.rbpFacturacionElectronica.Groups.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPageGroup[] {
@@ -2376,6 +2406,9 @@ namespace CapaPresentacionBase
         private DevExpress.XtraBars.BarButtonItem bbiTransferenciaLegajos;
         public DevExpress.XtraBars.BarButtonItem bbiConfiguracionesPrestaciones2;
         public DevExpress.XtraBars.BarButtonItem bbiFacturacionElectronica;
+        public DevExpress.XtraBars.Ribbon.RibbonPage rbpConfiguracionMensajes;
+        public DevExpress.XtraBars.Ribbon.RibbonPageGroup rpgConfigMensajesGrp;
+        private System.Windows.Forms.ToolStripMenuItem configMensajesToolStripMenuItem;
         public DevExpress.XtraBars.Ribbon.RibbonPage rbpFacturacionElectronica;
         public DevExpress.XtraBars.Ribbon.RibbonPageGroup rpgFacturacionGrp;
         private System.Windows.Forms.ToolStripMenuItem facturacionToolStripMenuItem;

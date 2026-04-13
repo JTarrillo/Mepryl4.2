@@ -383,6 +383,7 @@ namespace CapaPresentacionBase
             rbpMesaEntradas.Visible = false;
             rbpHistoricoMesa.Visible = false;
             rbpFacturacionElectronica.Visible = false;
+            rbpConfiguracionMensajes.Visible = false;
             //
             blnPrimerInicio = false;
         }
@@ -572,6 +573,11 @@ namespace CapaPresentacionBase
         }
 
         protected virtual void configLaboralToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        protected virtual void configMensajesToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
         }
@@ -915,6 +921,7 @@ namespace CapaPresentacionBase
             rbpConfiguracionGeneral.Visible = true;
             rbpConfiguracionPreventiva.Visible = true;// false
             rbpConfiguracionLaboral.Visible = true;// false
+            rbpConfiguracionMensajes.Visible = true;
             minimizarRibbon(false);
         }
 
@@ -923,6 +930,7 @@ namespace CapaPresentacionBase
             rbpConfiguracionPreventiva.Visible = true;// false
             rbpConfiguracionGeneral.Visible = true;// false            
             rbpConfiguracionLaboral.Visible = true;
+            rbpConfiguracionMensajes.Visible = true;
             minimizarRibbon(false);
         }
 
@@ -931,6 +939,16 @@ namespace CapaPresentacionBase
             rbpConfiguracionLaboral.Visible = true;
             rbpConfiguracionGeneral.Visible = true;// false
             rbpConfiguracionPreventiva.Visible = true;// false 
+            rbpConfiguracionMensajes.Visible = true;
+            minimizarRibbon(false);
+        }
+
+        public void MostrarPestanaConfigMensajes()
+        {
+            rbpConfiguracionMensajes.Visible = true;
+            rbpConfiguracionGeneral.Visible = true;
+            rbpConfiguracionPreventiva.Visible = true;
+            rbpConfiguracionLaboral.Visible = true;
             minimizarRibbon(false);
         }
 
