@@ -45,8 +45,6 @@ namespace CapaPresentacion
             cmbMotivoConsulta.Items.Clear();
             foreach (DataRow row in dtMotivosConsulta.Rows)
                 cmbMotivoConsulta.Items.Add(row["nombre"].ToString());
-            if (cmbMotivoConsulta.Items.Count > 0)
-                cmbMotivoConsulta.SelectedIndex = 0; // dispara cmbMotivoConsulta_SelectedIndexChanged → CargarTiposExamen
         }
 
         private void cmbMotivoConsulta_SelectedIndexChanged(object sender, EventArgs e)
@@ -65,8 +63,6 @@ namespace CapaPresentacion
             cmbTipoExamen.Items.Clear();
             foreach (DataRow row in dtTiposExamen.Rows)
                 cmbTipoExamen.Items.Add(row["descripcion"].ToString());
-            if (cmbTipoExamen.Items.Count > 0)
-                cmbTipoExamen.SelectedIndex = 0; // dispara cmbTipoExamen_SelectedIndexChanged → CargarSubtipos
         }
 
         private void CargarSubtipos(string idPadre)
@@ -77,9 +73,7 @@ namespace CapaPresentacion
             cmbSubtipos.Items.Clear();
             foreach (DataRow row in dtSubtipos.Rows)
                 cmbSubtipos.Items.Add(row["descripcion"].ToString());
-            if (cmbSubtipos.Items.Count > 0)
-                cmbSubtipos.SelectedIndex = 0; // dispara cmbSubtipos_SelectedIndexChanged → CargarArchivoDelSubtipoSeleccionado
-            else
+            if (cmbSubtipos.Items.Count == 0)
             {
                 txtUbicacionArchivoTurno.Text = string.Empty;
                 txtArchivoTextoTurnos.Text = string.Empty;
