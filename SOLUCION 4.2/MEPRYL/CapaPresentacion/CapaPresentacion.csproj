@@ -612,6 +612,9 @@
     <Compile Include="frmUsuariosSistema.Designer.cs">
       <DependentUpon>frmUsuariosSistema.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmPermisosUsuario.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="frmPortalPacientes.cs">
       <SubType>Form</SubType>
     </Compile>

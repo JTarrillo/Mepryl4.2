@@ -228,6 +228,77 @@ if (strPage == "rbpNuevaSeccion")
 
 ---
 
+## Concepto clave: ¿Qué es un RibbonPageGroup?
+
+Es un **contenedor dentro de una pestaña** (RibbonPage) que sirve para agrupar botones relacionados.
+
+Pensalo así:
+
+```
+RibbonControl   → toda la barra superior
+  RibbonPage    → una pestaña (ej: "Configuración")
+    RibbonPageGroup → un bloque dentro de esa pestaña
+      BarButtonItem → los botones individuales
+```
+
+### Ejemplo visual
+
+En una pestaña podrías tener esto:
+
+```
+[ Configuración ]
+
+┌─────────────────────┐  ┌─────────────────────┐
+│ Usuarios | Horarios │  │ Plantilla | Fotos   │
+│ Médicos  | Permisos │  │ Consolidar          │
+│  ── General ──      │  │  ── Archivos ──     │
+└─────────────────────┘  └─────────────────────┘
+    RibbonPageGroup 1        RibbonPageGroup 2
+```
+
+Cada bloque completo con sus botones es un **RibbonPageGroup**.
+
+### ¿Qué significan los prefijos?
+
+Son convenciones de nombres del proyecto para identificar rápido el tipo de control:
+
+| Prefijo | Significa | Tipo de control |
+|---------|-----------|-----------------|
+| `rbc` | **R**ibbon**C**ontrol | La barra completa (`rbcControlMenu`) |
+| `rbp` | **R**ibbon**P**age | Pestaña (`rbpConfiguracionMensajes`) |
+| `rpg` | **R**ibbon**P**age**G**roup | Grupo de botones (`rpgConfigMensajesGrp`) |
+| `bbi` | **B**ar**B**utton**I**tem | Botón individual (`bbiConfigMensajePre`) |
+| `nbi` | **N**av**B**ar**I**tem | Ítem del NavBar lateral (`nbiTurnos`) |
+
+---
+
+## Ejemplo de prompt bien redactado
+
+Para pedir este tipo de cambio de forma precisa:
+
+```
+Agregar una nueva RibbonPage "Configuración de Mensajes" al ribbon.
+
+- Crear rbpConfiguracionMensajes (RibbonPage) con un RibbonPageGroup 
+  que contenga el botón bbiConfigMensajePre existente.
+- Agregar un ToolStripMenuItem "Config. Mensajes" al menú lateral, 
+  dentro del dropdown de Configuración.
+- Que se muestre junto a las otras 3 pestañas de configuración 
+  (Básica, Preventiva, Laboral).
+- En SelectedPageChanged, cerrar formularios y abrir el form correspondiente.
+- Archivos: frmBasePrincipal.Designer.cs, frmBasePrincipal.cs, frmPrincipal.cs.
+```
+
+### ¿Por qué funciona bien este prompt?
+
+1. **Usa nombres técnicos**: RibbonPage, RibbonPageGroup, BarButtonItem, ToolStripMenuItem
+2. **Menciona variables existentes**: `bbiConfigMensajePre`, `rbpConfiguracionMensajes`
+3. **Especifica dónde**: dropdown de Configuración, junto a las otras 3 pestañas
+4. **Indica el comportamiento**: en `SelectedPageChanged` cerrar y abrir form
+5. **Lista los archivos**: evita que se modifiquen archivos incorrectos
+
+---
+
 ## Tip: El texto "Mensajes" que aparecía debajo del botón
 
 Eso era el `rpgConfigMensajesGrp.Text = "Mensajes"`. El `Text` del **RibbonPageGroup** se muestra como etiqueta debajo del grupo de botones. Para que no aparezca, dejarlo vacío: `Text = ""`.

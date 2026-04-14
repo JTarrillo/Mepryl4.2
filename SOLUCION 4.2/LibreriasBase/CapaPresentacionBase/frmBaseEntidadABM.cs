@@ -59,7 +59,7 @@ namespace CapaPresentacionBase
             tbCodigo.Select();
         }
 
-        //Métodos abstractos
+        //Mï¿½todos abstractos
         public virtual CapaNegocioBase.EntidadFactoryBase crearNegEntidadFac() { return null; }
         public virtual frmBaseBusqueda crearFormularioBusqueda() { return null; }
         public virtual string validarDatosIngresados() { return null; }
@@ -77,7 +77,7 @@ namespace CapaPresentacionBase
         {
             if (this.edicion == ModoEdicion.AGREGANDO || this.edicion == ModoEdicion.MODIFICANDO)
             {
-                if (MessageBox.Show("Si cierra ahora, no se guardarán los cambios del registro actual. \r\n\r\n¿Desea cerrar de todas formas?", "Datos sin guardar",
+                if (MessageBox.Show("Si cierra ahora, no se guardarï¿½n los cambios del registro actual. \r\n\r\nï¿½Desea cerrar de todas formas?", "Datos sin guardar",
                     MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.Yes)
                     e.Cancel = false;
                 else
@@ -152,7 +152,7 @@ namespace CapaPresentacionBase
                 agregar();
             else
             {
-                MessageBox.Show("Esta función está deshabilitada.", "Agregar", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                MessageBox.Show("Esta funciï¿½n estï¿½ deshabilitada.", "Agregar", MessageBoxButtons.OK, MessageBoxIcon.Stop);
             }
         }
 
@@ -181,7 +181,7 @@ namespace CapaPresentacionBase
         protected void butEliminar_Click(object sender, EventArgs e)
         {
             if (agregarHabilitado)
-                if (confirmar("¿Está seguro que desea eliminar el registro?") == DialogResult.Yes)
+                if (confirmar("ï¿½Estï¿½ seguro que desea eliminar el registro?") == DialogResult.Yes)
                 {
                     string resultado = borrar(tbId.Text);
                     if (resultado == "")
@@ -197,34 +197,46 @@ namespace CapaPresentacionBase
                 }
             else
             {
-                MessageBox.Show("Esta función está deshabilitada.", "Agregar", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                MessageBox.Show("Esta funciï¿½n estï¿½ deshabilitada.", "Agregar", MessageBoxButtons.OK, MessageBoxIcon.Stop);
             }
             
         }
 
         private void butAceptar_Click(object sender, EventArgs e)
         {
-            if (this.EntidadNombre != "Paciente")
+            // Prevenir doble clic
+            butAceptar.Enabled = false;
+            try
             {
-                aceptar();
-            }
-            else if (this.EntidadNombre == "Paciente")
-            {
-                if (verificarDni())
+                if (this.EntidadNombre != "Paciente")
                 {
                     aceptar();
-                    if (estaInhabilitadoDni())
+                }
+                else if (this.EntidadNombre == "Paciente")
+                {
+                    if (verificarDni())
                     {
-                        MessageBox.Show("¡El número de dni se encuentra inhabilitado! Por favor verifique", "Jugador Inhabilitado", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        aceptar();
+                        if (estaInhabilitadoDni())
+                        {
+                            MessageBox.Show("ï¿½El nï¿½mero de dni se encuentra inhabilitado! Por favor verifique", "Jugador Inhabilitado", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("El DNI ya fue ingresado. Por favor verifique los datos del paciente",
+                            "Verificar DNI", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        dniDuplicados();
                     }
                 }
-                else
-                {
-                    MessageBox.Show("El DNI ya fue ingresado. Por favor verifique los datos del paciente",
-                        "Verificar DNI", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    dniDuplicados();
-                }
-            }            
+            }
+            finally
+            {
+                // Si aceptar() tuvo Ã©xito, modoEstatico() ya deshabilitÃ³ el botÃ³n.
+                // Si fallÃ³ o no se ejecutÃ³, re-habilitar para que el usuario pueda reintentar.
+                if (edicion != ModoEdicion.VACIO)
+                    butAceptar.Enabled = true;
+            }
         }
 
 
@@ -254,7 +266,7 @@ namespace CapaPresentacionBase
                             resultado = modificar();
                         }
                         else
-                            resultado.mensaje = "No se puede realizar esta operación.";
+                            resultado.mensaje = "No se puede realizar esta operaciï¿½n.";
 
                         if (resultado.mensaje == "")
                         {
@@ -284,7 +296,7 @@ namespace CapaPresentacionBase
 
         protected void butCancelar_Click(object sender, EventArgs e)
         {
-            if (tbId.Text != Utilidades.ID_VACIO) //Si era una edición
+            if (tbId.Text != Utilidades.ID_VACIO) //Si era una ediciï¿½n
             {
                 mostrarDatosObjeto();
                 if (objDelegateDevolverID != null)
@@ -508,7 +520,7 @@ namespace CapaPresentacionBase
 
         protected void mostrarError(string mensaje)
         {
-            MessageBox.Show(mensaje, "Atención", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show(mensaje, "Atenciï¿½n", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         protected DialogResult confirmar(string mensaje)

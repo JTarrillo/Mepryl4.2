@@ -212,7 +212,7 @@ namespace CapaPresentacion
             this.cboSubTipoExamen.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.cboSubTipoExamen.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F);
             this.cboSubTipoExamen.FormattingEnabled = true;
-            this.cboSubTipoExamen.Location = new System.Drawing.Point(665, 22);
+            this.cboSubTipoExamen.Location = new System.Drawing.Point(673, 20);
             this.cboSubTipoExamen.Name = "cboSubTipoExamen";
             this.cboSubTipoExamen.Size = new System.Drawing.Size(647, 24);
             this.cboSubTipoExamen.TabIndex = 2;

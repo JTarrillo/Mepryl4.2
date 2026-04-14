@@ -32,6 +32,8 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmUsuariosSistema));
             this.lbTitulo = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.tabControlUsuarios = new System.Windows.Forms.TabControl();
+            this.tabUsuarios = new System.Windows.Forms.TabPage();
             this.panel2 = new System.Windows.Forms.Panel();
             this.chkMedico = new System.Windows.Forms.CheckBox();
             this.chkActivo = new System.Windows.Forms.CheckBox();
@@ -74,7 +76,13 @@
             this.lblDNI = new System.Windows.Forms.Label();
             this.txtDNI = new System.Windows.Forms.TextBox();
             this.pbFoto = new System.Windows.Forms.PictureBox();
+            this.tabGestion = new System.Windows.Forms.TabPage();
+            this.dgvGestion = new System.Windows.Forms.DataGridView();
+            this.pnlBuscarGestion = new System.Windows.Forms.Panel();
+            this.txtBuscarGestion = new System.Windows.Forms.TextBox();
+            this.lblBuscarGestion = new System.Windows.Forms.Label();
             this.lblFaltanCargar = new System.Windows.Forms.Panel();
+            this.btnPortal = new System.Windows.Forms.Button();
             this.botModificar = new System.Windows.Forms.Button();
             this.btnSalir = new System.Windows.Forms.Button();
             this.btnTipoUsuario = new System.Windows.Forms.Button();
@@ -84,6 +92,8 @@
             this.botAceptar = new System.Windows.Forms.Button();
             this.defaultLookAndFeel1 = new DevExpress.LookAndFeel.DefaultLookAndFeel(this.components);
             this.panel1.SuspendLayout();
+            this.tabControlUsuarios.SuspendLayout();
+            this.tabUsuarios.SuspendLayout();
             this.panel2.SuspendLayout();
             this.tblBuscar.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgv)).BeginInit();
@@ -94,6 +104,9 @@
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbFoto)).BeginInit();
+            this.tabGestion.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvGestion)).BeginInit();
+            this.pnlBuscarGestion.SuspendLayout();
             this.lblFaltanCargar.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -112,12 +125,35 @@
             // 
             // panel1
             // 
-            this.panel1.Controls.Add(this.panel2);
+            this.panel1.Controls.Add(this.tabControlUsuarios);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 25);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(1092, 534);
             this.panel1.TabIndex = 128;
+            // 
+            // tabControlUsuarios
+            // 
+            this.tabControlUsuarios.Controls.Add(this.tabUsuarios);
+            this.tabControlUsuarios.Controls.Add(this.tabGestion);
+            this.tabControlUsuarios.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabControlUsuarios.Location = new System.Drawing.Point(0, 0);
+            this.tabControlUsuarios.Name = "tabControlUsuarios";
+            this.tabControlUsuarios.SelectedIndex = 0;
+            this.tabControlUsuarios.Size = new System.Drawing.Size(1092, 534);
+            this.tabControlUsuarios.TabIndex = 0;
+            this.tabControlUsuarios.SelectedIndexChanged += new System.EventHandler(this.tabControlUsuarios_SelectedIndexChanged);
+            // 
+            // tabUsuarios
+            // 
+            this.tabUsuarios.Controls.Add(this.panel2);
+            this.tabUsuarios.Location = new System.Drawing.Point(4, 25);
+            this.tabUsuarios.Name = "tabUsuarios";
+            this.tabUsuarios.Padding = new System.Windows.Forms.Padding(3);
+            this.tabUsuarios.Size = new System.Drawing.Size(1084, 505);
+            this.tabUsuarios.TabIndex = 0;
+            this.tabUsuarios.Text = "Usuario";
+            this.tabUsuarios.UseVisualStyleBackColor = true;
             // 
             // panel2
             // 
@@ -131,9 +167,9 @@
             this.panel2.Controls.Add(this.groupBox1);
             this.panel2.Controls.Add(this.tableLayoutPanel2);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel2.Location = new System.Drawing.Point(0, 0);
+            this.panel2.Location = new System.Drawing.Point(3, 3);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(1092, 534);
+            this.panel2.Size = new System.Drawing.Size(1078, 499);
             this.panel2.TabIndex = 2;
             // 
             // chkMedico
@@ -594,10 +630,71 @@
             this.pbFoto.Click += new System.EventHandler(this.pbFoto_Click);
             this.pbFoto.DoubleClick += new System.EventHandler(this.pbFoto_DoubleClick);
             // 
+            // tabGestion
+            // 
+            this.tabGestion.Controls.Add(this.dgvGestion);
+            this.tabGestion.Controls.Add(this.pnlBuscarGestion);
+            this.tabGestion.Location = new System.Drawing.Point(4, 25);
+            this.tabGestion.Name = "tabGestion";
+            this.tabGestion.Padding = new System.Windows.Forms.Padding(3);
+            this.tabGestion.Size = new System.Drawing.Size(1084, 505);
+            this.tabGestion.TabIndex = 1;
+            this.tabGestion.Text = "Gestionar Usuarios";
+            this.tabGestion.UseVisualStyleBackColor = true;
+            // 
+            // dgvGestion
+            // 
+            this.dgvGestion.AllowUserToAddRows = false;
+            this.dgvGestion.AllowUserToDeleteRows = false;
+            this.dgvGestion.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvGestion.BackgroundColor = System.Drawing.SystemColors.Window;
+            this.dgvGestion.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.dgvGestion.ClipboardCopyMode = System.Windows.Forms.DataGridViewClipboardCopyMode.EnableWithoutHeaderText;
+            this.dgvGestion.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvGestion.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvGestion.Location = new System.Drawing.Point(3, 38);
+            this.dgvGestion.Name = "dgvGestion";
+            this.dgvGestion.RowHeadersVisible = false;
+            this.dgvGestion.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
+            this.dgvGestion.Size = new System.Drawing.Size(1078, 464);
+            this.dgvGestion.TabIndex = 0;
+            this.dgvGestion.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvGestion_CellContentClick);
+            this.dgvGestion.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvGestion_CellValueChanged);
+            this.dgvGestion.CurrentCellDirtyStateChanged += new System.EventHandler(this.dgvGestion_CurrentCellDirtyStateChanged);
+            // 
+            // pnlBuscarGestion
+            // 
+            this.pnlBuscarGestion.Controls.Add(this.txtBuscarGestion);
+            this.pnlBuscarGestion.Controls.Add(this.lblBuscarGestion);
+            this.pnlBuscarGestion.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pnlBuscarGestion.Location = new System.Drawing.Point(3, 3);
+            this.pnlBuscarGestion.Name = "pnlBuscarGestion";
+            this.pnlBuscarGestion.Size = new System.Drawing.Size(1078, 35);
+            this.pnlBuscarGestion.TabIndex = 1;
+            // 
+            // txtBuscarGestion
+            // 
+            this.txtBuscarGestion.Location = new System.Drawing.Point(151, 5);
+            this.txtBuscarGestion.Name = "txtBuscarGestion";
+            this.txtBuscarGestion.Size = new System.Drawing.Size(250, 22);
+            this.txtBuscarGestion.TabIndex = 1;
+            this.txtBuscarGestion.TextChanged += new System.EventHandler(this.txtBuscarGestion_TextChanged);
+            // 
+            // lblBuscarGestion
+            // 
+            this.lblBuscarGestion.AutoSize = true;
+            this.lblBuscarGestion.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold);
+            this.lblBuscarGestion.Location = new System.Drawing.Point(8, 8);
+            this.lblBuscarGestion.Name = "lblBuscarGestion";
+            this.lblBuscarGestion.Size = new System.Drawing.Size(116, 16);
+            this.lblBuscarGestion.TabIndex = 0;
+            this.lblBuscarGestion.Text = "Buscar por DNI:";
+            // 
             // lblFaltanCargar
             // 
             this.lblFaltanCargar.BackColor = System.Drawing.SystemColors.ControlLight;
             this.lblFaltanCargar.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lblFaltanCargar.Controls.Add(this.btnPortal);
             this.lblFaltanCargar.Controls.Add(this.botModificar);
             this.lblFaltanCargar.Controls.Add(this.btnSalir);
             this.lblFaltanCargar.Controls.Add(this.btnTipoUsuario);
@@ -610,6 +707,22 @@
             this.lblFaltanCargar.Name = "lblFaltanCargar";
             this.lblFaltanCargar.Size = new System.Drawing.Size(136, 559);
             this.lblFaltanCargar.TabIndex = 129;
+            // 
+            // btnPortal
+            // 
+            this.btnPortal.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.btnPortal.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnPortal.Image = ((System.Drawing.Image)(resources.GetObject("btnPortal.Image")));
+            this.btnPortal.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnPortal.Location = new System.Drawing.Point(5, 325);
+            this.btnPortal.Name = "btnPortal";
+            this.btnPortal.Size = new System.Drawing.Size(123, 58);
+            this.btnPortal.TabIndex = 277;
+            this.btnPortal.Text = "Portal\r\nWeb\r\n";
+            this.btnPortal.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btnPortal.UseVisualStyleBackColor = true;
+            this.btnPortal.Visible = false;
+            this.btnPortal.Click += new System.EventHandler(this.btnPortal_Click);
             // 
             // botModificar
             // 
@@ -680,7 +793,7 @@
             this.btnEliminar.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnEliminar.Image = ((System.Drawing.Image)(resources.GetObject("btnEliminar.Image")));
             this.btnEliminar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnEliminar.Location = new System.Drawing.Point(12, 365);
+            this.btnEliminar.Location = new System.Drawing.Point(8, 389);
             this.btnEliminar.Name = "btnEliminar";
             this.btnEliminar.Size = new System.Drawing.Size(123, 45);
             this.btnEliminar.TabIndex = 14;
@@ -741,6 +854,8 @@
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.frmUsuariosSistema_Load);
             this.panel1.ResumeLayout(false);
+            this.tabControlUsuarios.ResumeLayout(false);
+            this.tabUsuarios.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             this.tblBuscar.ResumeLayout(false);
@@ -756,6 +871,10 @@
             this.tableLayoutPanel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbFoto)).EndInit();
+            this.tabGestion.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgvGestion)).EndInit();
+            this.pnlBuscarGestion.ResumeLayout(false);
+            this.pnlBuscarGestion.PerformLayout();
             this.lblFaltanCargar.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -816,5 +935,13 @@
         private System.Windows.Forms.TextBox txtDNI;
         private System.Windows.Forms.Label lblDNI;
         private System.Windows.Forms.CheckBox chkverfacturacion;
+        private System.Windows.Forms.Button btnPortal;
+        private System.Windows.Forms.TabControl tabControlUsuarios;
+        private System.Windows.Forms.TabPage tabUsuarios;
+        private System.Windows.Forms.TabPage tabGestion;
+        private System.Windows.Forms.DataGridView dgvGestion;
+        private System.Windows.Forms.Panel pnlBuscarGestion;
+        private System.Windows.Forms.TextBox txtBuscarGestion;
+        private System.Windows.Forms.Label lblBuscarGestion;
     }
 }

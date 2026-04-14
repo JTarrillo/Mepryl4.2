@@ -274,6 +274,12 @@ namespace CapaDatosMepryl
             return blnResultado;
         }
 
+        public void ActualizarCampoUsuario(string strIdUsuario, string strCampo, string strValor)
+        {
+            string strSQL = "UPDATE dbo.Usuario SET [" + strCampo + "] = " + strValor + " WHERE id = '" + strIdUsuario + "'";
+            SQLConnector.obtenerTablaSegunConsultaString(strSQL);
+        }
+
         public bool BorrarUsuario(string strID)
         {
             bool blnResultado = false;
@@ -292,6 +298,23 @@ namespace CapaDatosMepryl
             string strSQL = "";
 
             strSQL = "SELECT TOP 1 * FROM dbo.Usuario WHERE username = '" + strUsuario + "'";
+            dt = SQLConnector.obtenerTablaSegunConsultaString(strSQL);
+
+            if (dt.Rows.Count > 0)
+            {
+                blnResultado = true;
+            }
+
+            return blnResultado;
+        }
+
+        public bool BuscaDNIExacto(string strDNI)
+        {
+            DataTable dt = null;
+            bool blnResultado = false;
+            string strSQL = "";
+
+            strSQL = "SELECT TOP 1 * FROM dbo.Usuario WHERE dni = '" + strDNI + "'";
             dt = SQLConnector.obtenerTablaSegunConsultaString(strSQL);
 
             if (dt.Rows.Count > 0)
@@ -380,6 +403,43 @@ namespace CapaDatosMepryl
             dt = SQLConnector.obtenerTablaSegunConsultaString(strSQL);
 
             return dt; 
+        }
+
+        public DataTable BuscarDNIUsuario(string strDNI)
+        {
+            DataTable dt = null;
+            string strSQL = "";
+
+            strSQL = "SELECT TOP 50 id, password, username as 'Usuario', nombre as 'Nombre', apellido as 'Apellido', " +
+                     "email1 as 'E-Mail', Tipo as 'Tipo Usuario', Activo, ProfesionalAsignado, " +
+                     "apellido + ' ' + nombre as 'NombreApellido', Tipo as 'TipoUsuario', dni " +
+                     "FROM dbo.Usuario " +
+                     "WHERE dni like '%" + strDNI + "%' " +
+                     "ORDER BY apellido";
+
+            dt = SQLConnector.obtenerTablaSegunConsultaString(strSQL);
+
+            return dt; 
+        }
+
+        public DataTable ListarUsuariosConPermisos()
+        {
+            DataTable dt = null;
+            string strSQL = "";
+
+            strSQL = "SELECT id, username as 'Usuario', apellido as 'Apellido', nombre as 'Nombre', " +
+                     "Tipo as 'Tipo Usuario', dni as 'DNI', Activo, " +
+                     "VentVentanilla as 'Ventanilla', VentMesa as 'Mesa Entrada', " +
+                     "VentPacientes as 'Pacientes', VentExamenes as 'Exámenes', " +
+                     "VentConfiguracion as 'Configuración', VentTurnos as 'Turnos', " +
+                     "VentResumen as 'Planilla', VentAudiometria as 'Audiometría', " +
+                     "VentFacturacion as 'Facturación', " +
+                     "PermisoVer as 'Ver', PermisoModificar as 'Modificar', PermisoEliminar as 'Eliminar' " +
+                     "FROM dbo.Usuario ORDER BY apellido";
+
+            dt = SQLConnector.obtenerTablaSegunConsultaString(strSQL);
+
+            return dt;
         }
 
         public void ActualizaProfesionalAsignado(string strDNI)

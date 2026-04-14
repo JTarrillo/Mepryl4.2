@@ -49,33 +49,12 @@ namespace CapaPresentacion
             //ListarUsuarios();
             cargarGrilla();
             CargarDatosDGV();
-            agregarBotonPortal();
         }
 
-        private void agregarBotonPortal()
+        private void btnPortal_Click(object sender, EventArgs e)
         {
-            Button btnPortal = new Button();
-            btnPortal.BackColor = System.Drawing.SystemColors.ButtonFace;
-            btnPortal.Font = new Font("Microsoft Sans Serif", 9.75F, FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            try
-            {
-                string rutaImagen = Path.Combine(Application.StartupPath, @"..\..\Imagenes\Iconos\Pacientes\mUsers36x36.png");
-                if (File.Exists(rutaImagen))
-                    btnPortal.Image = Image.FromFile(rutaImagen);
-            }
-            catch { }
-            btnPortal.ImageAlign = ContentAlignment.MiddleLeft;
-            btnPortal.Text = "Portal\r\nPacientes";
-            btnPortal.TextAlign = ContentAlignment.MiddleRight;
-            btnPortal.UseVisualStyleBackColor = true;
-            btnPortal.Size = new System.Drawing.Size(123, 45);
-            btnPortal.Location = new System.Drawing.Point(5, 450);
-            btnPortal.Click += (s, ev) =>
-            {
-                frmPortalPacientes frm = new frmPortalPacientes();
-                frm.ShowDialog();
-            };
-            lblFaltanCargar.Controls.Add(btnPortal);
+            frmPortalPacientes frm = new frmPortalPacientes();
+            frm.ShowDialog();
         }
 
         private void actualizar()
@@ -268,33 +247,46 @@ namespace CapaPresentacion
 
         private void botAceptar_Click(object sender, EventArgs e)
         {
-            // Validación: solo el administrador puede asignar el tipo "ADMINISTRADOR"
-            if (!UsuarioActualEsAdministrador() && cmbTipoUsuario.Text == "ADMINISTRADOR")
+            // Prevenir doble clic
+            botAceptar.Enabled = false;
+            try
             {
-                MessageBox.Show("No tiene permisos para asignar el tipo ADMINISTRADOR.", "Permiso denegado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            if (blnNuevo == true)
-            {
-                if (UserSistema.BuscaNombreUsuario(txtNombreUsuario.Text))
+                // Validación: solo el administrador puede asignar el tipo "ADMINISTRADOR"
+                if (!UsuarioActualEsAdministrador() && cmbTipoUsuario.Text == "ADMINISTRADOR")
                 {
-                    MessageBox.Show("Este usuario ya existe", "Usuarios", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                    MessageBox.Show("No tiene permisos para asignar el tipo ADMINISTRADOR.", "Permiso denegado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
-                else
+
+                if (blnNuevo == true)
                 {
+                    if (UserSistema.BuscaNombreUsuario(txtNombreUsuario.Text))
+                    {
+                        MessageBox.Show("Este usuario ya existe", "Usuarios", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                        return;
+                    }
+
+                    if (txtDNI.Text.Trim() != "" && UserSistema.BuscaDNIExacto(txtDNI.Text.Trim()))
+                    {
+                        MessageBox.Show("Ya existe un usuario con este DNI", "Usuarios", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                        return;
+                    }
+
                     Guardar();
                     MessageBox.Show("Usuario creado correctamente", "Usuarios", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     txtNombreUsuario.Enabled = false;
-                }
 
-                blnNuevo = false;
+                    blnNuevo = false;
+                }
+                else
+                {
+                    actualizar();
+                    MessageBox.Show("Usuario actualizado correctamente", "Usuarios", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
             }
-            else
+            finally
             {
-                actualizar();
-                MessageBox.Show("Usuario actualizado correctamente", "Usuarios", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                botAceptar.Enabled = true;
             }
 
             // Si el usuario editado es el usuario actualmente logueado, refrescar visibilidad en tiempo real
@@ -1055,6 +1047,126 @@ namespace CapaPresentacion
             {
                 ocultarBuscar();
             }
+        }
+
+        // ==================== TAB GESTIONAR USUARIOS ====================
+
+        private DataTable dtGestion;
+
+        private void tabControlUsuarios_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (tabControlUsuarios.SelectedTab == tabGestion)
+            {
+                CargarGrillaGestion();
+            }
+        }
+
+        private void CargarGrillaGestion()
+        {
+            dtGestion = UserSistema.ListarUsuariosConPermisos();
+            FiltrarGrillaGestion(txtBuscarGestion.Text);
+        }
+
+        private void FiltrarGrillaGestion(string filtro)
+        {
+            if (dtGestion == null) return;
+
+            DataView dv = dtGestion.DefaultView;
+            if (string.IsNullOrEmpty(filtro))
+                dv.RowFilter = "";
+            else
+                dv.RowFilter = "DNI LIKE '%" + filtro.Replace("'", "''") + "%'";
+
+            dgvGestion.DataSource = dv;
+            dgvGestion.Columns["id"].Visible = false;
+
+            // Ocultar columnas de permisos (se ven en el modal)
+            string[] colsOcultas = { "Ventanilla", "Mesa Entrada", "Pacientes",
+                                     "Exámenes", "Configuración", "Turnos", "Planilla",
+                                     "Audiometría", "Facturación", "Ver", "Modificar", "Eliminar" };
+            foreach (string col in colsOcultas)
+            {
+                dgvGestion.Columns[col].Visible = false;
+            }
+
+            dgvGestion.Columns["Usuario"].FillWeight = 100;
+            dgvGestion.Columns["Apellido"].FillWeight = 120;
+            dgvGestion.Columns["Nombre"].FillWeight = 120;
+            dgvGestion.Columns["Tipo Usuario"].FillWeight = 100;
+            dgvGestion.Columns["DNI"].FillWeight = 80;
+            dgvGestion.Columns["Activo"].FillWeight = 50;
+
+            dgvGestion.ReadOnly = true;
+
+            // Agregar botón "Configurar" si no existe
+            if (!dgvGestion.Columns.Contains("btnConfigurar"))
+            {
+                DataGridViewButtonColumn btnCol = new DataGridViewButtonColumn();
+                btnCol.Name = "btnConfigurar";
+                btnCol.HeaderText = "Permisos";
+                btnCol.Text = "Configurar";
+                btnCol.UseColumnTextForButtonValue = true;
+                btnCol.FillWeight = 70;
+                dgvGestion.Columns.Add(btnCol);
+            }
+        }
+
+        private void dgvGestion_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0) return;
+            if (dgvGestion.Columns[e.ColumnIndex].Name != "btnConfigurar") return;
+
+            string strId = dgvGestion.Rows[e.RowIndex].Cells["id"].Value.ToString();
+            string strUsuario = dgvGestion.Rows[e.RowIndex].Cells["Usuario"].Value.ToString();
+
+            DataTable dt = UserSistema.ListaPermisoUsuarios(strId);
+            if (dt.Rows.Count == 0) return;
+            DataRow row = dt.Rows[0];
+
+            using (frmPermisosUsuario frm = new frmPermisosUsuario(strUsuario, row, UsuarioActualEsAdministrador()))
+            {
+                if (frm.ShowDialog() == DialogResult.OK && UsuarioActualEsAdministrador())
+                {
+                    // Guardar cada permiso
+                    Dictionary<string, string> mapeo = new Dictionary<string, string>
+                    {
+                        { "Activo", "Activo" },
+                        { "VentVentanilla", "VentVentanilla" },
+                        { "VentMesa", "VentMesa" },
+                        { "VentPacientes", "VentPacientes" },
+                        { "VentExamenes", "VentExamenes" },
+                        { "VentConfiguracion", "VentConfiguracion" },
+                        { "VentTurnos", "VentTurnos" },
+                        { "VentResumen", "VentResumen" },
+                        { "VentAudiometria", "VentAudiometria" },
+                        { "VentFacturacion", "VentFacturacion" },
+                        { "PermisoVer", "PermisoVer" },
+                        { "PermisoModificar", "PermisoModificar" },
+                        { "PermisoEliminar", "PermisoEliminar" }
+                    };
+
+                    foreach (var kvp in mapeo)
+                    {
+                        string strValor = frm.Permisos[kvp.Key] ? "1" : "0";
+                        UserSistema.ActualizarCampoUsuario(strId, kvp.Value, strValor);
+                    }
+
+                    CargarGrillaGestion();
+                }
+            }
+        }
+
+        private void dgvGestion_CurrentCellDirtyStateChanged(object sender, EventArgs e)
+        {
+        }
+
+        private void dgvGestion_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+        }
+
+        private void txtBuscarGestion_TextChanged(object sender, EventArgs e)
+        {
+            FiltrarGrillaGestion(txtBuscarGestion.Text);
         }
     }
 }

@@ -37,9 +37,19 @@ namespace CapaNegocioMepryl
             return userSistema.BuscaNombreUsuario(strUsuario);
         }
 
+        public bool BuscaDNIExacto(string strDNI)
+        {
+            return userSistema.BuscaDNIExacto(strDNI);
+        }
+
         public bool BorrarUsuario(string strID)
         {
             return userSistema.BorrarUsuario(strID);
+        }
+
+        public void ActualizarCampoUsuario(string strIdUsuario, string strCampo, string strValor)
+        {
+            userSistema.ActualizarCampoUsuario(strIdUsuario, strCampo, strValor);
         }
 
         public DataTable ListaPermisoUsuarios(string strUsuario)
@@ -85,6 +95,16 @@ namespace CapaNegocioMepryl
         public DataTable BuscarApellidoUsuario(string strApellido)
         {
             return userSistema.BuscarApellidoUsuario(strApellido);
+        }
+
+        public DataTable BuscarDNIUsuario(string strDNI)
+        {
+            return userSistema.BuscarDNIUsuario(strDNI);
+        }
+
+        public DataTable ListarUsuariosConPermisos()
+        {
+            return userSistema.ListarUsuariosConPermisos();
         }
 
         public DataTable ListarUsuarios(string strDNI)

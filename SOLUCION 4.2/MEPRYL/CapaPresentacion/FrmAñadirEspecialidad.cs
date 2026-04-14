@@ -920,38 +920,6 @@ namespace CapaPresentacion
 
                 var menuAcciones = new ContextMenuStrip();
 
-                // Opción: Editar Subtipo
-                var itemSubtipo = new ToolStripMenuItem("✎ Editar Subtipo");
-                itemSubtipo.Click += (s2, e2) =>
-                {
-                    string idSubtipo = row.Cells["id"]?.Value?.ToString();
-                    string nombreSubtipo = row.Cells["SubtipoExamen"]?.Value?.ToString();
-
-                    if (string.IsNullOrEmpty(idSubtipo))
-                    {
-                        MessageBox.Show("No se pudo obtener el ID del subtipo.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
-                    }
-
-                    if (!Guid.TryParse(idSubtipo, out Guid guidSubtipo))
-                    {
-                        MessageBox.Show("El ID del subtipo no es válido.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
-                    }
-
-                    FrmEditarSubtipo frmEditar = new FrmEditarSubtipo(idSubtipo, nombreSubtipo);
-                    DialogResult resultado = frmEditar.ShowDialog(this);
-
-                    if (resultado == DialogResult.OK)
-                    {
-                        if (idMotivoConsultaSeleccionado == 0)
-                            MostrarGestionMotivoTipoSubtipo(0);
-                        else
-                            MostrarGestionMotivoTipoSubtipo(idMotivoConsultaSeleccionado);
-                    }
-                };
-                menuAcciones.Items.Add(itemSubtipo);
-
                 // Opción: Editar Tipo
                 var itemTipo = new ToolStripMenuItem("✎ Editar Tipo");
                 itemTipo.Click += (s2, e2) =>
@@ -998,6 +966,38 @@ namespace CapaPresentacion
                     }
                 };
                 menuAcciones.Items.Add(itemTipo);
+
+                // Opción: Editar Subtipo
+                var itemSubtipo = new ToolStripMenuItem("✎ Editar Subtipo");
+                itemSubtipo.Click += (s2, e2) =>
+                {
+                    string idSubtipo = row.Cells["id"]?.Value?.ToString();
+                    string nombreSubtipo = row.Cells["SubtipoExamen"]?.Value?.ToString();
+
+                    if (string.IsNullOrEmpty(idSubtipo))
+                    {
+                        MessageBox.Show("No se pudo obtener el ID del subtipo.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+
+                    if (!Guid.TryParse(idSubtipo, out Guid guidSubtipo))
+                    {
+                        MessageBox.Show("El ID del subtipo no es válido.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+
+                    FrmEditarSubtipo frmEditar = new FrmEditarSubtipo(idSubtipo, nombreSubtipo);
+                    DialogResult resultado = frmEditar.ShowDialog(this);
+
+                    if (resultado == DialogResult.OK)
+                    {
+                        if (idMotivoConsultaSeleccionado == 0)
+                            MostrarGestionMotivoTipoSubtipo(0);
+                        else
+                            MostrarGestionMotivoTipoSubtipo(idMotivoConsultaSeleccionado);
+                    }
+                };
+                menuAcciones.Items.Add(itemSubtipo);
 
                 // Mostrar el menú en la posición del botón clickeado
                 var cellRect = dgvTiposExamenes.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, true);

@@ -1973,7 +1973,6 @@ namespace CapaPresentacionBase
             this.ribbonPageGroup5.ItemLinks.Add(this.bbiUbicacionArchivos);
             this.ribbonPageGroup5.ItemLinks.Add(this.bbiValidaciones);
             this.ribbonPageGroup5.ItemLinks.Add(this.bbiPlantillaReportes);
-            this.ribbonPageGroup5.ItemLinks.Add(this.bbiConfigMensajePre);
             this.ribbonPageGroup5.ItemLinks.Add(this.bbiArchivoConsolidar);
             this.ribbonPageGroup5.ItemLinks.Add(this.bbiConfigRayosX);
             this.ribbonPageGroup5.ItemLinks.Add(this.bbiValidacionesAutomaticas);
