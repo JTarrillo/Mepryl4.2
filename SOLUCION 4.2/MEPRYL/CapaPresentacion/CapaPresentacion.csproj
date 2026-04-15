@@ -519,6 +519,12 @@
     <Compile Include="frmListaDePrecios.Designer.cs">
       <DependentUpon>frmListaDePrecios.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmPreciosPublico.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmPreciosPublico.Designer.cs">
+      <DependentUpon>frmPreciosPublico.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmListaPrecioTomaBase.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -1887,6 +1887,8 @@ namespace CapaPresentacion
                     else
                         tbPrecioBase.Text = "";
 
+                    cargarPrecioLista(entidad.Id.ToString());
+
                     // ✅ LLENAR DATAGRIDS SIEMPRE
                     llenarDataGrids(entidad);
 
@@ -2267,6 +2269,7 @@ namespace CapaPresentacion
                 tbDescripcion7.Text = entidad.Descripcion;
                 tbDescripcionInformes.Text = entidad.DescripcionInformes;
                 if (entidad.PrecioBase != 0) { tbPrecioBase.Text = entidad.PrecioBase.ToString(); }
+                cargarPrecioLista(entidad.Id.ToString());
                 llenarDataGrids(entidad);
                 tabControl.TabIndex = 0;
                 actualizarResumen();
@@ -2291,6 +2294,7 @@ namespace CapaPresentacion
                 {
                     tbPrecioBase.Text = entidad.PrecioBase.ToString();
                 }
+                cargarPrecioLista(entidad.Id.ToString());
                 llenarDataGrids(entidad);
                 tabControl.TabIndex = 0;
                 actualizarResumen();
@@ -2463,6 +2467,8 @@ namespace CapaPresentacion
                     tbDescripcionInformes.Text = entidad.DescripcionInformes;
                     if (entidad.PrecioBase != 0) { tbPrecioBase.Text = entidad.PrecioBase.ToString(); }
 
+                    cargarPrecioLista(entidad.Id.ToString());
+
                     llenarDataGrids(entidad);
                     actualizarResumen();
 
@@ -2487,6 +2493,7 @@ namespace CapaPresentacion
             tbDescripcion7.Clear();
             tbDescripcionInformes.Clear();
             tbPrecioBase.Clear();
+            tbPrecioLista.Text = "";
             tbResumenClinico.Clear();
             tbResumenLaboratorio.Clear();
             tbResumenRx.Clear();
@@ -2503,7 +2510,7 @@ namespace CapaPresentacion
             tbDescripcion7.Clear();
             tbDescripcionInformes.Clear();
             tbPrecioBase.Clear();
-            //dgvClinico.DataSource = null;
+            tbPrecioLista.Text = "";
             //dgvHematologia.DataSource = null;
             //dgvQuimicaHematica.DataSource = null;
             //dgvSerologia.DataSource = null;
@@ -2788,6 +2795,7 @@ namespace CapaPresentacion
                     tbDescripcion7.Text = "";
                     tbDescripcionInformes.Text = "";
                     tbPrecioBase.Text = "";
+                    tbPrecioLista.Text = "";
                     tbId7.Text = "";
                     blnEstadoGuardo = false;
                     return;
@@ -3988,6 +3996,25 @@ namespace CapaPresentacion
         private void dgvOrina_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
 
+        }
+
+        private void cargarPrecioLista(string idEspecialidad)
+        {
+            try
+            {
+                DataTable dt = Comunes.SQLConnector.obtenerTablaSegunConsultaString(
+                    "SELECT precioLista FROM Especialidad WHERE id = '" + idEspecialidad + "'");
+                if (dt != null && dt.Rows.Count > 0 && dt.Rows[0][0] != DBNull.Value)
+                {
+                    double val = Convert.ToDouble(dt.Rows[0][0]);
+                    tbPrecioLista.Text = val != 0 ? val.ToString() : "";
+                }
+                else
+                {
+                    tbPrecioLista.Text = "";
+                }
+            }
+            catch { tbPrecioLista.Text = ""; }
         }
     }
 }

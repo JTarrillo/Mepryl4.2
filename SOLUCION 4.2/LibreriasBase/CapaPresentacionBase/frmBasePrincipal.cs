@@ -592,6 +592,11 @@ namespace CapaPresentacionBase
 
         }
 
+        protected virtual void bbiPreciosPublico_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+
+        }
+
         protected virtual void bbiConsultaSQL_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
 
@@ -1067,6 +1072,7 @@ namespace CapaPresentacionBase
             bbiTipoExamen.Down = false;
             bbiConfigHorarios.Down = false;
             bbiListaPrecios.Down = false;
+            bbiPreciosPublico.Down = false;
             bbiLigas.Down = false;
             bbiClubes.Down = false;
             bbiUbicarFotos.Down = false;

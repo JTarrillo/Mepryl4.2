@@ -106,6 +106,7 @@ namespace CapaPresentacionBase
             this.toolStripMenuItem21 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem22 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem23 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem24 = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.configuracionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.configBasicaDelSistemaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -166,6 +167,7 @@ namespace CapaPresentacionBase
             this.bbiPacientePreventiva = new DevExpress.XtraBars.BarButtonItem();
             this.bbiPacienteLaboral = new DevExpress.XtraBars.BarButtonItem();
             this.bbiListaPrecios = new DevExpress.XtraBars.BarButtonItem();
+            this.bbiPreciosPublico = new DevExpress.XtraBars.BarButtonItem();
             this.bbiValidaciones = new DevExpress.XtraBars.BarButtonItem();
             this.bbiValidacionesAutomaticas = new DevExpress.XtraBars.BarButtonItem();
             this.bbiUbicacionArchivos = new DevExpress.XtraBars.BarButtonItem();
@@ -647,7 +649,8 @@ namespace CapaPresentacionBase
             this.toolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripMenuItem2,
             this.toolStripMenuItem3,
-            this.toolStripMenuItem4});
+            this.toolStripMenuItem4,
+            this.toolStripMenuItem24});
             this.toolStripMenuItem1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripMenuItem1.Image")));
             this.toolStripMenuItem1.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.toolStripMenuItem1.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
@@ -683,6 +686,15 @@ namespace CapaPresentacionBase
             this.toolStripMenuItem4.Size = new System.Drawing.Size(231, 42);
             this.toolStripMenuItem4.Text = "Config. laboral";
             this.toolStripMenuItem4.Click += new System.EventHandler(this.configLaboralToolStripMenuItem_Click);
+            // 
+            // toolStripMenuItem24
+            // 
+            this.toolStripMenuItem24.Image = ((System.Drawing.Image)(resources.GetObject("configLaboralToolStripMenuItem.Image")));
+            this.toolStripMenuItem24.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.toolStripMenuItem24.Name = "toolStripMenuItem24";
+            this.toolStripMenuItem24.Size = new System.Drawing.Size(231, 42);
+            this.toolStripMenuItem24.Text = "Config. Mensajes";
+            this.toolStripMenuItem24.Click += new System.EventHandler(this.configMensajesToolStripMenuItem_Click);
             // 
             // toolStripMenuItem5
             // 
@@ -1290,6 +1302,7 @@ namespace CapaPresentacionBase
             this.bbiPacientePreventiva,
             this.bbiPacienteLaboral,
             this.bbiListaPrecios,
+            this.bbiPreciosPublico,
             this.bbiValidaciones,
             this.bbiValidacionesAutomaticas,
             this.bbiUbicacionArchivos,
@@ -1675,6 +1688,17 @@ namespace CapaPresentacionBase
             this.bbiListaPrecios.Name = "bbiListaPrecios";
             this.bbiListaPrecios.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.bbiListaPrecios_ItemClick);
             // 
+            // bbiPreciosPublico
+            // 
+            this.bbiPreciosPublico.ButtonStyle = DevExpress.XtraBars.BarButtonStyle.Check;
+            this.bbiPreciosPublico.Caption = "Precios al\r\nPúblico";
+            this.bbiPreciosPublico.Id = 101;
+            this.bbiPreciosPublico.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("bbiListaPrecios.ImageOptions.Image")));
+            this.bbiPreciosPublico.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("bbiListaPrecios.ImageOptions.LargeImage")));
+            this.bbiPreciosPublico.LargeWidth = 80;
+            this.bbiPreciosPublico.Name = "bbiPreciosPublico";
+            this.bbiPreciosPublico.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.bbiPreciosPublico_ItemClick);
+            // 
             // bbiValidaciones
             // 
             this.bbiValidaciones.ButtonStyle = DevExpress.XtraBars.BarButtonStyle.Check;
@@ -2008,7 +2032,6 @@ namespace CapaPresentacionBase
             this.ribbonPageGroup4.ItemLinks.Add(this.bbiConfigurarIva);
             this.ribbonPageGroup4.ItemLinks.Add(this.bbiPlantillaReporteLab);
             this.ribbonPageGroup4.ItemLinks.Add(this.bbiArchivoConsolidarLab);
-            this.ribbonPageGroup4.ItemLinks.Add(this.bbiConfigMensajeLab);
             this.ribbonPageGroup4.Name = "ribbonPageGroup4";
             this.ribbonPageGroup4.ShowCaptionButton = false;
             // 
@@ -2123,6 +2146,7 @@ namespace CapaPresentacionBase
             // rpgConfigMensajesGrp
             // 
             this.rpgConfigMensajesGrp.ItemLinks.Add(this.bbiConfigMensajePre);
+            this.rpgConfigMensajesGrp.ItemLinks.Add(this.bbiConfigMensajeLab);
             this.rpgConfigMensajesGrp.Name = "rpgConfigMensajesGrp";
             this.rpgConfigMensajesGrp.ShowCaptionButton = false;
             this.rpgConfigMensajesGrp.Text = "";
@@ -2318,6 +2342,7 @@ namespace CapaPresentacionBase
         private DevExpress.XtraBars.Ribbon.RibbonPageGroup ribbonPageGroup10;
         private DevExpress.XtraNavBar.NavBarItem nbiAgenda;
         public DevExpress.XtraBars.BarButtonItem bbiListaPrecios;
+        public DevExpress.XtraBars.BarButtonItem bbiPreciosPublico;
         public DevExpress.XtraBars.BarButtonItem bbiValidaciones;
         public DevExpress.XtraBars.BarButtonItem bbiValidacionesAutomaticas;
         public DevExpress.XtraBars.BarButtonItem bbiUbicacionArchivos;
@@ -2375,6 +2400,7 @@ namespace CapaPresentacionBase
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem21;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem22;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem23;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem24;
         private DevExpress.XtraBars.Ribbon.RibbonPage rbpAgendaTurnos;
         public DevExpress.XtraBars.Ribbon.RibbonPage rbpTurnos;
         public DevExpress.XtraBars.Ribbon.RibbonControl rbcControlMenu;

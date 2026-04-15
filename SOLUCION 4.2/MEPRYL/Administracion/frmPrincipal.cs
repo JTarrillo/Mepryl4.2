@@ -1,3 +1,4 @@
+
 using CapaPresentacion;
 using CapaPresentacionBase;
 using Comunes;
@@ -19,6 +20,7 @@ namespace CapaPresentacion
         public frmPrincipal()
         {
             InitializeComponent();
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime) return;
             // Suscribir eventos de controles heredados de frmBasePrincipal
             this.botonExamenes.Click += botonExamenes_Click;
@@ -484,7 +486,7 @@ namespace CapaPresentacion
         }
 
 
-  
+
 
         //protected override void bbiTipoExamen_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         //{
@@ -539,9 +541,23 @@ namespace CapaPresentacion
 
         protected override void bbiListaPrecios_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
-            Utilidades.abrirFormulario(this, new frmListaDePrecios(this), this.configuracion);
+            Utilidades.abrirFormulario(this, new frmPreciosPublico(this), this.configuracion);
             LimpiarEstadoIcono();
             bbiListaPrecios.Down = true;
+        }
+
+        protected override void bbiPreciosPublico_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            try
+            {
+                Utilidades.abrirFormulario(this, new frmPreciosPublico(this), this.configuracion);
+                LimpiarEstadoIcono();
+                bbiPreciosPublico.Down = true;
+            }
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show("Error: " + ex.ToString(), "Debug PreciosPublico");
+            }
         }
 
         protected override void bbiConfigAuxiliar_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
@@ -682,6 +698,12 @@ namespace CapaPresentacion
                         }
 
                         if (strPage == "rbpConfiguracionGeneral")
+                        {
+                            frm.Dispose();
+                            frm.Close();
+                        }
+
+                        if (strPage == "rbpConfiguracionMensajes")
                         {
                             frm.Dispose();
                             frm.Close();
@@ -1082,10 +1104,17 @@ namespace CapaPresentacion
             //bbiEmpresas.Down = true;
         }
 
+        protected override void configMensajesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OcultarPestanasRibbon();
+            MostrarPestanaConfigMensajes();
+            LimpiarEstadoIcono();
+        }
+
         protected override void facturacionToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //OcultarPestanasRibbon();
-            //MostrarPestanaFacturacion();
+            OcultarPestanasRibbon();
+            MostrarPestanaFacturacion();
             LimpiarEstadoIcono();
             bbiFacturacionElectronica.Down = true;
             //Utilidades.abrirFormulario(this, new frmFacturacionElectronica(), this.configuracion);
@@ -1094,7 +1123,7 @@ namespace CapaPresentacion
         protected override void bbiFacturacionElectronica_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             OcultarPestanasRibbon();
-            //MostrarPestanaFacturacion();
+            MostrarPestanaFacturacion();
             LimpiarEstadoIcono();
             bbiFacturacionElectronica.Down = true;
             Utilidades.abrirFormulario(this, new frmFacturacionElectronica(), this.configuracion);

@@ -93,6 +93,8 @@
             this.tbDescripcion7 = new System.Windows.Forms.TextBox();
             this.label26 = new System.Windows.Forms.Label();
             this.label27 = new System.Windows.Forms.Label();
+            this.lblPrecioLista = new System.Windows.Forms.Label();
+            this.tbPrecioLista = new System.Windows.Forms.TextBox();
             this.tbPrecioBase = new System.Windows.Forms.TextBox();
             this.panelMenu = new System.Windows.Forms.Panel();
             this.cboSubTipo = new System.Windows.Forms.ComboBox();
@@ -953,6 +955,8 @@
             this.panel2.Controls.Add(this.tbDescripcion7);
             this.panel2.Controls.Add(this.label26);
             this.panel2.Controls.Add(this.label27);
+            this.panel2.Controls.Add(this.lblPrecioLista);
+            this.panel2.Controls.Add(this.tbPrecioLista);
             this.panel2.Controls.Add(this.tbPrecioBase);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel2.Location = new System.Drawing.Point(0, 65);
@@ -1047,6 +1051,27 @@
             this.label27.Size = new System.Drawing.Size(81, 16);
             this.label27.TabIndex = 14;
             this.label27.Text = "Precio Base";
+            // 
+            // lblPrecioLista
+            // 
+            this.lblPrecioLista.AutoSize = true;
+            this.lblPrecioLista.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblPrecioLista.Location = new System.Drawing.Point(942, 6);
+            this.lblPrecioLista.Name = "lblPrecioLista";
+            this.lblPrecioLista.Size = new System.Drawing.Size(81, 16);
+            this.lblPrecioLista.TabIndex = 133;
+            this.lblPrecioLista.Text = "Precio Lista";
+            // 
+            // tbPrecioLista
+            // 
+            this.tbPrecioLista.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tbPrecioLista.Location = new System.Drawing.Point(945, 28);
+            this.tbPrecioLista.Name = "tbPrecioLista";
+            this.tbPrecioLista.ReadOnly = true;
+            this.tbPrecioLista.Size = new System.Drawing.Size(107, 22);
+            this.tbPrecioLista.TabIndex = 134;
+            this.tbPrecioLista.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tbPrecioLista.BackColor = System.Drawing.SystemColors.Control;
             // 
             // tbPrecioBase
             // 
@@ -2842,6 +2867,8 @@
         private System.Windows.Forms.TextBox tbDescripcion7;
         private System.Windows.Forms.Label label26;
         private System.Windows.Forms.Label label27;
+        private System.Windows.Forms.Label lblPrecioLista;
+        private System.Windows.Forms.TextBox tbPrecioLista;
         private System.Windows.Forms.TextBox tbPrecioBase;
         private System.Windows.Forms.TabControl tabControl;
         private System.Windows.Forms.TabPage tabPageResumen;

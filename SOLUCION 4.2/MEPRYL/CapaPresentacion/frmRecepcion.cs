@@ -18,13 +18,18 @@ namespace CapaPresentacion
         private CapaNegocioMepryl.Turno turno;
         private bool blnEstadoOculta = false;
         private bool blnPrimerIngreso = true;
+        private bool blnLimpiandoBusqueda = false;
+        private bool blnIgnorarCheckedChanged = false;
 
         private void inicializarDgv()
         {
-            dgv.AllowUserToResizeColumns = true;      // Permite redimensionar columnas manualmente
-            dgv.AllowUserToResizeRows = false;        // No permite redimensionar filas
-            dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;  // Ajusta altura del header automáticamente
-            dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;  // No auto-ajusta columnas (control manual)
+            dgv.AllowUserToResizeColumns = true;
+            dgv.AllowUserToResizeRows = false;
+            dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
+            typeof(DataGridView).InvokeMember("DoubleBuffered",
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.SetProperty,
+                null, dgv, new object[] { true });
         }
         public frmRecepcion()
         {
@@ -70,9 +75,9 @@ namespace CapaPresentacion
             dv.Sort = "Hora, Nro, Paciente";
 
             ocultarColumnasDgv();
-            establecerAnchosColumnasVentanilla();  // ← NUEVO
+            establecerAnchosColumnasVentanilla();
 
-            MostrarTotales();
+            MostrarTotalesDesdeDgv();
             cambiarVisibilidadBotonEditarPaciente();
             blnPrimerIngreso = false;
 
@@ -109,12 +114,12 @@ namespace CapaPresentacion
 
             dv.Sort = "Hora, Nro, Paciente";
             ocultarColumnasDgv();
-            establecerAnchosColumnasVentanilla();  // ← NUEVO
+            establecerAnchosColumnasVentanilla();
 
-            MostrarTotales();
             cambiarVisibilidadBotonEditarPaciente();
             ocultarFilasDgv();
 
+            MostrarTotalesDesdeDgv();
             MostrarExpIngreso();
         }
         private void botonRegistrar_Click(object sender, EventArgs e)
@@ -189,19 +194,23 @@ namespace CapaPresentacion
 
         private void botonLimpiar_Click(object sender, EventArgs e)
         {
+            blnLimpiandoBusqueda = true;
             tbBusqueda.Clear();
-            cargarDgv();
+            blnLimpiandoBusqueda = false;
 
+            blnIgnorarCheckedChanged = true;
             rdbMostrarTodo.Checked = false;
+            blnIgnorarCheckedChanged = false;
+
             blnEstadoOculta = true;
             MostrarTodo();
+            cargarDgv();
             ocultarFilasDgv();
-            //rdbMostrarTodo.Checked = false;
         }
 
         private void tbBusqueda_TextChanged(object sender, EventArgs e)
         {
-            if (tbBusqueda.Text == "")
+            if (!blnLimpiandoBusqueda && tbBusqueda.Text == "")
             {
                 botonLimpiar.PerformClick();
             }
@@ -587,8 +596,11 @@ namespace CapaPresentacion
 
         private void rdbMostrarTodo_CheckedChanged(object sender, EventArgs e)
         {
-            cargarDgv();
-            ocultarFilasDgv();
+            if (!blnIgnorarCheckedChanged)
+            {
+                cargarDgv();
+                ocultarFilasDgv();
+            }
         }
 
         private void rdbMostrarTodo_Click(object sender, EventArgs e)
@@ -614,7 +626,9 @@ namespace CapaPresentacion
         {
             if (blnEstadoOculta == true)
             {
+                blnIgnorarCheckedChanged = true;
                 rdbMostrarTodo.Checked = false;
+                blnIgnorarCheckedChanged = false;
                 blnEstadoOculta = false;
                 rdbMostrarTodo.Text = "Mostrar";
                 rdbMostrarTodo.Image = Image.FromFile(@"P:\img-system\mMostrar2_36x36.png");
@@ -659,6 +673,31 @@ namespace CapaPresentacion
             }
         }
 
+        private void MostrarTotalesDesdeDgv()
+        {
+            int totalNoOcultos = 0;
+            int totalOcultos = 0;
+            int totalReservas = 0;
+            foreach (DataGridViewRow row in dgv.Rows)
+            {
+                object ocultar = row.Cells[16].Value;
+                bool esOculto = ocultar != null && ocultar != DBNull.Value && Convert.ToBoolean(ocultar);
+                if (esOculto)
+                {
+                    totalOcultos++;
+                }
+                else
+                {
+                    totalNoOcultos++;
+                    object reservado = row.Cells[14].Value;
+                    if (reservado != null && reservado != DBNull.Value && Convert.ToBoolean(reservado))
+                        totalReservas++;
+                }
+            }
+            lblResultado.Text = "Total Pacientes: " + totalNoOcultos + " | Reservas: " + totalReservas;
+            lblOcultos.Text = "Ocultos: " + totalOcultos.ToString();
+        }
+
         private void botonRango_Click(object sender, EventArgs e)
         {
             tpDesde.Enabled = true;
@@ -679,7 +718,9 @@ namespace CapaPresentacion
 
         private void tpFecha_ValueChanged(object sender, EventArgs e)
         {
-            //botBuscarRango.PerformClick();
+            blnLimpiandoBusqueda = true;
+            tbBusqueda.Clear();
+            blnLimpiandoBusqueda = false;
             cargarDgv();
             ocultarFilasDgv();
         }

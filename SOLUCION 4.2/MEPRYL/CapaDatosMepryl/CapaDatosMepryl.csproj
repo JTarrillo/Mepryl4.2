@@ -117,6 +117,7 @@
     <Compile Include="PacientePreventiva.cs" />
     <Compile Include="PacienteDuplicado.cs" />
     <Compile Include="PacienteLaboral.cs" />
+    <Compile Include="PrecioPublico.cs" />
     <Compile Include="Preventiva.cs" />
     <Compile Include="Profesional.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
