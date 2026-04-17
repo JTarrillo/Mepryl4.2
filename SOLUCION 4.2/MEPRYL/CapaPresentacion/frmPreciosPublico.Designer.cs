@@ -32,6 +32,7 @@ namespace CapaPresentacion
             this.btnCopiarMes = new System.Windows.Forms.Button();
             this.btnVariacion = new System.Windows.Forms.Button();
             this.btnCalcularLista = new System.Windows.Forms.Button();
+            this.chkFactor = new System.Windows.Forms.CheckBox();
             this.lblVariacion = new System.Windows.Forms.Label();
             this.txtVariacion = new System.Windows.Forms.TextBox();
             this.pnlCentro = new System.Windows.Forms.Panel();
@@ -175,6 +176,7 @@ namespace CapaPresentacion
             this.pnlMenu.Controls.Add(this.lblVariacion);
             this.pnlMenu.Controls.Add(this.txtVariacion);
             this.pnlMenu.Controls.Add(this.btnVariacion);
+            this.pnlMenu.Controls.Add(this.chkFactor);
             this.pnlMenu.Controls.Add(this.btnCalcularLista);
             this.pnlMenu.Dock = System.Windows.Forms.DockStyle.Right;
             this.pnlMenu.Location = new System.Drawing.Point(1214, 90);
@@ -215,6 +217,17 @@ namespace CapaPresentacion
             this.lblVariacion.Text = "Incremento %:";
 
             // 
+            // chkFactor
+            // 
+            this.chkFactor.AutoSize = true;
+            this.chkFactor.Font = new System.Drawing.Font("Segoe UI", 8F);
+            this.chkFactor.Location = new System.Drawing.Point(12, 168);
+            this.chkFactor.Name = "chkFactor";
+            this.chkFactor.Size = new System.Drawing.Size(100, 17);
+            this.chkFactor.Text = "Usar factor (ej: 1.15)";
+            this.chkFactor.CheckedChanged += new System.EventHandler(this.chkFactor_CheckedChanged);
+
+            // 
             // txtVariacion
             // 
             this.txtVariacion.Font = new System.Drawing.Font("Segoe UI", 10F);
@@ -227,7 +240,7 @@ namespace CapaPresentacion
             // btnVariacion
             // 
             this.btnVariacion.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.btnVariacion.Location = new System.Drawing.Point(10, 172);
+            this.btnVariacion.Location = new System.Drawing.Point(10, 190);
             this.btnVariacion.Name = "btnVariacion";
             this.btnVariacion.Size = new System.Drawing.Size(130, 35);
             this.btnVariacion.Text = "Aplicar variación";
@@ -238,7 +251,7 @@ namespace CapaPresentacion
             // btnCalcularLista
             // 
             this.btnCalcularLista.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.btnCalcularLista.Location = new System.Drawing.Point(10, 220);
+            this.btnCalcularLista.Location = new System.Drawing.Point(10, 235);
             this.btnCalcularLista.Name = "btnCalcularLista";
             this.btnCalcularLista.Size = new System.Drawing.Size(130, 40);
             this.btnCalcularLista.Text = "Calcular Lista\r\ndesde Promo";
@@ -385,6 +398,7 @@ namespace CapaPresentacion
         private System.Windows.Forms.Button btnCopiarMes;
         private System.Windows.Forms.Button btnVariacion;
         private System.Windows.Forms.Button btnCalcularLista;
+        private System.Windows.Forms.CheckBox chkFactor;
         private System.Windows.Forms.Label lblVariacion;
         private System.Windows.Forms.TextBox txtVariacion;
         private System.Windows.Forms.Panel pnlCentro;

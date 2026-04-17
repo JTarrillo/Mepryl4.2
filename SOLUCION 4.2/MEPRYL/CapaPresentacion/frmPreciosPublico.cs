@@ -63,8 +63,15 @@ namespace CapaPresentacion
 
             // Cargar coeficiente guardado para este mes/año
             decimal coeficiente = precioPublico.ObtenerCoeficiente(mes, anio);
-            decimal porcentaje = (coeficiente - 1) * 100;
-            txtVariacion.Text = porcentaje.ToString("0.##");
+            if (chkFactor.Checked)
+            {
+                txtVariacion.Text = coeficiente.ToString("0.##");
+            }
+            else
+            {
+                decimal porcentaje = (coeficiente - 1) * 100;
+                txtVariacion.Text = porcentaje.ToString("0.##");
+            }
         }
 
         private void btnCargar_Click(object sender, EventArgs e)
@@ -153,10 +160,10 @@ namespace CapaPresentacion
 
         private void btnVariacion_Click(object sender, EventArgs e)
         {
-            decimal porcentaje;
-            if (!decimal.TryParse(txtVariacion.Text, out porcentaje))
+            decimal factor = ObtenerFactor();
+            if (factor <= 0)
             {
-                MessageBox.Show("Ingrese un porcentaje válido.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Ingrese un valor válido.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -168,11 +175,9 @@ namespace CapaPresentacion
                 : seleccionadas + " prestación(es) seleccionada(s)";
 
             DialogResult dr = MessageBox.Show(
-                "Se aplicará una variación del " + porcentaje + "% a " + alcance + ".\n\n(Los cambios quedan en la grilla. Presione Guardar para confirmar.)\n¿Continuar?",
+                "Se aplicará variación (factor " + factor.ToString("0.##") + ") a " + alcance + ".\n\n(Los cambios quedan en la grilla. Presione Guardar para confirmar.)\n¿Continuar?",
                 "Confirmar variación", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (dr != DialogResult.Yes) return;
-
-            decimal factor = 1 + porcentaje / 100;
 
             List<DataGridViewRow> filasAplicar = new List<DataGridViewRow>();
             if (todasSeleccionadas || seleccionadas == 0)
@@ -192,20 +197,19 @@ namespace CapaPresentacion
                 row.Cells["colPrecioPromo"].Value = Math.Round(ParseDecimal(row.Cells["colPrecioPromo"].Value) * factor, 2);
             }
 
+            txtVariacion.Text = "0";
             MessageBox.Show("Variación aplicada a " + alcance + ".\nRecuerde presionar Guardar para confirmar los cambios.",
                 "Variación aplicada", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void btnCalcularLista_Click(object sender, EventArgs e)
         {
-            decimal porcentaje;
-            if (!decimal.TryParse(txtVariacion.Text, out porcentaje))
+            decimal factor = ObtenerFactor();
+            if (factor <= 0)
             {
-                MessageBox.Show("Ingrese un porcentaje válido en Incremento %.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Ingrese un valor válido.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
-
-            decimal factor = 1 + porcentaje / 100;
 
             int seleccionadas = dgvPrecios.SelectedRows.Count;
             bool todasSeleccionadas = seleccionadas == dgvPrecios.Rows.Count;
@@ -246,7 +250,8 @@ namespace CapaPresentacion
             int anio = (int)nudAnio.Value;
             precioPublico.GuardarCoeficiente(mes, anio, factor);
 
-            MessageBox.Show("Precio Lista calculado en " + alcance + " (coeficiente " + factor.ToString("0.##") + ").\nRecuerde presionar Guardar para confirmar los cambios.",
+            txtVariacion.Text = "0";
+            MessageBox.Show("Precio Lista calculado en " + alcance + " (factor " + factor.ToString("0.##") + ").\nRecuerde presionar Guardar para confirmar los cambios.",
                 "Cálculo aplicado", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
@@ -298,6 +303,37 @@ namespace CapaPresentacion
             if (decimal.TryParse(value.ToString(), out result))
                 return result;
             return 0;
+        }
+
+        private decimal ObtenerFactor()
+        {
+            decimal valor;
+            if (!decimal.TryParse(txtVariacion.Text, out valor))
+                return -1;
+
+            if (chkFactor.Checked)
+                return valor;
+            else
+                return 1 + valor / 100;
+        }
+
+        private void chkFactor_CheckedChanged(object sender, EventArgs e)
+        {
+            decimal valor;
+            if (!decimal.TryParse(txtVariacion.Text, out valor)) return;
+
+            if (chkFactor.Checked)
+            {
+                lblVariacion.Text = "Factor:";
+                // Convertir porcentaje a factor
+                txtVariacion.Text = (1 + valor / 100).ToString("0.##");
+            }
+            else
+            {
+                lblVariacion.Text = "Incremento %:";
+                // Convertir factor a porcentaje
+                txtVariacion.Text = ((valor - 1) * 100).ToString("0.##");
+            }
         }
     }
 }

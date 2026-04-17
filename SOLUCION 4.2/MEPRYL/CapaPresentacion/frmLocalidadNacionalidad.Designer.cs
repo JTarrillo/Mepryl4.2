@@ -317,7 +317,7 @@
             this.tabPageResumen.Controls.Add(this.label31);
             this.tabPageResumen.Location = new System.Drawing.Point(4, 25);
             this.tabPageResumen.Name = "tabPageResumen";
-            this.tabPageResumen.Size = new System.Drawing.Size(1062, 434);
+            this.tabPageResumen.Size = new System.Drawing.Size(1142, 434);
             this.tabPageResumen.TabIndex = 4;
             this.tabPageResumen.Text = "Resúmen";
             // 
@@ -332,7 +332,7 @@
             this.tbResumenEstCompl.Multiline = true;
             this.tbResumenEstCompl.Name = "tbResumenEstCompl";
             this.tbResumenEstCompl.ReadOnly = true;
-            this.tbResumenEstCompl.Size = new System.Drawing.Size(1011, 72);
+            this.tbResumenEstCompl.Size = new System.Drawing.Size(1091, 72);
             this.tbResumenEstCompl.TabIndex = 23;
             // 
             // tbResumenRx
@@ -346,7 +346,7 @@
             this.tbResumenRx.Multiline = true;
             this.tbResumenRx.Name = "tbResumenRx";
             this.tbResumenRx.ReadOnly = true;
-            this.tbResumenRx.Size = new System.Drawing.Size(1011, 72);
+            this.tbResumenRx.Size = new System.Drawing.Size(1091, 72);
             this.tbResumenRx.TabIndex = 21;
             this.tbResumenRx.TextChanged += new System.EventHandler(this.tbResumenRx_TextChanged);
             // 
@@ -361,7 +361,7 @@
             this.tbResumenLaboratorio.Multiline = true;
             this.tbResumenLaboratorio.Name = "tbResumenLaboratorio";
             this.tbResumenLaboratorio.ReadOnly = true;
-            this.tbResumenLaboratorio.Size = new System.Drawing.Size(1011, 72);
+            this.tbResumenLaboratorio.Size = new System.Drawing.Size(1091, 72);
             this.tbResumenLaboratorio.TabIndex = 19;
             // 
             // tbResumenClinico
@@ -375,7 +375,7 @@
             this.tbResumenClinico.Multiline = true;
             this.tbResumenClinico.Name = "tbResumenClinico";
             this.tbResumenClinico.ReadOnly = true;
-            this.tbResumenClinico.Size = new System.Drawing.Size(1011, 27);
+            this.tbResumenClinico.Size = new System.Drawing.Size(1091, 27);
             this.tbResumenClinico.TabIndex = 17;
             // 
             // label28
@@ -427,7 +427,7 @@
             this.tabPageClinico.Location = new System.Drawing.Point(4, 25);
             this.tabPageClinico.Name = "tabPageClinico";
             this.tabPageClinico.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageClinico.Size = new System.Drawing.Size(1062, 434);
+            this.tabPageClinico.Size = new System.Drawing.Size(1142, 434);
             this.tabPageClinico.TabIndex = 0;
             this.tabPageClinico.Text = "Ex. Clínico";
             // 
@@ -456,7 +456,7 @@
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle1.BackColor = System.Drawing.Color.WhiteSmoke;
             dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(31)))), ((int)(((byte)(53)))));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.WhiteSmoke;
             dataGridViewCellStyle1.SelectionForeColor = System.Drawing.Color.Black;
             dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
@@ -566,7 +566,7 @@
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = System.Drawing.Color.WhiteSmoke;
             dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(31)))), ((int)(((byte)(53)))));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.WhiteSmoke;
             dataGridViewCellStyle2.SelectionForeColor = System.Drawing.Color.Black;
             dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
@@ -595,7 +595,7 @@
             dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle3.BackColor = System.Drawing.Color.WhiteSmoke;
             dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(31)))), ((int)(((byte)(53)))));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.WhiteSmoke;
             dataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.Black;
             dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
@@ -623,7 +623,7 @@
             dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle4.BackColor = System.Drawing.Color.WhiteSmoke;
             dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(31)))), ((int)(((byte)(53)))));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             dataGridViewCellStyle4.SelectionBackColor = System.Drawing.Color.WhiteSmoke;
             dataGridViewCellStyle4.SelectionForeColor = System.Drawing.Color.Black;
             dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
@@ -651,7 +651,7 @@
             dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle5.BackColor = System.Drawing.Color.WhiteSmoke;
             dataGridViewCellStyle5.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(31)))), ((int)(((byte)(53)))));
+            dataGridViewCellStyle5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             dataGridViewCellStyle5.SelectionBackColor = System.Drawing.Color.WhiteSmoke;
             dataGridViewCellStyle5.SelectionForeColor = System.Drawing.Color.Black;
             dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
@@ -679,7 +679,7 @@
             dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle6.BackColor = System.Drawing.Color.WhiteSmoke;
             dataGridViewCellStyle6.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(31)))), ((int)(((byte)(53)))));
+            dataGridViewCellStyle6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             dataGridViewCellStyle6.SelectionBackColor = System.Drawing.Color.WhiteSmoke;
             dataGridViewCellStyle6.SelectionForeColor = System.Drawing.Color.Black;
             dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
@@ -707,7 +707,7 @@
             dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle7.BackColor = System.Drawing.Color.WhiteSmoke;
             dataGridViewCellStyle7.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(31)))), ((int)(((byte)(53)))));
+            dataGridViewCellStyle7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             dataGridViewCellStyle7.SelectionBackColor = System.Drawing.Color.WhiteSmoke;
             dataGridViewCellStyle7.SelectionForeColor = System.Drawing.Color.Black;
             dataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
@@ -734,7 +734,7 @@
             this.tabPage7.Location = new System.Drawing.Point(4, 25);
             this.tabPage7.Name = "tabPage7";
             this.tabPage7.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage7.Size = new System.Drawing.Size(1062, 434);
+            this.tabPage7.Size = new System.Drawing.Size(1142, 434);
             this.tabPage7.TabIndex = 2;
             this.tabPage7.Text = "Rayos X";
             // 
@@ -764,7 +764,7 @@
             dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle8.BackColor = System.Drawing.Color.WhiteSmoke;
             dataGridViewCellStyle8.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(31)))), ((int)(((byte)(53)))));
+            dataGridViewCellStyle8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             dataGridViewCellStyle8.SelectionBackColor = System.Drawing.Color.WhiteSmoke;
             dataGridViewCellStyle8.SelectionForeColor = System.Drawing.Color.Black;
             dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
@@ -803,7 +803,7 @@
             dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle9.BackColor = System.Drawing.Color.WhiteSmoke;
             dataGridViewCellStyle9.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(31)))), ((int)(((byte)(53)))));
+            dataGridViewCellStyle9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             dataGridViewCellStyle9.SelectionBackColor = System.Drawing.Color.WhiteSmoke;
             dataGridViewCellStyle9.SelectionForeColor = System.Drawing.Color.Black;
             dataGridViewCellStyle9.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
@@ -842,7 +842,7 @@
             dataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle10.BackColor = System.Drawing.Color.WhiteSmoke;
             dataGridViewCellStyle10.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle10.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(31)))), ((int)(((byte)(53)))));
+            dataGridViewCellStyle10.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             dataGridViewCellStyle10.SelectionBackColor = System.Drawing.Color.WhiteSmoke;
             dataGridViewCellStyle10.SelectionForeColor = System.Drawing.Color.Black;
             dataGridViewCellStyle10.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
@@ -881,7 +881,7 @@
             dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle11.BackColor = System.Drawing.Color.WhiteSmoke;
             dataGridViewCellStyle11.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle11.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(31)))), ((int)(((byte)(53)))));
+            dataGridViewCellStyle11.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             dataGridViewCellStyle11.SelectionBackColor = System.Drawing.Color.WhiteSmoke;
             dataGridViewCellStyle11.SelectionForeColor = System.Drawing.Color.Black;
             dataGridViewCellStyle11.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
@@ -902,7 +902,7 @@
             this.tabPageCardiologia.Location = new System.Drawing.Point(4, 25);
             this.tabPageCardiologia.Name = "tabPageCardiologia";
             this.tabPageCardiologia.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageCardiologia.Size = new System.Drawing.Size(1062, 434);
+            this.tabPageCardiologia.Size = new System.Drawing.Size(1142, 434);
             this.tabPageCardiologia.TabIndex = 3;
             this.tabPageCardiologia.Text = "Est. Complementarios";
             // 
@@ -931,7 +931,7 @@
             dataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle12.BackColor = System.Drawing.Color.WhiteSmoke;
             dataGridViewCellStyle12.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle12.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(31)))), ((int)(((byte)(53)))));
+            dataGridViewCellStyle12.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             dataGridViewCellStyle12.SelectionBackColor = System.Drawing.Color.WhiteSmoke;
             dataGridViewCellStyle12.SelectionForeColor = System.Drawing.Color.Black;
             dataGridViewCellStyle12.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
@@ -968,7 +968,7 @@
             // 
             this.tbIdTipoExamen.Enabled = false;
             this.tbIdTipoExamen.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbIdTipoExamen.Location = new System.Drawing.Point(1005, 6);
+            this.tbIdTipoExamen.Location = new System.Drawing.Point(1100, 8);
             this.tbIdTipoExamen.Name = "tbIdTipoExamen";
             this.tbIdTipoExamen.Size = new System.Drawing.Size(46, 22);
             this.tbIdTipoExamen.TabIndex = 132;
@@ -988,7 +988,7 @@
             // 
             this.tbId7.Enabled = false;
             this.tbId7.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbId7.Location = new System.Drawing.Point(953, 3);
+            this.tbId7.Location = new System.Drawing.Point(1100, 34);
             this.tbId7.Name = "tbId7";
             this.tbId7.Size = new System.Drawing.Size(46, 22);
             this.tbId7.TabIndex = 131;
@@ -1058,12 +1058,13 @@
             this.lblPrecioLista.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblPrecioLista.Location = new System.Drawing.Point(942, 6);
             this.lblPrecioLista.Name = "lblPrecioLista";
-            this.lblPrecioLista.Size = new System.Drawing.Size(81, 16);
+            this.lblPrecioLista.Size = new System.Drawing.Size(77, 16);
             this.lblPrecioLista.TabIndex = 133;
             this.lblPrecioLista.Text = "Precio Lista";
             // 
             // tbPrecioLista
             // 
+            this.tbPrecioLista.BackColor = System.Drawing.SystemColors.Control;
             this.tbPrecioLista.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tbPrecioLista.Location = new System.Drawing.Point(945, 28);
             this.tbPrecioLista.Name = "tbPrecioLista";
@@ -1071,7 +1072,6 @@
             this.tbPrecioLista.Size = new System.Drawing.Size(107, 22);
             this.tbPrecioLista.TabIndex = 134;
             this.tbPrecioLista.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.tbPrecioLista.BackColor = System.Drawing.SystemColors.Control;
             // 
             // tbPrecioBase
             // 
@@ -1107,9 +1107,9 @@
             this.cboSubTipo.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboSubTipo.FormattingEnabled = true;
             this.cboSubTipo.IntegralHeight = false;
-            this.cboSubTipo.Location = new System.Drawing.Point(314, 25);
+            this.cboSubTipo.Location = new System.Drawing.Point(306, 25);
             this.cboSubTipo.Name = "cboSubTipo";
-            this.cboSubTipo.Size = new System.Drawing.Size(271, 24);
+            this.cboSubTipo.Size = new System.Drawing.Size(305, 24);
             this.cboSubTipo.TabIndex = 11;
             this.cboSubTipo.SelectedIndexChanged += new System.EventHandler(this.cboSubTipo_SelectedIndexChanged);
             this.cboSubTipo.SelectionChangeCommitted += new System.EventHandler(this.cboSubTipo_SelectionChangeCommitted);
@@ -1143,7 +1143,7 @@
             // 
             this.label11.AutoSize = true;
             this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label11.Location = new System.Drawing.Point(311, 6);
+            this.label11.Location = new System.Drawing.Point(303, 6);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(106, 16);
             this.label11.TabIndex = 8;
@@ -1180,7 +1180,7 @@
             this.tabAgregarTiposSubtipos.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
             this.tabAgregarTiposSubtipos.Location = new System.Drawing.Point(4, 25);
             this.tabAgregarTiposSubtipos.Name = "tabAgregarTiposSubtipos";
-            this.tabAgregarTiposSubtipos.Size = new System.Drawing.Size(1070, 571);
+            this.tabAgregarTiposSubtipos.Size = new System.Drawing.Size(1150, 571);
             this.tabAgregarTiposSubtipos.TabIndex = 7;
             this.tabAgregarTiposSubtipos.Text = "Agregar Tipos y Subtipos";
             // 
@@ -1189,7 +1189,7 @@
             this.tabGestionar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
             this.tabGestionar.Location = new System.Drawing.Point(4, 25);
             this.tabGestionar.Name = "tabGestionar";
-            this.tabGestionar.Size = new System.Drawing.Size(1070, 571);
+            this.tabGestionar.Size = new System.Drawing.Size(1150, 571);
             this.tabGestionar.TabIndex = 8;
             this.tabGestionar.Text = "Gestionar";
             // 
@@ -1200,7 +1200,7 @@
             this.tabPage4.Controls.Add(this.panelPrincipal4);
             this.tabPage4.Location = new System.Drawing.Point(4, 25);
             this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Size = new System.Drawing.Size(1070, 571);
+            this.tabPage4.Size = new System.Drawing.Size(1150, 571);
             this.tabPage4.TabIndex = 4;
             this.tabPage4.Text = "Prestaciones";
             // 
@@ -1515,7 +1515,7 @@
             this.tabPage2.Controls.Add(this.panelPrincipal2);
             this.tabPage2.Location = new System.Drawing.Point(4, 25);
             this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Size = new System.Drawing.Size(1070, 571);
+            this.tabPage2.Size = new System.Drawing.Size(1150, 571);
             this.tabPage2.TabIndex = 2;
             this.tabPage2.Text = "Localidades";
             // 
@@ -1837,7 +1837,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 25);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(1070, 571);
+            this.tabPage1.Size = new System.Drawing.Size(1150, 571);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Nacionalidad";
             // 
@@ -2036,7 +2036,7 @@
             this.tabPage3.Controls.Add(this.panelPrincipal3);
             this.tabPage3.Location = new System.Drawing.Point(4, 25);
             this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(1070, 571);
+            this.tabPage3.Size = new System.Drawing.Size(1150, 571);
             this.tabPage3.TabIndex = 3;
             this.tabPage3.Text = "Zonas Geográficas";
             // 
@@ -2231,7 +2231,7 @@
             this.tabPage5.Controls.Add(this.panelPrincipal6);
             this.tabPage5.Location = new System.Drawing.Point(4, 25);
             this.tabPage5.Name = "tabPage5";
-            this.tabPage5.Size = new System.Drawing.Size(1070, 571);
+            this.tabPage5.Size = new System.Drawing.Size(1150, 571);
             this.tabPage5.TabIndex = 5;
             this.tabPage5.Text = "Aptitud";
             // 
