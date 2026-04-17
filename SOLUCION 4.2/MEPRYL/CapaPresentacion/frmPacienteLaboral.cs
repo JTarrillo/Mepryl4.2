@@ -1351,8 +1351,10 @@ namespace CapaPresentacion
                 retorno.Tipo = "MEDICOS";
             }else
             {
-                retorno.Tipo = "PACIENTE LABORAL LABORAL";
+                retorno.Tipo = "PACIENTE LABORAL";
             }
+            // DIAG TEMPORAL
+            System.Diagnostics.Debug.WriteLine("DIAG cargarDatosUsuarios: Tipo INICIAL='" + retorno.Tipo + "' dt=" + (dt == null ? "NULL" : "rows=" + dt.Rows.Count));
 
             if(!string.IsNullOrEmpty(strIdProfesional))
             {
@@ -1360,8 +1362,10 @@ namespace CapaPresentacion
             }
             
 
-            if (dt.Rows.Count > 0)
+            if (dt != null && dt.Rows.Count > 0)
             {
+                // DIAG TEMPORAL
+                System.Diagnostics.Debug.WriteLine("DIAG cargarDatosUsuarios: ENTRO AL IF, ItemArray[22]='" + dt.Rows[0].ItemArray[22].ToString() + "'");
                 strIdUsuario = dt.Rows[0].ItemArray[0].ToString();
                 retorno.Tipo = dt.Rows[0].ItemArray[22].ToString();
                 retorno.Username = dt.Rows[0].ItemArray[14].ToString();
@@ -1395,6 +1399,14 @@ namespace CapaPresentacion
             retorno.Email = tbMail.Text;            
             if (retorno.Username == string.Empty) { retorno.Username = tbNombre.Text.Replace(" ", "").ToLower(); }
             
+            // DIAG TEMPORAL
+            System.Diagnostics.Debug.WriteLine("DIAG cargarDatosUsuarios: Tipo FINAL='" + retorno.Tipo + "' (len=" + retorno.Tipo.Length + ")");
+            // Proteccion: Tipo en BD es varchar(20)
+            if (retorno.Tipo != null && retorno.Tipo.Length > 20)
+            {
+                System.Diagnostics.Debug.WriteLine("DIAG ALERTA: Tipo truncado de '" + retorno.Tipo + "' a 20 chars");
+                retorno.Tipo = retorno.Tipo.Substring(0, 20);
+            }
             return retorno;
         }
 

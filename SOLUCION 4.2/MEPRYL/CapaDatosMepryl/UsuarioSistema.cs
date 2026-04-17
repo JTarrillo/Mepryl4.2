@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Data;
+using System.Diagnostics;
 using Comunes;
 using Entidades;
 
@@ -30,7 +31,7 @@ namespace CapaDatosMepryl
                       PermisoVer, PermisoModificar, PermisoEliminar, VentTurnos, Activo, VentAudiometria, VentFacturacion, dni)
                      VALUES
                      (NEWID(), 
-                        '" + valores[0].ToString() +@"', 
+                        '" + valores[0].ToString() + @"', 
                         '" + Utilidades.encriptar(valores[1].ToString()) + @"', 
                         '" + valores[2].ToString() + @"', 
                         '" + valores[3].ToString() + @"', 
@@ -55,49 +56,59 @@ namespace CapaDatosMepryl
             try
             {
                 SQLConnector.obtenerTablaSegunConsultaString(strSQL);
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 blnRetornar = true;
             }
-            
+
             return blnRetornar;
         }
 
         public bool GuardarUsuario(Entidades.UsuarioSistema entidad)
         {
             bool blnRetornar = false;
-            string strSQL = "";
-
-            strSQL = @"INSERT INTO dbo.Usuario 
+            try
+            {
+                // DIAG TEMPORAL
+                Debug.WriteLine("===== DIAG GuardarUsuario =====");
+                Debug.WriteLine("Tipo='" + entidad.Tipo + "' (len=" + (entidad.Tipo ?? "").Length + ")");
+                Debug.WriteLine("Username='" + entidad.Username + "'");
+                Debug.WriteLine("Password='" + entidad.Password + "'");
+                Debug.WriteLine("Apellido='" + entidad.Apellido + "'");
+                Debug.WriteLine("Nombre='" + entidad.Nombre + "'");
+                Debug.WriteLine("Email='" + entidad.Email + "'");
+                Debug.WriteLine("DNI='" + entidad.DNI + "'");
+                Debug.WriteLine("ProfAsig='" + entidad.ProfesionalAsignado + "'");
+                Debug.WriteLine("================================");
+                string strProfAsig = entidad.ProfesionalAsignado == Guid.Empty ? "NULL" : "'" + entidad.ProfesionalAsignado.ToString() + "'";
+                string strSQL = @"INSERT INTO dbo.Usuario 
                      (id, username, password, apellido, nombre, email1, Tipo, 
                       VentConfiguracion, VentExamenes, VentMesa, VentPacientes, VentVentanilla, VentResumen,
                       PermisoVer, PermisoModificar, PermisoEliminar, VentTurnos, Activo, VentAudiometria, dni, ProfesionalAsignado)
                      VALUES
                      (NEWID(), 
-                        '" + entidad.Username + @"', 
-                        '" + Utilidades.encriptar(entidad.Password) + @"', 
-                        '" + entidad.Apellido + @"', 
-                        '" + entidad.Nombre + @"', 
-                        '" + entidad.Email + @"', 
-                        '" + entidad.Tipo + @"',
-                        '" + Convert.ToBoolean(entidad.VentConfiguracion) + @"',
-                        '" + Convert.ToBoolean(entidad.VentExamenes) + @"',
-                        '" + Convert.ToBoolean(entidad.VentMesa) + @"',
-                        '" + Convert.ToBoolean(entidad.VentPacientes) + @"',
-                        '" + Convert.ToBoolean(entidad.VentVentanilla) + @"',
-                        '" + Convert.ToBoolean(entidad.VentResumen) + @"',
-                        
-                        '" + Convert.ToBoolean(entidad.PermisoVer) + @"',
-                        '" + Convert.ToBoolean(entidad.PermisoModificar) + @"',
-                        '" + Convert.ToBoolean(entidad.PermisoEliminar) + @"',
-                        '" + Convert.ToBoolean(entidad.VentTurnos) + @"',
-                        '" + Convert.ToBoolean(entidad.Activo) + @"',
-                        '" + Convert.ToBoolean(entidad.VentAudiometria) + @"',
-                        '" + entidad.DNI + @"',
-                        '" + entidad.ProfesionalAsignado + @"'
+                        '" + (entidad.Username ?? "").Replace("'", "''") + @"', 
+                        '" + (Utilidades.encriptar(entidad.Password ?? "") ?? "") + @"', 
+                        '" + (entidad.Apellido ?? "").Replace("'", "''") + @"', 
+                        '" + (entidad.Nombre ?? "").Replace("'", "''") + @"', 
+                        '" + (entidad.Email ?? "").Replace("'", "''") + @"', 
+                        '" + (entidad.Tipo ?? "").Replace("'", "''") + @"',
+                        " + (entidad.VentConfiguracion ? "1" : "0") + @",
+                        " + (entidad.VentExamenes ? "1" : "0") + @",
+                        " + (entidad.VentMesa ? "1" : "0") + @",
+                        " + (entidad.VentPacientes ? "1" : "0") + @",
+                        " + (entidad.VentVentanilla ? "1" : "0") + @",
+                        " + (entidad.VentResumen ? "1" : "0") + @",
+                        " + (entidad.PermisoVer ? "1" : "0") + @",
+                        " + (entidad.PermisoModificar ? "1" : "0") + @",
+                        " + (entidad.PermisoEliminar ? "1" : "0") + @",
+                        " + (entidad.VentTurnos ? "1" : "0") + @",
+                        " + (entidad.Activo ? "1" : "0") + @",
+                        " + (entidad.VentAudiometria ? "1" : "0") + @",
+                        '" + (entidad.DNI ?? "").Replace("'", "''") + @"',
+                        " + strProfAsig + @"
                         )";
-            try
-            {
                 SQLConnector.obtenerTablaSegunConsultaString(strSQL);
             }
             catch (Exception ex)
@@ -154,35 +165,38 @@ namespace CapaDatosMepryl
         public bool ActualizarUsuario(Entidades.UsuarioSistema entidad)
         {
             bool blnRetornar = false;
-            string strSQL = "";
-
-            strSQL = @"UPDATE dbo.Usuario  
-                       SET  
-                          username = '" + entidad.Username + @"', 
-                          password = '" + Utilidades.encriptar(entidad.Password) + @"',  
-                          apellido = '" + entidad.Apellido + @"',
-                          nombre = '" + entidad.Nombre + @"', 
-                          email1 = '" + entidad.Email + @"', 
-                          Tipo = '" + entidad.Tipo + @"',
-
-                          VentConfiguracion = '" + Convert.ToBoolean(entidad.VentConfiguracion) + @"',
-                          VentExamenes = '" + Convert.ToBoolean(entidad.VentExamenes) + @"',
-                          VentMesa = '" + Convert.ToBoolean(entidad.VentMesa) + @"',
-                          VentPacientes = '" + Convert.ToBoolean(entidad.VentPacientes) + @"',
-                          VentVentanilla = '" + Convert.ToBoolean(entidad.VentVentanilla) + @"',
-                          VentResumen = '" + Convert.ToBoolean(entidad.VentResumen) + @"',
-
-                          PermisoVer = '" + Convert.ToBoolean(entidad.PermisoVer) + @"',
-                          PermisoModificar = '" + Convert.ToBoolean(entidad.PermisoModificar) + @"',
-                          PermisoEliminar = '" + Convert.ToBoolean(entidad.PermisoEliminar) + @"' ,
-
-                          VentTurnos = '" + Convert.ToBoolean(entidad.VentTurnos) + @"' ,
-                          Activo = '" + Convert.ToBoolean(entidad.Activo) + @"' ,
-                          VentAudiometria = '" + Convert.ToBoolean(entidad.VentAudiometria) + @"' ,
-                          ProfesionalAsignado = '" + entidad.ProfesionalAsignado + @"' 
-                      WHERE id = '" + entidad.Id + @"'";
             try
             {
+                // DIAG TEMPORAL
+                Debug.WriteLine("===== DIAG ActualizarUsuario =====");
+                Debug.WriteLine("Tipo='" + entidad.Tipo + "' (len=" + (entidad.Tipo ?? "").Length + ")");
+                Debug.WriteLine("Username='" + entidad.Username + "'");
+                Debug.WriteLine("DNI='" + entidad.DNI + "'");
+                Debug.WriteLine("Id='" + entidad.Id + "'");
+                Debug.WriteLine("==================================");
+                string strProfAsig = entidad.ProfesionalAsignado == Guid.Empty ? "NULL" : "'" + entidad.ProfesionalAsignado.ToString() + "'";
+                string strSQL = @"UPDATE dbo.Usuario  
+                       SET  
+                          username = '" + (entidad.Username ?? "").Replace("'", "''") + @"', 
+                          password = '" + (Utilidades.encriptar(entidad.Password ?? "") ?? "") + @"',  
+                          apellido = '" + (entidad.Apellido ?? "").Replace("'", "''") + @"',
+                          nombre = '" + (entidad.Nombre ?? "").Replace("'", "''") + @"', 
+                          email1 = '" + (entidad.Email ?? "").Replace("'", "''") + @"', 
+                          Tipo = '" + (entidad.Tipo ?? "").Replace("'", "''") + @"',
+                          VentConfiguracion = " + (entidad.VentConfiguracion ? "1" : "0") + @",
+                          VentExamenes = " + (entidad.VentExamenes ? "1" : "0") + @",
+                          VentMesa = " + (entidad.VentMesa ? "1" : "0") + @",
+                          VentPacientes = " + (entidad.VentPacientes ? "1" : "0") + @",
+                          VentVentanilla = " + (entidad.VentVentanilla ? "1" : "0") + @",
+                          VentResumen = " + (entidad.VentResumen ? "1" : "0") + @",
+                          PermisoVer = " + (entidad.PermisoVer ? "1" : "0") + @",
+                          PermisoModificar = " + (entidad.PermisoModificar ? "1" : "0") + @",
+                          PermisoEliminar = " + (entidad.PermisoEliminar ? "1" : "0") + @",
+                          VentTurnos = " + (entidad.VentTurnos ? "1" : "0") + @",
+                          Activo = " + (entidad.Activo ? "1" : "0") + @",
+                          VentAudiometria = " + (entidad.VentAudiometria ? "1" : "0") + @",
+                          ProfesionalAsignado = " + strProfAsig + @" 
+                      WHERE id = '" + entidad.Id + @"'";
                 SQLConnector.obtenerTablaSegunConsultaString(strSQL);
             }
             catch (Exception ex)
@@ -259,7 +273,7 @@ namespace CapaDatosMepryl
             return dt;
         }
 
-        public bool ActualizaActivo(Byte blnActivo, string strIdUsuario )
+        public bool ActualizaActivo(Byte blnActivo, string strIdUsuario)
         {
             DataTable dt = null;
             string strSQL = "";
@@ -327,12 +341,12 @@ namespace CapaDatosMepryl
 
         public DataTable ListaPermisoUsuarios(string strUsuario)
         {
-            DataTable dt = null;            
+            DataTable dt = null;
             string strSQL = "";
 
             strSQL = "SELECT TOP 1 * FROM dbo.Usuario WHERE id = '" + strUsuario + "'";
             dt = SQLConnector.obtenerTablaSegunConsultaString(strSQL);
-                        
+
             return dt;
         }
 
@@ -346,7 +360,7 @@ namespace CapaDatosMepryl
 
             return dt;
         }
-        
+
         public DataTable ListaPermisoUserName(string strNombreUsuario)
         {
             DataTable dt = null;
@@ -402,7 +416,7 @@ namespace CapaDatosMepryl
 
             dt = SQLConnector.obtenerTablaSegunConsultaString(strSQL);
 
-            return dt; 
+            return dt;
         }
 
         public DataTable BuscarDNIUsuario(string strDNI)
@@ -419,7 +433,7 @@ namespace CapaDatosMepryl
 
             dt = SQLConnector.obtenerTablaSegunConsultaString(strSQL);
 
-            return dt; 
+            return dt;
         }
 
         public DataTable ListarUsuariosConPermisos()
@@ -448,10 +462,10 @@ namespace CapaDatosMepryl
             string strSQL = "";
             string strIdProfesional = "";
 
-            strSQL = "SELECT * from dbo.Profesional WHERE dni = '"+ strDNI + "'";
+            strSQL = "SELECT * from dbo.Profesional WHERE dni = '" + strDNI + "'";
             dt = SQLConnector.obtenerTablaSegunConsultaString(strSQL);
 
-            if(dt.Rows.Count > 0)
+            if (dt.Rows.Count > 0)
             {
                 strIdProfesional = dt.Rows[0][0].ToString();
 
@@ -474,13 +488,13 @@ namespace CapaDatosMepryl
         }
 
         public DataTable ListaUsuariosPorEmpresa(string strIdEmpresa)
-        {            
-            string strSQL = "";            
+        {
+            string strSQL = "";
 
             strSQL = "SELECT PAL.nombres, PAL.Apellido, PAL.dni, PAL.Telefonos, PAL.mail FROM PacienteLaboral PAL " +
                      "INNER JOIN EmpresasPorPaciente EPP ON EPP.idPaciente = PAL.id " +
                      "INNER JOIN Empresa EMP ON EMP.id = EPP.idEmpresa " +
-                     "WHERE EMP.id = '" + strIdEmpresa + "'"; 
+                     "WHERE EMP.id = '" + strIdEmpresa + "'";
             return SQLConnector.obtenerTablaSegunConsultaString(strSQL);
         }
 
@@ -493,7 +507,7 @@ namespace CapaDatosMepryl
             if (SQLConnector.obtenerTablaSegunConsultaString(strSQL).Rows.Count > 0)
             {
                 blnResultado = true;
-            }            
+            }
 
             return blnResultado;
         }

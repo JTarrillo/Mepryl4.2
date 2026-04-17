@@ -75,7 +75,8 @@ namespace Comunes
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                string detalle = ex.Message + "\n\n[DIAG] SQL: " + (consulta.Length > 800 ? consulta.Substring(0, 800) + "..." : consulta);
+                MessageBox.Show(detalle);
                 return null;
             }
             finally
@@ -97,7 +98,8 @@ namespace Comunes
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                string detalle = ex.Message + "\n\n[DIAG] EjecutarConsulta SQL: " + (consulta.Length > 800 ? consulta.Substring(0, 800) + "..." : consulta);
+                MessageBox.Show(detalle);
             }
         }
 
@@ -261,7 +263,16 @@ namespace Comunes
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                string paramInfo = "[DIAG] SP: " + procedure + "\nParams: ";
+                if (args != null && values != null)
+                {
+                    for (int j = 0; j < args.Count; j++)
+                    {
+                        string val = values[j] != null ? values[j].ToString() : "NULL";
+                        paramInfo += "\n  " + args[j] + "='" + val + "' (len=" + val.Length + ")";
+                    }
+                }
+                MessageBox.Show(ex.Message + "\n\n" + paramInfo);
                 return false;
             }
         }
@@ -326,7 +337,16 @@ namespace Comunes
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                string paramInfo = "[DIAG] SP: " + procedure + "\nParams: ";
+                if (args != null && values != null)
+                {
+                    for (int j = 0; j < args.Count; j++)
+                    {
+                        string val = values[j] != null ? values[j].ToString() : "NULL";
+                        paramInfo += "\n  " + args[j] + "='" + val + "' (len=" + val.Length + ")";
+                    }
+                }
+                MessageBox.Show(ex.Message + "\n\n" + paramInfo);
                 return "";
             }
         }
