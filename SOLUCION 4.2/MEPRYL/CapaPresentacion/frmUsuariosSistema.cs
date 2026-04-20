@@ -1052,6 +1052,8 @@ namespace CapaPresentacion
         // ==================== TAB GESTIONAR USUARIOS ====================
 
         private DataTable dtGestion;
+        private bool filtroFechaActivo = false;
+        private string campoBusqueda = "DNI";  // Campo actual de búsqueda: DNI, Nombre, Apellido, Usuario
 
         private void tabControlUsuarios_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -1072,10 +1074,21 @@ namespace CapaPresentacion
             if (dtGestion == null) return;
 
             DataView dv = dtGestion.DefaultView;
-            if (string.IsNullOrEmpty(filtro))
-                dv.RowFilter = "";
-            else
-                dv.RowFilter = "DNI LIKE '%" + filtro.Replace("'", "''") + "%'";
+            List<string> filtros = new List<string>();
+
+            // Filtro por campo seleccionado
+            if (!string.IsNullOrEmpty(filtro))
+                filtros.Add("[" + campoBusqueda + "] LIKE '%" + filtro.Replace("'", "''") + "%'");
+
+            // Filtro por rango de fechas
+            if (filtroFechaActivo)
+            {
+                string desde = dtpDesde.Value.ToString("yyyy-MM-dd");
+                string hasta = dtpHasta.Value.Date.AddDays(1).ToString("yyyy-MM-dd");
+                filtros.Add("[Fecha Creación] >= #" + desde + "# AND [Fecha Creación] < #" + hasta + "#");
+            }
+
+            dv.RowFilter = filtros.Count > 0 ? string.Join(" AND ", filtros.ToArray()) : "";
 
             dgvGestion.DataSource = dv;
             dgvGestion.Columns["id"].Visible = false;
@@ -1095,6 +1108,8 @@ namespace CapaPresentacion
             dgvGestion.Columns["Tipo Usuario"].FillWeight = 100;
             dgvGestion.Columns["DNI"].FillWeight = 80;
             dgvGestion.Columns["Activo"].FillWeight = 50;
+            dgvGestion.Columns["Fecha Creación"].FillWeight = 80;
+            dgvGestion.Columns["Fecha Creación"].DefaultCellStyle.Format = "dd/MM/yyyy";
 
             dgvGestion.ReadOnly = true;
 
@@ -1109,6 +1124,11 @@ namespace CapaPresentacion
                 btnCol.FillWeight = 70;
                 dgvGestion.Columns.Add(btnCol);
             }
+
+            // Actualizar total
+            txtTotalGestion.Text = "Total: " + dv.Count + " usuario(s)";
+
+            dgvGestion.ClearSelection();
         }
 
         private void dgvGestion_CellContentClick(object sender, DataGridViewCellEventArgs e)
@@ -1164,9 +1184,93 @@ namespace CapaPresentacion
         {
         }
 
+        private void btnFiltrarFecha_Click(object sender, EventArgs e)
+        {
+            filtroFechaActivo = !filtroFechaActivo;
+            if (filtroFechaActivo)
+            {
+                btnFiltrarFecha.Text = "Quitar Filtro";
+                btnFiltrarFecha.IconChar = FontAwesome.Sharp.IconChar.FilterCircleXmark;
+                btnFiltrarFecha.IconColor = System.Drawing.Color.Crimson;
+            }
+            else
+            {
+                btnFiltrarFecha.Text = "Filtrar";
+                btnFiltrarFecha.IconChar = FontAwesome.Sharp.IconChar.Filter;
+                btnFiltrarFecha.IconColor = System.Drawing.Color.FromArgb(0, 122, 204);
+            }
+            FiltrarGrillaGestion(txtBuscarGestion.Text);
+        }
+
         private void txtBuscarGestion_TextChanged(object sender, EventArgs e)
         {
             FiltrarGrillaGestion(txtBuscarGestion.Text);
+        }
+
+        private void dtpFecha_ValueChanged(object sender, EventArgs e)
+        {
+            if (filtroFechaActivo)
+            {
+                filtroFechaActivo = false;
+                btnFiltrarFecha.Text = "Filtrar";
+                btnFiltrarFecha.IconChar = FontAwesome.Sharp.IconChar.Filter;
+                btnFiltrarFecha.IconColor = System.Drawing.Color.FromArgb(0, 122, 204);
+                FiltrarGrillaGestion(txtBuscarGestion.Text);
+            }
+        }
+
+        private void btnCambioBusqueda_Click(object sender, EventArgs e)
+        {
+            using (Form dlg = new Form())
+            {
+                dlg.Text = "Buscar por...";
+                dlg.FormBorderStyle = FormBorderStyle.FixedDialog;
+                dlg.StartPosition = FormStartPosition.CenterParent;
+                dlg.MaximizeBox = false;
+                dlg.MinimizeBox = false;
+                dlg.Size = new System.Drawing.Size(260, 220);
+                dlg.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F);
+
+                RadioButton rbDNI = new RadioButton { Text = "DNI", Location = new System.Drawing.Point(30, 20), AutoSize = true, Checked = campoBusqueda == "DNI" };
+                RadioButton rbNombre = new RadioButton { Text = "Nombre", Location = new System.Drawing.Point(30, 50), AutoSize = true, Checked = campoBusqueda == "Nombre" };
+                RadioButton rbApellido = new RadioButton { Text = "Apellido", Location = new System.Drawing.Point(30, 80), AutoSize = true, Checked = campoBusqueda == "Apellido" };
+                RadioButton rbUsuario = new RadioButton { Text = "Usuario", Location = new System.Drawing.Point(30, 110), AutoSize = true, Checked = campoBusqueda == "Usuario" };
+
+                Button btnAceptarDlg = new Button
+                {
+                    Text = "Aceptar",
+                    DialogResult = DialogResult.OK,
+                    Location = new System.Drawing.Point(30, 145),
+                    Size = new System.Drawing.Size(90, 30),
+                    BackColor = System.Drawing.Color.SeaGreen,
+                    ForeColor = System.Drawing.Color.White,
+                    FlatStyle = FlatStyle.Flat
+                };
+                Button btnCancelarDlg = new Button
+                {
+                    Text = "Cancelar",
+                    DialogResult = DialogResult.Cancel,
+                    Location = new System.Drawing.Point(130, 145),
+                    Size = new System.Drawing.Size(90, 30),
+                    FlatStyle = FlatStyle.Flat
+                };
+
+                dlg.Controls.AddRange(new Control[] { rbDNI, rbNombre, rbApellido, rbUsuario, btnAceptarDlg, btnCancelarDlg });
+                dlg.AcceptButton = btnAceptarDlg;
+                dlg.CancelButton = btnCancelarDlg;
+
+                if (dlg.ShowDialog(this) == DialogResult.OK)
+                {
+                    if (rbDNI.Checked) campoBusqueda = "DNI";
+                    else if (rbNombre.Checked) campoBusqueda = "Nombre";
+                    else if (rbApellido.Checked) campoBusqueda = "Apellido";
+                    else if (rbUsuario.Checked) campoBusqueda = "Usuario";
+
+                    lblBuscarGestion.Text = "Buscar por " + campoBusqueda + ":";
+                    txtBuscarGestion.Text = "";
+                    txtBuscarGestion.Focus();
+                }
+            }
         }
     }
 }

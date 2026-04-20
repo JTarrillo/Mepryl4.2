@@ -11,6 +11,7 @@ namespace CapaPresentacion
     {
         private CapaNegocioMepryl.PrecioPublico precioPublico;
         private DataTable dtOriginal;
+        private bool yaInicializado = false;
 
         public frmPreciosPublico(frmBasePrincipal parentForm)
         {
@@ -24,6 +25,14 @@ namespace CapaPresentacion
             cboMes.SelectedIndex = DateTime.Now.Month - 1;
             nudAnio.Value = DateTime.Now.Year;
             CargarGrilla();
+            yaInicializado = true;
+        }
+
+        protected override void OnActivated(EventArgs e)
+        {
+            base.OnActivated(e);
+            if (yaInicializado)
+                CargarGrilla();
         }
 
         private void CargarGrilla()
@@ -106,7 +115,6 @@ namespace CapaPresentacion
 
                 precioPublico.GuardarPreciosPublico(mes, anio, dtGuardar);
                 MessageBox.Show("Precios guardados correctamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                CargarGrilla();
             }
             catch (Exception ex)
             {
@@ -158,7 +166,27 @@ namespace CapaPresentacion
             }
         }
 
+        private void btnAplicar_Click(object sender, EventArgs e)
+        {
+            mnuAplicar.Show(btnAplicar, 0, btnAplicar.Height);
+        }
+
         private void btnVariacion_Click(object sender, EventArgs e)
+        {
+            AplicarVariacionGrilla(true, true, "ambos precios");
+        }
+
+        private void btnVariacionPromo_Click(object sender, EventArgs e)
+        {
+            AplicarVariacionGrilla(false, true, "Precio Promo");
+        }
+
+        private void btnVariacionLista_Click(object sender, EventArgs e)
+        {
+            AplicarVariacionGrilla(true, false, "Precio Lista");
+        }
+
+        private void AplicarVariacionGrilla(bool aplicarLista, bool aplicarPromo, string descripcion)
         {
             decimal factor = ObtenerFactor();
             if (factor <= 0)
@@ -175,7 +203,7 @@ namespace CapaPresentacion
                 : seleccionadas + " prestación(es) seleccionada(s)";
 
             DialogResult dr = MessageBox.Show(
-                "Se aplicará variación (factor " + factor.ToString("0.##") + ") a " + alcance + ".\n\n(Los cambios quedan en la grilla. Presione Guardar para confirmar.)\n¿Continuar?",
+                "Se aplicará variación (factor " + factor.ToString("0.##") + ") a " + descripcion + " en " + alcance + ".\n\n(Los cambios quedan en la grilla. Presione Guardar para confirmar.)\n¿Continuar?",
                 "Confirmar variación", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (dr != DialogResult.Yes) return;
 
@@ -193,12 +221,20 @@ namespace CapaPresentacion
 
             foreach (DataGridViewRow row in filasAplicar)
             {
-                row.Cells["colPrecioLista"].Value = Math.Round(ParseDecimal(row.Cells["colPrecioLista"].Value) * factor, 2);
-                row.Cells["colPrecioPromo"].Value = Math.Round(ParseDecimal(row.Cells["colPrecioPromo"].Value) * factor, 2);
+                if (aplicarLista)
+                {
+                    decimal lista = ParseDecimal(row.Cells["colPrecioLista"].Value) * factor;
+                    row.Cells["colPrecioLista"].Value = Math.Ceiling(lista / 1000m) * 1000m;
+                }
+                if (aplicarPromo)
+                {
+                    decimal promo = ParseDecimal(row.Cells["colPrecioPromo"].Value) * factor;
+                    row.Cells["colPrecioPromo"].Value = Math.Ceiling(promo / 1000m) * 1000m;
+                }
             }
 
             txtVariacion.Text = "0";
-            MessageBox.Show("Variación aplicada a " + alcance + ".\nRecuerde presionar Guardar para confirmar los cambios.",
+            MessageBox.Show("Variación aplicada a " + descripcion + " en " + alcance + ".\nRecuerde presionar Guardar para confirmar los cambios.",
                 "Variación aplicada", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
@@ -308,7 +344,8 @@ namespace CapaPresentacion
         private decimal ObtenerFactor()
         {
             decimal valor;
-            if (!decimal.TryParse(txtVariacion.Text, out valor))
+            string texto = txtVariacion.Text.Replace(".", ",");
+            if (!decimal.TryParse(texto, out valor))
                 return -1;
 
             if (chkFactor.Checked)
@@ -320,7 +357,8 @@ namespace CapaPresentacion
         private void chkFactor_CheckedChanged(object sender, EventArgs e)
         {
             decimal valor;
-            if (!decimal.TryParse(txtVariacion.Text, out valor)) return;
+            string texto = txtVariacion.Text.Replace(".", ",");
+            if (!decimal.TryParse(texto, out valor)) return;
 
             if (chkFactor.Checked)
             {

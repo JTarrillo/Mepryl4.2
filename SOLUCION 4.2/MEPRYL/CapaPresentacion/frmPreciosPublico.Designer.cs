@@ -6,11 +6,15 @@ namespace CapaPresentacion
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            try
             {
-                components.Dispose();
+                if (disposing && (components != null))
+                {
+                    components.Dispose();
+                }
+                base.Dispose(disposing);
             }
-            base.Dispose(disposing);
+            catch (System.ObjectDisposedException) { }
         }
 
         #region Windows Form Designer generated code
@@ -32,6 +36,12 @@ namespace CapaPresentacion
             this.btnCopiarMes = new System.Windows.Forms.Button();
             this.btnVariacion = new System.Windows.Forms.Button();
             this.btnCalcularLista = new System.Windows.Forms.Button();
+            this.mnuAplicar = new System.Windows.Forms.ContextMenuStrip();
+            this.mnuAplicarVariacion = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuVariacionPromo = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuVariacionLista = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuCalcularLista = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnAplicar = new System.Windows.Forms.Button();
             this.chkFactor = new System.Windows.Forms.CheckBox();
             this.lblVariacion = new System.Windows.Forms.Label();
             this.txtVariacion = new System.Windows.Forms.TextBox();
@@ -175,9 +185,8 @@ namespace CapaPresentacion
             this.pnlMenu.Controls.Add(this.btnCopiarMes);
             this.pnlMenu.Controls.Add(this.lblVariacion);
             this.pnlMenu.Controls.Add(this.txtVariacion);
-            this.pnlMenu.Controls.Add(this.btnVariacion);
             this.pnlMenu.Controls.Add(this.chkFactor);
-            this.pnlMenu.Controls.Add(this.btnCalcularLista);
+            this.pnlMenu.Controls.Add(this.btnAplicar);
             this.pnlMenu.Dock = System.Windows.Forms.DockStyle.Right;
             this.pnlMenu.Location = new System.Drawing.Point(1214, 90);
             this.pnlMenu.Name = "pnlMenu";
@@ -237,6 +246,61 @@ namespace CapaPresentacion
             this.txtVariacion.Text = "0";
 
             // 
+            // mnuAplicar
+            // 
+            this.mnuAplicar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+                this.mnuAplicarVariacion,
+                this.mnuVariacionPromo,
+                this.mnuVariacionLista,
+                new System.Windows.Forms.ToolStripSeparator(),
+                this.mnuCalcularLista});
+            this.mnuAplicar.Name = "mnuAplicar";
+            this.mnuAplicar.Size = new System.Drawing.Size(200, 48);
+
+            // 
+            // mnuAplicarVariacion
+            // 
+            this.mnuAplicarVariacion.Name = "mnuAplicarVariacion";
+            this.mnuAplicarVariacion.Size = new System.Drawing.Size(199, 22);
+            this.mnuAplicarVariacion.Text = "Variación a ambos";
+            this.mnuAplicarVariacion.Click += new System.EventHandler(this.btnVariacion_Click);
+
+            // 
+            // mnuVariacionPromo
+            // 
+            this.mnuVariacionPromo.Name = "mnuVariacionPromo";
+            this.mnuVariacionPromo.Size = new System.Drawing.Size(199, 22);
+            this.mnuVariacionPromo.Text = "Variación solo a Promo";
+            this.mnuVariacionPromo.Click += new System.EventHandler(this.btnVariacionPromo_Click);
+
+            // 
+            // mnuVariacionLista
+            // 
+            this.mnuVariacionLista.Name = "mnuVariacionLista";
+            this.mnuVariacionLista.Size = new System.Drawing.Size(199, 22);
+            this.mnuVariacionLista.Text = "Variación solo a Lista";
+            this.mnuVariacionLista.Click += new System.EventHandler(this.btnVariacionLista_Click);
+
+            // 
+            // mnuCalcularLista
+            // 
+            this.mnuCalcularLista.Name = "mnuCalcularLista";
+            this.mnuCalcularLista.Size = new System.Drawing.Size(199, 22);
+            this.mnuCalcularLista.Text = "Calcular Lista desde Promo";
+            this.mnuCalcularLista.Click += new System.EventHandler(this.btnCalcularLista_Click);
+
+            // 
+            // btnAplicar
+            // 
+            this.btnAplicar.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.btnAplicar.Location = new System.Drawing.Point(10, 190);
+            this.btnAplicar.Name = "btnAplicar";
+            this.btnAplicar.Size = new System.Drawing.Size(130, 40);
+            this.btnAplicar.Text = "Aplicar ▼";
+            this.btnAplicar.UseVisualStyleBackColor = true;
+            this.btnAplicar.Click += new System.EventHandler(this.btnAplicar_Click);
+
+            // 
             // btnVariacion
             // 
             this.btnVariacion.Font = new System.Drawing.Font("Segoe UI", 9F);
@@ -245,6 +309,7 @@ namespace CapaPresentacion
             this.btnVariacion.Size = new System.Drawing.Size(130, 35);
             this.btnVariacion.Text = "Aplicar variación";
             this.btnVariacion.UseVisualStyleBackColor = true;
+            this.btnVariacion.Visible = false;
             this.btnVariacion.Click += new System.EventHandler(this.btnVariacion_Click);
 
             // 
@@ -256,6 +321,7 @@ namespace CapaPresentacion
             this.btnCalcularLista.Size = new System.Drawing.Size(130, 40);
             this.btnCalcularLista.Text = "Calcular Lista\r\ndesde Promo";
             this.btnCalcularLista.UseVisualStyleBackColor = true;
+            this.btnCalcularLista.Visible = false;
             this.btnCalcularLista.Click += new System.EventHandler(this.btnCalcularLista_Click);
 
             // 
@@ -398,6 +464,12 @@ namespace CapaPresentacion
         private System.Windows.Forms.Button btnCopiarMes;
         private System.Windows.Forms.Button btnVariacion;
         private System.Windows.Forms.Button btnCalcularLista;
+        private System.Windows.Forms.ContextMenuStrip mnuAplicar;
+        private System.Windows.Forms.ToolStripMenuItem mnuAplicarVariacion;
+        private System.Windows.Forms.ToolStripMenuItem mnuVariacionPromo;
+        private System.Windows.Forms.ToolStripMenuItem mnuVariacionLista;
+        private System.Windows.Forms.ToolStripMenuItem mnuCalcularLista;
+        private System.Windows.Forms.Button btnAplicar;
         private System.Windows.Forms.CheckBox chkFactor;
         private System.Windows.Forms.Label lblVariacion;
         private System.Windows.Forms.TextBox txtVariacion;

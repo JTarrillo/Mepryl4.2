@@ -443,6 +443,7 @@ namespace CapaDatosMepryl
 
             strSQL = "SELECT id, username as 'Usuario', apellido as 'Apellido', nombre as 'Nombre', " +
                      "Tipo as 'Tipo Usuario', dni as 'DNI', Activo, " +
+                     "fechaCreacion as 'Fecha Creación', " +
                      "VentVentanilla as 'Ventanilla', VentMesa as 'Mesa Entrada', " +
                      "VentPacientes as 'Pacientes', VentExamenes as 'Exámenes', " +
                      "VentConfiguracion as 'Configuración', VentTurnos as 'Turnos', " +

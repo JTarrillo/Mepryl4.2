@@ -741,9 +741,9 @@ namespace CapaDatosMepryl
             try
             {
                 List<string> updateTipoExamen = SQLConnector.generarListaParaProcedure("@id",
-                "@descripcion", "@idMotivoConsulta", "@precioBase", "@descripcionInformes");
+                "@descripcion", "@idMotivoConsulta", "@precioBase", "@descripcionInformes", "@precioLista");
                 SQLConnector.executeProcedure("sp_Especialidad_Update", updateTipoExamen, entidad.Id,
-                    entidad.Descripcion, entidad.IdMotivoConsulta, entidad.PrecioBase, entidad.DescripcionInformes);
+                    entidad.Descripcion, entidad.IdMotivoConsulta, entidad.PrecioBase, entidad.DescripcionInformes, entidad.PrecioLista);
                 actualizarEstudiosPorTipoExamen(entidad);
                 retorno.Modo = 1;
                 return retorno;

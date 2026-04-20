@@ -30,6 +30,9 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmUsuariosSistema));
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle16 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle17 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle18 = new System.Windows.Forms.DataGridViewCellStyle();
             this.lbTitulo = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
             this.tabControlUsuarios = new System.Windows.Forms.TabControl();
@@ -78,7 +81,15 @@
             this.pbFoto = new System.Windows.Forms.PictureBox();
             this.tabGestion = new System.Windows.Forms.TabPage();
             this.dgvGestion = new System.Windows.Forms.DataGridView();
+            this.txtTotalGestion = new System.Windows.Forms.TextBox();
             this.pnlBuscarGestion = new System.Windows.Forms.Panel();
+            this.grpFiltroFecha = new System.Windows.Forms.GroupBox();
+            this.lblDesde = new System.Windows.Forms.Label();
+            this.dtpDesde = new System.Windows.Forms.DateTimePicker();
+            this.lblHasta = new System.Windows.Forms.Label();
+            this.dtpHasta = new System.Windows.Forms.DateTimePicker();
+            this.btnFiltrarFecha = new FontAwesome.Sharp.IconButton();
+            this.btnCambioBusqueda = new FontAwesome.Sharp.IconButton();
             this.txtBuscarGestion = new System.Windows.Forms.TextBox();
             this.lblBuscarGestion = new System.Windows.Forms.Label();
             this.lblFaltanCargar = new System.Windows.Forms.Panel();
@@ -107,6 +118,7 @@
             this.tabGestion.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvGestion)).BeginInit();
             this.pnlBuscarGestion.SuspendLayout();
+            this.grpFiltroFecha.SuspendLayout();
             this.lblFaltanCargar.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -633,6 +645,7 @@
             // tabGestion
             // 
             this.tabGestion.Controls.Add(this.dgvGestion);
+            this.tabGestion.Controls.Add(this.txtTotalGestion);
             this.tabGestion.Controls.Add(this.pnlBuscarGestion);
             this.tabGestion.Location = new System.Drawing.Point(4, 25);
             this.tabGestion.Name = "tabGestion";
@@ -646,47 +659,178 @@
             // 
             this.dgvGestion.AllowUserToAddRows = false;
             this.dgvGestion.AllowUserToDeleteRows = false;
+            dataGridViewCellStyle16.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(248)))), ((int)(((byte)(240)))));
+            this.dgvGestion.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle16;
             this.dgvGestion.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvGestion.BackgroundColor = System.Drawing.SystemColors.Window;
             this.dgvGestion.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.dgvGestion.ClipboardCopyMode = System.Windows.Forms.DataGridViewClipboardCopyMode.EnableWithoutHeaderText;
+            dataGridViewCellStyle17.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle17.BackColor = System.Drawing.Color.SeaGreen;
+            dataGridViewCellStyle17.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle17.ForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle17.SelectionBackColor = System.Drawing.Color.SeaGreen;
+            dataGridViewCellStyle17.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle17.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvGestion.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle17;
             this.dgvGestion.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewCellStyle18.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle18.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle18.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle18.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            dataGridViewCellStyle18.SelectionBackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle18.SelectionForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle18.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvGestion.DefaultCellStyle = dataGridViewCellStyle18;
             this.dgvGestion.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvGestion.Location = new System.Drawing.Point(3, 38);
+            this.dgvGestion.EnableHeadersVisualStyles = false;
+            this.dgvGestion.Location = new System.Drawing.Point(3, 77);
             this.dgvGestion.Name = "dgvGestion";
             this.dgvGestion.RowHeadersVisible = false;
             this.dgvGestion.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
-            this.dgvGestion.Size = new System.Drawing.Size(1078, 464);
+            this.dgvGestion.Size = new System.Drawing.Size(1078, 425);
             this.dgvGestion.TabIndex = 0;
             this.dgvGestion.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvGestion_CellContentClick);
             this.dgvGestion.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvGestion_CellValueChanged);
             this.dgvGestion.CurrentCellDirtyStateChanged += new System.EventHandler(this.dgvGestion_CurrentCellDirtyStateChanged);
             // 
+            // txtTotalGestion
+            // 
+            this.txtTotalGestion.BackColor = System.Drawing.Color.SeaGreen;
+            this.txtTotalGestion.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txtTotalGestion.Dock = System.Windows.Forms.DockStyle.Top;
+            this.txtTotalGestion.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold);
+            this.txtTotalGestion.ForeColor = System.Drawing.Color.White;
+            this.txtTotalGestion.Location = new System.Drawing.Point(3, 58);
+            this.txtTotalGestion.Name = "txtTotalGestion";
+            this.txtTotalGestion.ReadOnly = true;
+            this.txtTotalGestion.Size = new System.Drawing.Size(1078, 19);
+            this.txtTotalGestion.TabIndex = 12;
+            this.txtTotalGestion.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
             // pnlBuscarGestion
             // 
+            this.pnlBuscarGestion.Controls.Add(this.grpFiltroFecha);
+            this.pnlBuscarGestion.Controls.Add(this.btnCambioBusqueda);
             this.pnlBuscarGestion.Controls.Add(this.txtBuscarGestion);
             this.pnlBuscarGestion.Controls.Add(this.lblBuscarGestion);
             this.pnlBuscarGestion.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlBuscarGestion.Location = new System.Drawing.Point(3, 3);
             this.pnlBuscarGestion.Name = "pnlBuscarGestion";
-            this.pnlBuscarGestion.Size = new System.Drawing.Size(1078, 35);
+            this.pnlBuscarGestion.Size = new System.Drawing.Size(1078, 55);
             this.pnlBuscarGestion.TabIndex = 1;
+            // 
+            // grpFiltroFecha
+            // 
+            this.grpFiltroFecha.Controls.Add(this.lblDesde);
+            this.grpFiltroFecha.Controls.Add(this.dtpDesde);
+            this.grpFiltroFecha.Controls.Add(this.lblHasta);
+            this.grpFiltroFecha.Controls.Add(this.dtpHasta);
+            this.grpFiltroFecha.Controls.Add(this.btnFiltrarFecha);
+            this.grpFiltroFecha.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F);
+            this.grpFiltroFecha.Location = new System.Drawing.Point(469, 3);
+            this.grpFiltroFecha.Name = "grpFiltroFecha";
+            this.grpFiltroFecha.Size = new System.Drawing.Size(560, 49);
+            this.grpFiltroFecha.TabIndex = 8;
+            this.grpFiltroFecha.TabStop = false;
+            this.grpFiltroFecha.Text = "Filtrar por Período";
+            // 
+            // lblDesde
+            // 
+            this.lblDesde.AutoSize = true;
+            this.lblDesde.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F);
+            this.lblDesde.Location = new System.Drawing.Point(10, 24);
+            this.lblDesde.Name = "lblDesde";
+            this.lblDesde.Size = new System.Drawing.Size(51, 16);
+            this.lblDesde.TabIndex = 2;
+            this.lblDesde.Text = "Desde:";
+            // 
+            // dtpDesde
+            // 
+            this.dtpDesde.CalendarTitleBackColor = System.Drawing.Color.SeaGreen;
+            this.dtpDesde.CalendarTitleForeColor = System.Drawing.Color.White;
+            this.dtpDesde.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F);
+            this.dtpDesde.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dtpDesde.Location = new System.Drawing.Point(68, 21);
+            this.dtpDesde.Name = "dtpDesde";
+            this.dtpDesde.Size = new System.Drawing.Size(115, 22);
+            this.dtpDesde.TabIndex = 3;
+            this.dtpDesde.ValueChanged += new System.EventHandler(this.dtpFecha_ValueChanged);
+            // 
+            // lblHasta
+            // 
+            this.lblHasta.AutoSize = true;
+            this.lblHasta.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F);
+            this.lblHasta.Location = new System.Drawing.Point(192, 24);
+            this.lblHasta.Name = "lblHasta";
+            this.lblHasta.Size = new System.Drawing.Size(46, 16);
+            this.lblHasta.TabIndex = 4;
+            this.lblHasta.Text = "Hasta:";
+            // 
+            // dtpHasta
+            // 
+            this.dtpHasta.CalendarTitleBackColor = System.Drawing.Color.SeaGreen;
+            this.dtpHasta.CalendarTitleForeColor = System.Drawing.Color.White;
+            this.dtpHasta.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F);
+            this.dtpHasta.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dtpHasta.Location = new System.Drawing.Point(247, 21);
+            this.dtpHasta.Name = "dtpHasta";
+            this.dtpHasta.Size = new System.Drawing.Size(115, 22);
+            this.dtpHasta.TabIndex = 5;
+            this.dtpHasta.ValueChanged += new System.EventHandler(this.dtpFecha_ValueChanged);
+            // 
+            // btnFiltrarFecha
+            // 
+            this.btnFiltrarFecha.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnFiltrarFecha.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F);
+            this.btnFiltrarFecha.IconChar = FontAwesome.Sharp.IconChar.Filter;
+            this.btnFiltrarFecha.IconColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(122)))), ((int)(((byte)(204)))));
+            this.btnFiltrarFecha.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            this.btnFiltrarFecha.IconSize = 18;
+            this.btnFiltrarFecha.Location = new System.Drawing.Point(375, 16);
+            this.btnFiltrarFecha.Name = "btnFiltrarFecha";
+            this.btnFiltrarFecha.Size = new System.Drawing.Size(165, 30);
+            this.btnFiltrarFecha.TabIndex = 6;
+            this.btnFiltrarFecha.Text = "Filtrar";
+            this.btnFiltrarFecha.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.btnFiltrarFecha.UseVisualStyleBackColor = true;
+            this.btnFiltrarFecha.Click += new System.EventHandler(this.btnFiltrarFecha_Click);
+            // 
+            // btnCambioBusqueda
+            // 
+            this.btnCambioBusqueda.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnCambioBusqueda.FlatAppearance.BorderColor = System.Drawing.Color.SeaGreen;
+            this.btnCambioBusqueda.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnCambioBusqueda.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F);
+            this.btnCambioBusqueda.IconChar = FontAwesome.Sharp.IconChar.Exchange;
+            this.btnCambioBusqueda.IconColor = System.Drawing.Color.SeaGreen;
+            this.btnCambioBusqueda.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            this.btnCambioBusqueda.IconSize = 16;
+            this.btnCambioBusqueda.Location = new System.Drawing.Point(387, 15);
+            this.btnCambioBusqueda.Name = "btnCambioBusqueda";
+            this.btnCambioBusqueda.Size = new System.Drawing.Size(55, 28);
+            this.btnCambioBusqueda.TabIndex = 9;
+            this.btnCambioBusqueda.Text = " ";
+            this.btnCambioBusqueda.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.btnCambioBusqueda.UseVisualStyleBackColor = true;
+            this.btnCambioBusqueda.Click += new System.EventHandler(this.btnCambioBusqueda_Click);
             // 
             // txtBuscarGestion
             // 
-            this.txtBuscarGestion.Location = new System.Drawing.Point(151, 5);
+            this.txtBuscarGestion.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F);
+            this.txtBuscarGestion.Location = new System.Drawing.Point(170, 17);
             this.txtBuscarGestion.Name = "txtBuscarGestion";
-            this.txtBuscarGestion.Size = new System.Drawing.Size(250, 22);
+            this.txtBuscarGestion.Size = new System.Drawing.Size(190, 22);
             this.txtBuscarGestion.TabIndex = 1;
             this.txtBuscarGestion.TextChanged += new System.EventHandler(this.txtBuscarGestion_TextChanged);
             // 
             // lblBuscarGestion
             // 
             this.lblBuscarGestion.AutoSize = true;
-            this.lblBuscarGestion.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold);
-            this.lblBuscarGestion.Location = new System.Drawing.Point(8, 8);
+            this.lblBuscarGestion.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F);
+            this.lblBuscarGestion.Location = new System.Drawing.Point(25, 23);
             this.lblBuscarGestion.Name = "lblBuscarGestion";
-            this.lblBuscarGestion.Size = new System.Drawing.Size(116, 16);
+            this.lblBuscarGestion.Size = new System.Drawing.Size(101, 16);
             this.lblBuscarGestion.TabIndex = 0;
             this.lblBuscarGestion.Text = "Buscar por DNI:";
             // 
@@ -731,7 +875,7 @@
             this.botModificar.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.botModificar.Image = ((System.Drawing.Image)(resources.GetObject("botModificar.Image")));
             this.botModificar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.botModificar.Location = new System.Drawing.Point(11, 223);
+            this.botModificar.Location = new System.Drawing.Point(5, 227);
             this.botModificar.Name = "botModificar";
             this.botModificar.Size = new System.Drawing.Size(120, 45);
             this.botModificar.TabIndex = 276;
@@ -762,9 +906,9 @@
             this.btnTipoUsuario.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnTipoUsuario.Image = ((System.Drawing.Image)(resources.GetObject("btnTipoUsuario.Image")));
             this.btnTipoUsuario.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnTipoUsuario.Location = new System.Drawing.Point(5, 274);
+            this.btnTipoUsuario.Location = new System.Drawing.Point(5, 436);
             this.btnTipoUsuario.Name = "btnTipoUsuario";
-            this.btnTipoUsuario.Size = new System.Drawing.Size(123, 45);
+            this.btnTipoUsuario.Size = new System.Drawing.Size(118, 45);
             this.btnTipoUsuario.TabIndex = 274;
             this.btnTipoUsuario.Text = "Tipo\r\nUsuario";
             this.btnTipoUsuario.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -809,7 +953,7 @@
             this.botCancelar.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.botCancelar.Image = ((System.Drawing.Image)(resources.GetObject("botCancelar.Image")));
             this.botCancelar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.botCancelar.Location = new System.Drawing.Point(8, 172);
+            this.botCancelar.Location = new System.Drawing.Point(5, 172);
             this.botCancelar.Name = "botCancelar";
             this.botCancelar.Size = new System.Drawing.Size(123, 45);
             this.botCancelar.TabIndex = 13;
@@ -872,9 +1016,12 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbFoto)).EndInit();
             this.tabGestion.ResumeLayout(false);
+            this.tabGestion.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvGestion)).EndInit();
             this.pnlBuscarGestion.ResumeLayout(false);
             this.pnlBuscarGestion.PerformLayout();
+            this.grpFiltroFecha.ResumeLayout(false);
+            this.grpFiltroFecha.PerformLayout();
             this.lblFaltanCargar.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -943,5 +1090,13 @@
         private System.Windows.Forms.Panel pnlBuscarGestion;
         private System.Windows.Forms.TextBox txtBuscarGestion;
         private System.Windows.Forms.Label lblBuscarGestion;
+        private System.Windows.Forms.GroupBox grpFiltroFecha;
+        private System.Windows.Forms.Label lblDesde;
+        private System.Windows.Forms.DateTimePicker dtpDesde;
+        private System.Windows.Forms.Label lblHasta;
+        private System.Windows.Forms.DateTimePicker dtpHasta;
+        private FontAwesome.Sharp.IconButton btnFiltrarFecha;
+        private FontAwesome.Sharp.IconButton btnCambioBusqueda;
+        private System.Windows.Forms.TextBox txtTotalGestion;
     }
 }

@@ -2862,6 +2862,11 @@ namespace CapaPresentacion
             {
                 retorno.PrecioBase = result;
             }
+            Double resultLista;
+            if (tbPrecioLista.Text != string.Empty && Double.TryParse(tbPrecioLista.Text, out resultLista))
+            {
+                retorno.PrecioLista = resultLista;
+            }
             retorno.Clinico = (DataTable)dgvClinico.DataSource;
             retorno.Hematologia = (DataTable)dgvHematologia.DataSource;
             retorno.QuimicaHematica = (DataTable)dgvQuimicaHematica.DataSource;
@@ -2909,6 +2914,11 @@ namespace CapaPresentacion
             if (tbPrecioBase.Text != string.Empty && Double.TryParse(tbPrecioBase.Text, out result))
             {
                 retorno.PrecioBase = result;
+            }
+            Double resultLista;
+            if (tbPrecioLista.Text != string.Empty && Double.TryParse(tbPrecioLista.Text, out resultLista))
+            {
+                retorno.PrecioLista = resultLista;
             }
             retorno.Clinico = (DataTable)dgvClinico.DataSource;
             retorno.Hematologia = (DataTable)dgvHematologia.DataSource;

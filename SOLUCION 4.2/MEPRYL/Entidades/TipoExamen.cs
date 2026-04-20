@@ -17,6 +17,7 @@ namespace Entidades
         private string descripcion;
         private string descripcionInformes;
         private Double precioBase;
+        private Double precioLista;
         private DataTable clinico;
         private DataTable hematologia;
         private DataTable quimicaHematica;
@@ -50,6 +51,7 @@ namespace Entidades
             descripcion = string.Empty;
             descripcionInformes = string.Empty;
             precioBase = 0;
+            precioLista = 0;
             clinico = new DataTable();
             hematologia = new DataTable();
             quimicaHematica = new DataTable();
@@ -147,6 +149,12 @@ namespace Entidades
         {
             get { return precioBase; }
             set { precioBase = value; }
+        }
+
+        public Double PrecioLista
+        {
+            get { return precioLista; }
+            set { precioLista = value; }
         }
 
         public DataTable Clinico

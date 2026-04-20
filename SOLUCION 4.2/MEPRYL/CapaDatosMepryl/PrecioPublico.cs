@@ -50,6 +50,8 @@ namespace CapaDatosMepryl
         {
             if (dtDatos == null || dtDatos.Rows.Count == 0) return;
 
+            StringBuilder sb = new StringBuilder();
+
             for (int i = 0; i < dtDatos.Rows.Count; i++)
             {
                 string idEspecialidad = dtDatos.Rows[i]["idEspecialidad"].ToString();
@@ -57,40 +59,31 @@ namespace CapaDatosMepryl
                 string precioLista = dtDatos.Rows[i]["PrecioLista"].ToString().Replace(",", ".");
                 string precioPromo = dtDatos.Rows[i]["PrecioPromo"].ToString().Replace(",", ".");
 
-                string strSQL = "IF EXISTS (SELECT 1 FROM PrecioPublico WHERE idEspecialidad = '" + idEspecialidad + "' AND Mes = " + mes + " AND Anio = " + anio + ") " +
-                                "UPDATE PrecioPublico SET " +
-                                "Descripcion = '" + descripcion + "', " +
-                                "PrecioLista = " + precioLista + ", " +
-                                "PrecioPromo = " + precioPromo + ", " +
-                                "FechaModificacion = GETDATE(), " +
-                                "Eliminado = 0 " +
-                                "WHERE idEspecialidad = '" + idEspecialidad + "' AND Mes = " + mes + " AND Anio = " + anio + " " +
-                                "ELSE " +
-                                "INSERT INTO PrecioPublico (idEspecialidad, Descripcion, Mes, Anio, PrecioLista, PrecioPromo) " +
-                                "VALUES('" + idEspecialidad + "', '" + descripcion + "', " + mes + ", " + anio + ", " + precioLista + ", " + precioPromo + ")";
-
-                SQLConnector.obtenerTablaSegunConsultaString(strSQL);
+                sb.Append("IF EXISTS (SELECT 1 FROM PrecioPublico WHERE idEspecialidad = '" + idEspecialidad + "' AND Mes = " + mes + " AND Anio = " + anio + ") ");
+                sb.Append("UPDATE PrecioPublico SET ");
+                sb.Append("Descripcion = '" + descripcion + "', ");
+                sb.Append("PrecioLista = " + precioLista + ", ");
+                sb.Append("PrecioPromo = " + precioPromo + ", ");
+                sb.Append("FechaModificacion = GETDATE(), ");
+                sb.Append("Eliminado = 0 ");
+                sb.Append("WHERE idEspecialidad = '" + idEspecialidad + "' AND Mes = " + mes + " AND Anio = " + anio + " ");
+                sb.Append("ELSE ");
+                sb.Append("INSERT INTO PrecioPublico (idEspecialidad, Descripcion, Mes, Anio, PrecioLista, PrecioPromo) ");
+                sb.AppendLine("VALUES('" + idEspecialidad + "', '" + descripcion + "', " + mes + ", " + anio + ", " + precioLista + ", " + precioPromo + "); ");
             }
 
-            // Sincronizar a Especialidad solo si este es el período más reciente con datos
-            string strMaxPeriodo = "SELECT MAX(Anio * 100 + Mes) FROM PrecioPublico WHERE Eliminado = 0";
-            DataTable dtMax = SQLConnector.obtenerTablaSegunConsultaString(strMaxPeriodo);
-            int periodoGuardado = anio * 100 + mes;
-            int periodoMax = 0;
-            if (dtMax != null && dtMax.Rows.Count > 0 && dtMax.Rows[0][0] != DBNull.Value)
-                periodoMax = Convert.ToInt32(dtMax.Rows[0][0]);
+            SQLConnector.obtenerTablaSegunConsultaString(sb.ToString());
 
-            if (periodoGuardado >= periodoMax)
+            // Sincronizar a Especialidad siempre al guardar
+            StringBuilder sbSync = new StringBuilder();
+            for (int i = 0; i < dtDatos.Rows.Count; i++)
             {
-                for (int i = 0; i < dtDatos.Rows.Count; i++)
-                {
-                    string idEsp = dtDatos.Rows[i]["idEspecialidad"].ToString();
-                    string pLista = dtDatos.Rows[i]["PrecioLista"].ToString().Replace(",", ".");
-                    string pPromo = dtDatos.Rows[i]["PrecioPromo"].ToString().Replace(",", ".");
-                    string strSyncSQL = "UPDATE Especialidad SET precioBase = " + pPromo + ", precioLista = " + pLista + " WHERE id = '" + idEsp + "'";
-                    SQLConnector.obtenerTablaSegunConsultaString(strSyncSQL);
-                }
+                string idEsp = dtDatos.Rows[i]["idEspecialidad"].ToString();
+                string pLista = dtDatos.Rows[i]["PrecioLista"].ToString().Replace(",", ".");
+                string pPromo = dtDatos.Rows[i]["PrecioPromo"].ToString().Replace(",", ".");
+                sbSync.AppendLine("UPDATE Especialidad SET precioBase = " + pPromo + ", precioLista = " + pLista + " WHERE id = '" + idEsp + "'; ");
             }
+            SQLConnector.obtenerTablaSegunConsultaString(sbSync.ToString());
         }
 
         /// <summary>
