@@ -1,0 +1,234 @@
+<mxfile host="app.diagrams.net" modified="2026-04-20T12:00:00.000Z" agent="Copilot" version="24.0.0" type="device">
+  <diagram id="cambios-abril-2026" name="Cambios Abril 2026">
+    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1200" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- TITULO -->
+        <mxCell id="titulo" value="&lt;b&gt;MEPRYL 4.2 — Cambios Abril 2026&lt;/b&gt;&lt;br&gt;Rama: facturacion-electronica | Commit: 1b98e91" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="450" y="20" width="500" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================ -->
+        <!-- CAPA PRESENTACION -->
+        <!-- ============================================ -->
+        <mxCell id="capa-pres" value="&lt;b&gt;Capa Presentación&lt;/b&gt;" style="swimlane;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;rounded=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="40" y="90" width="1520" height="280" as="geometry" />
+        </mxCell>
+
+        <!-- frmPreciosPublico -->
+        <mxCell id="frm-precios" value="&lt;b&gt;frmPreciosPublico.cs&lt;/b&gt;&lt;hr&gt;&lt;font size='1'&gt;✅ Fix parsing decimal (. → ,)&lt;br&gt;✅ Botón &amp;quot;Aplicar ▼&amp;quot; con ContextMenuStrip&lt;br&gt;✅ 4 opciones: ambos / solo Promo / solo Lista / desde Promo&lt;br&gt;✅ Redondeo al millar (Math.Ceiling)&lt;br&gt;✅ No resetea grilla post-save&lt;br&gt;✅ OnActivated recarga datos&lt;br&gt;✅ Fix ObjectDisposedException&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;" vertex="1" parent="capa-pres">
+          <mxGeometry x="20" y="40" width="340" height="220" as="geometry" />
+        </mxCell>
+
+        <!-- frmLocalidadNacionalidad -->
+        <mxCell id="frm-localidad" value="&lt;b&gt;frmLocalidadNacionalidad.cs&lt;/b&gt;&lt;hr&gt;&lt;font size='1'&gt;✅ llenarDatosEntidad() carga PrecioLista&lt;br&gt;✅ llenarDatosEntidadPadre() carga PrecioLista&lt;br&gt;✅ Parsea tbPrecioLista.Text → entidad&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;" vertex="1" parent="capa-pres">
+          <mxGeometry x="400" y="40" width="320" height="130" as="geometry" />
+        </mxCell>
+
+        <!-- frmUsuariosSistema -->
+        <mxCell id="frm-usuarios" value="&lt;b&gt;frmUsuariosSistema.cs&lt;/b&gt;&lt;hr&gt;&lt;font size='1'&gt;✅ Fix truncamiento de campos&lt;br&gt;✅ Mejoras Designer&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;" vertex="1" parent="capa-pres">
+          <mxGeometry x="760" y="40" width="260" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- Designer boxes -->
+        <mxCell id="designer-precios" value="&lt;font size='1'&gt;&lt;b&gt;frmPreciosPublico.Designer.cs&lt;/b&gt;&lt;br&gt;ContextMenuStrip mnuAplicar&lt;br&gt;4 ToolStripMenuItems&lt;br&gt;Dispose try/catch&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;dashed=1;" vertex="1" parent="capa-pres">
+          <mxGeometry x="400" y="190" width="220" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="designer-usuarios" value="&lt;font size='1'&gt;&lt;b&gt;frmUsuariosSistema.Designer.cs&lt;/b&gt;&lt;br&gt;+ frmUsuariosSistema.resx&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;dashed=1;" vertex="1" parent="capa-pres">
+          <mxGeometry x="760" y="160" width="220" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- VersionApp -->
+        <mxCell id="version-app" value="&lt;b&gt;VersionApp.cs&lt;/b&gt;&lt;hr&gt;&lt;font size='1'&gt;Versión actualizada&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;" vertex="1" parent="capa-pres">
+          <mxGeometry x="1060" y="40" width="160" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================ -->
+        <!-- CAPA ENTIDADES -->
+        <!-- ============================================ -->
+        <mxCell id="capa-ent" value="&lt;b&gt;Entidades&lt;/b&gt;" style="swimlane;startSize=30;fillColor=#d5e8d4;strokeColor=#82b366;rounded=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="40" y="400" width="500" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ent-tipoexamen" value="&lt;b&gt;TipoExamen.cs&lt;/b&gt;&lt;hr&gt;&lt;font size='1'&gt;✅ Nuevo campo: private Double precioLista&lt;br&gt;✅ Nueva property: public Double PrecioLista { get; set; }&lt;br&gt;✅ Inicializado en constructor&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;" vertex="1" parent="capa-ent">
+          <mxGeometry x="20" y="40" width="460" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================ -->
+        <!-- CAPA DATOS -->
+        <!-- ============================================ -->
+        <mxCell id="capa-datos" value="&lt;b&gt;Capa Datos (CapaDatosMepryl)&lt;/b&gt;" style="swimlane;startSize=30;fillColor=#f8cecc;strokeColor=#b85450;rounded=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="40" y="550" width="1100" height="200" as="geometry" />
+        </mxCell>
+
+        <mxCell id="dat-precios" value="&lt;b&gt;PrecioPublico.cs&lt;/b&gt;&lt;hr&gt;&lt;font size='1'&gt;✅ GuardarPreciosPublico: StringBuilder batch&lt;br&gt;✅ Sync a Especialidad: sin condición de período&lt;br&gt;✅ Siempre UPDATE precioBase + precioLista&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;" vertex="1" parent="capa-datos">
+          <mxGeometry x="20" y="40" width="330" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="dat-tipoexamen" value="&lt;b&gt;TipoExamen.cs&lt;/b&gt;&lt;hr&gt;&lt;font size='1'&gt;✅ editarTipoExamen pasa @precioLista al SP&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;" vertex="1" parent="capa-datos">
+          <mxGeometry x="380" y="40" width="310" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="dat-usuario" value="&lt;b&gt;UsuarioSistema.cs&lt;/b&gt;&lt;hr&gt;&lt;font size='1'&gt;✅ Fix truncamiento&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;" vertex="1" parent="capa-datos">
+          <mxGeometry x="720" y="40" width="200" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Nota sync eliminada -->
+        <mxCell id="nota-sync" value="&lt;font color='#CC0000'&gt;&lt;b&gt;BUG CORREGIDO:&lt;/b&gt; La condición&lt;br&gt;&lt;code&gt;periodoGuardado &gt;= periodoMax&lt;/code&gt;&lt;br&gt;bloqueaba sync cuando existía un&lt;br&gt;período posterior con precios en 0.&lt;br&gt;&lt;b&gt;Se eliminó la condición.&lt;/b&gt;&lt;/font&gt;" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;size=15;fillColor=#FFF4F4;strokeColor=#CC0000;fontSize=10;align=left;spacingLeft=8;" vertex="1" parent="capa-datos">
+          <mxGeometry x="20" y="138" width="330" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================ -->
+        <!-- BASE DE DATOS -->
+        <!-- ============================================ -->
+        <mxCell id="capa-bd" value="&lt;b&gt;Base de Datos (MEPRYLv2.1)&lt;/b&gt;" style="swimlane;startSize=30;fillColor=#e6d0de;strokeColor=#996185;rounded=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="40" y="780" width="1100" height="180" as="geometry" />
+        </mxCell>
+
+        <mxCell id="sp-update" value="&lt;b&gt;sp_Especialidad_Update&lt;/b&gt;&lt;hr&gt;&lt;font size='1'&gt;✅ Nuevo param: @precioLista decimal(18,2) = NULL&lt;br&gt;✅ UPDATE: precioLista = ISNULL(@precioLista, precioLista)&lt;br&gt;&lt;br&gt;⚠️ Cambio manual en BD — aplicar en cada instancia&lt;/font&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#e6d0de;strokeColor=#996185;align=left;verticalAlign=middle;spacingLeft=8;" vertex="1" parent="capa-bd">
+          <mxGeometry x="20" y="40" width="380" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="tbl-especialidad" value="&lt;b&gt;Tabla: Especialidad&lt;/b&gt;&lt;hr&gt;&lt;font size='1'&gt;precioBase (← PrecioPromo)&lt;br&gt;precioLista (← PrecioLista)&lt;br&gt;&lt;br&gt;Actualizada por:&lt;br&gt;• sp_Especialidad_Update (desde frmLocalidad)&lt;br&gt;• Sync directo (desde frmPreciosPublico)&lt;/font&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#e6d0de;strokeColor=#996185;align=left;verticalAlign=middle;spacingLeft=8;" vertex="1" parent="capa-bd">
+          <mxGeometry x="430" y="40" width="310" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="tbl-preciopub" value="&lt;b&gt;Tabla: PrecioPublico&lt;/b&gt;&lt;hr&gt;&lt;font size='1'&gt;PrecioLista, PrecioPromo&lt;br&gt;Anio, Mes, idEspecialidad&lt;br&gt;&lt;br&gt;Snapshot mensual de precios&lt;/font&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#e6d0de;strokeColor=#996185;align=left;verticalAlign=middle;spacingLeft=8;" vertex="1" parent="capa-bd">
+          <mxGeometry x="770" y="40" width="280" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================ -->
+        <!-- FLECHAS DE FLUJO -->
+        <!-- ============================================ -->
+
+        <!-- frmPreciosPublico → PrecioPublico.cs (datos) -->
+        <mxCell id="arrow1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#d6b656;strokeWidth=2;" edge="1" source="frm-precios" target="capa-datos" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="230" y="510" />
+              <mxPoint x="230" y="510" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow1-label" value="&lt;font size='1'&gt;GuardarPreciosPublico()&lt;br&gt;batch SQL&lt;/font&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="arrow1">
+          <mxGeometry x="-0.2" relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- frmLocalidadNacionalidad → TipoExamen.cs (datos) -->
+        <mxCell id="arrow2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#82b366;strokeWidth=2;" edge="1" source="frm-localidad" target="ent-tipoexamen" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow2-label" value="&lt;font size='1'&gt;llenarDatosEntidad()&lt;br&gt;PrecioLista&lt;/font&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="arrow2">
+          <mxGeometry x="-0.2" relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Entidad TipoExamen → CapaDatos TipoExamen -->
+        <mxCell id="arrow3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#82b366;strokeWidth=2;" edge="1" source="ent-tipoexamen" target="dat-tipoexamen" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow3-label" value="&lt;font size='1'&gt;editarTipoExamen()&lt;/font&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="arrow3">
+          <mxGeometry x="-0.2" relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- CapaDatos TipoExamen → SP -->
+        <mxCell id="arrow4" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#996185;strokeWidth=2;" edge="1" source="dat-tipoexamen" target="sp-update" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow4-label" value="&lt;font size='1'&gt;sp_Especialidad_Update&lt;br&gt;@precioLista&lt;/font&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="arrow4">
+          <mxGeometry x="-0.2" relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- SP → Tabla Especialidad -->
+        <mxCell id="arrow5" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;exitX=1;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;strokeColor=#996185;strokeWidth=2;" edge="1" source="sp-update" target="tbl-especialidad" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- PrecioPublico.cs (datos) → Tabla PrecioPublico -->
+        <mxCell id="arrow6" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;exitX=0.8;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;strokeColor=#b85450;strokeWidth=2;" edge="1" source="dat-precios" target="tbl-preciopub" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="324" y="770" />
+              <mxPoint x="950" y="770" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow6-label" value="&lt;font size='1'&gt;INSERT/UPDATE batch&lt;/font&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="arrow6">
+          <mxGeometry x="-0.2" relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- PrecioPublico.cs (datos) → Tabla Especialidad (SYNC) -->
+        <mxCell id="arrow7" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;strokeColor=#CC0000;strokeWidth=3;dashed=1;" edge="1" source="dat-precios" target="tbl-especialidad" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="225" y="770" />
+              <mxPoint x="625" y="770" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow7-label" value="&lt;font size='1' color='#CC0000'&gt;&lt;b&gt;SYNC directo (siempre)&lt;/b&gt;&lt;br&gt;UPDATE precioBase, precioLista&lt;/font&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="arrow7">
+          <mxGeometry x="0.1" relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================ -->
+        <!-- LEYENDA -->
+        <!-- ============================================ -->
+        <mxCell id="leyenda" value="&lt;b&gt;Leyenda&lt;/b&gt;" style="swimlane;startSize=25;fillColor=#F5F5F5;strokeColor=#666666;rounded=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1200" y="400" width="340" height="200" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ley1" value="" style="rounded=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="leyenda">
+          <mxGeometry x="10" y="35" width="20" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="ley1t" value="Capa Presentación (WinForms)" style="text;html=1;fontSize=10;align=left;" vertex="1" parent="leyenda">
+          <mxGeometry x="35" y="30" width="200" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ley2" value="" style="rounded=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="leyenda">
+          <mxGeometry x="10" y="55" width="20" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="ley2t" value="Formularios modificados" style="text;html=1;fontSize=10;align=left;" vertex="1" parent="leyenda">
+          <mxGeometry x="35" y="50" width="200" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ley3" value="" style="rounded=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="leyenda">
+          <mxGeometry x="10" y="75" width="20" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="ley3t" value="Entidades" style="text;html=1;fontSize=10;align=left;" vertex="1" parent="leyenda">
+          <mxGeometry x="35" y="70" width="200" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ley4" value="" style="rounded=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="leyenda">
+          <mxGeometry x="10" y="95" width="20" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="ley4t" value="Capa Datos" style="text;html=1;fontSize=10;align=left;" vertex="1" parent="leyenda">
+          <mxGeometry x="35" y="90" width="200" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ley5" value="" style="rounded=1;fillColor=#e6d0de;strokeColor=#996185;" vertex="1" parent="leyenda">
+          <mxGeometry x="10" y="115" width="20" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="ley5t" value="Base de Datos (SPs + Tablas)" style="text;html=1;fontSize=10;align=left;" vertex="1" parent="leyenda">
+          <mxGeometry x="35" y="110" width="200" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ley6" value="" style="endArrow=classic;html=1;strokeColor=#CC0000;strokeWidth=3;dashed=1;" edge="1" parent="leyenda">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="10" y="145" as="sourcePoint" />
+            <mxPoint x="30" y="145" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ley6t" value="Sync directo (bug corregido)" style="text;html=1;fontSize=10;align=left;fontColor=#CC0000;" vertex="1" parent="leyenda">
+          <mxGeometry x="35" y="135" width="200" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ley7t" value="&lt;font size='1'&gt;✅ = Cambio realizado&lt;br&gt;⚠️ = Requiere acción manual en BD&lt;/font&gt;" style="text;html=1;fontSize=10;align=left;" vertex="1" parent="leyenda">
+          <mxGeometry x="10" y="160" width="250" height="30" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

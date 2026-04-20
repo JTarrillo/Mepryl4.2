@@ -744,6 +744,17 @@ namespace CapaDatosMepryl
                 "@descripcion", "@idMotivoConsulta", "@precioBase", "@descripcionInformes", "@precioLista");
                 SQLConnector.executeProcedure("sp_Especialidad_Update", updateTipoExamen, entidad.Id,
                     entidad.Descripcion, entidad.IdMotivoConsulta, entidad.PrecioBase, entidad.DescripcionInformes, entidad.PrecioLista);
+
+                // Sync reverso: actualizar PrecioPublico del mes actual
+                int mesActual = DateTime.Now.Month;
+                int anioActual = DateTime.Now.Year;
+                string pBase = entidad.PrecioBase.ToString().Replace(",", ".");
+                string pLista = entidad.PrecioLista.ToString().Replace(",", ".");
+                string syncSQL = "UPDATE PrecioPublico SET PrecioPromo = " + pBase + ", PrecioLista = " + pLista +
+                    ", FechaModificacion = GETDATE() WHERE idEspecialidad = '" + entidad.Id + "' AND Mes = " + mesActual +
+                    " AND Anio = " + anioActual + " AND Eliminado = 0";
+                SQLConnector.obtenerTablaSegunConsultaString(syncSQL);
+
                 actualizarEstudiosPorTipoExamen(entidad);
                 retorno.Modo = 1;
                 return retorno;

@@ -1068,10 +1068,10 @@
             this.tbPrecioLista.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tbPrecioLista.Location = new System.Drawing.Point(945, 28);
             this.tbPrecioLista.Name = "tbPrecioLista";
-            this.tbPrecioLista.ReadOnly = true;
             this.tbPrecioLista.Size = new System.Drawing.Size(107, 22);
             this.tbPrecioLista.TabIndex = 134;
             this.tbPrecioLista.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tbPrecioLista.Enter += new System.EventHandler(this.tbPrecio_Enter);
             // 
             // tbPrecioBase
             // 
@@ -1082,6 +1082,7 @@
             this.tbPrecioBase.Size = new System.Drawing.Size(107, 22);
             this.tbPrecioBase.TabIndex = 3;
             this.tbPrecioBase.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tbPrecioBase.Enter += new System.EventHandler(this.tbPrecio_Enter);
             this.tbPrecioBase.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tbPrecioBase_KeyPress);
             // 
             // panelMenu

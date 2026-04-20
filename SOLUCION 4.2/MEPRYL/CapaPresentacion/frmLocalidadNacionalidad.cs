@@ -2614,6 +2614,7 @@ namespace CapaPresentacion
             tbDescripcion7.Enabled = estado;
             tbDescripcionInformes.Enabled = estado;
             tbPrecioBase.Enabled = estado;
+            tbPrecioLista.Enabled = estado;
             dgvBacteriologia.Enabled = estado;
             dgvBacteriologia.ReadOnly = !estado;  // Permitir edición en grids
             dgvClinico.Enabled = estado;
@@ -3057,6 +3058,15 @@ namespace CapaPresentacion
             }
             tbPrecioBase.Text = tbPrecioBase.Text.Replace('.', ',');
             tbPrecioBase.SelectionStart = tbPrecioBase.Text.Length;
+        }
+
+        private void tbPrecio_Enter(object sender, EventArgs e)
+        {
+            TextBox tb = sender as TextBox;
+            if (tb != null)
+            {
+                BeginInvoke((Action)delegate { tb.SelectAll(); });
+            }
         }
 
         private void botEliminar7_Click(object sender, EventArgs e)

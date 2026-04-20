@@ -355,8 +355,8 @@ namespace CapaPresentacion
                 this.colMotivo,
                 this.colTipo,
                 this.colDescripcion,
-                this.colPrecioLista,
-                this.colPrecioPromo});
+                this.colPrecioPromo,
+                this.colPrecioLista});
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
             dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI", 9F);
