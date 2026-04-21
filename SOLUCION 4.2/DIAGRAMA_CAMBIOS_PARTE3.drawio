@@ -1,0 +1,227 @@
+<mxfile host="app.diagrams.net" modified="2026-04-20T16:00:00.000Z" agent="Copilot" version="24.0.0" type="device">
+  <diagram id="cambios-parte3" name="Cambios Parte 3 - PrecioLista en Turnos por Periodo">
+    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1400" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- TITULO -->
+        <mxCell id="titulo" value="&lt;b&gt;MEPRYL 4.2 — Cambios Parte 3&lt;/b&gt;&lt;br&gt;PrecioLista en Turnos + Precios por Periodo (DB: periodo)" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="300" y="20" width="600" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================ -->
+        <!-- SECCION 1: CAMBIOS EN BASE DE DATOS -->
+        <!-- ============================================ -->
+        <mxCell id="sec1" value="&lt;b&gt;1. Cambios en Base de Datos (DB: periodo)&lt;/b&gt;" style="swimlane;startSize=30;fillColor=#E8EAF6;strokeColor=#3949AB;rounded=1;fontSize=13;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="90" width="1500" height="300" as="geometry" />
+        </mxCell>
+
+        <!-- Tabla TipoExamenDePaciente ANTES -->
+        <mxCell id="tep-antes-title" value="&lt;b&gt;TipoExamenDePaciente — ANTES&lt;/b&gt;" style="text;html=1;fontSize=11;fontColor=#999999;align=center;" vertex="1" parent="sec1">
+          <mxGeometry x="30" y="40" width="250" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="tep-antes" value="&lt;font size='1'&gt;&lt;code&gt;id uniqueidentifier PK&lt;br&gt;idConsulta uniqueidentifier&lt;br&gt;idTurno uniqueidentifier&lt;br&gt;modificado varchar(3)&lt;br&gt;idEspecialidad uniqueidentifier&lt;br&gt;&lt;b&gt;precioExamen decimal(18,2)&lt;/b&gt;&lt;br&gt;factClub varchar(1)&lt;br&gt;rm, imp, inf, mail...&lt;/code&gt;&lt;/font&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#F5F5F5;strokeColor=#999999;verticalAlign=middle;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="sec1">
+          <mxGeometry x="30" y="65" width="250" height="165" as="geometry" />
+        </mxCell>
+
+        <!-- Flecha -->
+        <mxCell id="arrow-tep" value="" style="endArrow=classic;html=1;strokeColor=#3949AB;strokeWidth=3;" edge="1" parent="sec1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="290" y="145" as="sourcePoint" />
+            <mxPoint x="340" y="145" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Tabla TipoExamenDePaciente DESPUES -->
+        <mxCell id="tep-despues-title" value="&lt;b&gt;TipoExamenDePaciente — AHORA&lt;/b&gt;" style="text;html=1;fontSize=11;fontColor=#2E7D32;align=center;" vertex="1" parent="sec1">
+          <mxGeometry x="340" y="40" width="260" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="tep-despues" value="&lt;font size='1'&gt;&lt;code&gt;id uniqueidentifier PK&lt;br&gt;idConsulta uniqueidentifier&lt;br&gt;idTurno uniqueidentifier&lt;br&gt;modificado varchar(3)&lt;br&gt;idEspecialidad uniqueidentifier&lt;br&gt;&lt;b&gt;precioExamen decimal(18,2)&lt;/b&gt;&lt;br&gt;factClub varchar(1)&lt;br&gt;rm, imp, inf, mail...&lt;br&gt;&lt;/code&gt;&lt;font color='#CC0000'&gt;&lt;b&gt;precioLista decimal(18,2) NULL ← NUEVO&lt;/b&gt;&lt;/font&gt;&lt;/font&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#E8F5E9;strokeColor=#2E7D32;strokeWidth=2;verticalAlign=middle;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="sec1">
+          <mxGeometry x="340" y="65" width="260" height="175" as="geometry" />
+        </mxCell>
+
+        <!-- SP Add -->
+        <mxCell id="sp-add" value="&lt;b&gt;sp_TipoExamenDePaciente_Add&lt;/b&gt;&lt;br&gt;&lt;font size='1'&gt;ANTES: 6 params (@importe)&lt;br&gt;&lt;font color='#CC0000'&gt;&lt;b&gt;AHORA: 7 params (+@precioLista)&lt;/b&gt;&lt;/font&gt;&lt;br&gt;INSERT incluye precioLista&lt;br&gt;@precioLista DEFAULT NULL (retrocompat)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#F9A825;verticalAlign=middle;align=left;spacingLeft=8;fontSize=10;" vertex="1" parent="sec1">
+          <mxGeometry x="680" y="50" width="280" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- SP Update -->
+        <mxCell id="sp-upd" value="&lt;b&gt;sp_TipoExamenDePaciente_Update&lt;/b&gt;&lt;br&gt;&lt;font size='1'&gt;ANTES: 4 params (@importe)&lt;br&gt;&lt;font color='#CC0000'&gt;&lt;b&gt;AHORA: 5 params (+@precioLista)&lt;/b&gt;&lt;/font&gt;&lt;br&gt;SET precioLista = @precioLista&lt;br&gt;@precioLista DEFAULT NULL&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#F9A825;verticalAlign=middle;align=left;spacingLeft=8;fontSize=10;" vertex="1" parent="sec1">
+          <mxGeometry x="680" y="155" width="280" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- SP UpdateModificadoEImporte -->
+        <mxCell id="sp-updmod" value="&lt;b&gt;sp_TipoExamenDePaciente_UpdateModificadoEImporte&lt;/b&gt;&lt;br&gt;&lt;font size='1'&gt;ANTES: 3 params&lt;br&gt;&lt;font color='#CC0000'&gt;&lt;b&gt;AHORA: 4 params (+@precioLista)&lt;/b&gt;&lt;/font&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#F9A825;verticalAlign=middle;align=left;spacingLeft=8;fontSize=10;" vertex="1" parent="sec1">
+          <mxGeometry x="1020" y="50" width="370" height="65" as="geometry" />
+        </mxCell>
+
+        <!-- Nota DB -->
+        <mxCell id="nota-db" value="&lt;font color='#3949AB'&gt;&lt;b&gt;Base de datos: periodo&lt;/b&gt;&lt;br&gt;(backup de MEPRYLv2.1)&lt;br&gt;&lt;br&gt;SQL ejecutado:&lt;br&gt;&lt;code&gt;ALTER TABLE TipoExamenDePaciente&lt;br&gt;ADD precioLista decimal(18,2) NULL&lt;/code&gt;&lt;br&gt;&lt;br&gt;3 SPs modificados con ALTER PROCEDURE&lt;br&gt;Todos con DEFAULT NULL para retrocompatibilidad&lt;/font&gt;" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;size=15;fillColor=#E8EAF6;strokeColor=#3949AB;fontSize=10;align=left;spacingLeft=8;" vertex="1" parent="sec1">
+          <mxGeometry x="1020" y="130" width="370" height="140" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================ -->
+        <!-- SECCION 2: FLUJO DE PRECIOS POR PERIODO -->
+        <!-- ============================================ -->
+        <mxCell id="sec2" value="&lt;b&gt;2. Flujo: Precios por Periodo al asignar paciente a turno&lt;/b&gt;" style="swimlane;startSize=30;fillColor=#E8F5E9;strokeColor=#43A047;rounded=1;fontSize=13;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="410" width="1500" height="380" as="geometry" />
+        </mxCell>
+
+        <!-- frmTurno -->
+        <mxCell id="frm-turno" value="&lt;b&gt;frmTurno.cs&lt;/b&gt;&lt;br&gt;&lt;font size='1'&gt;Formulario de Turnos&lt;br&gt;(CapaPresentacion)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;verticalAlign=middle;" vertex="1" parent="sec2">
+          <mxGeometry x="30" y="60" width="180" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Paso 1: Obtener idEspecialidad -->
+        <mxCell id="paso1" value="&lt;b&gt;① Obtener idEspecialidad&lt;/b&gt;&lt;br&gt;&lt;font size='1'&gt;SELECT e.id FROM Horario h&lt;br&gt;INNER JOIN Especialidad e&lt;br&gt;ON h.especialidadID = e.id&lt;br&gt;WHERE h.id = @horarioID&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;verticalAlign=middle;align=left;spacingLeft=8;fontSize=10;" vertex="1" parent="sec2">
+          <mxGeometry x="280" y="45" width="230" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- PrecioPublico lookup -->
+        <mxCell id="paso2" value="&lt;b&gt;② Buscar en PrecioPublico&lt;/b&gt;&lt;br&gt;&lt;font size='1'&gt;&lt;font color='#CC0000'&gt;&lt;b&gt;NUEVO:&lt;/b&gt;&lt;/font&gt; SELECT PrecioPromo, PrecioLista&lt;br&gt;FROM PrecioPublico&lt;br&gt;WHERE idEspecialidad = @idEsp&lt;br&gt;&lt;b&gt;AND Mes = turno.fecha.Month&lt;/b&gt;&lt;br&gt;&lt;b&gt;AND Anio = turno.fecha.Year&lt;/b&gt;&lt;br&gt;AND Eliminado = 0&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#43A047;strokeWidth=2;verticalAlign=middle;align=left;spacingLeft=8;fontSize=10;" vertex="1" parent="sec2">
+          <mxGeometry x="580" y="40" width="260" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- Tabla PrecioPublico -->
+        <mxCell id="tbl-pp" value="&lt;b&gt;PrecioPublico&lt;/b&gt;&lt;br&gt;&lt;font size='1'&gt;idEspecialidad&lt;br&gt;Mes | Anio&lt;br&gt;&lt;b&gt;PrecioPromo&lt;/b&gt;&lt;br&gt;&lt;b&gt;PrecioLista&lt;/b&gt;&lt;/font&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#e6d0de;strokeColor=#996185;verticalAlign=middle;" vertex="1" parent="sec2">
+          <mxGeometry x="920" y="40" width="150" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- Fallback Especialidad -->
+        <mxCell id="fallback" value="&lt;b&gt;③ Fallback: Especialidad&lt;/b&gt;&lt;br&gt;&lt;font size='1'&gt;Si no hay registro en PrecioPublico:&lt;br&gt;SELECT precioBase, precioLista&lt;br&gt;FROM Especialidad WHERE id = @idEsp&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF3E0;strokeColor=#E65100;verticalAlign=middle;align=left;spacingLeft=8;fontSize=10;dashed=1;" vertex="1" parent="sec2">
+          <mxGeometry x="580" y="175" width="260" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Tabla Especialidad -->
+        <mxCell id="tbl-esp" value="&lt;b&gt;Especialidad&lt;/b&gt;&lt;br&gt;&lt;font size='1'&gt;precioBase&lt;br&gt;precioLista&lt;/font&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#e6d0de;strokeColor=#996185;verticalAlign=middle;" vertex="1" parent="sec2">
+          <mxGeometry x="920" y="165" width="150" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- Resultado -->
+        <mxCell id="resultado" value="&lt;b&gt;④ Resultado&lt;/b&gt;&lt;br&gt;&lt;font size='1'&gt;&lt;b&gt;importe&lt;/b&gt; = PrecioPromo (precio con descuento)&lt;br&gt;&lt;b&gt;importeLista&lt;/b&gt; = PrecioLista (precio oficial)&lt;br&gt;&lt;br&gt;Ambos quedan bloqueados al periodo del turno.&lt;br&gt;Turnos ya asignados conservan su precio.&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;verticalAlign=middle;align=left;spacingLeft=8;fontSize=10;" vertex="1" parent="sec2">
+          <mxGeometry x="1140" y="60" width="310" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- TipoExamenDePaciente destino -->
+        <mxCell id="tep-dest" value="&lt;b&gt;⑤ Guardar en TipoExamenDePaciente&lt;/b&gt;&lt;br&gt;&lt;font size='1'&gt;precioExamen = importe (PrecioPromo)&lt;br&gt;&lt;font color='#CC0000'&gt;&lt;b&gt;precioLista = importeLista (NUEVO)&lt;/b&gt;&lt;/font&gt;&lt;br&gt;→ Precio queda fijo al momento de asignación&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FCE4EC;strokeColor=#C62828;strokeWidth=2;verticalAlign=middle;align=left;spacingLeft=8;fontSize=10;" vertex="1" parent="sec2">
+          <mxGeometry x="1140" y="175" width="310" height="75" as="geometry" />
+        </mxCell>
+
+        <!-- FLECHAS -->
+        <mxCell id="f1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#d6b656;strokeWidth=2;" edge="1" source="frm-turno" target="paso1" parent="sec2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="f1-lbl" value="&lt;font size='1'&gt;asignarPaciente()&lt;/font&gt;" style="edgeLabel;html=1;" vertex="1" connectable="0" parent="f1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="f2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#43A047;strokeWidth=2;" edge="1" source="paso1" target="paso2" parent="sec2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="f3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#43A047;strokeWidth=2;" edge="1" source="paso2" target="tbl-pp" parent="sec2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="f4" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#E65100;strokeWidth=2;dashed=1;" edge="1" source="paso2" target="fallback" parent="sec2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="f4-lbl" value="&lt;font size='1' color='#E65100'&gt;si Rows.Count == 0&lt;/font&gt;" style="edgeLabel;html=1;" vertex="1" connectable="0" parent="f4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="f5" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#E65100;strokeWidth=2;dashed=1;" edge="1" source="fallback" target="tbl-esp" parent="sec2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="f6" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#1565C0;strokeWidth=2;" edge="1" source="tbl-pp" target="resultado" parent="sec2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="f7" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#C62828;strokeWidth=2;" edge="1" source="resultado" target="tep-dest" parent="sec2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="f7-lbl" value="&lt;font size='1'&gt;TurnoFactory.modificar()&lt;br&gt;→ sp_Add / sp_Update&lt;/font&gt;" style="edgeLabel;html=1;" vertex="1" connectable="0" parent="f7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Nota periodo -->
+        <mxCell id="nota-periodo" value="&lt;font color='#1565C0'&gt;&lt;b&gt;Precio por Periodo&lt;/b&gt;&lt;br&gt;El turno toma el precio del &lt;b&gt;mes/año&lt;/b&gt;&lt;br&gt;de su fecha (rglEntidad.fecha).&lt;br&gt;&lt;br&gt;• &lt;b&gt;Abril 2026:&lt;/b&gt; Promo=50.000, Lista=76.000&lt;br&gt;• &lt;b&gt;Mayo 2026:&lt;/b&gt; Promo=55.000, Lista=80.000&lt;br&gt;&lt;br&gt;Al cambiar de periodo los nuevos turnos&lt;br&gt;toman automáticamente los precios nuevos.&lt;br&gt;Los ya asignados conservan su precio.&lt;/font&gt;" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;size=15;fillColor=#E3F2FD;strokeColor=#1565C0;fontSize=10;align=left;spacingLeft=8;" vertex="1" parent="sec2">
+          <mxGeometry x="30" y="170" width="290" height="175" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================ -->
+        <!-- SECCION 3: ARCHIVOS C# MODIFICADOS -->
+        <!-- ============================================ -->
+        <mxCell id="sec3" value="&lt;b&gt;3. Archivos C# Modificados&lt;/b&gt;" style="swimlane;startSize=30;fillColor=#FFF3E0;strokeColor=#E65100;rounded=1;fontSize=13;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="810" width="1500" height="340" as="geometry" />
+        </mxCell>
+
+        <!-- Turno.cs -->
+        <mxCell id="turno-cs" value="&lt;b&gt;CapaDatos/Turno.cs&lt;/b&gt;&lt;br&gt;&lt;font size='1'&gt;&lt;font color='#CC0000'&gt;&lt;b&gt;NUEVO campo:&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;code&gt;public double importeLista = 0;&lt;/code&gt;&lt;br&gt;&lt;br&gt;Antes solo tenía:&lt;br&gt;&lt;code&gt;public double importe = 0;&lt;/code&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FCE4EC;strokeColor=#C62828;verticalAlign=middle;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="sec3">
+          <mxGeometry x="30" y="50" width="220" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- TurnoFactory.cs -->
+        <mxCell id="turno-factory" value="&lt;b&gt;CapaDatos/TurnoFactory.cs&lt;/b&gt;&lt;br&gt;&lt;font size='1'&gt;&lt;font color='#CC0000'&gt;&lt;b&gt;MODIFICADO: modificar()&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;br&gt;• SqlParameter[4] → SqlParameter[&lt;b&gt;5&lt;/b&gt;]&lt;br&gt;• p[4] = new SqlParameter(&quot;@precioLista&quot;,&lt;br&gt;&amp;nbsp;&amp;nbsp;turno.importeLista)&lt;br&gt;• generarListaParaProcedure: +&quot;@precioLista&quot;&lt;br&gt;• executeProcedureWithReturnValue:&lt;br&gt;&amp;nbsp;&amp;nbsp;+turno.importeLista al final&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FCE4EC;strokeColor=#C62828;verticalAlign=middle;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="sec3">
+          <mxGeometry x="280" y="50" width="280" height="150" as="geometry" />
+        </mxCell>
+
+        <!-- frmTurno.cs -->
+        <mxCell id="frm-turno-cs" value="&lt;b&gt;CapaPresentacion/frmTurno.cs&lt;/b&gt;&lt;br&gt;&lt;font size='1'&gt;&lt;font color='#CC0000'&gt;&lt;b&gt;6 PUNTOS MODIFICADOS:&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;a)&lt;/b&gt; Campo estático: &lt;code&gt;public static double importeLista;&lt;/code&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;b)&lt;/b&gt; Guardar turno (~L300): PrecioPublico por Mes/Anio&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;en vez de Especialidad.precioBase&lt;br&gt;&lt;br&gt;&lt;b&gt;c)&lt;/b&gt; Asignar paciente (~L992): PrecioPublico por periodo&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;en vez de Horario→Especialidad.precioBase&lt;br&gt;&lt;br&gt;&lt;b&gt;d)&lt;/b&gt; Toggle factClub (~L1455): PrecioPublico por periodo&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;al restaurar precio después de desmarcar&lt;br&gt;&lt;br&gt;&lt;b&gt;e)&lt;/b&gt; Cargar turno existente (~L700): SELECT incluye&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;te.precioLista → lee importeLista de DB&lt;br&gt;&lt;br&gt;&lt;b&gt;f)&lt;/b&gt; Entidad: rglEntidad.importeLista = importeLista&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FCE4EC;strokeColor=#C62828;verticalAlign=middle;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="sec3">
+          <mxGeometry x="590" y="40" width="360" height="280" as="geometry" />
+        </mxCell>
+
+        <!-- Diagrama de antes vs ahora queries -->
+        <mxCell id="antes-query-title" value="&lt;b&gt;ANTES (precio fijo)&lt;/b&gt;" style="text;html=1;fontSize=11;fontColor=#999999;align=center;" vertex="1" parent="sec3">
+          <mxGeometry x="1000" y="40" width="220" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="antes-query" value="&lt;font size='1'&gt;&lt;code&gt;SELECT precioBase&lt;br&gt;FROM Especialidad&lt;br&gt;WHERE id = @idEspecialidad&lt;/code&gt;&lt;br&gt;&lt;br&gt;❌ Sin precioLista&lt;br&gt;❌ Sin periodo (siempre mismo precio)&lt;br&gt;❌ Un solo campo: importe&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFEBEE;strokeColor=#C62828;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="sec3">
+          <mxGeometry x="1000" y="65" width="220" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="arrow-vs" value="" style="endArrow=classic;html=1;strokeColor=#E65100;strokeWidth=3;" edge="1" parent="sec3">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1230" y="125" as="sourcePoint" />
+            <mxPoint x="1260" y="125" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="ahora-query-title" value="&lt;b&gt;AHORA (precio por periodo)&lt;/b&gt;" style="text;html=1;fontSize=11;fontColor=#2E7D32;align=center;" vertex="1" parent="sec3">
+          <mxGeometry x="1260" y="40" width="220" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="ahora-query" value="&lt;font size='1'&gt;&lt;code&gt;SELECT PrecioPromo, PrecioLista&lt;br&gt;FROM PrecioPublico&lt;br&gt;WHERE idEspecialidad = @idEsp&lt;br&gt;&lt;b&gt;AND Mes = @mes AND Anio = @anio&lt;/b&gt;&lt;br&gt;AND Eliminado = 0&lt;/code&gt;&lt;br&gt;&lt;br&gt;✅ PrecioPromo + PrecioLista&lt;br&gt;✅ Según periodo del turno&lt;br&gt;✅ Fallback a Especialidad si no hay registro&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;strokeWidth=2;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="sec3">
+          <mxGeometry x="1260" y="65" width="220" height="155" as="geometry" />
+        </mxCell>
+
+        <!-- Flechas entre archivos -->
+        <mxCell id="fa1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#E65100;strokeWidth=2;" edge="1" source="turno-cs" target="turno-factory" parent="sec3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="fa1-lbl" value="&lt;font size='1'&gt;turno.importeLista&lt;/font&gt;" style="edgeLabel;html=1;" vertex="1" connectable="0" parent="fa1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="fa2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#E65100;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" source="turno-factory" target="frm-turno-cs" parent="sec3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="fa2-lbl" value="&lt;font size='1'&gt;llamado desde frmTurno&lt;/font&gt;" style="edgeLabel;html=1;" vertex="1" connectable="0" parent="fa2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================ -->
+        <!-- RESUMEN -->
+        <!-- ============================================ -->
+        <mxCell id="resumen" value="&lt;b&gt;Resumen de cambios Parte 3&lt;/b&gt;" style="swimlane;startSize=25;fillColor=#F5F5F5;strokeColor=#666666;rounded=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1170" width="1500" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="res-items" value="&lt;font size='1'&gt;&lt;b&gt;DB periodo — ALTER TABLE:&lt;/b&gt; TipoExamenDePaciente + precioLista decimal(18,2) NULL &amp;nbsp;|&amp;nbsp; &lt;b&gt;DB periodo — 3 SPs:&lt;/b&gt; sp_TipoExamenDePaciente_Add, _Update, _UpdateModificadoEImporte (+@precioLista) &amp;nbsp;|&amp;nbsp; &lt;b&gt;CapaDatos/Turno.cs:&lt;/b&gt; +importeLista &amp;nbsp;|&amp;nbsp; &lt;b&gt;CapaDatos/TurnoFactory.cs:&lt;/b&gt; pasa importeLista como @precioLista a SPs &amp;nbsp;|&amp;nbsp; &lt;b&gt;CapaPresentacion/frmTurno.cs:&lt;/b&gt; lee precios de PrecioPublico por Mes/Anio del turno en 4 puntos, con fallback a Especialidad&lt;/font&gt;" style="text;html=1;fontSize=10;align=left;verticalAlign=top;spacingLeft=8;" vertex="1" parent="resumen">
+          <mxGeometry x="10" y="30" width="1480" height="50" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

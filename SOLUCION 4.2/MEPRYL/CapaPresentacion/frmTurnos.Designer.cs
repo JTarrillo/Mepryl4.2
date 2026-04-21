@@ -75,6 +75,8 @@ namespace CapaPresentacion
             this.cbFactEmpresaLaboral = new System.Windows.Forms.CheckBox();
             this.cbExamenModificadoLaboral = new System.Windows.Forms.CheckBox();
             this.tbImporteLaboral = new System.Windows.Forms.TextBox();
+            this.tbImporteListaLaboral = new System.Windows.Forms.TextBox();
+            this.lblImporteListaLaboral = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
             this.tbExamenLaboral = new System.Windows.Forms.TextBox();
             this.label11 = new System.Windows.Forms.Label();
@@ -93,6 +95,8 @@ namespace CapaPresentacion
             this.label1 = new System.Windows.Forms.Label();
             this.tbDniPreventiva = new System.Windows.Forms.TextBox();
             this.tbImportePreventiva = new System.Windows.Forms.TextBox();
+            this.tbImporteListaPreventiva = new System.Windows.Forms.TextBox();
+            this.lblImporteListaPreventiva = new System.Windows.Forms.Label();
             this.tbIdTurnoPreventiva = new System.Windows.Forms.TextBox();
             this.tbIdTipoExamenPreventiva = new System.Windows.Forms.TextBox();
             this.tbIdPacientePreventiva = new System.Windows.Forms.TextBox();
@@ -584,6 +588,8 @@ namespace CapaPresentacion
             this.panelLaboral.Controls.Add(this.cbFactEmpresaLaboral);
             this.panelLaboral.Controls.Add(this.cbExamenModificadoLaboral);
             this.panelLaboral.Controls.Add(this.tbImporteLaboral);
+            this.panelLaboral.Controls.Add(this.tbImporteListaLaboral);
+            this.panelLaboral.Controls.Add(this.lblImporteListaLaboral);
             this.panelLaboral.Controls.Add(this.label10);
             this.panelLaboral.Controls.Add(this.tbExamenLaboral);
             this.panelLaboral.Controls.Add(this.label11);
@@ -803,6 +809,28 @@ namespace CapaPresentacion
             this.tbImporteLaboral.TabIndex = 34;
             this.tbImporteLaboral.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
+            // lblImporteListaLaboral
+            // 
+            this.lblImporteListaLaboral.AutoSize = true;
+            this.lblImporteListaLaboral.Font = new System.Drawing.Font("Tahoma", 9.75F);
+            this.lblImporteListaLaboral.Location = new System.Drawing.Point(445, 50);
+            this.lblImporteListaLaboral.Name = "lblImporteListaLaboral";
+            this.lblImporteListaLaboral.Size = new System.Drawing.Size(62, 16);
+            this.lblImporteListaLaboral.TabIndex = 60;
+            this.lblImporteListaLaboral.Text = "Imp. Lista";
+            // 
+            // tbImporteListaLaboral
+            // 
+            this.tbImporteListaLaboral.BackColor = System.Drawing.Color.White;
+            this.tbImporteListaLaboral.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tbImporteListaLaboral.ForeColor = System.Drawing.Color.DarkBlue;
+            this.tbImporteListaLaboral.Location = new System.Drawing.Point(445, 69);
+            this.tbImporteListaLaboral.Name = "tbImporteListaLaboral";
+            this.tbImporteListaLaboral.ReadOnly = true;
+            this.tbImporteListaLaboral.Size = new System.Drawing.Size(94, 22);
+            this.tbImporteListaLaboral.TabIndex = 61;
+            this.tbImporteListaLaboral.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
             // label10
             // 
             this.label10.AutoSize = true;
@@ -911,6 +939,8 @@ namespace CapaPresentacion
             this.panelPacientePreventiva.Controls.Add(this.label1);
             this.panelPacientePreventiva.Controls.Add(this.tbDniPreventiva);
             this.panelPacientePreventiva.Controls.Add(this.tbImportePreventiva);
+            this.panelPacientePreventiva.Controls.Add(this.tbImporteListaPreventiva);
+            this.panelPacientePreventiva.Controls.Add(this.lblImporteListaPreventiva);
             this.panelPacientePreventiva.Controls.Add(this.tbIdTurnoPreventiva);
             this.panelPacientePreventiva.Controls.Add(this.tbIdTipoExamenPreventiva);
             this.panelPacientePreventiva.Controls.Add(this.tbIdPacientePreventiva);
@@ -1020,6 +1050,28 @@ namespace CapaPresentacion
             this.tbImportePreventiva.Size = new System.Drawing.Size(115, 22);
             this.tbImportePreventiva.TabIndex = 34;
             this.tbImportePreventiva.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // lblImporteListaPreventiva
+            // 
+            this.lblImporteListaPreventiva.AutoSize = true;
+            this.lblImporteListaPreventiva.Font = new System.Drawing.Font("Tahoma", 9.75F);
+            this.lblImporteListaPreventiva.Location = new System.Drawing.Point(445, 51);
+            this.lblImporteListaPreventiva.Name = "lblImporteListaPreventiva";
+            this.lblImporteListaPreventiva.Size = new System.Drawing.Size(62, 16);
+            this.lblImporteListaPreventiva.TabIndex = 62;
+            this.lblImporteListaPreventiva.Text = "Imp. Lista";
+            // 
+            // tbImporteListaPreventiva
+            // 
+            this.tbImporteListaPreventiva.BackColor = System.Drawing.Color.White;
+            this.tbImporteListaPreventiva.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tbImporteListaPreventiva.ForeColor = System.Drawing.Color.DarkBlue;
+            this.tbImporteListaPreventiva.Location = new System.Drawing.Point(445, 71);
+            this.tbImporteListaPreventiva.Name = "tbImporteListaPreventiva";
+            this.tbImporteListaPreventiva.ReadOnly = true;
+            this.tbImporteListaPreventiva.Size = new System.Drawing.Size(115, 22);
+            this.tbImporteListaPreventiva.TabIndex = 63;
+            this.tbImporteListaPreventiva.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // tbIdTurnoPreventiva
             // 
@@ -1958,6 +2010,8 @@ namespace CapaPresentacion
         private System.Windows.Forms.CheckBox cbFactClubPreventiva;
         private System.Windows.Forms.CheckBox cbExamenModifPreventiva;
         private System.Windows.Forms.TextBox tbImportePreventiva;
+        private System.Windows.Forms.TextBox tbImporteListaPreventiva;
+        private System.Windows.Forms.Label lblImporteListaPreventiva;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.TextBox tbExamenPreventiva;
         private System.Windows.Forms.Label label6;
@@ -1983,6 +2037,8 @@ namespace CapaPresentacion
         private System.Windows.Forms.TextBox tbExamenLaboral;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.TextBox tbImporteLaboral;
+        private System.Windows.Forms.TextBox tbImporteListaLaboral;
+        private System.Windows.Forms.Label lblImporteListaLaboral;
         private System.Windows.Forms.CheckBox cbExamenModificadoLaboral;
         private System.Windows.Forms.CheckBox cbFactEmpresaLaboral;
         private System.Windows.Forms.Label label9;

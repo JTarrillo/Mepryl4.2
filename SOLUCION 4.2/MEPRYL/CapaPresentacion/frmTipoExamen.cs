@@ -57,6 +57,7 @@ namespace CapaPresentacion
         {
             tbTipoExamen.Text = tipoExamen.Descripcion;
             tbImporte.Text = tipoExamen.PrecioBase.ToString();
+            tbImporteLista.Text = tipoExamen.PrecioLista.ToString();
             tbId.Text = tipoExamen.Id.ToString();
             if (tipoExamen.Modificado)
             {
@@ -195,6 +196,11 @@ namespace CapaPresentacion
             if (tbImporte.Text != string.Empty && Double.TryParse(tbImporte.Text, out result))
             {
                 tipoExamen.PrecioBase = result;
+            }
+            Double resultLista;
+            if (tbImporteLista.Text != string.Empty && Double.TryParse(tbImporteLista.Text, out resultLista))
+            {
+                tipoExamen.PrecioLista = resultLista;
             }
             tipoExamen.Clinico = (DataTable)dgvClinico.DataSource;
             tipoExamen.Hematologia = (DataTable)dgvHematologia.DataSource;

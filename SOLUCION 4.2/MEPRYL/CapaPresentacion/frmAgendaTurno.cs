@@ -15,8 +15,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using OfficeOpenXml;
-using OfficeOpenXml.Style;
+using Excel = Microsoft.Office.Interop.Excel;
 
 namespace CapaPresentacion
 {
@@ -405,63 +404,83 @@ namespace CapaPresentacion
 
         private void comenzarExportacion()
         {
+            Microsoft.Office.Interop.Excel.Application excel = new Microsoft.Office.Interop.Excel.Application();
+            Microsoft.Office.Interop.Excel.Workbook excelworkBook;
+            Microsoft.Office.Interop.Excel.Worksheet excelSheet;
+
+            excel.Visible = false;
+            excel.DisplayAlerts = false;
+            excel.SheetsInNewWorkbook = 1;
+            excelworkBook = (Microsoft.Office.Interop.Excel.Workbook)(excel.Workbooks.Add(Type.Missing));
+            excelSheet = (Microsoft.Office.Interop.Excel.Worksheet)excelworkBook.ActiveSheet;
+            excelSheet.Name = "Hoja 1";
+
+            excelSheet.Cells[1, 1] = "FECHA";
+            excelSheet.Cells[1, 2] = "HORA";
+            excelSheet.Cells[1, 3] = "TIPO DE EXAMEN";
+            excelSheet.Cells[1, 4] = "DNI";
+            excelSheet.Cells[1, 5] = "PACIENTE";
+            excelSheet.Cells[1, 6] = "CATEGORIA";
+            excelSheet.Cells[1, 7] = "LIGA/EMPRESA";
+            excelSheet.Cells[1, 8] = "CLUB";
+            excelSheet.Cells[1, 9] = "TELEFONO";
+            excelSheet.Cells[1, 10] = "EX. CLINICO";
+            excelSheet.Cells[1, 11] = "LABORATORIO";
+            excelSheet.Cells[1, 12] = "RX";
+            excelSheet.Cells[1, 13] = "EST. COMPLEMENTARIO";
+
+            setearColorYBorde(excel.get_Range("A1", "M1"));
+
             DataTable grilla = (DataTable)dgv.DataSource;
+
+            // Forzar columna Fecha como texto para mantener formato dd/mm/yyyy
+            excel.get_Range("A2", "A" + (grilla.Rows.Count + 1).ToString()).NumberFormat = "@";
 
             progressBar.Visible = true;
             progressBar.Minimum = 1;
             progressBar.Maximum = grilla.Rows.Count;
             progressBar.Step = 1;
 
-            using (var package = new ExcelPackage())
+            int i = 1;
+
+            foreach (DataRow dr in grilla.Rows)
             {
-                var sheet = package.Workbook.Worksheets.Add("Hoja 1");
+                excelSheet.Cells[i + 1, 1] = dr.ItemArray[3].ToString();   // Fecha
+                excelSheet.Cells[i + 1, 2] = dr.ItemArray[4].ToString();   // Hora
+                excelSheet.Cells[i + 1, 3] = dr.ItemArray[5].ToString();   // TipoExamen
+                excelSheet.Cells[i + 1, 4] = dr.ItemArray[6].ToString();   // Dni
+                excelSheet.Cells[i + 1, 5] = dr.ItemArray[7].ToString();   // Paciente
+                excelSheet.Cells[i + 1, 6] = dr.ItemArray[8].ToString();   // Categoria
+                excelSheet.Cells[i + 1, 7] = dr.ItemArray[9].ToString();   // Liga/Empresa
+                excelSheet.Cells[i + 1, 8] = dr.ItemArray[10].ToString();  // Club
+                excelSheet.Cells[i + 1, 9] = dr.ItemArray[11].ToString();  // Telefono
+                excelSheet.Cells[i + 1, 10] = dr.ItemArray[12].ToString(); // ExClinico
+                excelSheet.Cells[i + 1, 11] = dr.ItemArray[13].ToString(); // Laboratorio
+                excelSheet.Cells[i + 1, 12] = dr.ItemArray[14].ToString(); // RX
+                excelSheet.Cells[i + 1, 13] = dr.ItemArray[15].ToString(); // EstComplementario
 
-                // Encabezados
-                string[] headers = { "FECHA", "HORA", "TIPO DE EXAMEN", "DNI", "PACIENTE",
-                    "CATEGORIA", "LIGA/EMPRESA", "CLUB", "TELEFONO", "EX. CLINICO",
-                    "LABORATORIO", "RX", "EST. COMPLEMENTARIO" };
-
-                for (int col = 0; col < headers.Length; col++)
-                {
-                    var cell = sheet.Cells[1, col + 1];
-                    cell.Value = headers[col];
-                    cell.Style.Font.Bold = true;
-                    cell.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                    cell.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.PowderBlue);
-                    cell.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                    cell.Style.Border.BorderAround(ExcelBorderStyle.Medium);
-                }
-
-                // Datos
-                int row = 2;
-                foreach (DataRow dr in grilla.Rows)
-                {
-                    sheet.Cells[row, 1].Value = dr.ItemArray[3].ToString();  // Fecha
-                    sheet.Cells[row, 1].Style.Numberformat.Format = "@";     // Forzar texto
-                    sheet.Cells[row, 2].Value = dr.ItemArray[4].ToString();  // Hora
-                    sheet.Cells[row, 3].Value = dr.ItemArray[5].ToString();  // TipoExamen
-                    sheet.Cells[row, 4].Value = dr.ItemArray[6].ToString();  // Dni
-                    sheet.Cells[row, 5].Value = dr.ItemArray[7].ToString();  // Paciente
-                    sheet.Cells[row, 6].Value = dr.ItemArray[8].ToString();  // Categoria
-                    sheet.Cells[row, 7].Value = dr.ItemArray[9].ToString();  // Liga/Empresa
-                    sheet.Cells[row, 8].Value = dr.ItemArray[10].ToString(); // Club
-                    sheet.Cells[row, 9].Value = dr.ItemArray[11].ToString(); // Telefono
-                    sheet.Cells[row, 10].Value = dr.ItemArray[12].ToString(); // ExClinico
-                    sheet.Cells[row, 11].Value = dr.ItemArray[13].ToString(); // Laboratorio
-                    sheet.Cells[row, 12].Value = dr.ItemArray[14].ToString(); // RX
-                    sheet.Cells[row, 13].Value = dr.ItemArray[15].ToString(); // EstComplementario
-                    row++;
-                    progressBar.PerformStep();
-                }
-
-                sheet.Cells[sheet.Dimension.Address].AutoFitColumns();
-
-                package.SaveAs(new System.IO.FileInfo(saveFileDialog.FileName));
+                i++;
+                progressBar.PerformStep();
             }
 
+            excel.get_Range("A1", "M1").EntireColumn.AutoFit();
+            excelworkBook.SaveAs(saveFileDialog.FileName, Excel.XlFileFormat.xlOpenXMLWorkbook,
+            Type.Missing, Type.Missing, Type.Missing, Type.Missing, Excel.XlSaveAsAccessMode.xlExclusive,
+            Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
+            excel.Quit();
             progressBar.Visible = false;
             MessageBox.Show("Exportación exitosa. Se guardó correctamente en: \n\n" + saveFileDialog.FileName, "Exportar Agenda", MessageBoxButtons.OK,
                 MessageBoxIcon.Information);
+
+        }
+
+        private void setearColorYBorde(Excel.Range rng)
+        {
+            rng.Font.Bold = true;
+            rng.Interior.Color = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.PowderBlue);
+            rng.BorderAround(Excel.XlLineStyle.xlContinuous, Excel.XlBorderWeight.xlMedium,
+            Excel.XlColorIndex.xlColorIndexAutomatic, Excel.XlColorIndex.xlColorIndexAutomatic);
+            rng.HorizontalAlignment = Excel.XlHAlign.xlHAlignCenter;
         }
 
         private void butExportarGoogleSheet_Click(object sender, EventArgs e)
