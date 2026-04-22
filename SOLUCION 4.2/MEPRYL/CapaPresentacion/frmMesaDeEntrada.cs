@@ -24,14 +24,17 @@ namespace CapaPresentacion
         //private string strTipoConsulta = "";
         private string strIdEmpresaNuevoConsultorio = "";
         private int intFilaSelecc = 0;
+        private bool _imprimiendoComprobante = false;
+        private DateTime _ultimoIntentoImpresion = DateTime.MinValue;
+        private int _secuenciaImpresion = 0;
 
         CapaNegocioMepryl.ExamenPreventiva exPreventiva;
         CapaNegocioMepryl.MesaEntrada mesaEntrada;
-        
+
         public frmMesaDeEntrada()
         {
             InitializeComponent();
-            botonRegresarRecepcion.Visible = false;            
+            botonRegresarRecepcion.Visible = false;
             exPreventiva = new ExamenPreventiva();
             mesaEntrada = new MesaEntrada();
             inicializar();
@@ -78,15 +81,15 @@ namespace CapaPresentacion
             dgvGrilla.Columns.Add("Orden", "Orden");
             dgvGrilla.Columns.Add("Tipo", "Tipo");
             dgvGrilla.Columns.Add("TipoExamen", "Subtipo de Examen");
-            dgvGrilla.Columns.Add("NroExamen", "Nº Examen");            
-            dgvGrilla.Columns.Add("Dni", "Dni");            
-            dgvGrilla.Columns.Add("Apellido", "Apellido");            
-            dgvGrilla.Columns.Add("Nombre", "Nombre");            
-            dgvGrilla.Columns.Add("ObservacTurno", "Observac. Turno");            
-            dgvGrilla.Columns.Add("ObservacMesaEntrada", "Observac. Mesa Entrada");            
-            dgvGrilla.Columns.Add("RM", "RM");            
-            dgvGrilla.Columns.Add("FechaNaci", "FechaNaci");            
-            
+            dgvGrilla.Columns.Add("NroExamen", "Nº Examen");
+            dgvGrilla.Columns.Add("Dni", "Dni");
+            dgvGrilla.Columns.Add("Apellido", "Apellido");
+            dgvGrilla.Columns.Add("Nombre", "Nombre");
+            dgvGrilla.Columns.Add("ObservacTurno", "Observac. Turno");
+            dgvGrilla.Columns.Add("ObservacMesaEntrada", "Observac. Mesa Entrada");
+            dgvGrilla.Columns.Add("RM", "RM");
+            dgvGrilla.Columns.Add("FechaNaci", "FechaNaci");
+
             dgvGrilla.Columns[0].Visible = false;
             dgvGrilla.Columns[1].Visible = false;
             dgvGrilla.Columns[2].Visible = false;
@@ -172,7 +175,7 @@ namespace CapaPresentacion
             //{
             //    colorearFila(dgvR, intFila++);
             //}
-            
+
             //foreach (DataGridViewRow dgvR in dgvGrilla.Rows)
             //{
             //    colorearFila(dgvR);
@@ -251,116 +254,116 @@ namespace CapaPresentacion
             row.DefaultCellStyle.BackColor = color;
             //dgvGrilla.Rows[dgvGrilla.Rows.Count - 1].DefaultCellStyle.BackColor = color;
         }
-        
+
         private List<object> obtenerNroOrden(string idPaciente)
         {
-                List<object> retorno = new List<object>();
-                DataTable tabla = SQLConnector.obtenerTablaSegunConsultaString(@"select * from Consulta c where convert(Date,c.fecha) = '" + DateTime.Today.ToShortDateString() + "' and c.nroOrden != 0 and c.nroOrden != -1 and c.tipo != 'V' order by c.nroOrden asc");
-                if (tabla.Rows.Count > 0)
+            List<object> retorno = new List<object>();
+            DataTable tabla = SQLConnector.obtenerTablaSegunConsultaString(@"select * from Consulta c where convert(Date,c.fecha) = '" + DateTime.Today.ToShortDateString() + "' and c.nroOrden != 0 and c.nroOrden != -1 and c.tipo != 'V' order by c.nroOrden asc");
+            if (tabla.Rows.Count > 0)
+            {
+                int anterior = 0;
+                foreach (DataRow r in tabla.Rows)
                 {
-                    int anterior = 0;
-                    foreach (DataRow r in tabla.Rows)
+                    anterior++;
+                    if (anterior != (int)r.ItemArray[4])
                     {
-                        anterior++;
-                        if (anterior != (int)r.ItemArray[4])
+                        DialogResult result = MessageBox.Show("Se encontró el número de orden ---" + anterior +
+                            "--- que no está asignado. ¿Desea reasignar ese numero a este ingreso?", "Resasignar Numeración",
+                            MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                        if (result == DialogResult.Yes)
                         {
-                            DialogResult result = MessageBox.Show("Se encontró el número de orden ---" + anterior + 
-                                "--- que no está asignado. ¿Desea reasignar ese numero a este ingreso?", "Resasignar Numeración",
-                                MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                            if (result == DialogResult.Yes)
-                            {
-                                retorno.Add(anterior);
-                                retorno.Add(true);
-                                return retorno;
-                            }
-                            else
-                            {
-                                retorno.Add((int)tabla.Rows[tabla.Rows.Count - 1].ItemArray[4] + 1);
-                                retorno.Add(false);
-                                return retorno;
-                            }
-
+                            retorno.Add(anterior);
+                            retorno.Add(true);
+                            return retorno;
                         }
+                        else
+                        {
+                            retorno.Add((int)tabla.Rows[tabla.Rows.Count - 1].ItemArray[4] + 1);
+                            retorno.Add(false);
+                            return retorno;
+                        }
+
                     }
-                    retorno.Add((int)tabla.Rows[tabla.Rows.Count - 1].ItemArray[4] + 1);
-                    retorno.Add(false);
-                    return retorno;
-     
                 }
-                else
-                {
-                    retorno.Add(1);
-                    retorno.Add(false);
-                    return retorno;
-                }
-            
+                retorno.Add((int)tabla.Rows[tabla.Rows.Count - 1].ItemArray[4] + 1);
+                retorno.Add(false);
+                return retorno;
+
+            }
+            else
+            {
+                retorno.Add(1);
+                retorno.Add(false);
+                return retorno;
+            }
+
         }
 
-        private int obtenerNroIdentificador(string tipo,string idPaciente, bool reasignar)
+        private int obtenerNroIdentificador(string tipo, string idPaciente, bool reasignar)
         {
-                DataTable tabla = SQLConnector.obtenerTablaSegunConsultaString("select * from Consulta c where convert(Date,c.fecha) = '" + DateTime.Today.ToShortDateString() + "' and c.tipo = '" + tipo + "' order by convert(int,c.nroOrden) asc");
-                List<object> retorno = new List<object>();
-                if (tabla.Rows.Count > 0)
+            DataTable tabla = SQLConnector.obtenerTablaSegunConsultaString("select * from Consulta c where convert(Date,c.fecha) = '" + DateTime.Today.ToShortDateString() + "' and c.tipo = '" + tipo + "' order by convert(int,c.nroOrden) asc");
+            List<object> retorno = new List<object>();
+            if (tabla.Rows.Count > 0)
+            {
+
+                if (tipo == "P")
                 {
+                    //int anterior = 199;
+                    //if (tabla.Rows.Count >= 200)
+                    //{
+                    //    anterior = 599;
+                    //}
 
-                    if (tipo == "P")
-                    {                   
-                        //int anterior = 199;
-                        //if (tabla.Rows.Count >= 200)
-                        //{
-                        //    anterior = 599;
-                        //}
-                    
-                        //foreach (DataRow r in tabla.Rows)
-                        //{
-                        //    anterior++;
-                        //    if (reasignar && (anterior != Convert.ToInt32(r.ItemArray[5])))
-                        //    {
-  
-                        //           return anterior;
-                        
-                        //    }
-                        //}
-                        //return Convert.ToInt32(tabla.Rows[tabla.Rows.Count - 1].ItemArray[5]) + 1;
-                        return generaNroIdentificadorPre(tipo, idPaciente);
+                    //foreach (DataRow r in tabla.Rows)
+                    //{
+                    //    anterior++;
+                    //    if (reasignar && (anterior != Convert.ToInt32(r.ItemArray[5])))
+                    //    {
 
-                    }
-                    else
-                    {
-                        // GRV - Modificado
-                        //int anterior = 0;
-                        //foreach (DataRow r in tabla.Rows)
-                        //{
-                        //    anterior++;
-                        //    if (reasignar && (anterior != quitarLetras(r.ItemArray[5].ToString())))
-                        //    {
-                        //        return anterior;
-                        //    }
-                        //}
-                        //return quitarLetras(tabla.Rows[tabla.Rows.Count - 1].ItemArray[5].ToString()) + 1;
-                        return generaNroIdentificador(tipo, idPaciente);
-                    }
-                  
+                    //           return anterior;
+
+                    //    }
+                    //}
+                    //return Convert.ToInt32(tabla.Rows[tabla.Rows.Count - 1].ItemArray[5]) + 1;
+                    return generaNroIdentificadorPre(tipo, idPaciente);
+
                 }
                 else
                 {
-                    if (tipo == "P")
-                    {
-                        if (intContPre > 1)
-                            return intContPre;//200;
-                        else
-                            return intContPre--;
-                    }
+                    // GRV - Modificado
+                    //int anterior = 0;
+                    //foreach (DataRow r in tabla.Rows)
+                    //{
+                    //    anterior++;
+                    //    if (reasignar && (anterior != quitarLetras(r.ItemArray[5].ToString())))
+                    //    {
+                    //        return anterior;
+                    //    }
+                    //}
+                    //return quitarLetras(tabla.Rows[tabla.Rows.Count - 1].ItemArray[5].ToString()) + 1;
+                    return generaNroIdentificador(tipo, idPaciente);
+                }
+
+            }
+            else
+            {
+                if (tipo == "P")
+                {
+                    if (intContPre > 1)
+                        return intContPre;//200;
                     else
-                    {
-                        return 1;
-                    }
-                }            
+                        return intContPre--;
+                }
+                else
+                {
+                    return 1;
+                }
+            }
         }
 
         private int quitarLetras(string identificador)
         {
-            char[] MyChar = { 'L', 'C', 'O', 'P', 'R' , 'E' };
+            char[] MyChar = { 'L', 'C', 'O', 'P', 'R', 'E' };
             int numero = (Int32.Parse(identificador.TrimStart(MyChar)));
             return numero;
         }
@@ -474,8 +477,8 @@ namespace CapaPresentacion
             //if ((strTipoConsulta == "REINGRESO LABORAL ") || (strTipoConsulta == "REINGRESO LABORAL"))
             //    nroOrden = 0;
 
-            List<string> lista = SQLConnector.generarListaParaProcedure("@tipo", "@fecha", "@nroOrden", "@identificador", "@pacienteID", "@observaciones", "@valido","@idTurno");
-            return (string)SQLConnector.executeProcedureWithReturnValue("sp_Consulta_Insert", lista, tipo, DateTime.Now, nroOrden, tipo + nroIdentificador, idPaciente, "", "1",idTurno);
+            List<string> lista = SQLConnector.generarListaParaProcedure("@tipo", "@fecha", "@nroOrden", "@identificador", "@pacienteID", "@observaciones", "@valido", "@idTurno");
+            return (string)SQLConnector.executeProcedureWithReturnValue("sp_Consulta_Insert", lista, tipo, DateTime.Now, nroOrden, tipo + nroIdentificador, idPaciente, "", "1", idTurno);
         }
 
         private string checkearRadioButton()
@@ -528,7 +531,7 @@ namespace CapaPresentacion
 
         public void mostrarDatos()
         {
-           
+
 
             if (dgvGrilla.Rows[dgvGrilla.CurrentCell.RowIndex].Cells[0].Value != null)
             {
@@ -543,7 +546,7 @@ namespace CapaPresentacion
 
                 lblNroOrdenDato.Visible = true;
 
-                Entidades.MesaEntrada entidad =  mesaEntrada.cargarInformacionConsulta(
+                Entidades.MesaEntrada entidad = mesaEntrada.cargarInformacionConsulta(
                     new Guid(dgvGrilla.Rows[dgvGrilla.CurrentCell.RowIndex].Cells[0].Value.ToString()));
 
                 tbDni.Text = entidad.Dni;
@@ -573,8 +576,8 @@ namespace CapaPresentacion
                 //{
                 //    tbTipoExamen.Text = entidad.TipoExamen.Descripcion + " (*)";
                 //}
-                                                
-                    
+
+
                 if (!primeraVez)
                 {
                     puntero = dgvGrilla.CurrentCell.RowIndex;
@@ -587,7 +590,7 @@ namespace CapaPresentacion
                 dgvInformacionPaciente.Columns[2].Visible = false;
 
                 deschekearComboBoxs();
-               
+
             }
         }
 
@@ -607,14 +610,14 @@ namespace CapaPresentacion
 
                     MessageBox.Show("Consulta eliminada correctamente", "Eliminar Ingreso",
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
-              
+
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show("No se puede eliminar la consulta. Error:\n\n" + ex.ToString(),
                         "Eliminar Consulta", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 }
-                cargarGrilla();             
+                cargarGrilla();
             }
 
         }
@@ -681,7 +684,7 @@ namespace CapaPresentacion
             if (botonClinica.Checked == true) botonClinica.Checked = false;
             if (botonConsultorio.Checked == true) botonConsultorio.Checked = false;
             if (botonRepeticion.Checked == true) botonRepeticion.Checked = false;
-            
+
         }
 
         private void botonPreventiva_CheckedChanged(object sender, EventArgs e)
@@ -780,7 +783,7 @@ namespace CapaPresentacion
             if (botonClinica.Checked) cargarDataGridTurno("3");
             if (botonConsultorio.Checked) cargarDataGridTurno("4");
             if (botonRepeticion.Checked) cargarDataGridTurno("5");
-         
+
         }
 
         public void ingresarPaciente()
@@ -889,7 +892,7 @@ namespace CapaPresentacion
                             + " habilitar e ingresarlo nuevamente", "Jugador inhabilitado", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                         DataTable paciente = SQLConnector.obtenerTablaSegunConsultaString(@"select dni from dbo.Paciente
                     where id = '" + idPacienteTurno + "'");
-                        frmBusquedaExamen busq = new frmBusquedaExamen(this,1);
+                        frmBusquedaExamen busq = new frmBusquedaExamen(this, 1);
                         Utilidades.abrirFormulario(this.MdiParent, busq, new Configuracion());
                         busq.gbRango.Enabled = true;
                         busq.gbFecha.Enabled = false;
@@ -901,7 +904,7 @@ namespace CapaPresentacion
                 {
                     System.Diagnostics.Debug.WriteLine($"[ingresarPaciente] paciente ya ingresado, pregunta invalidar turno");
                     DialogResult result = MessageBox.Show("¡El paciente ya fue ingresado!\n¿Desea invalidar el turno?",
-                        "DNI Ingresado",MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                        "DNI Ingresado", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                     if (result == DialogResult.Yes)
                     {
                         List<string> lista = SQLConnector.generarListaParaProcedure("@id", "@valor");
@@ -949,11 +952,11 @@ namespace CapaPresentacion
                     cargarPaciente(paciente.Rows[0].ItemArray[0].ToString(), dni);
                 }
                 */
-                 
+
             }
             else
             {
-                MessageBox.Show("¡Seleccione un tipo de exámen válido!","Seleccionar Tipo Examen",
+                MessageBox.Show("¡Seleccione un tipo de exámen válido!", "Seleccionar Tipo Examen",
                     MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
         }
@@ -1095,64 +1098,182 @@ namespace CapaPresentacion
             //cargarGrilla();
         }
 
+        private void RegistrarDiagnosticoImpresion(string mensaje)
+        {
+            try
+            {
+                string carpetaLogs = System.IO.Path.Combine(Application.StartupPath, "logs");
+                System.IO.Directory.CreateDirectory(carpetaLogs);
+                string rutaLog = System.IO.Path.Combine(carpetaLogs, "diagnostico_impresion_mesaentrada.log");
+                string linea = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " | " + mensaje + Environment.NewLine;
+                System.IO.File.AppendAllText(rutaLog, linea, Encoding.UTF8);
+                System.Diagnostics.Debug.WriteLine("[diagnostico_impresion] " + mensaje);
+            }
+            catch
+            {
+                // El diagnostico no debe interrumpir el flujo principal.
+            }
+        }
+
 
 
         public void imprimirComprobante()
         {
-            if (dgvGrilla.Rows[dgvGrilla.CurrentCell.RowIndex] != null)
-            {
-               
-                DialogResult result = MessageBox.Show("¿Imprimir hoja de ruta?", "Imprimir", MessageBoxButtons.YesNo);
-                if (result == DialogResult.Yes)
-                {
-                    imprimirHojaRuta();
-                }
-                DialogResult result1 = MessageBox.Show("¿Imprimir examen clinico?", "Imprimir", MessageBoxButtons.YesNo);
-                if (result1 == DialogResult.Yes)
-                {
-                    imprimirClinico();
-                }
+            int secuencia = ++_secuenciaImpresion;
 
-            }
-            else
+            if (_imprimiendoComprobante)
             {
-                MessageBox.Show("Seleccione un paciente para imprimir");
+                RegistrarDiagnosticoImpresion("imprimirComprobante omitido: ya hay una impresion en curso | seq=" + secuencia.ToString());
+                return;
             }
 
+            // Evita doble disparo por doble click/eventos duplicados en una ventana muy corta.
+            if ((DateTime.Now - _ultimoIntentoImpresion).TotalMilliseconds < 1200)
+            {
+                RegistrarDiagnosticoImpresion("imprimirComprobante omitido: debounce de 1200ms | seq=" + secuencia.ToString());
+                return;
+            }
+
+            _ultimoIntentoImpresion = DateTime.Now;
+            _imprimiendoComprobante = true;
+
+            RegistrarDiagnosticoImpresion("Inicio imprimirComprobante | seq=" + secuencia.ToString());
+            try
+            {
+                if (dgvGrilla.CurrentCell == null || dgvGrilla.Rows.Count == 0)
+                {
+                    RegistrarDiagnosticoImpresion("Cancelado: no hay celda actual o la grilla esta vacia");
+                    MessageBox.Show("Seleccione un paciente para imprimir");
+                    return;
+                }
+
+                if (dgvGrilla.Rows[dgvGrilla.CurrentCell.RowIndex] != null)
+                {
+                    DialogResult result = MessageBox.Show("¿Imprimir hoja de ruta?", "Imprimir", MessageBoxButtons.YesNo);
+                    RegistrarDiagnosticoImpresion("Respuesta hoja de ruta: " + result.ToString());
+                    if (result == DialogResult.Yes)
+                    {
+                        RegistrarDiagnosticoImpresion("Antes de imprimirHojaRuta");
+                        bool hojaRutaOk = imprimirHojaRuta();
+                        RegistrarDiagnosticoImpresion("Resultado imprimirHojaRuta: " + hojaRutaOk.ToString());
+                        if (!hojaRutaOk)
+                        {
+                            MessageBox.Show("No se pudo imprimir la hoja de ruta en este equipo. Se continuara con el resto del flujo.", "Imprimir", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        }
+                        RegistrarDiagnosticoImpresion("Despues de imprimirHojaRuta");
+                    }
+
+                    DialogResult result1 = MessageBox.Show("¿Imprimir examen clinico?", "Imprimir", MessageBoxButtons.YesNo);
+                    RegistrarDiagnosticoImpresion("Respuesta examen clinico: " + result1.ToString());
+                    if (result1 == DialogResult.Yes)
+                    {
+                        RegistrarDiagnosticoImpresion("Antes de imprimirClinico");
+                        imprimirClinico();
+                        RegistrarDiagnosticoImpresion("Despues de imprimirClinico");
+                    }
+                }
+                else
+                {
+                    RegistrarDiagnosticoImpresion("Cancelado: fila actual nula");
+                    MessageBox.Show("Seleccione un paciente para imprimir");
+                }
+
+                RegistrarDiagnosticoImpresion("Fin imprimirComprobante | seq=" + secuencia.ToString());
+            }
+            finally
+            {
+                _imprimiendoComprobante = false;
+            }
         }
 
 
         private void imprimirClinico()
         {
-            //Reportes report = new Reportes(new rptExamenClinico());
-            //report.imprimir(mesaEntrada.cargarParametrosReporteExClinico(dgvGrilla.Rows[dgvGrilla.SelectedCells[0].RowIndex].Cells[0].Value.ToString()));
-            CapaNegocioMepryl.Reportes rpt = new CapaNegocioMepryl.Reportes();
-            bool eslaboral= false;
-            if (lblNroExamenDato.Text.ToString().Contains("L"))
-            {
-                eslaboral = true;
-            }
-            else
-            {
-                eslaboral = false;
-            }
-            
+            System.Diagnostics.Stopwatch sw = System.Diagnostics.Stopwatch.StartNew();
+            RegistrarDiagnosticoImpresion("imprimirClinico: inicio");
 
-            rpt.HojaDeClinico(mesaEntrada.cargarParametrosReporteExClinico(dgvGrilla.Rows[dgvGrilla.SelectedCells[0].RowIndex].Cells[0].Value.ToString(),"Mail: "+txtEmail.Text.ToString()));
+            try
+            {
+                if (dgvGrilla.SelectedCells.Count == 0)
+                {
+                    RegistrarDiagnosticoImpresion("imprimirClinico: no hay celdas seleccionadas");
+                    MessageBox.Show("No hay una fila seleccionada para imprimir examen clinico.", "Imprimir", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    return;
+                }
+
+                int rowIndex = dgvGrilla.SelectedCells[0].RowIndex;
+                if (rowIndex < 0 || rowIndex >= dgvGrilla.Rows.Count)
+                {
+                    RegistrarDiagnosticoImpresion("imprimirClinico: rowIndex fuera de rango: " + rowIndex);
+                    MessageBox.Show("No se pudo determinar la fila seleccionada para imprimir examen clinico.", "Imprimir", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    return;
+                }
+
+                object idConsultaObj = dgvGrilla.Rows[rowIndex].Cells[0].Value;
+                if (idConsultaObj == null)
+                {
+                    RegistrarDiagnosticoImpresion("imprimirClinico: idConsulta nulo");
+                    MessageBox.Show("No se encontro el ID de consulta para imprimir examen clinico.", "Imprimir", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    return;
+                }
+
+                string idConsulta = idConsultaObj.ToString();
+                string nroExamen = lblNroExamenDato.Text == null ? string.Empty : lblNroExamenDato.Text.ToString();
+                bool eslaboral = nroExamen.Contains("L");
+                string mail = txtEmail.Text == null ? string.Empty : txtEmail.Text.ToString();
+
+                RegistrarDiagnosticoImpresion("imprimirClinico: idConsulta=" + idConsulta + ", nroExamen=" + nroExamen + ", esLaboral=" + eslaboral.ToString() + ", mail=" + mail);
+
+                CapaNegocioMepryl.Reportes rpt = new CapaNegocioMepryl.Reportes();
+                RegistrarDiagnosticoImpresion("imprimirClinico: antes de cargarParametrosReporteExClinico");
+                DataTable parametros = mesaEntrada.cargarParametrosReporteExClinico(idConsulta, "Mail: " + mail);
+                RegistrarDiagnosticoImpresion("imprimirClinico: despues de cargarParametrosReporteExClinico");
+                RegistrarDiagnosticoImpresion("imprimirClinico: parametros.Rows.Count=" + parametros.Rows.Count.ToString());
+
+                RegistrarDiagnosticoImpresion("imprimirClinico: antes de HojaDeClinico");
+                bool clinicoOk = rpt.HojaDeClinico(parametros);
+                RegistrarDiagnosticoImpresion("imprimirClinico: resultado HojaDeClinico=" + clinicoOk.ToString());
+                if (!clinicoOk)
+                {
+                    MessageBox.Show("No se pudo enviar el examen clinico a la impresora en este equipo.", "Imprimir", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+                RegistrarDiagnosticoImpresion("imprimirClinico: despues de HojaDeClinico");
+            }
+            catch (Exception ex)
+            {
+                RegistrarDiagnosticoImpresion("imprimirClinico: exception " + ex.ToString());
+                MessageBox.Show("Error al imprimir examen clinico. Revise logs/diagnostico_impresion_mesaentrada.log", "Imprimir", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                sw.Stop();
+                RegistrarDiagnosticoImpresion("imprimirClinico: fin. DuracionMs=" + sw.ElapsedMilliseconds.ToString());
+            }
         }
 
 
 
-        private void imprimirHojaRuta()
+        private bool imprimirHojaRuta()
         {
-            CapaNegocioMepryl.Reportes rpt = new CapaNegocioMepryl.Reportes();
-            //Reportes report = new Reportes(new rptHojaRuta());
-            //report.imprimir(mesaEntrada.cargarParametrosReporteHojaRuta(dgvGrilla.Rows[dgvGrilla.SelectedCells[0].RowIndex].Cells[0].Value.ToString()));.
-
-            rpt.HojaDeRuta(mesaEntrada.cargarParametrosReporteHojaRuta(dgvGrilla.Rows[dgvGrilla.SelectedCells[0].RowIndex].Cells[0].Value.ToString(), "Mail: " + txtEmail.Text.ToString()));
+            try
+            {
+                RegistrarDiagnosticoImpresion("imprimirHojaRuta: inicio");
+                CapaNegocioMepryl.Reportes rpt = new CapaNegocioMepryl.Reportes();
+                string idConsulta = dgvGrilla.Rows[dgvGrilla.SelectedCells[0].RowIndex].Cells[0].Value.ToString();
+                RegistrarDiagnosticoImpresion("imprimirHojaRuta: idConsulta=" + idConsulta);
+                bool hojaRutaOk = rpt.HojaDeRuta(mesaEntrada.cargarParametrosReporteHojaRuta(idConsulta, "Mail: " + txtEmail.Text.ToString()));
+                RegistrarDiagnosticoImpresion("imprimirHojaRuta: resultado HojaDeRuta=" + hojaRutaOk.ToString());
+                RegistrarDiagnosticoImpresion("imprimirHojaRuta: fin ok");
+                return hojaRutaOk;
+            }
+            catch (Exception ex)
+            {
+                RegistrarDiagnosticoImpresion("imprimirHojaRuta: exception " + ex.ToString());
+                return false;
+            }
         }
 
-       
+
 
 
         private void tbBusquedaDni_KeyPress(object sender, KeyPressEventArgs e)
@@ -1432,7 +1553,7 @@ namespace CapaPresentacion
                 DataRow[] rows = SQLConnector.obtenerTablaSegunConsultaString("select * from condicionLaboral").Select("id = '" + condicionLaboral.Rows[0].ItemArray[0].ToString() + "'");
                 if (rows[0][5].ToString() == "SI" && rows[0][6].ToString() == "SI" && rows[0][7].ToString() == "NO")
                 {
-                    codigo1 = 1;                 
+                    codigo1 = 1;
                 }
                 else if (rows[0][5].ToString() == "SI" && rows[0][6].ToString() == "SI" && rows[0][7].ToString() == "SI")
                 {
@@ -1459,7 +1580,7 @@ namespace CapaPresentacion
             else
             {
                 MessageBox.Show("La consulta anterior del paciente tiene como condicion laboral: A DESIGNAR. Por favor verifique");
-                codigo1 = 1;             
+                codigo1 = 1;
             }
 
             DataRow[] dr = estadoAtencion.Select("codigo = " + codigo1.ToString());
@@ -1601,7 +1722,7 @@ namespace CapaPresentacion
                 blnInfantilInicial = false;
 
             CapaNegocioMepryl.PacientePreventiva PacientePre = new PacientePreventiva();
-            
+
             if (estaHabilitado(idPaciente))
             {
                 string motivo = cargarMotivoSeleccionado();
@@ -1614,7 +1735,7 @@ namespace CapaPresentacion
                     idConsulta = insertarEnBaseDeDatosOtros("R", 1, idPaciente);
                 if (motivo == "ESTUDIOS COMPLEMENTARIOS")
                     idConsulta = insertarEnBaseDeDatosOtros("EC", 1, idPaciente);
-                                
+
                 if (string.IsNullOrEmpty(idConsulta))
                     return;
 
@@ -1635,7 +1756,7 @@ namespace CapaPresentacion
                 string idTipoExamen = SQLConnector.executeProcedureWithReturnValue("sp_TipoExamenDePaciente_Add", listAddTipoExamen, new Guid(idConsulta), Guid.Empty,
                 null, new Guid(infoTipoExamen.Rows[0][0].ToString()), Convert.ToDecimal(infoTipoExamen.Rows[0][1].ToString()),
                 null);
-            
+
                 List<string> listAddClubPorTipoExamen = SQLConnector.generarListaParaProcedure("@idTipoExamen", "@idClub");
 
                 DataTable clubesPorPaciente = SQLConnector.obtenerTablaSegunConsultaString(@"select club from dbo.clubesPorPaciente
@@ -1647,8 +1768,8 @@ namespace CapaPresentacion
                 }
                 // GRV - Modificado - Modificar tipo de examen
                 //CapaNegocioMepryl.TipoExamen tipoExamen = new TipoExamen();                
-                                
-                Entidades.TipoExamen entidad = tipoExamen.cargarEstudiosPorTipoExamen(infoTipoExamen.Rows[0][0].ToString());                
+
+                Entidades.TipoExamen entidad = tipoExamen.cargarEstudiosPorTipoExamen(infoTipoExamen.Rows[0][0].ToString());
                 entidad.IdTipoExamenPaciente = new Guid(idTipoExamen);
                 //tipoExamen.VerificaExamenPreventiva(PacientePre.DebeRealizarExamenRX(mesaEntrada.ObtenerDNI(idPaciente)), entidad.IdTipoExamenPaciente.ToString()); // Actualiza estado modificado
                 if (blnInfantilInicial == false)
@@ -1660,7 +1781,7 @@ namespace CapaPresentacion
                 {
                     exPreventiva.crearExamen(idTipoExamen);
                 }
-                              
+
                 cargarGrilla();
 
                 if (dgvGrilla.Rows.Count > 0)
@@ -1706,7 +1827,7 @@ namespace CapaPresentacion
         {
             if (verificaPacienteIngresado(idPaciente))
             {
-                MessageBox.Show("el paciente ya ha sido ingresado en mesa de entrada","Mesa de entrada",MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("el paciente ya ha sido ingresado en mesa de entrada", "Mesa de entrada", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
             string motivo = cargarMotivoSeleccionado();
@@ -1715,7 +1836,7 @@ namespace CapaPresentacion
 
             //if ((strTipoConsulta == "REINGRESO LABORAL ") || (strTipoConsulta == "REINGRESO LABORAL"))
             //    motivo = "CONSULTAS";
-            
+
             string idConsulta = "";
             if (motivo == "LABORAL")
                 idConsulta = insertarEnBaseDeDatosOtros("L", 1, idPaciente);
@@ -1747,7 +1868,7 @@ namespace CapaPresentacion
             null, new Guid(infoTipoExamen.Rows[0][0].ToString()), Convert.ToDecimal(infoTipoExamen.Rows[0][1].ToString()),
             null);
 
-     
+
             DataTable empresaYTarea = SQLConnector.obtenerTablaSegunConsultaString(@"select e.id, e.razonSocial, epp.tarea from dbo.EmpresasPorPaciente
                     epp inner join dbo.Empresa e on epp.idEmpresa = e.id where epp.idEmpresa = '" + idEmpresa + @"' 
                     and epp.idPaciente = '" + idPaciente + "'");
@@ -1781,6 +1902,14 @@ namespace CapaPresentacion
 
         private void dgvGrilla_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
+            RegistrarDiagnosticoImpresion("dgvGrilla_CellDoubleClick: row=" + e.RowIndex.ToString() + ", col=" + e.ColumnIndex.ToString());
+
+            if (e.RowIndex < 0 || e.ColumnIndex < 0)
+            {
+                RegistrarDiagnosticoImpresion("dgvGrilla_CellDoubleClick omitido: cabecera o celda invalida");
+                return;
+            }
+
             imprimirComprobante();
         }
 
@@ -1802,7 +1931,7 @@ namespace CapaPresentacion
 
         private void editarPaciente()
         {
-        
+
             if (mesaEntrada.verificarTipoPaciente(new Guid(dgvGrilla.Rows[dgvGrilla.SelectedCells[0].RowIndex].Cells[1].Value.ToString())) == 'P')
             {
                 abrirVentanaPacientePreventivaEdicion();
@@ -1871,14 +2000,14 @@ namespace CapaPresentacion
             string strIdTipoExamen;
             string strTipoConsulta;
 
-            strIdPaciente = dgvGrilla.Rows[dgvGrilla.SelectedCells[0].RowIndex].Cells[1].Value.ToString();            
+            strIdPaciente = dgvGrilla.Rows[dgvGrilla.SelectedCells[0].RowIndex].Cells[1].Value.ToString();
             strIdTurno = dgvGrilla.Rows[dgvGrilla.SelectedCells[0].RowIndex].Cells[3].Value.ToString();
             strIdTipoExamen = dgvGrilla.Rows[dgvGrilla.SelectedCells[0].RowIndex].Cells[2].Value.ToString();
             strIdConsulta = dgvGrilla.Rows[dgvGrilla.SelectedCells[0].RowIndex].Cells[0].Value.ToString();
             strMotivoConsulta = mesaEntrada.verificarTipoPaciente(ConvierteStringGuid(strIdPaciente)).ToString();
             strTipoConsulta = dgvGrilla.Rows[dgvGrilla.SelectedCells[0].RowIndex].Cells[7].Value.ToString();
-                        
-            frmMesaSelecTipoExamen frmTipoExamen = new frmMesaSelecTipoExamen(strMotivoConsulta, strIdPaciente, strIdEmpresa, strIdTurno, strIdTipoExamen, strIdConsulta, strTipoConsulta);                                 
+
+            frmMesaSelecTipoExamen frmTipoExamen = new frmMesaSelecTipoExamen(strMotivoConsulta, strIdPaciente, strIdEmpresa, strIdTurno, strIdTipoExamen, strIdConsulta, strTipoConsulta);
             frmTipoExamen.ShowDialog();
             //CambiarTipoExamenInvalidarConsulta();
             inicializar();
@@ -1891,14 +2020,14 @@ namespace CapaPresentacion
 
         // GRV - Ramírez - cambiar tipo de examen
         public void CambiarTipoExamen(string NombreTipoExamen, string MotivoConsulta, string IdPaciente, string IdEmpresa, string IdTurno, string IdConsulta, string IdTipoExamen)
-        {            
+        {
             char cTipoTurno;
             strIdPaciente = IdPaciente;
             strIdEmpresa = IdEmpresa;
 
             switch (MotivoConsulta)
             {
-                case "P":                    
+                case "P":
                     botonPreventiva.Checked = true;
                     cbTipoDeExamen.Text = NombreTipoExamen;
 
@@ -1906,7 +2035,7 @@ namespace CapaPresentacion
                     CambiarTipoPacienteIdentificador("P", IdPaciente, IdConsulta);
                     //asignarPacientePreventiva(IdPaciente);
                     break;
-                case "L":                    
+                case "L":
                     botonLaboral.Checked = true;
                     cbTipoDeExamen.Text = NombreTipoExamen;
 
@@ -1989,7 +2118,7 @@ namespace CapaPresentacion
             //List<object> retorno = obtenerNroOrden(idPaciente);
             //string nroIdentificador = obtenerNroIdentificador(tipo, idPaciente, true).ToString();
             //string nroIdentificador = obtenerNroIdentificador(tipo, idPaciente, (bool)retorno[1]).ToString();
-            
+
 
             if (tipo == "P")
             {
@@ -2020,14 +2149,14 @@ namespace CapaPresentacion
         {
             int intValor1 = 0;
             int intValor2 = 0;
-            
+
             //DataTable tabla = SQLConnector.obtenerTablaSegunConsultaString("select identificador from Consulta c where convert(Date,c.fecha) = '" + DateTime.Today.ToShortDateString() + "' and c.tipo = '" + tipo + "' order by convert(int,c.nroOrden) asc");
             DataTable tabla = SQLConnector.obtenerTablaSegunConsultaString("select identificador from Consulta c where convert(Date,c.fecha) = '" + DateTime.Today.ToShortDateString() + "' and c.tipo = '" + tipo + "' order by convert(int,dbo.RemoveChars(c.identificador)) asc");
             if (tipo == "P")
                 tabla = SQLConnector.obtenerTablaSegunConsultaString("select identificador from Consulta c where convert(Date,c.fecha) = '" + DateTime.Today.ToShortDateString() + "' and c.tipo = '" + tipo + "' order by convert(int,c.identificador) asc");
-            DataView view = new DataView(tabla);            
+            DataView view = new DataView(tabla);
 
-               //tabla.DefaultView.Sort = "identificador ASC";
+            //tabla.DefaultView.Sort = "identificador ASC";
             //view.Sort = "identificador ASC";
             //tabla = view.ToTable();
 
@@ -2050,7 +2179,7 @@ namespace CapaPresentacion
                             if (intValor1 != intValor2)
                             {
                                 return intValor2;
-                            }                            
+                            }
                         }
                         else
                         {
@@ -2068,7 +2197,7 @@ namespace CapaPresentacion
                 }
                 catch (IndexOutOfRangeException ex)
                 {
-                    
+
                 }
             }
 
@@ -2079,7 +2208,7 @@ namespace CapaPresentacion
         {
             int intValor1 = 0;
             int intValor2 = 0;
-                        
+
             DataTable tabla = SQLConnector.obtenerTablaSegunConsultaString("select identificador from Consulta c where convert(Date,c.fecha) = '" + DateTime.Today.ToShortDateString() + "' and c.tipo = '" + tipo + "' order by convert(int,c.identificador) asc");
             DataView view = new DataView(tabla);
 
@@ -2097,7 +2226,7 @@ namespace CapaPresentacion
                         {
                             intValor1 = quitarLetras(tabla.Rows[i + 1][0].ToString());
                             intValor2 = quitarLetras(tabla.Rows[i][0].ToString()) + 1;
-                                                        
+
                             int intPrimerValor = quitarLetras(tabla.Rows[0][0].ToString());
                             if (intPrimerValor != intContPre)
                             {
@@ -2186,7 +2315,7 @@ namespace CapaPresentacion
             return blnCorresponde;
         }
 
-        private void ModificaTipoExamenPaciente(string idConsulta) 
+        private void ModificaTipoExamenPaciente(string idConsulta)
         {
             DataTable infoTipoExamen = SQLConnector.obtenerTablaSegunConsultaString("select id, precioBase from dbo.Especialidad where id = '"
                 + cbTipoDeExamen.SelectedValue.ToString() + "'");
@@ -2216,14 +2345,14 @@ namespace CapaPresentacion
         //    strIdEmpresaNuevoConsultorio = "";
         //}
 
-        private bool verificaPacienteIngresado(string idPaciente) 
+        private bool verificaPacienteIngresado(string idPaciente)
         {
             bool blnEstado = false;
             CapaNegocioMepryl.PacienteLaboral pLaboral = new CapaNegocioMepryl.PacienteLaboral();
             CapaNegocioMepryl.PacientePreventiva pPreventiva = new CapaNegocioMepryl.PacientePreventiva();
             string strDNIPre = "";
             string strDNILab = "";
-            
+
             strDNIPre = pPreventiva.ObtenerDNIpaciente(idPaciente);
             strDNILab = pLaboral.obtenerDNIPaciente(idPaciente).ToString();
 
@@ -2234,7 +2363,7 @@ namespace CapaPresentacion
             if (!string.IsNullOrEmpty(strDNILab))
             {
                 blnEstado = BuscarPaciente(strDNILab, "10", dgvGrilla);
-            }            
+            }
 
             return blnEstado;
         }
@@ -2299,10 +2428,12 @@ namespace CapaPresentacion
                         //dgvTurno.CurrentCell = dgvTurno.Rows[intFilaSelecc].Cells[4];
                     }
                 }
-            } catch (System.NullReferenceException ex)
+            }
+            catch (System.NullReferenceException ex)
             {
                 intFilaSelecc = -1;
-            }catch (System.ArgumentOutOfRangeException ex)
+            }
+            catch (System.ArgumentOutOfRangeException ex)
             {
                 intFilaSelecc = -1;
             }
@@ -2343,7 +2474,7 @@ namespace CapaPresentacion
 
             if (int.TryParse(strNroExam, out result))
             {
-                MessageBox.Show("Este informe es solo para pacientes de laboral...", "Mesa de Entrada",MessageBoxButtons.OK,MessageBoxIcon.Exclamation);
+                MessageBox.Show("Este informe es solo para pacientes de laboral...", "Mesa de Entrada", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
 
@@ -2367,6 +2498,6 @@ namespace CapaPresentacion
         private void btnReporteLaboral_Click(object sender, EventArgs e)
         {
             ReporteExamenFisicoLaboral();
-        }        
-    }    
+        }
+    }
 }
