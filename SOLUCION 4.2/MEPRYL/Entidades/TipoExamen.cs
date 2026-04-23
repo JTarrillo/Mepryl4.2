@@ -16,8 +16,8 @@ namespace Entidades
         private int idMotivoConsulta;
         private string descripcion;
         private string descripcionInformes;
-        private Double precioBase;
-        private Double precioLista;
+        private double precioBase;
+        private double precioLista;
         private DataTable clinico;
         private DataTable hematologia;
         private DataTable quimicaHematica;

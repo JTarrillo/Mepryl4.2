@@ -711,7 +711,6 @@ namespace CapaPresentacion
             txtEdad.Text = (DateTime.Today.AddTicks(-turnoPrev.Nacimiento.Ticks).Year - 1).ToString();
             tbIdTipoExamenPreventiva.Text = tipoExamenActual.IdTipoExamenPaciente.ToString();
             tbImportePreventiva.Text = tipoExamenActual.PrecioBase.ToString();
-            tbImporteListaPreventiva.Text = tipoExamenActual.PrecioLista.ToString();
             cbExamenModifPreventiva.Checked = tipoExamenActual.Modificado;
             tbExamenPreventiva.Text = tipoExamenActual.Descripcion;
             if (tipoExamenActual.Modificado)
@@ -772,10 +771,8 @@ namespace CapaPresentacion
             tipoExamenActual = turnoLab.TipoExamen;
             tbIdTipoExamenLaboral.Text = tipoExamenActual.IdTipoExamenPaciente.ToString();
             tbImporteLaboral.Text = tipoExamenActual.PrecioBase.ToString();
-            tbImporteListaLaboral.Text = tipoExamenActual.PrecioLista.ToString();
             cbExamenModificadoLaboral.Checked = tipoExamenActual.Modificado;
             tbExamenLaboral.Text = dgv.Rows[dgv.CurrentCell.RowIndex].Cells["SubTipoExamen"].Value?.ToString();
-            if (tipoExamenActual.Modificado)
             {
                 tbExamenLaboral.Text = tbExamenLaboral.Text + " MODIF.";
             }
@@ -1026,7 +1023,6 @@ namespace CapaPresentacion
             tipoExamenActual = tipoEx;
             tbIdTipoExamenLaboral.Text = tipoEx.IdTipoExamenPaciente.ToString();
             tbImporteLaboral.Text = tipoEx.PrecioBase.ToString();
-            tbImporteListaLaboral.Text = tipoEx.PrecioLista.ToString();
             cbExamenModificadoLaboral.Checked = tipoEx.Modificado;
             tbExamenLaboral.Text = tipoEx.Descripcion;
             if (tipoEx.Modificado)
@@ -1101,8 +1097,6 @@ namespace CapaPresentacion
             CargarDatosMatrizTemp();
             // GRV
 
-            sincronizarImportesDesdePantalla();
-
             // GRV - Modificado verifica si el turno no esta ocupado
             //guardar();
 
@@ -1112,25 +1106,6 @@ namespace CapaPresentacion
             //cargarGrillaTurnosSinFiltro();
             // GRV
             MostrarUltimoRegistro();
-        }
-
-        private void sincronizarImportesDesdePantalla()
-        {
-            if (tipoExamenActual == null)
-                return;
-
-            if (panelPacientePreventiva.Visible)
-            {
-                tipoExamenActual.PrecioBase = obtenerDoubleDesdeTextBox(tbImportePreventiva.Text, tipoExamenActual.PrecioBase);
-                tipoExamenActual.PrecioLista = obtenerDoubleDesdeTextBox(tbImporteListaPreventiva.Text, tipoExamenActual.PrecioLista);
-                return;
-            }
-
-            if (panelLaboral.Visible)
-            {
-                tipoExamenActual.PrecioBase = obtenerDoubleDesdeTextBox(tbImporteLaboral.Text, tipoExamenActual.PrecioBase);
-                tipoExamenActual.PrecioLista = obtenerDoubleDesdeTextBox(tbImporteListaLaboral.Text, tipoExamenActual.PrecioLista);
-            }
         }
 
         private void guardar()
@@ -1223,11 +1198,6 @@ namespace CapaPresentacion
             retorno.FacturaClub = cbFactClubPreventiva.Checked;
             retorno.Observaciones = tbObservPreventiva.Text;
             retorno.IdPaciente = new Guid(tbIdPacientePreventiva.Text);
-            if (tipoExamenActual != null)
-            {
-                double precioListaUI = obtenerDoubleDesdeTextBox(tbImporteListaPreventiva.Text, tipoExamenActual.PrecioLista);
-                tipoExamenActual.PrecioLista = precioListaUI;
-            }
             retorno.TipoExamen = tipoExamenActual;
             retorno.Consulta = "PREVENTIVA";
             return retorno;
@@ -1242,31 +1212,9 @@ namespace CapaPresentacion
             retorno.Observaciones = tbObservacionesLaboral.Text;
             retorno.FacturaEmpresa = cbFactEmpresaLaboral.Checked;
             retorno.IdPaciente = new Guid(tbIdPacienteLaboral.Text);
-            if (tipoExamenActual != null)
-            {
-                double precioListaUI = obtenerDoubleDesdeTextBox(tbImporteListaLaboral.Text, tipoExamenActual.PrecioLista);
-                tipoExamenActual.PrecioLista = precioListaUI;
-            }
             retorno.TipoExamen = tipoExamenActual;
             retorno.Consulta = "LABORAL";
             return retorno;
-        }
-
-        private double obtenerDoubleDesdeTextBox(string texto, double valorDefault)
-        {
-            if (string.IsNullOrWhiteSpace(texto))
-                return valorDefault;
-
-            double valor;
-            if (double.TryParse(texto, out valor))
-                return valor;
-
-            // Fallback para valores con punto/coma según cultura actual.
-            string normalizado = texto.Replace(".", ",").Trim();
-            if (double.TryParse(normalizado, out valor))
-                return valor;
-
-            return valorDefault;
         }
 
         private void botEditarExamenPreventiva_Click(object sender, EventArgs e)
@@ -1287,7 +1235,6 @@ namespace CapaPresentacion
             tipoExamenActual = tipoEx;
             tbIdTipoExamenPreventiva.Text = tipoEx.IdTipoExamenPaciente.ToString();
             tbImportePreventiva.Text = tipoEx.PrecioBase.ToString();
-            tbImporteListaPreventiva.Text = tipoEx.PrecioLista.ToString();
             cbExamenModifPreventiva.Checked = tipoEx.Modificado;
             tbExamenPreventiva.Text = tipoEx.Descripcion;
             if (tipoEx.Modificado)
@@ -1898,19 +1845,12 @@ namespace CapaPresentacion
                     tbObservPreventiva.Text = "SE FACT. AL CLUB";
                     tipoExamenActual.PrecioBase = 0;
                     tbImportePreventiva.Text = tipoExamenActual.PrecioBase.ToString();
-                    tbImporteListaPreventiva.Text = tipoExamenActual.PrecioLista.ToString();
                 }
                 else
                 {
                     tbObservPreventiva.Text = string.Empty;
-                    Entidades.TipoExamen tipoBase = tipoEx.cargarEstudiosPorTipoExamen(tipoExamenActual.Id.ToString());
-                    tipoExamenActual.PrecioBase = tipoBase.PrecioBase;
-                    if (tipoExamenActual.PrecioLista == 0)
-                    {
-                        tipoExamenActual.PrecioLista = tipoBase.PrecioLista;
-                    }
+                    tipoExamenActual.PrecioBase = tipoEx.cargarEstudiosPorTipoExamen(tipoExamenActual.Id.ToString()).PrecioBase;
                     tbImportePreventiva.Text = tipoExamenActual.PrecioBase.ToString();
-                    tbImporteListaPreventiva.Text = tipoExamenActual.PrecioLista.ToString();
                 }
             }
         }
@@ -1924,19 +1864,12 @@ namespace CapaPresentacion
                     tbObservacionesLaboral.Text = "SE FACT. A LA EMPRESA";
                     tipoExamenActual.PrecioBase = 0;
                     tbImporteLaboral.Text = tipoExamenActual.PrecioBase.ToString();
-                    tbImporteListaLaboral.Text = tipoExamenActual.PrecioLista.ToString();
                 }
                 else
                 {
                     tbObservacionesLaboral.Text = string.Empty;
-                    Entidades.TipoExamen tipoBase = tipoEx.cargarEstudiosPorTipoExamen(tipoExamenActual.Id.ToString());
-                    tipoExamenActual.PrecioBase = tipoBase.PrecioBase;
-                    if (tipoExamenActual.PrecioLista == 0)
-                    {
-                        tipoExamenActual.PrecioLista = tipoBase.PrecioLista;
-                    }
+                    tipoExamenActual.PrecioBase = tipoEx.cargarEstudiosPorTipoExamen(tipoExamenActual.Id.ToString()).PrecioBase;
                     tbImporteLaboral.Text = tipoExamenActual.PrecioBase.ToString();
-                    tbImporteListaLaboral.Text = tipoExamenActual.PrecioLista.ToString();
                 }
             }
         }

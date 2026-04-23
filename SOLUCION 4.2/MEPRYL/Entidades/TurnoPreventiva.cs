@@ -24,6 +24,7 @@ namespace Entidades
         private TipoExamen tipoExamen;
         private string consulta; // GRV - Ramírez - Guardar consulta "PREVENTIVA"
         private string mail;
+        private double precioLista;
 
         public TurnoPreventiva()
         {
@@ -43,7 +44,7 @@ namespace Entidades
             this.tipoExamen = new TipoExamen();
             this.consulta = string.Empty;  // GRV - Ramírez - Guardar consulta "PREVENTIVA"
             this.mail = string.Empty;
-            
+            this.precioLista = 0;
         }
 
 
@@ -144,6 +145,12 @@ namespace Entidades
         {
             get { return mail; }
             set { mail = value; }
+        }
+
+        public double PrecioLista
+        {
+            get { return precioLista; }
+            set { precioLista = value; }
         }
 
         #endregion

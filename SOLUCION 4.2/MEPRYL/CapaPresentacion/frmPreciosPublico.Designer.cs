@@ -38,8 +38,6 @@ namespace CapaPresentacion
             this.btnCalcularLista = new System.Windows.Forms.Button();
             this.mnuAplicar = new System.Windows.Forms.ContextMenuStrip();
             this.mnuAplicarVariacion = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuVariacionPromo = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuVariacionLista = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuCalcularLista = new System.Windows.Forms.ToolStripMenuItem();
             this.btnAplicar = new System.Windows.Forms.Button();
             this.chkFactor = new System.Windows.Forms.CheckBox();
@@ -250,9 +248,6 @@ namespace CapaPresentacion
             // 
             this.mnuAplicar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
                 this.mnuAplicarVariacion,
-                this.mnuVariacionPromo,
-                this.mnuVariacionLista,
-                new System.Windows.Forms.ToolStripSeparator(),
                 this.mnuCalcularLista});
             this.mnuAplicar.Name = "mnuAplicar";
             this.mnuAplicar.Size = new System.Drawing.Size(200, 48);
@@ -262,24 +257,8 @@ namespace CapaPresentacion
             // 
             this.mnuAplicarVariacion.Name = "mnuAplicarVariacion";
             this.mnuAplicarVariacion.Size = new System.Drawing.Size(199, 22);
-            this.mnuAplicarVariacion.Text = "Variación a ambos";
+            this.mnuAplicarVariacion.Text = "Aplicar variación";
             this.mnuAplicarVariacion.Click += new System.EventHandler(this.btnVariacion_Click);
-
-            // 
-            // mnuVariacionPromo
-            // 
-            this.mnuVariacionPromo.Name = "mnuVariacionPromo";
-            this.mnuVariacionPromo.Size = new System.Drawing.Size(199, 22);
-            this.mnuVariacionPromo.Text = "Variación solo a Promo";
-            this.mnuVariacionPromo.Click += new System.EventHandler(this.btnVariacionPromo_Click);
-
-            // 
-            // mnuVariacionLista
-            // 
-            this.mnuVariacionLista.Name = "mnuVariacionLista";
-            this.mnuVariacionLista.Size = new System.Drawing.Size(199, 22);
-            this.mnuVariacionLista.Text = "Variación solo a Lista";
-            this.mnuVariacionLista.Click += new System.EventHandler(this.btnVariacionLista_Click);
 
             // 
             // mnuCalcularLista
@@ -355,8 +334,8 @@ namespace CapaPresentacion
                 this.colMotivo,
                 this.colTipo,
                 this.colDescripcion,
-                this.colPrecioPromo,
-                this.colPrecioLista});
+                this.colPrecioLista,
+                this.colPrecioPromo});
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
             dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI", 9F);
@@ -466,8 +445,6 @@ namespace CapaPresentacion
         private System.Windows.Forms.Button btnCalcularLista;
         private System.Windows.Forms.ContextMenuStrip mnuAplicar;
         private System.Windows.Forms.ToolStripMenuItem mnuAplicarVariacion;
-        private System.Windows.Forms.ToolStripMenuItem mnuVariacionPromo;
-        private System.Windows.Forms.ToolStripMenuItem mnuVariacionLista;
         private System.Windows.Forms.ToolStripMenuItem mnuCalcularLista;
         private System.Windows.Forms.Button btnAplicar;
         private System.Windows.Forms.CheckBox chkFactor;

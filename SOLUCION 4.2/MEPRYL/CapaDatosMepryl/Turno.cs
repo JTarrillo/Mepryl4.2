@@ -282,6 +282,27 @@ namespace CapaDatosMepryl
                 retorno.IdPaciente = new Guid(infoTurno.Rows[0][1].ToString());
                 // GRV - Modificado
                 retorno.TipoExamen = tipoExamen.cargarEstudiosPorExamen(infoTurno.Rows[0][3].ToString());
+
+                // --- REFRESCAR PRECIO LISTA SI ES 0 O NULL ---
+                if (retorno.TipoExamen.PrecioLista == 0)
+                {
+                    Guid idEspecialidad = Guid.Empty;
+                    DateTime fechaTurno = DateTime.Today;
+                    if (infoTurno.Rows[0][4] != DBNull.Value)
+                        idEspecialidad = new Guid(infoTurno.Rows[0][4].ToString());
+                    // t.fecha ahora es la columna 9 (índice 9)
+                 if (infoTurno.Columns.Count > 9 && infoTurno.Rows[0][9] != DBNull.Value)
+    fechaTurno = Convert.ToDateTime(infoTurno.Rows[0][9]);
+DataTable precioPublico = ObtenerPrecioPublico(idEspecialidad, fechaTurno);
+if (precioPublico.Rows.Count > 0 && precioPublico.Rows[0]["PrecioLista"] != DBNull.Value)
+{
+    double precioLista = 0;
+    if (double.TryParse(precioPublico.Rows[0]["PrecioLista"].ToString(), out precioLista))
+    {
+        retorno.TipoExamen.PrecioLista = precioLista;
+    }
+}
+                }
                 DataTable infoPaciente = SQLConnector.obtenerTablaSegunConsultaString(@"select id, 
                 apellido + ' ' + nombres, fechaNacimiento, telefonos, celular, dni, Email from dbo.Paciente
                 where id = '" + infoTurno.Rows[0][1].ToString() + "'");
@@ -307,7 +328,6 @@ namespace CapaDatosMepryl
                 ////tipoExamen.VerificaExamenPreventiva(blnRealizaRX, infoTurno.Rows[0][3].ToString());
                 //tipoExamen.blnTieneRX = blnRealizaRX;
                 retorno.TipoExamen = tipoExamen.cargarEstudiosPorExamen(infoTurno.Rows[0][3].ToString());
-
             }
             return retorno;
         }
@@ -315,20 +335,22 @@ namespace CapaDatosMepryl
         public DataTable cargarTablaInformacionTurno(Guid idTurno)
         {
             // Consulta normalizada: prioriza TipoExamenDePaciente y solo toma la descripción de Especialidad si es necesario
-            return SQLConnector.obtenerTablaSegunConsultaString(@"SELECT 
-                t.id, 
-                t.pacienteID, 
-                t.observaciones, 
-                tep.id AS idTipoExamenDePaciente, 
-                tep.idEspecialidad, 
-                tep.modificado, 
-                tep.factClub, 
-                tep.precioExamen, 
-                e.descripcion AS descripcionEspecialidad
-            FROM dbo.Turno t 
-            INNER JOIN dbo.TipoExamenDePaciente tep ON tep.idTurno = t.id
-            LEFT JOIN dbo.Especialidad e ON tep.idEspecialidad = e.id
-            WHERE t.id = '" + idTurno + "'");
+            return SQLConnector.obtenerTablaSegunConsultaString(@"
+    SELECT 
+        t.id, 
+        t.pacienteID, 
+        t.observaciones, 
+        tep.id AS idTipoExamenDePaciente, 
+        tep.idEspecialidad, 
+        tep.modificado, 
+        tep.factClub, 
+        tep.precioExamen, 
+        e.descripcion AS descripcionEspecialidad,
+        t.fecha -- AGREGADO: fecha del turno
+    FROM dbo.Turno t 
+    INNER JOIN dbo.TipoExamenDePaciente tep ON tep.idTurno = t.id
+    LEFT JOIN dbo.Especialidad e ON tep.idEspecialidad = e.id
+    WHERE t.id = '" + idTurno + "'");
         }
 
         public DataTable cargarTablaInformacionTurnoSinAsignar(Guid idTurno)
@@ -1616,10 +1638,13 @@ namespace CapaDatosMepryl
 
         public void ActualizarPrecioListaTipoExamenPaciente(Guid idTipoExamenPaciente, double precioLista)
         {
+            // Log para depuración
+            System.Diagnostics.Debug.WriteLine($"[DEBUG] ActualizarPrecioListaTipoExamenPaciente: id={idTipoExamenPaciente}, precioLista={precioLista}");
             string precioListaFormato = precioLista.ToString(System.Globalization.CultureInfo.InvariantCulture);
-            SQLConnector.EjecutarConsulta(
-                "UPDATE dbo.TipoExamenDePaciente SET precioLista = " + precioListaFormato +
-                " WHERE id = '" + idTipoExamenPaciente.ToString() + "'");
+            string sql = "UPDATE dbo.TipoExamenDePaciente SET precioLista = " + precioListaFormato +
+                         " WHERE id = '" + idTipoExamenPaciente.ToString() + "'";
+            System.Diagnostics.Debug.WriteLine($"[DEBUG] Consulta SQL: {sql}");
+            SQLConnector.EjecutarConsulta(sql);
         }
 
         /// <summary>

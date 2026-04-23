@@ -999,6 +999,21 @@ namespace CapaPresentacion
                             MessageBox.Show(ex.Message);
                         }
 
+
+                        // DEBUG: PrecioLista/ImporteLista
+                        try
+                        {
+                            var tbImporteLista = this.Controls.Find("tbImporteLista", true);
+                            if (tbImporteLista.Length > 0)
+                            {
+                                var tb = tbImporteLista[0] as TextBox;
+                                System.Diagnostics.Debug.WriteLine($"[DEBUG-LISTA][frmPaciente] tbImporteLista.Text='{{tb.Text}}'");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"[DEBUG-LISTA][frmPaciente] tbImporteLista no encontrado: {{ex.Message}}");
+                        }
                     }
                 }
                 else if (rbLaboral.Checked)
@@ -1064,6 +1079,20 @@ namespace CapaPresentacion
                 }
             }
             return false;
+            // DEBUG: rglEntidad.PrecioLista si existe
+            try
+            {
+                var prop = rglEntidad.GetType().GetProperty("PrecioLista");
+                if (prop != null)
+                {
+                    var valor = prop.GetValue(rglEntidad, null);
+                    System.Diagnostics.Debug.WriteLine($"[DEBUG-LISTA][frmPaciente] rglEntidad.PrecioLista='{{valor}}'");
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[DEBUG-LISTA][frmPaciente] rglEntidad.PrecioLista error: {{ex.Message}}");
+            }
         }
 
         private bool existeEnListado(string idClub)

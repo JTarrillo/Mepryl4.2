@@ -74,16 +74,26 @@ namespace CapaDatosMepryl
 
             SQLConnector.obtenerTablaSegunConsultaString(sb.ToString());
 
-            // Sincronizar a Especialidad siempre al guardar
-            StringBuilder sbSync = new StringBuilder();
-            for (int i = 0; i < dtDatos.Rows.Count; i++)
+            // Sincronizar a Especialidad solo si este es el período más reciente con datos
+            string strMaxPeriodo = "SELECT MAX(Anio * 100 + Mes) FROM PrecioPublico WHERE Eliminado = 0";
+            DataTable dtMax = SQLConnector.obtenerTablaSegunConsultaString(strMaxPeriodo);
+            int periodoGuardado = anio * 100 + mes;
+            int periodoMax = 0;
+            if (dtMax != null && dtMax.Rows.Count > 0 && dtMax.Rows[0][0] != DBNull.Value)
+                periodoMax = Convert.ToInt32(dtMax.Rows[0][0]);
+
+            if (periodoGuardado >= periodoMax)
             {
-                string idEsp = dtDatos.Rows[i]["idEspecialidad"].ToString();
-                string pLista = dtDatos.Rows[i]["PrecioLista"].ToString().Replace(",", ".");
-                string pPromo = dtDatos.Rows[i]["PrecioPromo"].ToString().Replace(",", ".");
-                sbSync.AppendLine("UPDATE Especialidad SET precioBase = " + pPromo + ", precioLista = " + pLista + " WHERE id = '" + idEsp + "'; ");
+                StringBuilder sbSync = new StringBuilder();
+                for (int i = 0; i < dtDatos.Rows.Count; i++)
+                {
+                    string idEsp = dtDatos.Rows[i]["idEspecialidad"].ToString();
+                    string pLista = dtDatos.Rows[i]["PrecioLista"].ToString().Replace(",", ".");
+                    string pPromo = dtDatos.Rows[i]["PrecioPromo"].ToString().Replace(",", ".");
+                    sbSync.AppendLine("UPDATE Especialidad SET precioBase = " + pPromo + ", precioLista = " + pLista + " WHERE id = '" + idEsp + "'; ");
+                }
+                SQLConnector.obtenerTablaSegunConsultaString(sbSync.ToString());
             }
-            SQLConnector.obtenerTablaSegunConsultaString(sbSync.ToString());
         }
 
         /// <summary>
