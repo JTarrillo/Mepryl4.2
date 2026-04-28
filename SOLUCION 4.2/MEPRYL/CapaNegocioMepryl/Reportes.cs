@@ -7,7 +7,7 @@ using Entidades;
 using CapaDatosMepryl;
 
 namespace CapaNegocioMepryl
-{
+{    
     public class Reportes
     {
         string test;
@@ -45,7 +45,7 @@ namespace CapaNegocioMepryl
                             break;
                         case "LABORATORIO-PREVENTIVA":
                             strPath = @fila["Laboratorio"].ToString();
-                            break;
+                            break;                        
                         default:
                             break;
                         case "HOJA-RUTA":
@@ -53,11 +53,11 @@ namespace CapaNegocioMepryl
                             break;
                         case "HOJA-CLINICO":
                             strPath = @"P:\Temporal\PLANTILLA REPORTE INFORMES\PRUEBA\HojaClinico.docx";
-                            break;
+                            break;                            
                     }
                 }
             }
-            else if (db.Rows.Count > 0 && !blnPreventiva)
+            else if(db.Rows.Count > 0 && !blnPreventiva)
             {
                 foreach (DataRow fila in db.Rows)
                 {
@@ -84,12 +84,12 @@ namespace CapaNegocioMepryl
         public string ReporteSalida(string strNombrePlantilla, bool blnPreventiva, DateTime dtFecha, string strNombreReporte)
         {
             string strResultado = "";
-
+                                    
             ConfigConsolidacion directorio = new ConfigConsolidacion();
             DataTable dt = directorio.DirectoriosConsPreventiva();
             DataTable db = directorio.DirectoriosConsLaboral();
-            //  string strPath = "";
-
+          //  string strPath = "";
+            
             if (dt.Rows.Count > 0 && blnPreventiva)
             {
                 foreach (DataRow fila in dt.Rows)
@@ -149,7 +149,7 @@ namespace CapaNegocioMepryl
         }
 
         public bool ClinicoPreventiva(DataTable dt, string strNombreArchivo, DateTime dtFecha)
-        {
+        {               
             bool blnResultado = false;
             string[,] Etiquetas = new string[48, 2];
             object objImagen = null;
@@ -191,7 +191,7 @@ namespace CapaNegocioMepryl
                 Etiquetas[32, 0] = "<<OjoI>>"; Etiquetas[32, 1] = r.ItemArray[32].ToString();
                 Etiquetas[33, 0] = "<<OjoIL>>"; Etiquetas[33, 1] = r.ItemArray[33].ToString();
                 Etiquetas[34, 0] = "<<VisionC>>"; Etiquetas[34, 1] = r.ItemArray[34].ToString();
-                Etiquetas[35, 0] = "<<ExOdonto>>"; Etiquetas[35, 1] = r.ItemArray[35].ToString();
+                Etiquetas[35, 0] = "<<ExOdonto>>"; Etiquetas[35, 1] = r.ItemArray[35].ToString();                
                 Etiquetas[36, 0] = "<<DLaboratorio>>"; Etiquetas[36, 1] = r.ItemArray[36].ToString();
                 Etiquetas[37, 0] = "<<Ecg>>"; Etiquetas[37, 1] = r.ItemArray[37].ToString();
                 Etiquetas[38, 0] = "<<RxTorax>>"; Etiquetas[38, 1] = r.ItemArray[38].ToString();
@@ -206,9 +206,9 @@ namespace CapaNegocioMepryl
                 Etiquetas[47, 0] = "<<RM>>"; Etiquetas[47, 1] = r.ItemArray[47].ToString();
             }
 
-            CrearReporte.CreateWordDocument(PlantillaWord("CLINICO-PREVENTIVA", true), ReporteSalida("CLINICO-PREVENTIVA", true, dtFecha, strNombreArchivo), objImagen, Etiquetas, 'P', false);
+            CrearReporte.CreateWordDocument(PlantillaWord("CLINICO-PREVENTIVA", true), ReporteSalida("CLINICO-PREVENTIVA", true, dtFecha ,strNombreArchivo), objImagen, Etiquetas, 'P', false);
             blnResultado = true;
-
+            
             return blnResultado;
         }
 
@@ -253,18 +253,18 @@ namespace CapaNegocioMepryl
                 Etiquetas[30, 0] = "<<Hema>>"; Etiquetas[30, 1] = r.ItemArray[30].ToString();
                 Etiquetas[31, 0] = "<<Pio>>"; Etiquetas[31, 1] = r.ItemArray[31].ToString();
                 Etiquetas[32, 0] = "<<Mucus>>"; Etiquetas[32, 1] = r.ItemArray[32].ToString();
-                Etiquetas[33, 0] = "<<Observaciones>>"; Etiquetas[33, 1] = r.ItemArray[33].ToString();
+                Etiquetas[33, 0] = "<<Observaciones>>"; Etiquetas[33, 1] = r.ItemArray[33].ToString();                
             }
 
             CrearReporte.CreateWordDocument(PlantillaWord("LABORATORIO-PREVENTIVA", true), ReporteSalida("LABORATORIO-PREVENTIVA", true, dtFecha, strNombreArchivo), objImagen, Etiquetas, 'P', false);
-            blnResultado = true;
+            blnResultado = true;            
 
             return blnResultado;
         }
 
         private string DirectorioReportePorFecha(DateTime Fecha, string strDirectorioBase, string leyenda)
         {
-            string strDirectorio = "";
+            string strDirectorio = "";            
             string strDia = "";
 
             if (!string.IsNullOrEmpty(leyenda))
@@ -276,14 +276,14 @@ namespace CapaNegocioMepryl
 
             if (Fecha.Day <= 9)
                 strDia = "0" + Fecha.Day;
-
+                        
 
             if (Fecha.Month <= 9)
                 strDirectorio = strDirectorioBase + "\\" + leyenda + Fecha.Year.ToString() + "\\0" + Fecha.Month.ToString() + "-" + MonthName(Fecha.Month).ToUpper() + "\\" + strDia + "\\";
-            //strDirectorio = strDirectorioBase + "\\" + leyenda + "\\0" + Fecha.Month.ToString() + "-" + MonthName(Fecha.Month).ToUpper() + "\\" + strDia + "\\";
+                //strDirectorio = strDirectorioBase + "\\" + leyenda + "\\0" + Fecha.Month.ToString() + "-" + MonthName(Fecha.Month).ToUpper() + "\\" + strDia + "\\";
             else
                 strDirectorio = strDirectorioBase + "\\" + leyenda + Fecha.Year.ToString() + "\\" + Fecha.Month.ToString() + "-" + MonthName(Fecha.Month).ToUpper() + "\\" + strDia + "\\";
-            //strDirectorio = strDirectorioBase + "\\" + leyenda + "\\" + Fecha.Month.ToString() + "-" + MonthName(Fecha.Month).ToUpper() + "\\" + strDia + "\\";
+                //strDirectorio = strDirectorioBase + "\\" + leyenda + "\\" + Fecha.Month.ToString() + "-" + MonthName(Fecha.Month).ToUpper() + "\\" + strDia + "\\";
 
             if (!System.IO.Directory.Exists(strDirectorio))
             {
@@ -307,7 +307,7 @@ namespace CapaNegocioMepryl
 
             foreach (DataRow r in dt.Rows)
             {
-                Etiquetas[0, 0] = "<<TipoExamen>>"; Etiquetas[0, 1] = r.ItemArray[0].ToString();
+                Etiquetas[0, 0] = "<<TipoExamen>>"; Etiquetas[0, 1] = r.ItemArray[0].ToString();                
                 Etiquetas[1, 0] = "<<Fecha>>"; Etiquetas[1, 1] = r.ItemArray[1].ToString();
                 Etiquetas[2, 0] = "<<Nro>>"; Etiquetas[2, 1] = r.ItemArray[2].ToString();
                 Etiquetas[3, 0] = "<<RazonSocial>>"; Etiquetas[3, 1] = r.ItemArray[3].ToString();
@@ -358,8 +358,8 @@ namespace CapaNegocioMepryl
                 Etiquetas[48, 0] = "<<ObsFinal>>"; Etiquetas[48, 1] = r.ItemArray[73].ToString();
 
                 objImagen = RecuperarFoto(r.ItemArray[4].ToString(), 'L');
-            }
-
+            }            
+            
             ReporteSpire.CreateWordDocument(PlantillaWord("CLINICO-LABORAL", false), ReporteSalida("CLINICO-LABORAL", false, dtFecha, strNombreArchivo), objImagen, Etiquetas, true, "");
 
             blnResultado = true;
@@ -429,7 +429,7 @@ namespace CapaNegocioMepryl
             }
 
 
-
+            
             ReporteSpire.CreateWordDocument(PlantillaWord("OLIVERA-LABORAL", false), ReporteSalida("OLIVERA-LABORAL", false, dtFecha, strNombreArchivo), objImagen, Etiquetas, true, "");
 
             blnResultado = true;
@@ -495,7 +495,7 @@ namespace CapaNegocioMepryl
                 Etiquetas[46, 0] = "<<Densidad>>"; Etiquetas[46, 1] = r.ItemArray[48].ToString();
                 Etiquetas[47, 0] = "<<Ph>>"; Etiquetas[47, 1] = r.ItemArray[49].ToString();
                 Etiquetas[48, 0] = "<<Profesional>>"; Etiquetas[48, 1] = r.ItemArray[51].ToString();
-                Etiquetas[49, 0] = "<<Matricula>>"; Etiquetas[49, 1] = r.ItemArray[52].ToString();
+                Etiquetas[49, 0] = "<<Matricula>>"; Etiquetas[49, 1] = r.ItemArray[52].ToString();                
                 Etiquetas[50, 0] = "<<Cargo>>"; Etiquetas[50, 1] = r.ItemArray[53].ToString();
                 Etiquetas[51, 0] = "<<ObservacionesLab>>"; Etiquetas[51, 1] = r.ItemArray[55].ToString();
                 Etiquetas[52, 0] = "<<Na>>"; Etiquetas[52, 1] = r.ItemArray[56].ToString();
@@ -511,7 +511,7 @@ namespace CapaNegocioMepryl
                 Etiquetas[62, 0] = "<<Creati>>"; Etiquetas[62, 1] = r.ItemArray[66].ToString();
 
                 if (!string.IsNullOrEmpty(r.ItemArray[31].ToString()) && !string.IsNullOrEmpty(r.ItemArray[32].ToString()) && !string.IsNullOrEmpty(r.ItemArray[31].ToString()))
-                    blnPerfilLipidico = true;
+                  blnPerfilLipidico = true;
 
 
             }
@@ -534,7 +534,7 @@ namespace CapaNegocioMepryl
         {
             bool blnResultado = false;
             string[,] Etiquetas = new string[47, 2];
-            object objImagen = "";
+            object objImagen = "";            
 
             foreach (DataRow r in dt.Rows)
             {
@@ -588,7 +588,8 @@ namespace CapaNegocioMepryl
             }
 
             //CrearReporte.PrintWordDocument(PlantillaWord("HOJA-RUTA", true), objImagen, Etiquetas);
-            blnResultado = ReporteSpire.PrintWordDocument(PlantillaWord("HOJA-RUTA", true), objImagen, Etiquetas);
+            ReporteSpire.PrintWordDocument(PlantillaWord("HOJA-RUTA", true), objImagen, Etiquetas);
+            blnResultado = true;
 
             return blnResultado;
         }
@@ -622,7 +623,8 @@ namespace CapaNegocioMepryl
                 Etiquetas[18, 0] = "<<Rm>>"; Etiquetas[18, 1] = r.ItemArray[18].ToString();
             }
 
-            blnResultado = ReporteSpire.PrintWordDocument(PlantillaWord("HOJA-CLINICO", true), objImagen, Etiquetas);
+            ReporteSpire.PrintWordDocument(PlantillaWord("HOJA-CLINICO", true), objImagen, Etiquetas);
+            blnResultado = true;
 
             return blnResultado;
         }
@@ -641,8 +643,7 @@ namespace CapaNegocioMepryl
                 {
                     strResultado = @fila["UbicacionPreventiva"].ToString();
                 }
-            }
-            else if (dt.Rows.Count > 0 && chrTipoPaciente == 'L')
+            }else if (dt.Rows.Count > 0 && chrTipoPaciente == 'L')
             {
                 foreach (DataRow fila in dt.Rows)
                 {
@@ -676,7 +677,7 @@ namespace CapaNegocioMepryl
                 Etiquetas[5, 0] = "<<Dni>>";
                 Etiquetas[5, 1] = strDatos[5].ToString();
                 Etiquetas[6, 0] = "<<FNac>>";
-                Etiquetas[6, 1] = strDatos[6].ToString();
+                Etiquetas[6, 1] = strDatos[6].ToString();                
             }
 
             ReporteSpire.PrintWordDocument(@"P:\Temporal\PLANTILLA REPORTE INFORMES\Hoja de Ex. Físico II Laboral.doc", objImagen, Etiquetas);
@@ -686,7 +687,7 @@ namespace CapaNegocioMepryl
 
             return blnRetorno;
         }
-
+        
         public DataTable AudiometriaEstablcerDatos(DateTime dtFecha)
         {
             return reporte.AudiometriaEstablcerDatos(dtFecha);
