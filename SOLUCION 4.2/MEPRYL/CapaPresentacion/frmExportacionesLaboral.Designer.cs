@@ -53,7 +53,7 @@
             this.ribbonControl1.MaxItemId = 3;
             this.ribbonControl1.Name = "ribbonControl1";
             this.ribbonControl1.Pages.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPage[] {
-            ((DevExpress.XtraBars.Ribbon.RibbonPage)(this.ribbonPage1))});
+            this.ribbonPage1});
             this.ribbonControl1.Size = new System.Drawing.Size(812, 139);
             // 
             // bbiExportarDictamen
@@ -77,7 +77,7 @@
             // ribbonPage1
             // 
             this.ribbonPage1.Groups.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPageGroup[] {
-            ((DevExpress.XtraBars.Ribbon.RibbonPageGroup)(this.ribbonPageGroup1))});
+            this.ribbonPageGroup1});
             this.ribbonPage1.Name = "ribbonPage1";
             this.ribbonPage1.Text = "Exportaciones Laboral";
             // 
@@ -85,6 +85,9 @@
             // 
             this.ribbonPageGroup1.Name = "ribbonPageGroup1";
             this.ribbonPageGroup1.ShowCaptionButton = false;
+            // Agregar los botones al grupo del ribbon
+            this.ribbonPageGroup1.ItemLinks.Add(this.bbiExportarDictamen);
+            this.ribbonPageGroup1.ItemLinks.Add(this.barButtonItem1);
             // 
             // panel1
             // 

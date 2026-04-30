@@ -451,7 +451,7 @@
             this.rbcMenu.MaxItemId = 5;
             this.rbcMenu.Name = "rbcMenu";
             this.rbcMenu.Pages.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPage[] {
-            ((DevExpress.XtraBars.Ribbon.RibbonPage)(this.ribbonPage1))});
+            this.ribbonPage1});
             this.rbcMenu.Size = new System.Drawing.Size(1238, 139);
             // 
             // ribbonPage1
