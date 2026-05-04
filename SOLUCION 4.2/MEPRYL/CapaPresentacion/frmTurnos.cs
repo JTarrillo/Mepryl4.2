@@ -679,6 +679,21 @@ namespace CapaPresentacion
             panelPacientePreventiva.Visible = true;
             panelLaboral.Visible = false;
             Entidades.TurnoPreventiva pacientePreventiva = turno.cargarTurnoPacientePreventiva(new Guid(dgv.Rows[dgv.CurrentCell.RowIndex].Cells[0].Value.ToString()));
+
+            // Si PrecioLista es 0, buscarlo en PrecioPublico usando el IdSubtipo de la grilla
+            // (IdSubtipo apunta a la especialidad HIJA como FUTBOL METRO, que sí tiene precio;
+            //  TipoExamenDePaciente.idEspecialidad guarda el PADRE como FUTBOL, sin precio en PrecioPublico)
+            if (pacientePreventiva.TipoExamen.PrecioLista == 0)
+            {
+                string idSubtipoPrev = dgv.Rows[dgv.CurrentCell.RowIndex].Cells["IdSubtipo"].Value?.ToString() ?? "";
+                if (!string.IsNullOrEmpty(idSubtipoPrev) && idSubtipoPrev != Guid.Empty.ToString())
+                {
+                    DataTable ppPrev = turno.ObtenerPrecioPublico(new Guid(idSubtipoPrev), obtenerFecha());
+                    if (ppPrev.Rows.Count > 0 && Convert.ToDouble(ppPrev.Rows[0]["PrecioLista"].ToString()) > 0)
+                        pacientePreventiva.TipoExamen.PrecioLista = Convert.ToDouble(ppPrev.Rows[0]["PrecioLista"].ToString());
+                }
+            }
+
             llenarPanelPacientePreventiva(pacientePreventiva);
         }
 
@@ -710,8 +725,8 @@ namespace CapaPresentacion
             txtEmail.Text = turnoPrev.Mail;
             txtEdad.Text = (DateTime.Today.AddTicks(-turnoPrev.Nacimiento.Ticks).Year - 1).ToString();
             tbIdTipoExamenPreventiva.Text = tipoExamenActual.IdTipoExamenPaciente.ToString();
-            tbImportePreventiva.Text = tipoExamenActual.PrecioBase.ToString();
-            tbImporteListaPreventiva.Text = tipoExamenActual.PrecioLista.ToString();
+            tbImportePreventiva.Text = tipoExamenActual.PrecioBase.ToString("N0");
+            tbImporteListaPreventiva.Text = tipoExamenActual.PrecioLista.ToString("N0");
             cbExamenModifPreventiva.Checked = tipoExamenActual.Modificado;
             tbExamenPreventiva.Text = tipoExamenActual.Descripcion;
             if (tipoExamenActual.Modificado)
@@ -739,6 +754,19 @@ namespace CapaPresentacion
             test = dgv.Rows[dgv.CurrentCell.RowIndex].Cells[0].Value.ToString();
             test = dgv.Rows[dgv.CurrentCell.RowIndex].Cells[0].Value.ToString();
             Entidades.TurnoLaboral pacienteLaboral = turno.cargarTurnoPacienteLaboral(new Guid(dgv.Rows[dgv.CurrentCell.RowIndex].Cells[0].Value.ToString()));
+
+            // Si PrecioLista es 0, buscarlo en PrecioPublico usando el IdSubtipo de la grilla
+            if (pacienteLaboral.TipoExamen.PrecioLista == 0)
+            {
+                string idSubtipoLab = dgv.Rows[dgv.CurrentCell.RowIndex].Cells["IdSubtipo"].Value?.ToString() ?? "";
+                if (!string.IsNullOrEmpty(idSubtipoLab) && idSubtipoLab != Guid.Empty.ToString())
+                {
+                    DataTable ppLab = turno.ObtenerPrecioPublico(new Guid(idSubtipoLab), obtenerFecha());
+                    if (ppLab.Rows.Count > 0 && Convert.ToDouble(ppLab.Rows[0]["PrecioLista"].ToString()) > 0)
+                        pacienteLaboral.TipoExamen.PrecioLista = Convert.ToDouble(ppLab.Rows[0]["PrecioLista"].ToString());
+                }
+            }
+
             llenarPanelPacienteLaboral(pacienteLaboral);
         }
 
@@ -771,8 +799,8 @@ namespace CapaPresentacion
             tbObservacionesLaboral.Text = turnoLab.Observaciones;
             tipoExamenActual = turnoLab.TipoExamen;
             tbIdTipoExamenLaboral.Text = tipoExamenActual.IdTipoExamenPaciente.ToString();
-            tbImporteLaboral.Text = tipoExamenActual.PrecioBase.ToString();
-            tbImporteListaLaboral.Text = tipoExamenActual.PrecioLista.ToString();
+            tbImporteLaboral.Text = tipoExamenActual.PrecioBase.ToString("N0");
+            tbImporteListaLaboral.Text = tipoExamenActual.PrecioLista.ToString("N0");
             cbExamenModificadoLaboral.Checked = tipoExamenActual.Modificado;
             tbExamenLaboral.Text = dgv.Rows[dgv.CurrentCell.RowIndex].Cells["SubTipoExamen"].Value?.ToString();
             if (tipoExamenActual.Modificado)
@@ -1025,8 +1053,8 @@ namespace CapaPresentacion
         {
             tipoExamenActual = tipoEx;
             tbIdTipoExamenLaboral.Text = tipoEx.IdTipoExamenPaciente.ToString();
-            tbImporteLaboral.Text = tipoEx.PrecioBase.ToString();
-            tbImporteListaLaboral.Text = tipoEx.PrecioLista.ToString();
+            tbImporteLaboral.Text = tipoEx.PrecioBase.ToString("N0");
+            tbImporteListaLaboral.Text = tipoEx.PrecioLista.ToString("N0");
             cbExamenModificadoLaboral.Checked = tipoEx.Modificado;
             tbExamenLaboral.Text = tipoEx.Descripcion;
             if (tipoEx.Modificado)
@@ -1258,12 +1286,14 @@ namespace CapaPresentacion
                 return valorDefault;
 
             double valor;
-            if (double.TryParse(texto, out valor))
+            // Intento directo: maneja "103300" y "103.300" (miles en es-AR) y "103,300" (miles en en-US)
+            if (double.TryParse(texto, System.Globalization.NumberStyles.Any,
+                                 System.Globalization.CultureInfo.CurrentCulture, out valor))
                 return valor;
 
-            // Fallback para valores con punto/coma según cultura actual.
-            string normalizado = texto.Replace(".", ",").Trim();
-            if (double.TryParse(normalizado, out valor))
+            // Fallback: quitar separadores de miles (. y ,) y parsear como entero
+            string sinMiles = texto.Replace(".", "").Replace(",", "").Trim();
+            if (double.TryParse(sinMiles, out valor))
                 return valor;
 
             return valorDefault;
@@ -1286,8 +1316,8 @@ namespace CapaPresentacion
         {
             tipoExamenActual = tipoEx;
             tbIdTipoExamenPreventiva.Text = tipoEx.IdTipoExamenPaciente.ToString();
-            tbImportePreventiva.Text = tipoEx.PrecioBase.ToString();
-            tbImporteListaPreventiva.Text = tipoEx.PrecioLista.ToString();
+            tbImportePreventiva.Text = tipoEx.PrecioBase.ToString("N0");
+            tbImporteListaPreventiva.Text = tipoEx.PrecioLista.ToString("N0");
             cbExamenModifPreventiva.Checked = tipoEx.Modificado;
             tbExamenPreventiva.Text = tipoEx.Descripcion;
             if (tipoEx.Modificado)
@@ -1897,8 +1927,8 @@ namespace CapaPresentacion
                 {
                     tbObservPreventiva.Text = "SE FACT. AL CLUB";
                     tipoExamenActual.PrecioBase = 0;
-                    tbImportePreventiva.Text = tipoExamenActual.PrecioBase.ToString();
-                    tbImporteListaPreventiva.Text = tipoExamenActual.PrecioLista.ToString();
+                    tbImportePreventiva.Text = tipoExamenActual.PrecioBase.ToString("N0");
+                    tbImporteListaPreventiva.Text = tipoExamenActual.PrecioLista.ToString("N0");
                 }
                 else
                 {

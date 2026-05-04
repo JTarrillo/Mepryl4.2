@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="1169" math="0" shadow="0">
+  <root>
+    <mxCell id="0" />
+    <mxCell id="1" parent="0" />
+
+    <!-- ===== TITULO PRINCIPAL ===== -->
+    <mxCell id="t0" value="FIX: Imp. Lista = 0 en Turnos Asignados — frmTurnos.cs" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=18;fontStyle=1;fontColor=#1a1a1a;" vertex="1" parent="1">
+      <mxGeometry x="200" y="20" width="1200" height="40" as="geometry" />
+    </mxCell>
+
+    <!-- ===== SECCIÓN IZQUIERDA: PROBLEMA ===== -->
+    <mxCell id="sec_prob" value="❌  ANTES DEL FIX — Por qué mostraba 0" style="text;html=1;strokeColor=#AE4132;fillColor=#FDECEA;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=14;fontStyle=1;fontColor=#AE4132;" vertex="1" parent="1">
+      <mxGeometry x="40" y="80" width="700" height="36" as="geometry" />
+    </mxCell>
+
+    <!-- BD: tablas del problema -->
+    <mxCell id="db_turno" value="&lt;b&gt;Turno&lt;/b&gt;&lt;br/&gt;id = 85A3064C...&lt;br/&gt;horarioID → Horario&lt;br/&gt;pacienteID → Paciente&lt;br/&gt;fecha = 28/04/2026" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="60" y="150" width="180" height="90" as="geometry" />
+    </mxCell>
+
+    <mxCell id="db_horario" value="&lt;b&gt;Horario&lt;/b&gt;&lt;br/&gt;especialidadID =&lt;br/&gt;&lt;font color=&quot;#006600&quot;&gt;FUTBOL METRO (hijo)&lt;/font&gt;&lt;br/&gt;60E94892..." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="60" y="280" width="180" height="90" as="geometry" />
+    </mxCell>
+
+    <mxCell id="db_tep" value="&lt;b&gt;TipoExamenDePaciente&lt;/b&gt;&lt;br/&gt;idEspecialidad =&lt;br/&gt;&lt;font color=&quot;#AE4132&quot;&gt;FUTBOL (PADRE)&lt;/font&gt;&lt;br/&gt;D6A02B46...&lt;br/&gt;precioExamen = 66000&lt;br/&gt;&lt;font color=&quot;#AE4132&quot;&gt;precioLista = 0 ❌&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="280" y="200" width="200" height="110" as="geometry" />
+    </mxCell>
+
+    <mxCell id="db_esp_padre" value="&lt;b&gt;Especialidad (PADRE)&lt;/b&gt;&lt;br/&gt;id = D6A02B46...&lt;br/&gt;descripcion = FUTBOL&lt;br/&gt;&lt;font color=&quot;#AE4132&quot;&gt;Padre = true&lt;/font&gt;&lt;br/&gt;IdPadre = NULL" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="520" y="150" width="185" height="100" as="geometry" />
+    </mxCell>
+
+    <mxCell id="db_esp_hijo" value="&lt;b&gt;Especialidad (HIJO)&lt;/b&gt;&lt;br/&gt;id = 60E94892...&lt;br/&gt;descripcion = FUTBOL METRO&lt;br/&gt;&lt;font color=&quot;#006600&quot;&gt;Padre = false&lt;/font&gt;&lt;br/&gt;IdPadre = D6A02B46..." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="520" y="290" width="185" height="100" as="geometry" />
+    </mxCell>
+
+    <mxCell id="db_pp" value="&lt;b&gt;PrecioPublico&lt;/b&gt;&lt;br/&gt;idEspecialidad = 60E94892 (FUTBOL METRO)&lt;br/&gt;Mes=4, Anio=2026&lt;br/&gt;PrecioPromo = 66.000&lt;br/&gt;&lt;font color=&quot;#006600&quot;&gt;PrecioLista = 76.000 ✅&lt;/font&gt;&lt;br/&gt;&lt;br/&gt;&lt;i&gt;NO existe registro con D6A02B46 (PADRE)&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="280" y="360" width="220" height="120" as="geometry" />
+    </mxCell>
+
+    <!-- Flechas del problema -->
+    <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="db_turno" target="db_horario">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e1l" value="horarioID" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" vertex="1" connectable="0" parent="e1">
+      <mxGeometry x="-0.1" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry>
+    </mxCell>
+
+    <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="db_turno" target="db_tep">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e2l" value="idTurno" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" vertex="1" connectable="0" parent="e2">
+      <mxGeometry x="-0.1" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry>
+    </mxCell>
+
+    <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#AE4132;strokeWidth=2;" edge="1" parent="1" source="db_tep" target="db_esp_padre">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e3l" value="idEspecialidad&lt;br/&gt;(PADRE ❌)" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;fontColor=#AE4132;fontStyle=1;" vertex="1" connectable="0" parent="e3">
+      <mxGeometry x="-0.1" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry>
+    </mxCell>
+
+    <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="db_horario" target="db_esp_hijo">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e4l" value="especialidadID&lt;br/&gt;(HIJO ✅)" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;fontColor=#006600;fontStyle=1;" vertex="1" connectable="0" parent="e4">
+      <mxGeometry x="-0.1" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry>
+    </mxCell>
+
+    <!-- Flecha de búsqueda fallida -->
+    <mxCell id="e5" value="busca precio ❌&lt;br/&gt;(no existe registro&lt;br/&gt;del PADRE en PrecioPublico)" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#AE4132;strokeWidth=2;dashed=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="db_esp_padre" target="db_pp">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- Caja de método problema -->
+    <mxCell id="met_prob" value="&lt;b&gt;cargarEstudiosPorExamen()&lt;/b&gt;&lt;br/&gt;WHERE tep.id = '...'&lt;br/&gt;→ lee tep.idEspecialidad = FUTBOL (PADRE)&lt;br/&gt;→ lee tep.precioLista = 0&lt;br/&gt;&lt;font color=&quot;#AE4132&quot;&gt;→ NO consulta PrecioPublico ❌&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="60" y="420" width="260" height="90" as="geometry" />
+    </mxCell>
+
+    <mxCell id="res_prob" value="&lt;b&gt;RESULTADO en pantalla:&lt;/b&gt;&lt;br/&gt;Importe: 66.000&lt;br/&gt;&lt;font color=&quot;#AE4132&quot;&gt;Imp. Lista: 0 ❌&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FDECEA;strokeColor=#AE4132;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="60" y="540" width="200" height="70" as="geometry" />
+    </mxCell>
+
+    <!-- ===== SEPARADOR ===== -->
+    <mxCell id="sep" value="" style="line;strokeWidth=3;strokeColor=#999999;fillColor=none;" vertex="1" parent="1">
+      <mxGeometry x="770" y="80" width="10" height="600" as="geometry" />
+    </mxCell>
+
+    <!-- ===== SECCIÓN DERECHA: SOLUCIÓN ===== -->
+    <mxCell id="sec_fix" value="✅  DESPUÉS DEL FIX — Flujo corregido" style="text;html=1;strokeColor=#006600;fillColor=#d5e8d4;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=14;fontStyle=1;fontColor=#006600;" vertex="1" parent="1">
+      <mxGeometry x="800" y="80" width="700" height="36" as="geometry" />
+    </mxCell>
+
+    <!-- Grilla -->
+    <mxCell id="grilla" value="&lt;b&gt;Grilla (dgv)&lt;/b&gt; — fila seleccionada&lt;br/&gt;Col[0] Id = 85A3064C... (idTurno)&lt;br/&gt;Col[1] TipoPadre = FUTBOL&lt;br/&gt;Col[2] SubTipoExamen = FUTBOL METRO&lt;br/&gt;&lt;font color=&quot;#006600&quot;&gt;Col[IdSubtipo] = 60E94892... (HIJO) ✅&lt;/font&gt;&lt;br/&gt;Col[IdPadre] = D6A02B46... (PADRE)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="820" y="150" width="280" height="120" as="geometry" />
+    </mxCell>
+
+    <!-- cargarPanelPreventiva NUEVO -->
+    <mxCell id="met_new" value="&lt;b&gt;cargarPanelPreventiva() — NUEVO&lt;/b&gt;&lt;br/&gt;1. cargarTurnoPacientePreventiva() → precioLista lee de tep (puede ser 0)&lt;br/&gt;2. &lt;b&gt;SI precioLista == 0&lt;/b&gt;:&lt;br/&gt;   → toma IdSubtipo de la grilla (60E94892 - HIJO)&lt;br/&gt;   → llama ObtenerPrecioPublico(IdSubtipo, fecha)&lt;br/&gt;   → si PrecioLista &gt; 0 → lo asigna a la entidad&lt;br/&gt;3. llenarPanelPacientePreventiva()" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="820" y="310" width="360" height="130" as="geometry" />
+    </mxCell>
+
+    <!-- PrecioPublico fix -->
+    <mxCell id="pp_fix" value="&lt;b&gt;PrecioPublico&lt;/b&gt;&lt;br/&gt;WHERE idEspecialidad = 60E94892  ← HIJO (FUTBOL METRO)&lt;br/&gt;  AND Mes = 4 AND Anio = 2026&lt;br/&gt;&lt;br/&gt;&lt;font color=&quot;#006600&quot;&gt;PrecioPromo = 66.000 ✅&lt;br/&gt;PrecioLista  = 76.000 ✅&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="1220" y="310" width="260" height="120" as="geometry" />
+    </mxCell>
+
+    <!-- Resultado fix -->
+    <mxCell id="res_fix" value="&lt;b&gt;RESULTADO en pantalla:&lt;/b&gt;&lt;br/&gt;Importe: 66.000&lt;br/&gt;&lt;font color=&quot;#006600&quot;&gt;Imp. Lista: 76.000 ✅&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#006600;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="820" y="490" width="200" height="70" as="geometry" />
+    </mxCell>
+
+    <!-- Flechas fix -->
+    <mxCell id="fe1" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#006600;strokeWidth=2;" edge="1" parent="1" source="grilla" target="met_new">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="fe1l" value="selecciona fila" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" vertex="1" connectable="0" parent="fe1">
+      <mxGeometry x="-0.1" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry>
+    </mxCell>
+
+    <mxCell id="fe2" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#006600;strokeWidth=2;" edge="1" parent="1" source="met_new" target="pp_fix">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="fe2l" value="ObtenerPrecioPublico&lt;br/&gt;(IdSubtipo=HIJO, fecha)" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;fontColor=#006600;fontStyle=1;" vertex="1" connectable="0" parent="fe2">
+      <mxGeometry x="-0.1" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry>
+    </mxCell>
+
+    <mxCell id="fe3" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#006600;strokeWidth=2;" edge="1" parent="1" source="met_new" target="res_fix">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="fe3l" value="PrecioLista = 76.000" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;fontColor=#006600;fontStyle=1;" vertex="1" connectable="0" parent="fe3">
+      <mxGeometry x="-0.1" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry>
+    </mxCell>
+
+    <!-- ===== SECCIÓN INFERIOR: CAUSA RAÍZ ===== -->
+    <mxCell id="sec_root" value="🔍  CAUSA RAÍZ — Por qué TipoExamenDePaciente guarda el PADRE y no el HIJO" style="text;html=1;strokeColor=#7B68EE;fillColor=#ede7f6;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=13;fontStyle=1;fontColor=#4a148c;" vertex="1" parent="1">
+      <mxGeometry x="40" y="660" width="1460" height="36" as="geometry" />
+    </mxCell>
+
+    <mxCell id="root1" value="&lt;b&gt;Árbol de Especialidades en BD&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;FUTBOL (PADRE) → Padre=true, IdPadre=NULL&lt;br/&gt;  └─ FUTBOL METRO (HIJO) → Padre=false, IdPadre=FUTBOL&lt;br/&gt;  └─ FUTBOL AFA (HIJO) → Padre=false, IdPadre=FUTBOL&lt;br/&gt;  └─ FUTBOL METRO SIN LAB (HIJO) → Padre=false, IdPadre=FUTBOL&lt;br/&gt;&lt;br/&gt;PrecioPublico SOLO tiene registros de los HIJOS (Padre=false)&lt;br/&gt;El PADRE nunca tiene precio en PrecioPublico" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ede7f6;strokeColor=#9673a6;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="40" y="720" width="420" height="160" as="geometry" />
+    </mxCell>
+
+    <mxCell id="root2" value="&lt;b&gt;¿Por qué TipoExamenDePaciente tiene el PADRE?&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;Al asignar un turno NUEVO, nuevoTurnoPacientePreventiva() en&lt;br/&gt;CapaDatosMepryl/Turno.cs hace:&lt;br/&gt;&lt;br/&gt;  entidad.TipoExamen.Id = Horario.especialidadID  (= HIJO)&lt;br/&gt;&lt;br/&gt;Pero cargarEstudiosPorTipoExamen() en TipoExamen.cs resuelve&lt;br/&gt;el padre y guarda el PADRE como idEspecialidad en el sp.&lt;br/&gt;&lt;br/&gt;Resultado: precioLista no se guarda o queda en 0 en registros viejos." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ede7f6;strokeColor=#9673a6;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="500" y="720" width="420" height="160" as="geometry" />
+    </mxCell>
+
+    <mxCell id="root3" value="&lt;b&gt;La grilla SÍ tiene el HIJO correcto&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;cargarTurnos() en SQL hace JOIN con Horario → Especialidad&lt;br/&gt;y devuelve la columna IdSubtipo = especialidad HIJA (FUTBOL METRO).&lt;br/&gt;&lt;br/&gt;Por eso la grilla muestra correctamente 'FUTBOL METRO'&lt;br/&gt;y su IdSubtipo apunta al registro con precio en PrecioPublico.&lt;br/&gt;&lt;br/&gt;El fix usa este IdSubtipo de la grilla como fuente confiable&lt;br/&gt;para obtener PrecioLista cuando el guardado en BD es 0." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="960" y="720" width="420" height="160" as="geometry" />
+    </mxCell>
+
+    <!-- ===== CÓDIGO DEL FIX ===== -->
+    <mxCell id="code_fix" value="&lt;b&gt;Código aplicado en cargarPanelPreventiva() y cargarPanelLaboral():&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;if (pacientePreventiva.TipoExamen.PrecioLista == 0)&lt;br/&gt;{&lt;br/&gt;    string idSubtipo = dgv.Rows[idx].Cells[&quot;IdSubtipo&quot;].Value?.ToString();&lt;br/&gt;    if (!string.IsNullOrEmpty(idSubtipo) &amp;amp;&amp;amp; idSubtipo != Guid.Empty.ToString())&lt;br/&gt;    {&lt;br/&gt;        DataTable pp = turno.ObtenerPrecioPublico(new Guid(idSubtipo), obtenerFecha());&lt;br/&gt;        if (pp.Rows.Count &gt; 0 &amp;amp;&amp;amp; Convert.ToDouble(pp.Rows[0][&quot;PrecioLista&quot;]) &gt; 0)&lt;br/&gt;            paciente.TipoExamen.PrecioLista = Convert.ToDouble(pp.Rows[0][&quot;PrecioLista&quot;]);&lt;br/&gt;    }&lt;br/&gt;}" style="text;html=1;strokeColor=#d6b656;fillColor=#fff2cc;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=11;fontFamily=Courier New;" vertex="1" parent="1">
+      <mxGeometry x="40" y="910" width="760" height="200" as="geometry" />
+    </mxCell>
+
+    <mxCell id="impacto" value="&lt;b&gt;Impacto del fix:&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;✅ Turnos PREVENTIVA ya asignados → muestran PrecioLista correcto&lt;br/&gt;✅ Turnos LABORAL ya asignados → muestran PrecioLista correcto&lt;br/&gt;✅ Turnos nuevos que tenían 0 guardado en precioLista → se corrigen en pantalla&lt;br/&gt;✅ No modifica la BD (solo cambia el valor en memoria / pantalla)&lt;br/&gt;✅ Solo actúa cuando precioLista == 0 (no afecta turnos que ya tienen precio correcto)&lt;br/&gt;✅ Aplica sobre ambos paneles: panelPacientePreventiva y panelLaboral" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="840" y="910" width="640" height="200" as="geometry" />
+    </mxCell>
+
+  </root>
+</mxGraphModel>
