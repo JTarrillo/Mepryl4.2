@@ -140,6 +140,9 @@ namespace CapaPresentacion
             botEditarPacienteLaboral.Visible = false;
             botEditarPacientePreventiva.Visible = false;
 
+            btnTogglePrecioPreventiva.Visible = false;
+            btnTogglePrecioLaboral.Visible = false;
+
             btnMoverTurno.Visible = true;
 
             dgv.Focus();
@@ -1061,6 +1064,7 @@ namespace CapaPresentacion
             {
                 tbExamenLaboral.Text = tbExamenLaboral.Text + " MODIF.";
             }
+            resaltarPrecioActivoLaboral(tipoEx.UsarPrecioLista);
         }
 
         private void botModificar_Click(object sender, EventArgs e)
@@ -1093,6 +1097,10 @@ namespace CapaPresentacion
             btnMoverTurno.Visible = false;
 
             MuestraBotonesEditar();
+
+            // Mostrar toggle de precio en el panel activo
+            btnTogglePrecioPreventiva.Visible = panelPacientePreventiva.Visible;
+            btnTogglePrecioLaboral.Visible = panelLaboral.Visible;
 
             pintarControlesPanelHabilitar(); //GRV - pinta los controles
         }
@@ -1280,6 +1288,58 @@ namespace CapaPresentacion
             return retorno;
         }
 
+        private void resaltarPrecioActivoPreventiva(bool usarLista)
+        {
+            if (usarLista)
+            {
+                tbImporteListaPreventiva.BackColor = Color.PaleGreen;
+                tbImporteListaPreventiva.Font = new Font(tbImporteListaPreventiva.Font, FontStyle.Bold);
+                tbImportePreventiva.BackColor = SystemColors.Window;
+                tbImportePreventiva.Font = new Font(tbImportePreventiva.Font, FontStyle.Regular);
+            }
+            else
+            {
+                tbImportePreventiva.BackColor = Color.PaleGreen;
+                tbImportePreventiva.Font = new Font(tbImportePreventiva.Font, FontStyle.Bold);
+                tbImporteListaPreventiva.BackColor = SystemColors.Window;
+                tbImporteListaPreventiva.Font = new Font(tbImporteListaPreventiva.Font, FontStyle.Regular);
+            }
+            btnTogglePrecioPreventiva.BackColor = Color.PaleGreen;
+        }
+
+        private void resaltarPrecioActivoLaboral(bool usarLista)
+        {
+            if (usarLista)
+            {
+                tbImporteListaLaboral.BackColor = Color.PaleGreen;
+                tbImporteListaLaboral.Font = new Font(tbImporteListaLaboral.Font, FontStyle.Bold);
+                tbImporteLaboral.BackColor = SystemColors.Window;
+                tbImporteLaboral.Font = new Font(tbImporteLaboral.Font, FontStyle.Regular);
+            }
+            else
+            {
+                tbImporteLaboral.BackColor = Color.PaleGreen;
+                tbImporteLaboral.Font = new Font(tbImporteLaboral.Font, FontStyle.Bold);
+                tbImporteListaLaboral.BackColor = SystemColors.Window;
+                tbImporteListaLaboral.Font = new Font(tbImporteListaLaboral.Font, FontStyle.Regular);
+            }
+            btnTogglePrecioLaboral.BackColor = Color.PaleGreen;
+        }
+
+        private void btnTogglePrecioPreventiva_Click(object sender, EventArgs e)
+        {
+            if (tipoExamenActual == null) return;
+            tipoExamenActual.UsarPrecioLista = !tipoExamenActual.UsarPrecioLista;
+            resaltarPrecioActivoPreventiva(tipoExamenActual.UsarPrecioLista);
+        }
+
+        private void btnTogglePrecioLaboral_Click(object sender, EventArgs e)
+        {
+            if (tipoExamenActual == null) return;
+            tipoExamenActual.UsarPrecioLista = !tipoExamenActual.UsarPrecioLista;
+            resaltarPrecioActivoLaboral(tipoExamenActual.UsarPrecioLista);
+        }
+
         private double obtenerDoubleDesdeTextBox(string texto, double valorDefault)
         {
             if (string.IsNullOrWhiteSpace(texto))
@@ -1324,6 +1384,7 @@ namespace CapaPresentacion
             {
                 tbExamenPreventiva.Text = tbExamenPreventiva.Text + " MODIF.";
             }
+            resaltarPrecioActivoPreventiva(tipoEx.UsarPrecioLista);
         }
 
         private void botLiberar_Click(object sender, EventArgs e)
@@ -2508,6 +2569,8 @@ namespace CapaPresentacion
             dgvLigaYClub.BackColor = Color.WhiteSmoke;
             tbExamenPreventiva.BackColor = Color.WhiteSmoke;
             tbImportePreventiva.BackColor = Color.WhiteSmoke;
+            tbImporteListaPreventiva.BackColor = Color.WhiteSmoke;
+            tbImporteListaPreventiva.ReadOnly = true;
             tbObservPreventiva.BackColor = Color.WhiteSmoke;
             tbObservPreventiva.ReadOnly = true;
             cbFactClubPreventiva.Enabled = false;
@@ -2522,6 +2585,8 @@ namespace CapaPresentacion
             tbTelefonoLaboral.BackColor = Color.WhiteSmoke;
             txtEmailLab.BackColor = Color.WhiteSmoke;
             tbImporteLaboral.BackColor = Color.WhiteSmoke;
+            tbImporteListaLaboral.BackColor = Color.WhiteSmoke;
+            tbImporteListaLaboral.ReadOnly = true;
             tbObservacionesLaboral.BackColor = Color.WhiteSmoke;
             tbObservacionesLaboral.ReadOnly = true;
             cbFactEmpresaLaboral.Enabled = false;
@@ -2538,6 +2603,8 @@ namespace CapaPresentacion
             dgvLigaYClub.BackColor = Color.White;
             tbExamenPreventiva.BackColor = Color.White;
             tbImportePreventiva.BackColor = Color.White;
+            tbImporteListaPreventiva.BackColor = Color.White;
+            tbImporteListaPreventiva.ReadOnly = false;
             tbObservPreventiva.BackColor = Color.White;
             tbObservPreventiva.ReadOnly = false;
             cbFactClubPreventiva.Enabled = true;
@@ -2552,6 +2619,8 @@ namespace CapaPresentacion
             tbTelefonoLaboral.BackColor = Color.White;
             txtEmailLab.BackColor = Color.White;
             tbImporteLaboral.BackColor = Color.White;
+            tbImporteListaLaboral.BackColor = Color.White;
+            tbImporteListaLaboral.ReadOnly = false;
             tbObservacionesLaboral.BackColor = Color.White;
             tbObservacionesLaboral.ReadOnly = false;
             cbFactEmpresaLaboral.Enabled = true;

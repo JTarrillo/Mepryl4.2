@@ -253,6 +253,11 @@ namespace Entidades
             set { idPadre = value; }
         }
 
+        public bool UsarPrecioLista
+        {
+            get; set;
+        }
+
         #endregion
     }
 }
