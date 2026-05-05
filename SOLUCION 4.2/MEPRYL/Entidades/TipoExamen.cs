@@ -258,6 +258,11 @@ namespace Entidades
             get; set;
         }
 
+        public double SeñaPromo { get; set; }
+        public double SeñaLista { get; set; }
+        public bool LlevaPlanilla { get; set; }
+        public string ObservacionesExtra { get; set; }
+
         #endregion
     }
 }

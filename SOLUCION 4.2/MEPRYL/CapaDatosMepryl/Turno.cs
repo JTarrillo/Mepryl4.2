@@ -1610,7 +1610,12 @@ namespace CapaDatosMepryl
         public DataTable ObtenerPrecioPublico(Guid idEspecialidad, DateTime fecha)
         {
             return SQLConnector.obtenerTablaSegunConsultaString(
-                "SELECT PrecioPromo, PrecioLista FROM dbo.PrecioPublico WHERE idEspecialidad = '" + idEspecialidad.ToString() +
+                "SELECT PrecioPromo, PrecioLista, " +
+                "ISNULL(SeñaPromo, 0) AS SeñaPromo, " +
+                "ISNULL(SeñaLista, 0) AS SeñaLista, " +
+                "ISNULL(LlevaPlanilla, 0) AS LlevaPlanilla, " +
+                "ISNULL(ObservacionesExtra, '') AS ObservacionesExtra " +
+                "FROM dbo.PrecioPublico WHERE idEspecialidad = '" + idEspecialidad.ToString() +
                 "' AND Mes = " + fecha.Month + " AND Anio = " + fecha.Year + " AND Eliminado = 0");
         }
 

@@ -697,6 +697,22 @@ namespace CapaPresentacion
                 }
             }
 
+            // Cargar campos de seña y planilla desde PrecioPublico
+            {
+                string idSubtipoPrev2 = dgv.Rows[dgv.CurrentCell.RowIndex].Cells["IdSubtipo"].Value?.ToString() ?? "";
+                if (!string.IsNullOrEmpty(idSubtipoPrev2) && idSubtipoPrev2 != Guid.Empty.ToString())
+                {
+                    DataTable ppPrev2 = turno.ObtenerPrecioPublico(new Guid(idSubtipoPrev2), obtenerFecha());
+                    if (ppPrev2.Rows.Count > 0)
+                    {
+                        pacientePreventiva.TipoExamen.SeñaPromo = Convert.ToDouble(ppPrev2.Rows[0]["SeñaPromo"]);
+                        pacientePreventiva.TipoExamen.SeñaLista = Convert.ToDouble(ppPrev2.Rows[0]["SeñaLista"]);
+                        pacientePreventiva.TipoExamen.LlevaPlanilla = Convert.ToBoolean(ppPrev2.Rows[0]["LlevaPlanilla"]);
+                        pacientePreventiva.TipoExamen.ObservacionesExtra = ppPrev2.Rows[0]["ObservacionesExtra"].ToString();
+                    }
+                }
+            }
+
             llenarPanelPacientePreventiva(pacientePreventiva);
         }
 
@@ -725,6 +741,10 @@ namespace CapaPresentacion
             cbFactClubPreventiva.Checked = turnoPrev.FacturaClub;
             tbObservPreventiva.Text = turnoPrev.Observaciones;
             tipoExamenActual = turnoPrev.TipoExamen;
+            // Auto-generar observaciones si tiene seña/planilla y la observación está vacía
+            if (string.IsNullOrWhiteSpace(tbObservPreventiva.Text) &&
+                (tipoExamenActual.LlevaPlanilla || tipoExamenActual.SeñaPromo > 0 || tipoExamenActual.SeñaLista > 0))
+                tbObservPreventiva.Text = generarObservaciones(tipoExamenActual);
             txtEmail.Text = turnoPrev.Mail;
             txtEdad.Text = (DateTime.Today.AddTicks(-turnoPrev.Nacimiento.Ticks).Year - 1).ToString();
             tbIdTipoExamenPreventiva.Text = tipoExamenActual.IdTipoExamenPaciente.ToString();
@@ -770,6 +790,22 @@ namespace CapaPresentacion
                 }
             }
 
+            // Cargar campos de seña y planilla desde PrecioPublico
+            {
+                string idSubtipoLab2 = dgv.Rows[dgv.CurrentCell.RowIndex].Cells["IdSubtipo"].Value?.ToString() ?? "";
+                if (!string.IsNullOrEmpty(idSubtipoLab2) && idSubtipoLab2 != Guid.Empty.ToString())
+                {
+                    DataTable ppLab2 = turno.ObtenerPrecioPublico(new Guid(idSubtipoLab2), obtenerFecha());
+                    if (ppLab2.Rows.Count > 0)
+                    {
+                        pacienteLaboral.TipoExamen.SeñaPromo = Convert.ToDouble(ppLab2.Rows[0]["SeñaPromo"]);
+                        pacienteLaboral.TipoExamen.SeñaLista = Convert.ToDouble(ppLab2.Rows[0]["SeñaLista"]);
+                        pacienteLaboral.TipoExamen.LlevaPlanilla = Convert.ToBoolean(ppLab2.Rows[0]["LlevaPlanilla"]);
+                        pacienteLaboral.TipoExamen.ObservacionesExtra = ppLab2.Rows[0]["ObservacionesExtra"].ToString();
+                    }
+                }
+            }
+
             llenarPanelPacienteLaboral(pacienteLaboral);
         }
 
@@ -801,6 +837,10 @@ namespace CapaPresentacion
             cbFactEmpresaLaboral.Checked = turnoLab.FacturaEmpresa;
             tbObservacionesLaboral.Text = turnoLab.Observaciones;
             tipoExamenActual = turnoLab.TipoExamen;
+            // Auto-generar observaciones si tiene seña/planilla y la observación está vacía
+            if (string.IsNullOrWhiteSpace(tbObservacionesLaboral.Text) &&
+                (tipoExamenActual.LlevaPlanilla || tipoExamenActual.SeñaPromo > 0 || tipoExamenActual.SeñaLista > 0))
+                tbObservacionesLaboral.Text = generarObservaciones(tipoExamenActual);
             tbIdTipoExamenLaboral.Text = tipoExamenActual.IdTipoExamenPaciente.ToString();
             tbImporteLaboral.Text = tipoExamenActual.PrecioBase.ToString("N0");
             tbImporteListaLaboral.Text = tipoExamenActual.PrecioLista.ToString("N0");
@@ -1331,6 +1371,8 @@ namespace CapaPresentacion
             if (tipoExamenActual == null) return;
             tipoExamenActual.UsarPrecioLista = !tipoExamenActual.UsarPrecioLista;
             resaltarPrecioActivoPreventiva(tipoExamenActual.UsarPrecioLista);
+            if (tipoExamenActual.SeñaPromo > 0 || tipoExamenActual.SeñaLista > 0 || tipoExamenActual.LlevaPlanilla)
+                tbObservPreventiva.Text = generarObservaciones(tipoExamenActual);
         }
 
         private void btnTogglePrecioLaboral_Click(object sender, EventArgs e)
@@ -1338,6 +1380,43 @@ namespace CapaPresentacion
             if (tipoExamenActual == null) return;
             tipoExamenActual.UsarPrecioLista = !tipoExamenActual.UsarPrecioLista;
             resaltarPrecioActivoLaboral(tipoExamenActual.UsarPrecioLista);
+            if (tipoExamenActual.SeñaPromo > 0 || tipoExamenActual.SeñaLista > 0 || tipoExamenActual.LlevaPlanilla)
+                tbObservacionesLaboral.Text = generarObservaciones(tipoExamenActual);
+        }
+
+        private string generarObservaciones(Entidades.TipoExamen te)
+        {
+            // Formato: [ObsExtra | ] [PLANILLA | ] $ {Promo} - $ {SeñaPromo} (SEÑA) | LISTA: $ {Lista} - SEÑA = $ {Lista - SeñaLista}
+            var sb = new System.Text.StringBuilder();
+
+            // Prefijo extra (ej: "EXPRESS")
+            if (!string.IsNullOrWhiteSpace(te.ObservacionesExtra))
+                sb.Append(te.ObservacionesExtra.Trim() + " | ");
+
+            // Indicador de planilla
+            if (te.LlevaPlanilla)
+                sb.Append("PLANILLA | ");
+
+            decimal promo = (decimal)te.PrecioBase;
+            decimal lista = (decimal)te.PrecioLista;
+            decimal señaPromo = (decimal)te.SeñaPromo;
+            decimal señaLista = (decimal)te.SeñaLista;
+
+            // Precio promo con seña
+            if (señaPromo > 0)
+                sb.Append("$ " + promo.ToString("N0") + " - $ " + señaPromo.ToString("N0") + " (SEÑA)");
+            else
+                sb.Append("$ " + promo.ToString("N0"));
+
+            // Precio lista con seña
+            if (lista > 0)
+            {
+                sb.Append(" | LISTA: $ " + lista.ToString("N0"));
+                if (señaLista > 0)
+                    sb.Append(" - SEÑA = $ " + (lista - señaLista).ToString("N0"));
+            }
+
+            return sb.ToString();
         }
 
         private double obtenerDoubleDesdeTextBox(string texto, double valorDefault)

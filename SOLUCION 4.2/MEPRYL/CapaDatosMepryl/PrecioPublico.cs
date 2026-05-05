@@ -32,6 +32,10 @@ namespace CapaDatosMepryl
                             "ISNULL(p.PrecioLista, 0) AS PrecioLista, " +
                             "ISNULL(p.PrecioPromo, 0) AS PrecioPromo, " +
                             "ISNULL(e.precioBase, 0) AS precioBase, " +
+                            "ISNULL(p.SeñaPromo, 0) AS SeñaPromo, " +
+                            "ISNULL(p.SeñaLista, 0) AS SeñaLista, " +
+                            "ISNULL(p.LlevaPlanilla, 0) AS LlevaPlanilla, " +
+                            "ISNULL(p.ObservacionesExtra, '') AS ObservacionesExtra, " +
                             "ISNULL(m.nombre, '') AS Motivo, " +
                             "ISNULL(padre.descripcion, '') AS Tipo " +
                             "FROM Especialidad e " +
@@ -58,18 +62,26 @@ namespace CapaDatosMepryl
                 string descripcion = dtDatos.Rows[i]["Descripcion"].ToString().Replace("'", "''");
                 string precioLista = dtDatos.Rows[i]["PrecioLista"].ToString().Replace(",", ".");
                 string precioPromo = dtDatos.Rows[i]["PrecioPromo"].ToString().Replace(",", ".");
+                string señaPromo = dtDatos.Rows[i]["SeñaPromo"].ToString().Replace(",", ".");
+                string señaLista = dtDatos.Rows[i]["SeñaLista"].ToString().Replace(",", ".");
+                string llevaPlanilla = (Convert.ToBoolean(dtDatos.Rows[i]["LlevaPlanilla"]) ? "1" : "0");
+                string obsExtra = dtDatos.Rows[i]["ObservacionesExtra"].ToString().Replace("'", "''");
 
                 sb.Append("IF EXISTS (SELECT 1 FROM PrecioPublico WHERE idEspecialidad = '" + idEspecialidad + "' AND Mes = " + mes + " AND Anio = " + anio + ") ");
                 sb.Append("UPDATE PrecioPublico SET ");
                 sb.Append("Descripcion = '" + descripcion + "', ");
                 sb.Append("PrecioLista = " + precioLista + ", ");
                 sb.Append("PrecioPromo = " + precioPromo + ", ");
+                sb.Append("SeñaPromo = " + señaPromo + ", ");
+                sb.Append("SeñaLista = " + señaLista + ", ");
+                sb.Append("LlevaPlanilla = " + llevaPlanilla + ", ");
+                sb.Append("ObservacionesExtra = '" + obsExtra + "', ");
                 sb.Append("FechaModificacion = GETDATE(), ");
                 sb.Append("Eliminado = 0 ");
                 sb.Append("WHERE idEspecialidad = '" + idEspecialidad + "' AND Mes = " + mes + " AND Anio = " + anio + " ");
                 sb.Append("ELSE ");
-                sb.Append("INSERT INTO PrecioPublico (idEspecialidad, Descripcion, Mes, Anio, PrecioLista, PrecioPromo) ");
-                sb.AppendLine("VALUES('" + idEspecialidad + "', '" + descripcion + "', " + mes + ", " + anio + ", " + precioLista + ", " + precioPromo + "); ");
+                sb.Append("INSERT INTO PrecioPublico (idEspecialidad, Descripcion, Mes, Anio, PrecioLista, PrecioPromo, SeñaPromo, SeñaLista, LlevaPlanilla, ObservacionesExtra) ");
+                sb.AppendLine("VALUES('" + idEspecialidad + "', '" + descripcion + "', " + mes + ", " + anio + ", " + precioLista + ", " + precioPromo + ", " + señaPromo + ", " + señaLista + ", " + llevaPlanilla + ", '" + obsExtra + "'); ");
             }
 
             SQLConnector.obtenerTablaSegunConsultaString(sb.ToString());
@@ -91,8 +103,8 @@ namespace CapaDatosMepryl
         /// </summary>
         public void CopiarPrecios(int mesOrigen, int anioOrigen, int mesDestino, int anioDestino)
         {
-            string strSQL = "INSERT INTO PrecioPublico (idEspecialidad, Descripcion, Mes, Anio, PrecioLista, PrecioPromo) " +
-                            "SELECT idEspecialidad, Descripcion, " + mesDestino + ", " + anioDestino + ", PrecioLista, PrecioPromo " +
+            string strSQL = "INSERT INTO PrecioPublico (idEspecialidad, Descripcion, Mes, Anio, PrecioLista, PrecioPromo, SeñaPromo, SeñaLista, LlevaPlanilla, ObservacionesExtra) " +
+                            "SELECT idEspecialidad, Descripcion, " + mesDestino + ", " + anioDestino + ", PrecioLista, PrecioPromo, SeñaPromo, SeñaLista, LlevaPlanilla, ObservacionesExtra " +
                             "FROM PrecioPublico " +
                             "WHERE Mes = " + mesOrigen + " AND Anio = " + anioOrigen + " AND Eliminado = 0 " +
                             "AND idEspecialidad NOT IN (SELECT idEspecialidad FROM PrecioPublico WHERE Mes = " + mesDestino + " AND Anio = " + anioDestino + ")";

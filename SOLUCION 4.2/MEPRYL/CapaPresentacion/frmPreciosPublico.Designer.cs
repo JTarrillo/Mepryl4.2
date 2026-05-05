@@ -52,6 +52,10 @@ namespace CapaPresentacion
             this.colTipo = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colPrecioLista = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colPrecioPromo = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colSeñaPromo = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colSeñaLista = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colLlevaPlanilla = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.colObservacionesExtra = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colIdEspecialidad = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.lblBuscar = new System.Windows.Forms.Label();
             this.txtBuscar = new System.Windows.Forms.TextBox();
@@ -116,6 +120,7 @@ namespace CapaPresentacion
             this.cboMes.Location = new System.Drawing.Point(50, 11);
             this.cboMes.Name = "cboMes";
             this.cboMes.Size = new System.Drawing.Size(130, 25);
+            this.cboMes.SelectedIndexChanged += new System.EventHandler(this.cboMes_SelectedIndexChanged);
 
             // 
             // lblAnio
@@ -137,6 +142,7 @@ namespace CapaPresentacion
             this.nudAnio.Name = "nudAnio";
             this.nudAnio.Size = new System.Drawing.Size(70, 25);
             this.nudAnio.Value = new decimal(new int[] { 2026, 0, 0, 0 });
+            this.nudAnio.ValueChanged += new System.EventHandler(this.nudAnio_ValueChanged);
 
             // 
             // btnCargar
@@ -356,7 +362,11 @@ namespace CapaPresentacion
                 this.colTipo,
                 this.colDescripcion,
                 this.colPrecioPromo,
-                this.colPrecioLista});
+                this.colPrecioLista,
+                this.colSeñaPromo,
+                this.colSeñaLista,
+                this.colLlevaPlanilla,
+                this.colObservacionesExtra});
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
             dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI", 9F);
@@ -427,6 +437,42 @@ namespace CapaPresentacion
             this.colPrecioPromo.DefaultCellStyle.Format = "N2";
 
             // 
+            // colSeñaPromo
+            // 
+            this.colSeñaPromo.FillWeight = 90F;
+            this.colSeñaPromo.HeaderText = "Seña Promo";
+            this.colSeñaPromo.Name = "colSeñaPromo";
+            this.colSeñaPromo.ValueType = typeof(decimal);
+            this.colSeñaPromo.DefaultCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.colSeñaPromo.DefaultCellStyle.Format = "N2";
+
+            // 
+            // colSeñaLista
+            // 
+            this.colSeñaLista.FillWeight = 90F;
+            this.colSeñaLista.HeaderText = "Seña Lista";
+            this.colSeñaLista.Name = "colSeñaLista";
+            this.colSeñaLista.ValueType = typeof(decimal);
+            this.colSeñaLista.DefaultCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.colSeñaLista.DefaultCellStyle.Format = "N2";
+
+            // 
+            // colLlevaPlanilla
+            // 
+            this.colLlevaPlanilla.FillWeight = 70F;
+            this.colLlevaPlanilla.HeaderText = "Planilla";
+            this.colLlevaPlanilla.Name = "colLlevaPlanilla";
+            this.colLlevaPlanilla.ValueType = typeof(bool);
+            this.colLlevaPlanilla.DefaultCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+
+            // 
+            // colObservacionesExtra
+            // 
+            this.colObservacionesExtra.FillWeight = 150F;
+            this.colObservacionesExtra.HeaderText = "Observaciones";
+            this.colObservacionesExtra.Name = "colObservacionesExtra";
+
+            // 
             // frmPreciosPublico
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -481,6 +527,10 @@ namespace CapaPresentacion
         private System.Windows.Forms.DataGridViewTextBoxColumn colDescripcion;
         private System.Windows.Forms.DataGridViewTextBoxColumn colPrecioLista;
         private System.Windows.Forms.DataGridViewTextBoxColumn colPrecioPromo;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colSeñaPromo;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colSeñaLista;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn colLlevaPlanilla;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colObservacionesExtra;
         private System.Windows.Forms.Label lblBuscar;
         private System.Windows.Forms.TextBox txtBuscar;
         private System.Windows.Forms.Label lblTotal;

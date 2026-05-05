@@ -65,6 +65,10 @@ namespace CapaPresentacion
 
                 dgvPrecios.Rows[idx].Cells["colPrecioLista"].Value = precioLista;
                 dgvPrecios.Rows[idx].Cells["colPrecioPromo"].Value = precioPromo;
+                dgvPrecios.Rows[idx].Cells["colSeñaPromo"].Value = Convert.ToDecimal(row["SeñaPromo"]);
+                dgvPrecios.Rows[idx].Cells["colSeñaLista"].Value = Convert.ToDecimal(row["SeñaLista"]);
+                dgvPrecios.Rows[idx].Cells["colLlevaPlanilla"].Value = Convert.ToBoolean(row["LlevaPlanilla"]);
+                dgvPrecios.Rows[idx].Cells["colObservacionesExtra"].Value = row["ObservacionesExtra"].ToString();
             }
 
             lblTotal.Text = "Prestaciones: " + dt.Rows.Count;
@@ -88,6 +92,18 @@ namespace CapaPresentacion
             CargarGrilla();
         }
 
+        private void cboMes_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (yaInicializado)
+                CargarGrilla();
+        }
+
+        private void nudAnio_ValueChanged(object sender, EventArgs e)
+        {
+            if (yaInicializado)
+                CargarGrilla();
+        }
+
         private void btnGuardar_Click(object sender, EventArgs e)
         {
             try
@@ -100,6 +116,10 @@ namespace CapaPresentacion
                 dtGuardar.Columns.Add("Descripcion", typeof(string));
                 dtGuardar.Columns.Add("PrecioLista", typeof(decimal));
                 dtGuardar.Columns.Add("PrecioPromo", typeof(decimal));
+                dtGuardar.Columns.Add("SeñaPromo", typeof(decimal));
+                dtGuardar.Columns.Add("SeñaLista", typeof(decimal));
+                dtGuardar.Columns.Add("LlevaPlanilla", typeof(bool));
+                dtGuardar.Columns.Add("ObservacionesExtra", typeof(string));
 
                 foreach (DataGridViewRow row in dgvPrecios.Rows)
                 {
@@ -110,6 +130,10 @@ namespace CapaPresentacion
                     dr["Descripcion"] = row.Cells["colDescripcion"].Value?.ToString() ?? "";
                     dr["PrecioLista"] = ParseDecimal(row.Cells["colPrecioLista"].Value);
                     dr["PrecioPromo"] = ParseDecimal(row.Cells["colPrecioPromo"].Value);
+                    dr["SeñaPromo"] = ParseDecimal(row.Cells["colSeñaPromo"].Value);
+                    dr["SeñaLista"] = ParseDecimal(row.Cells["colSeñaLista"].Value);
+                    dr["LlevaPlanilla"] = row.Cells["colLlevaPlanilla"].Value != null && Convert.ToBoolean(row.Cells["colLlevaPlanilla"].Value);
+                    dr["ObservacionesExtra"] = row.Cells["colObservacionesExtra"].Value?.ToString() ?? "";
                     dtGuardar.Rows.Add(dr);
                 }
 
