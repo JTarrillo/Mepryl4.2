@@ -43,9 +43,17 @@ namespace CapaDatosMepryl
 
         public DataTable cargarTiposDeExamen(string idMotivoConsulta)
         {
-            return SQLConnector.obtenerTablaSegunConsultaString(@"select id, descripcion
-            from dbo.Especialidad
-            where idMotivoConsulta = " + idMotivoConsulta + "  order by convert(int,codigo)");
+            if (!int.TryParse(idMotivoConsulta, out int id))
+                return new DataTable();
+
+            return SQLConnector.obtenerTablaSegunConsultaString(
+                $@"SELECT e.id, e.descripcion
+                   FROM dbo.Especialidad e
+                   WHERE e.idMotivoConsulta = {id}
+                     AND e.Padre = 0
+                     AND e.estado = 1
+                     AND e.id NOT IN (SELECT id FROM dbo.EspecialidadesEliminadas)
+                   ORDER BY CASE WHEN ISNUMERIC(e.codigo) = 1 THEN CONVERT(int, e.codigo) ELSE 999999 END, e.codigo");
         }
 
         public DataTable cargarTiposDeExamenBuscar(string strValor)

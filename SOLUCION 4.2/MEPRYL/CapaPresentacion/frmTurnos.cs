@@ -305,17 +305,17 @@ namespace CapaPresentacion
                         continue;
                     }
 
-                    System.Diagnostics.Debug.WriteLine($"Estado: {valor}");
+                    //System.Diagnostics.Debug.WriteLine($"Estado: {valor}");
 
                     switch (valor)
                     {
                         case 2:
                             fila.DefaultCellStyle.BackColor = System.Drawing.Color.MistyRose;      // Asignado
-                            System.Diagnostics.Debug.WriteLine($"✅ Coloreada fila con estado 2");
+                            //System.Diagnostics.Debug.WriteLine($"✅ Coloreada fila con estado 2");
                             break;
                         case 3:
                             fila.DefaultCellStyle.BackColor = System.Drawing.Color.LightGray;      // Bloqueado / Inhabilitado
-                            System.Diagnostics.Debug.WriteLine($"[COLOR] Fila pintada LightGray (Inhabilitado, estado 3)");
+                            //System.Diagnostics.Debug.WriteLine($"[COLOR] Fila pintada LightGray (Inhabilitado, estado 3)");
                             break;
                         case 4:
                             fila.DefaultCellStyle.BackColor = System.Drawing.Color.LightSteelBlue; // Reservado
@@ -1401,10 +1401,41 @@ namespace CapaPresentacion
 
         private void editarPacienteLaboral()
         {
+            try
+            {
+                var sb = new System.Text.StringBuilder();
+                sb.AppendLine($"\r\n=== [EDITAR PACIENTE LABORAL] {DateTime.Now:dd/MM/yyyy HH:mm:ss} ===");
+                sb.AppendLine($"  Paciente:          {tbPacienteLaboral.Text}");
+                sb.AppendLine($"  DNI:               {tbDniLaboral.Text}");
+                sb.AppendLine($"  CUIL:              {tbCuilLaboral.Text}");
+                sb.AppendLine($"  Empresa:           {tbEmpresaLaboral.Text}");
+                sb.AppendLine($"  ID Empresa:        {tbIdEmpresaLaboral.Text}");
+                sb.AppendLine($"  ID Paciente:       {tbIdPacienteLaboral.Text}");
+                sb.AppendLine($"  Tarea:             {tbTareaLaboral.Text}");
+                sb.AppendLine($"  Teléfono:          {tbTelefonoLaboral.Text}");
+                sb.AppendLine($"  Turno ID sel:      {(dgv.SelectedRows.Count > 0 ? dgv.SelectedRows[0].Cells["id"]?.Value?.ToString() : "ninguno")}");
+                sb.AppendLine($"  Panel Lab Visible: {panelLaboral.Visible}");
+                sb.AppendLine("===================================");
+
+                // Output → Debug (visible en VS con F5)
+                System.Diagnostics.Debug.Write(sb.ToString());
+
+                // Log a archivo (visible siempre, sin VS)
+                string logPath = @"C:\debug_editar_paciente.txt";
+                System.IO.File.AppendAllText(logPath, sb.ToString());
+            }
+            catch { }
+
+            string _logPath2 = @"C:\debug_editar_paciente.txt";
+            try { System.IO.File.AppendAllText(_logPath2, $"  [PASO 1] Creando frmPacienteLaboral... {DateTime.Now:HH:mm:ss.fff}\r\n"); } catch { }
             frmPacienteLaboral fPaciente = new frmPacienteLaboral();
+            try { System.IO.File.AppendAllText(_logPath2, $"  [PASO 2] Llamando cargarPacienteEspecifico(idEmpresa={tbIdEmpresaLaboral.Text}, idPaciente={tbIdPacienteLaboral.Text}) {DateTime.Now:HH:mm:ss.fff}\r\n"); } catch { }
             fPaciente.cargarPacienteEspecifico(tbIdEmpresaLaboral.Text, tbIdPacienteLaboral.Text);
+            try { System.IO.File.AppendAllText(_logPath2, $"  [PASO 3] Asignando delegate {DateTime.Now:HH:mm:ss.fff}\r\n"); } catch { }
             fPaciente.objDelegateDevolverID = new frmPacienteLaboral.DelegateDevolverID(recargarDatosPacienteLaboral);
+            try { System.IO.File.AppendAllText(_logPath2, $"  [PASO 4] ShowDialog() {DateTime.Now:HH:mm:ss.fff}\r\n"); } catch { }
             fPaciente.ShowDialog();
+            try { System.IO.File.AppendAllText(_logPath2, $"  [PASO 5] ShowDialog() retornó {DateTime.Now:HH:mm:ss.fff}\r\n"); } catch { }
         }
 
         private void recargarDatosPacienteLaboral(string idPaciente, string idEmpresa)
@@ -1439,6 +1470,42 @@ namespace CapaPresentacion
 
         private void editarPacientePreventiva()
         {
+            try
+            {
+                string logPath = @"C:\debug_editar_paciente.txt";
+                var sb = new System.Text.StringBuilder();
+                sb.AppendLine($"\r\n=== [EDITAR PACIENTE PREVENTIVA] {DateTime.Now:dd/MM/yyyy HH:mm:ss} ===");
+                sb.AppendLine($"  DNI:          {tbDniPreventiva.Text}");
+                sb.AppendLine($"  Paciente:     {tbPacientePreventiva.Text}");
+                sb.AppendLine($"  Categoría:    {tbCategoriaPreventiva.Text}");
+                sb.AppendLine($"  Teléfono:     {tbTelefonoPreventiva.Text}");
+                sb.AppendLine($"  Email:        {txtEmail.Text}");
+                sb.AppendLine($"  Turno ID sel: {(dgv.SelectedRows.Count > 0 ? dgv.SelectedRows[0].Cells["id"]?.Value?.ToString() : "ninguno")}");
+                sb.AppendLine($"  Examen:       {tbExamenPreventiva.Text}");
+                // Clubs y ligas del dgvLigaYClub
+                sb.AppendLine($"  Clubs/Ligas ({dgvLigaYClub.Rows.Count} filas):");
+                if (dgvLigaYClub.DataSource is DataTable dtLigaClub)
+                {
+                    foreach (DataRow row in dtLigaClub.Rows)
+                        sb.AppendLine($"    {string.Join(" | ", row.ItemArray)}");
+                }
+                else
+                {
+                    foreach (DataGridViewRow row in dgvLigaYClub.Rows)
+                    {
+                        if (row.IsNewRow) continue;
+                        var vals = new System.Text.StringBuilder();
+                        foreach (DataGridViewCell c in row.Cells)
+                            vals.Append($"[{c.OwningColumn.Name}={c.Value}] ");
+                        sb.AppendLine($"    {vals}");
+                    }
+                }
+                sb.AppendLine("======================================");
+                System.Diagnostics.Debug.Write(sb.ToString());
+                System.IO.File.AppendAllText(logPath, sb.ToString());
+            }
+            catch { }
+
             frmPaciente fPaciente = new frmPaciente(new Configuracion(), true);
             fPaciente.mostarDatosDni(tbDniPreventiva.Text);
             fPaciente.objDelegateDevolverID = new frmPaciente.DelegateDevolverID(recargarDatosPacientePreventiva);

@@ -26,7 +26,16 @@ namespace CapaPresentacion
         private void llenarComboBox()
         {
             DataTable dt = new DataTable();
-            dt = SQLConnector.obtenerTablaSegunConsultaString("Select * from dbo.Especialidad order by convert(int,codigo) asc");
+            // Solo hijos activos (Padre=0), no eliminados
+            dt = SQLConnector.obtenerTablaSegunConsultaString(@"
+                SELECT e.id, e.descripcion, e.codigo,
+                       p.descripcion AS descripcionPadre
+                FROM dbo.Especialidad e
+                LEFT JOIN dbo.Especialidad p ON e.IdPadre = p.id
+                WHERE e.Padre = 0
+                  AND e.estado = 1
+                  AND e.id NOT IN (SELECT id FROM dbo.EspecialidadesEliminadas)
+                ORDER BY p.descripcion, CASE WHEN ISNUMERIC(e.codigo) = 1 THEN CONVERT(int, e.codigo) ELSE 999999 END");
             cbTipoDeExamen.DataSource = dt;
             cbTipoDeExamen.ValueMember = "id";
             cbTipoDeExamen.DisplayMember = "descripcion";

@@ -77,7 +77,7 @@ namespace CapaPresentacionBase
         {
             if (this.edicion == ModoEdicion.AGREGANDO || this.edicion == ModoEdicion.MODIFICANDO)
             {
-                if (MessageBox.Show("Si cierra ahora, no se guardar�n los cambios del registro actual. \r\n\r\n�Desea cerrar de todas formas?", "Datos sin guardar",
+                if (MessageBox.Show("Si cierra ahora, no se guardarán los cambios del registro actual. \r\n\r\n¿Desea cerrar de todas formas?", "Datos sin guardar",
                     MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.Yes)
                     e.Cancel = false;
                 else

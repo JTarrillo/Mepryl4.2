@@ -43,14 +43,21 @@ namespace CapaDatosMepryl
             if (!int.TryParse(idMotivoConsulta, out int id))
                 return new DataTable();
 
-            // Traer solo especialidades PADRE (Padre = 1) y NO eliminadas lógicamente
+            // Traer solo especialidades HIJO (Padre = 0), activas y NO eliminadas
+            // Los padres son categorías contenedoras, no deben guardarse en TipoExamenDePaciente
             return SQLConnector.obtenerTablaSegunConsultaString(
-                $@"select * from dbo.Especialidad
-        where descripcion <> 'VISITAS' 
-        and idMotivoConsulta = {id}
-        and Padre = 1
-        and id NOT IN (SELECT id FROM dbo.EspecialidadesEliminadas)
-        order by CASE WHEN ISNUMERIC(codigo) = 1 THEN CONVERT(int, codigo) ELSE 999999 END, codigo");
+                $@"SELECT e.id, e.descripcion, e.codigo, e.precioBase, e.idMotivoConsulta,
+                          p.descripcion AS descripcionPadre
+                   FROM dbo.Especialidad e
+                   LEFT JOIN dbo.Especialidad p ON e.IdPadre = p.id
+                   WHERE e.descripcion <> 'VISITAS'
+                     AND e.idMotivoConsulta = {id}
+                     AND e.Padre = 0
+                     AND e.estado = 1
+                     AND e.id NOT IN (SELECT id FROM dbo.EspecialidadesEliminadas)
+                   ORDER BY p.descripcion,
+                            CASE WHEN ISNUMERIC(e.codigo) = 1 THEN CONVERT(int, e.codigo) ELSE 999999 END,
+                            e.codigo");
         }
 
         public DataTable cargarTiposDeExamenHijo(string idMotivoConsulta, string strIdPadre)
@@ -927,26 +934,22 @@ namespace CapaDatosMepryl
 
         private void cargarValoresTablaActualizacion(DataTable tabla, ref DataRow tablaActualizacion)
         {
-            System.Diagnostics.Debug.WriteLine($"[cargarValoresTablaActualizacion] Procesando tabla con {tabla.Rows.Count} filas");
+            //System.Diagnostics.Debug.WriteLine($"[cargarValoresTablaActualizacion] Procesando tabla con {tabla.Rows.Count} filas");
 
             foreach (DataRow r in tabla.Rows)
             {
                 int codigo = Convert.ToInt16(r.ItemArray[1].ToString());
                 bool estado = Convert.ToBoolean(r.ItemArray[2]);
 
-                // ✅ DEBUG detallado
-                System.Diagnostics.Debug.WriteLine($"  [Fila] Código={codigo}, Estado={estado}, Descripción={r.ItemArray[3]}");
-
-                // ⚠️ PROBLEMA: Usar (codigo - 1) como índice
                 if (codigo >= 1 && codigo <= 207)
                 {
                     tablaActualizacion[codigo - 1] = estado;
-                    System.Diagnostics.Debug.WriteLine($"    → Asignado a columna [{codigo - 1}] = {estado}");
+                    //System.Diagnostics.Debug.WriteLine($"    → Asignado a columna [{codigo - 1}] = {estado}");
                 }
-                else
-                {
-                    System.Diagnostics.Debug.WriteLine($"    ⚠️ Código fuera de rango: {codigo}");
-                }
+                //else
+                //{
+                //    System.Diagnostics.Debug.WriteLine($"    ⚠️ Código fuera de rango: {codigo}");
+                //}
             }
         }
         public Entidades.TipoExamen cargarItems()
@@ -1570,8 +1573,8 @@ namespace CapaDatosMepryl
                             dr[0][3].ToString()       // Nombre Completo (nombreInformes)
                         );
 
-                        System.Diagnostics.Debug.WriteLine(
-                            $"✓ Item {codigoItem} | nombreInformes: {dr[0][3]} | Estado: {estado}");
+                        //System.Diagnostics.Debug.WriteLine(
+                        //    $"✓ Item {codigoItem} | nombreInformes: {dr[0][3]} | Estado: {estado}");
                     }
                 }
                 catch (Exception ex)

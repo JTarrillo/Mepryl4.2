@@ -683,6 +683,9 @@ namespace CapaDatosMepryl
             string strIDLiga = "";
             string strSQL = "";
 
+            if (string.IsNullOrEmpty(strIDClub))
+                return strIDLiga;
+
             strSQL = "SELECT TOP 1 LigaID FROM dbo.club WHERE id = '" + strIDClub + "'";
             DataTable dtConsulta = SQLConnector.obtenerTablaSegunConsultaString(strSQL);
 

@@ -67,7 +67,7 @@ namespace CapaPresentacionBase
             formularioLoad();
         }
 
-        //Métodos virtuales
+        //Mï¿½todos virtuales
         public virtual CapaNegocioBase.EntidadFactoryBase crearNegEntidadFac() { return null; }
         public virtual frmBaseBusqueda crearFormularioBusqueda() { return null; }
         public virtual string validarDatosIngresados() { return null; }
@@ -92,8 +92,7 @@ namespace CapaPresentacionBase
         {
             if (this.edicion == ModoEdicion.AGREGANDO || this.edicion == ModoEdicion.MODIFICANDO)
             {
-                if (MessageBox.Show("Si cierra ahora, no se guardarán los cambios del registro actual. \r\n\r\n¿Desea cerrar de todas formas?", "Datos sin guardar",
-                    MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.Yes)
+   if (MessageBox.Show("Si cierra ahora, no se guardarÃ¡n los cambios del registro actual. \r\n\r\nÂ¿Desea cerrar de todas formas?", "Datos sin guardar",                    MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.Yes)
                     e.Cancel = false;
                 else
                     e.Cancel = true;
@@ -192,7 +191,7 @@ namespace CapaPresentacionBase
 
         protected void butEliminar_Click(object sender, EventArgs e)
         {
-           if (confirmar("¿Está seguro que desea eliminar el registro?") == DialogResult.Yes)
+           if (confirmar("ï¿½Estï¿½ seguro que desea eliminar el registro?") == DialogResult.Yes)
             {
                 string resultado = borrar(tbId.Text);
                 if (resultado == "")
@@ -243,7 +242,7 @@ namespace CapaPresentacionBase
                             actualizarRegistro();
                         }
                         else
-                            resultado.mensaje = "No se puede realizar esta operación.";
+                            resultado.mensaje = "No se puede realizar esta operaciï¿½n.";
 
                         if (resultado.mensaje == "" && resultado.objeto!=null)
                         {
@@ -278,7 +277,7 @@ namespace CapaPresentacionBase
 
         protected virtual void cancelar()
         {
-            if (tbId.Text != Utilidades.ID_VACIO) //Si era una edición
+            if (tbId.Text != Utilidades.ID_VACIO) //Si era una ediciï¿½n
             {
                 mostrarDatosObjeto();
             }
@@ -385,7 +384,7 @@ namespace CapaPresentacionBase
             modoEstatico(false);
             tbBusqueda.Select();
 
-            //Aquí iba lo que está en formularioLoad();
+            //Aquï¿½ iba lo que estï¿½ en formularioLoad();
             formularioLoad();
         }
 
@@ -473,7 +472,7 @@ namespace CapaPresentacionBase
 
         protected void mostrarError(string mensaje)
         {
-            MessageBox.Show(mensaje, "Atención", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show(mensaje, "Atenciï¿½n", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         protected DialogResult confirmar(string mensaje)
@@ -626,7 +625,7 @@ namespace CapaPresentacionBase
                 dgItems.AutoResizeColumns();
                 dgItems.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
 
-                //Si la grilla está vacía, pasa a modo estático
+                //Si la grilla estï¿½ vacï¿½a, pasa a modo estï¿½tico
                 if (dgItems.RowCount == 0)
                 {
                     rglEntidad = null;

@@ -490,7 +490,7 @@ namespace CapaPresentacion
                 MostrarMensaje(hacerPlaca);
                 // GRV
 
-                if (!PacientePre.LigaEstaActiva(dgvClubesAsignados.Rows[0].Cells[1].Value.ToString()))
+                if (dgvClubesAsignados.Rows.Count > 0 && !PacientePre.LigaEstaActiva(dgvClubesAsignados.Rows[0].Cells[1].Value.ToString()))
                     lbTienePlaca.Text = "";
 
                 // GRV - Modificado - Muestra fecha �ltimo examen
@@ -509,7 +509,7 @@ namespace CapaPresentacion
                     tbFechaUltimoExamen.Visible = false;
                 }
 
-                if (!PacientePre.LigaEstaActiva(dgvClubesAsignados.Rows[0].Cells[1].Value.ToString()))
+                if (dgvClubesAsignados.Rows.Count > 0 && !PacientePre.LigaEstaActiva(dgvClubesAsignados.Rows[0].Cells[1].Value.ToString()))
                     tbFechaUltimoExamen.Text = "";                
 
                 cargarExamenes();
@@ -545,7 +545,7 @@ namespace CapaPresentacion
                 lbTienePlaca.Text = "NO DEBE REALIZAR RX.";
             }
 
-            if (!PacientePre.VerificaRX(dgvClubesAsignados.Rows[0].Cells[1].Value.ToString()))
+            if (dgvClubesAsignados.Rows.Count > 0 && !PacientePre.VerificaRX(dgvClubesAsignados.Rows[0].Cells[1].Value.ToString()))
                 lbTienePlaca.Text = "";
         }
 
@@ -1105,6 +1105,15 @@ namespace CapaPresentacion
                 else if (dgvEmpresa.DataSource != null && dgvEmpresa.CurrentRow.Index != 0)
                 {
                     rbLaboral.Checked = true;
+                }
+
+                if (dgvClubesAsignados.Rows.Count == 0 && rbPreventiva.Checked)
+                {
+                    MessageBox.Show(
+                        "ATENCIÓN: Este paciente no tiene ningún club asignado en la base de datos.\nAsigne un club y guarde para corregir el dato.",
+                        "Paciente sin club",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
                 }
             }
             catch (Exception ex)
