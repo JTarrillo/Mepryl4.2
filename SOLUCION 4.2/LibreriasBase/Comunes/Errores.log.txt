@@ -1,0 +1,621 @@
+17/11/2025 11:32:45, CapaPresentacionBase.frmBasePrincipal.usuarioValidado(), Referencia a objeto no establecida como instancia de un objeto.
+   en CapaPresentacionBase.frmBasePrincipal.usuarioValidado(Usuario usuario) en C:\Programador\SOLUCION 3.10\LibreriasBase\CapaPresentacionBase\frmBasePrincipal.cs:línea 190
+
+22/11/2025 12:30:58, CapaPresentacion.frmHorario.CargarMotivoPorEspecialidad(), Referencia a objeto no establecida como instancia de un objeto.
+   en CapaPresentacion.frmHorario.CargarMotivoPorEspecialidad() en C:\Programador\SOLUCION 3.10\MEPRYL\CapaPresentacion\frmHorario.cs:línea 811
+   en CapaPresentacion.frmHorario.inicializarGrilla(EntidadFactoryBase ef, String filtro) en C:\Programador\SOLUCION 3.10\MEPRYL\CapaPresentacion\frmHorario.cs:línea 244
+
+27/11/2025 10:23:17, CapaPresentacion.frmHorario.CargarMotivoPorEspecialidad(), Referencia a objeto no establecida como instancia de un objeto.
+   en CapaPresentacion.frmHorario.CargarMotivoPorEspecialidad() en C:\Programador\SOLUCION 3.10\MEPRYL\CapaPresentacion\frmHorario.cs:línea 811
+   en CapaPresentacion.frmHorario.inicializarGrilla(EntidadFactoryBase ef, String filtro) en C:\Programador\SOLUCION 3.10\MEPRYL\CapaPresentacion\frmHorario.cs:línea 244
+
+27/11/2025 11:06:49, CapaPresentacion.frmHorario.CargarMotivoPorEspecialidad(), Referencia a objeto no establecida como instancia de un objeto.
+   en CapaPresentacion.frmHorario.CargarMotivoPorEspecialidad() en C:\Programador\SOLUCION 3.10\MEPRYL\CapaPresentacion\frmHorario.cs:línea 811
+   en CapaPresentacion.frmHorario.inicializarGrilla(EntidadFactoryBase ef, String filtro) en C:\Programador\SOLUCION 3.10\MEPRYL\CapaPresentacion\frmHorario.cs:línea 244
+
+27/11/2025 11:23:54, CapaPresentacionBase.frmBasePrincipal.usuarioValidado(), Referencia a objeto no establecida como instancia de un objeto.
+   en CapaPresentacionBase.frmBasePrincipal.usuarioValidado(Usuario usuario)
+
+27/11/2025 11:25:16, CapaPresentacion.frmHorario.CargarMotivoPorEspecialidad(), Referencia a objeto no establecida como instancia de un objeto.
+   en CapaPresentacion.frmHorario.CargarMotivoPorEspecialidad()
+   en CapaPresentacion.frmHorario.inicializarGrilla(EntidadFactoryBase ef, String filtro)
+
+27/11/2025 11:25:39, System.Windows.Forms.CurrencyManager.Find(), El valor no puede ser nulo.
+Nombre del parámetro: key
+   en System.Windows.Forms.CurrencyManager.Find(PropertyDescriptor property, Object key, Boolean keepIndex)
+   en System.Windows.Forms.ListControl.set_SelectedValue(Object value)
+   en CapaPresentacion.frmHorario.mostrarDatosObjeto()
+
+27/11/2025 11:25:42, System.Windows.Forms.CurrencyManager.Find(), El valor no puede ser nulo.
+Nombre del parámetro: key
+   en System.Windows.Forms.CurrencyManager.Find(PropertyDescriptor property, Object key, Boolean keepIndex)
+   en System.Windows.Forms.ListControl.set_SelectedValue(Object value)
+   en CapaPresentacion.frmHorario.mostrarDatosObjeto()
+
+27/11/2025 11:25:44, System.Windows.Forms.CurrencyManager.Find(), El valor no puede ser nulo.
+Nombre del parámetro: key
+   en System.Windows.Forms.CurrencyManager.Find(PropertyDescriptor property, Object key, Boolean keepIndex)
+   en System.Windows.Forms.ListControl.set_SelectedValue(Object value)
+   en CapaPresentacion.frmHorario.mostrarDatosObjeto()
+
+27/11/2025 11:25:47, System.Windows.Forms.CurrencyManager.Find(), El valor no puede ser nulo.
+Nombre del parámetro: key
+   en System.Windows.Forms.CurrencyManager.Find(PropertyDescriptor property, Object key, Boolean keepIndex)
+   en System.Windows.Forms.ListControl.set_SelectedValue(Object value)
+   en CapaPresentacion.frmHorario.mostrarDatosObjeto()
+
+27/11/2025 11:26:17, CapaPresentacion.frmHorario.cargarObjetoReglas(), Referencia a objeto no establecida como instancia de un objeto.
+   en CapaPresentacion.frmHorario.cargarObjetoReglas()
+
+27/11/2025 11:30:18, CapaPresentacion.frmHorario.CargarMotivoPorEspecialidad(), Referencia a objeto no establecida como instancia de un objeto.
+   en CapaPresentacion.frmHorario.CargarMotivoPorEspecialidad()
+   en CapaPresentacion.frmHorario.inicializarGrilla(EntidadFactoryBase ef, String filtro)
+
+27/11/2025 12:22:53, CapaPresentacion.frmHorario.CargarMotivoPorEspecialidad(), Referencia a objeto no establecida como instancia de un objeto.
+   en CapaPresentacion.frmHorario.CargarMotivoPorEspecialidad() en C:\Programador\SOLUCION 3.10\MEPRYL\CapaPresentacion\frmHorario.cs:línea 811
+   en CapaPresentacion.frmHorario.inicializarGrilla(EntidadFactoryBase ef, String filtro) en C:\Programador\SOLUCION 3.10\MEPRYL\CapaPresentacion\frmHorario.cs:línea 244
+
+27/11/2025 12:23:29, CapaPresentacion.frmHorario.CargarMotivoPorEspecialidad(), Referencia a objeto no establecida como instancia de un objeto.
+   en CapaPresentacion.frmHorario.CargarMotivoPorEspecialidad() en C:\Programador\SOLUCION 3.10\MEPRYL\CapaPresentacion\frmHorario.cs:línea 811
+   en CapaPresentacion.frmHorario.inicializarGrilla(EntidadFactoryBase ef, String filtro) en C:\Programador\SOLUCION 3.10\MEPRYL\CapaPresentacion\frmHorario.cs:línea 244
+
+27/11/2025 12:25:10, CapaPresentacion.frmHorario.CargarMotivoPorEspecialidad(), Referencia a objeto no establecida como instancia de un objeto.
+   en CapaPresentacion.frmHorario.CargarMotivoPorEspecialidad() en C:\Programador\SOLUCION 3.10\MEPRYL\CapaPresentacion\frmHorario.cs:línea 811
+   en CapaPresentacion.frmHorario.inicializarGrilla(EntidadFactoryBase ef, String filtro) en C:\Programador\SOLUCION 3.10\MEPRYL\CapaPresentacion\frmHorario.cs:línea 244
+
+27/11/2025 12:27:15, CapaPresentacion.frmHorario.CargarMotivoPorEspecialidad(), Referencia a objeto no establecida como instancia de un objeto.
+   en CapaPresentacion.frmHorario.CargarMotivoPorEspecialidad() en C:\Programador\SOLUCION 3.10\MEPRYL\CapaPresentacion\frmHorario.cs:línea 811
+   en CapaPresentacion.frmHorario.inicializarGrilla(EntidadFactoryBase ef, String filtro) en C:\Programador\SOLUCION 3.10\MEPRYL\CapaPresentacion\frmHorario.cs:línea 244
+
+01/12/2025 9:20:12, CapaPresentacion.frmHorario.CargarMotivoPorEspecialidad(), Referencia a objeto no establecida como instancia de un objeto.
+   en CapaPresentacion.frmHorario.CargarMotivoPorEspecialidad() en C:\Programador\SOLUCION 3.10\MEPRYL\CapaPresentacion\frmHorario.cs:línea 811
+   en CapaPresentacion.frmHorario.inicializarGrilla(EntidadFactoryBase ef, String filtro) en C:\Programador\SOLUCION 3.10\MEPRYL\CapaPresentacion\frmHorario.cs:línea 244
+
+10/12/2025 7:38:18, CapaPresentacion.frmHorario.CargarMotivoPorEspecialidad(), Referencia a objeto no establecida como instancia de un objeto.
+   en CapaPresentacion.frmHorario.CargarMotivoPorEspecialidad() en C:\Programador\SOLUCION 3.10\MEPRYL\CapaPresentacion\frmHorario.cs:línea 811
+   en CapaPresentacion.frmHorario.inicializarGrilla(EntidadFactoryBase ef, String filtro) en C:\Programador\SOLUCION 3.10\MEPRYL\CapaPresentacion\frmHorario.cs:línea 244
+
+18/12/2025 11:29:00, CapaPresentacionBase.frmBasePrincipal.usuarioValidado(), Referencia a objeto no establecida como instancia de un objeto.
+   en CapaPresentacionBase.frmBasePrincipal.usuarioValidado(Usuario usuario) en C:\Programador\SOLUCION 3.10\LibreriasBase\CapaPresentacionBase\frmBasePrincipal.cs:línea 190
+
+21/12/2025 22:08:25, CapaPresentacion.frmHorario.CargarMotivoPorEspecialidad(), Referencia a objeto no establecida como instancia de un objeto.
+   en CapaPresentacion.frmHorario.CargarMotivoPorEspecialidad() en C:\Programador\SOLUCION 3.10\MEPRYL\CapaPresentacion\frmHorario.cs:línea 811
+   en CapaPresentacion.frmHorario.inicializarGrilla(EntidadFactoryBase ef, String filtro) en C:\Programador\SOLUCION 3.10\MEPRYL\CapaPresentacion\frmHorario.cs:línea 244
+
+21/12/2025 22:08:34, System.Windows.Forms.CurrencyManager.Find(), El valor no puede ser nulo.
+Nombre del parámetro: key
+   en System.Windows.Forms.CurrencyManager.Find(PropertyDescriptor property, Object key, Boolean keepIndex)
+   en System.Windows.Forms.ListControl.set_SelectedValue(Object value)
+   en CapaPresentacion.frmHorario.mostrarDatosObjeto() en C:\Programador\SOLUCION 3.10\MEPRYL\CapaPresentacion\frmHorario.cs:línea 597
+
+21/12/2025 22:09:55, System.Windows.Forms.CurrencyManager.Find(), El valor no puede ser nulo.
+Nombre del parámetro: key
+   en System.Windows.Forms.CurrencyManager.Find(PropertyDescriptor property, Object key, Boolean keepIndex)
+   en System.Windows.Forms.ListControl.set_SelectedValue(Object value)
+   en CapaPresentacion.frmHorario.mostrarDatosObjeto() en C:\Programador\SOLUCION 3.10\MEPRYL\CapaPresentacion\frmHorario.cs:línea 597
+
+21/12/2025 22:09:55, System.Windows.Forms.CurrencyManager.Find(), El valor no puede ser nulo.
+Nombre del parámetro: key
+   en System.Windows.Forms.CurrencyManager.Find(PropertyDescriptor property, Object key, Boolean keepIndex)
+   en System.Windows.Forms.ListControl.set_SelectedValue(Object value)
+   en CapaPresentacion.frmHorario.mostrarDatosObjeto() en C:\Programador\SOLUCION 3.10\MEPRYL\CapaPresentacion\frmHorario.cs:línea 597
+
+21/12/2025 22:13:51, CapaPresentacion.frmHorario.CargarMotivoPorEspecialidad(), Referencia a objeto no establecida como instancia de un objeto.
+   en CapaPresentacion.frmHorario.CargarMotivoPorEspecialidad() en C:\Programador\SOLUCION 3.10\MEPRYL\CapaPresentacion\frmHorario.cs:línea 811
+   en CapaPresentacion.frmHorario.inicializarGrilla(EntidadFactoryBase ef, String filtro) en C:\Programador\SOLUCION 3.10\MEPRYL\CapaPresentacion\frmHorario.cs:línea 244
+
+21/12/2025 22:14:03, CapaPresentacion.frmHorario.CargarMotivoPorEspecialidad(), Referencia a objeto no establecida como instancia de un objeto.
+   en CapaPresentacion.frmHorario.CargarMotivoPorEspecialidad() en C:\Programador\SOLUCION 3.10\MEPRYL\CapaPresentacion\frmHorario.cs:línea 811
+   en CapaPresentacion.frmHorario.inicializarGrilla(EntidadFactoryBase ef, String filtro) en C:\Programador\SOLUCION 3.10\MEPRYL\CapaPresentacion\frmHorario.cs:línea 244
+
+21/12/2025 22:14:09, System.Windows.Forms.CurrencyManager.Find(), El valor no puede ser nulo.
+Nombre del parámetro: key
+   en System.Windows.Forms.CurrencyManager.Find(PropertyDescriptor property, Object key, Boolean keepIndex)
+   en System.Windows.Forms.ListControl.set_SelectedValue(Object value)
+   en CapaPresentacion.frmHorario.mostrarDatosObjeto() en C:\Programador\SOLUCION 3.10\MEPRYL\CapaPresentacion\frmHorario.cs:línea 597
+
+22/12/2025 20:42:01, CapaPresentacion.frmHorario.CargarMotivoPorEspecialidad(), Referencia a objeto no establecida como instancia de un objeto.
+   en CapaPresentacion.frmHorario.CargarMotivoPorEspecialidad() en C:\Programador\SOLUCION 3.10\MEPRYL\CapaPresentacion\frmHorario.cs:línea 811
+   en CapaPresentacion.frmHorario.inicializarGrilla(EntidadFactoryBase ef, String filtro) en C:\Programador\SOLUCION 3.10\MEPRYL\CapaPresentacion\frmHorario.cs:línea 244
+
+05/01/2026 7:42:39, CapaPresentacion.frmHorario.CargarMotivoPorEspecialidad(), Referencia a objeto no establecida como instancia de un objeto.
+   en CapaPresentacion.frmHorario.CargarMotivoPorEspecialidad() en C:\Programador\SOLUCION 3.10\MEPRYL\CapaPresentacion\frmHorario.cs:línea 811
+   en CapaPresentacion.frmHorario.inicializarGrilla(EntidadFactoryBase ef, String filtro) en C:\Programador\SOLUCION 3.10\MEPRYL\CapaPresentacion\frmHorario.cs:línea 244
+
+05/01/2026 7:42:46, System.Windows.Forms.CurrencyManager.Find(), El valor no puede ser nulo.
+Nombre del parámetro: key
+   en System.Windows.Forms.CurrencyManager.Find(PropertyDescriptor property, Object key, Boolean keepIndex)
+   en System.Windows.Forms.ListControl.set_SelectedValue(Object value)
+   en CapaPresentacion.frmHorario.mostrarDatosObjeto() en C:\Programador\SOLUCION 3.10\MEPRYL\CapaPresentacion\frmHorario.cs:línea 597
+
+05/01/2026 7:42:48, System.Windows.Forms.CurrencyManager.Find(), El valor no puede ser nulo.
+Nombre del parámetro: key
+   en System.Windows.Forms.CurrencyManager.Find(PropertyDescriptor property, Object key, Boolean keepIndex)
+   en System.Windows.Forms.ListControl.set_SelectedValue(Object value)
+   en CapaPresentacion.frmHorario.mostrarDatosObjeto() en C:\Programador\SOLUCION 3.10\MEPRYL\CapaPresentacion\frmHorario.cs:línea 597
+
+05/01/2026 7:43:55, System.Windows.Forms.CurrencyManager.Find(), El valor no puede ser nulo.
+Nombre del parámetro: key
+   en System.Windows.Forms.CurrencyManager.Find(PropertyDescriptor property, Object key, Boolean keepIndex)
+   en System.Windows.Forms.ListControl.set_SelectedValue(Object value)
+   en CapaPresentacion.frmHorario.mostrarDatosObjeto() en C:\Programador\SOLUCION 3.10\MEPRYL\CapaPresentacion\frmHorario.cs:línea 597
+
+05/01/2026 7:43:55, System.Windows.Forms.CurrencyManager.Find(), El valor no puede ser nulo.
+Nombre del parámetro: key
+   en System.Windows.Forms.CurrencyManager.Find(PropertyDescriptor property, Object key, Boolean keepIndex)
+   en System.Windows.Forms.ListControl.set_SelectedValue(Object value)
+   en CapaPresentacion.frmHorario.mostrarDatosObjeto() en C:\Programador\SOLUCION 3.10\MEPRYL\CapaPresentacion\frmHorario.cs:línea 597
+
+05/01/2026 7:44:21, CapaPresentacion.frmHorario.CargarMotivoPorEspecialidad(), Referencia a objeto no establecida como instancia de un objeto.
+   en CapaPresentacion.frmHorario.CargarMotivoPorEspecialidad() en C:\Programador\SOLUCION 3.10\MEPRYL\CapaPresentacion\frmHorario.cs:línea 811
+   en CapaPresentacion.frmHorario.inicializarGrilla(EntidadFactoryBase ef, String filtro) en C:\Programador\SOLUCION 3.10\MEPRYL\CapaPresentacion\frmHorario.cs:línea 244
+
+05/01/2026 7:44:29, System.Windows.Forms.CurrencyManager.Find(), El valor no puede ser nulo.
+Nombre del parámetro: key
+   en System.Windows.Forms.CurrencyManager.Find(PropertyDescriptor property, Object key, Boolean keepIndex)
+   en System.Windows.Forms.ListControl.set_SelectedValue(Object value)
+   en CapaPresentacion.frmHorario.mostrarDatosObjeto() en C:\Programador\SOLUCION 3.10\MEPRYL\CapaPresentacion\frmHorario.cs:línea 597
+
+12/01/2026 9:04:38, CapaPresentacion.frmHorario.CargarMotivoPorEspecialidad(), Referencia a objeto no establecida como instancia de un objeto.
+   en CapaPresentacion.frmHorario.CargarMotivoPorEspecialidad() en C:\Programador\SOLUCION 3.10\MEPRYL\CapaPresentacion\frmHorario.cs:línea 811
+   en CapaPresentacion.frmHorario.inicializarGrilla(EntidadFactoryBase ef, String filtro) en C:\Programador\SOLUCION 3.10\MEPRYL\CapaPresentacion\frmHorario.cs:línea 244
+
+12/01/2026 9:04:43, System.Windows.Forms.CurrencyManager.Find(), El valor no puede ser nulo.
+Nombre del parámetro: key
+   en System.Windows.Forms.CurrencyManager.Find(PropertyDescriptor property, Object key, Boolean keepIndex)
+   en System.Windows.Forms.ListControl.set_SelectedValue(Object value)
+   en CapaPresentacion.frmHorario.mostrarDatosObjeto() en C:\Programador\SOLUCION 3.10\MEPRYL\CapaPresentacion\frmHorario.cs:línea 597
+
+12/01/2026 9:06:36, System.Windows.Forms.CurrencyManager.Find(), El valor no puede ser nulo.
+Nombre del parámetro: key
+   en System.Windows.Forms.CurrencyManager.Find(PropertyDescriptor property, Object key, Boolean keepIndex)
+   en System.Windows.Forms.ListControl.set_SelectedValue(Object value)
+   en CapaPresentacion.frmHorario.mostrarDatosObjeto() en C:\Programador\SOLUCION 3.10\MEPRYL\CapaPresentacion\frmHorario.cs:línea 597
+
+12/01/2026 9:06:37, System.Windows.Forms.CurrencyManager.Find(), El valor no puede ser nulo.
+Nombre del parámetro: key
+   en System.Windows.Forms.CurrencyManager.Find(PropertyDescriptor property, Object key, Boolean keepIndex)
+   en System.Windows.Forms.ListControl.set_SelectedValue(Object value)
+   en CapaPresentacion.frmHorario.mostrarDatosObjeto() en C:\Programador\SOLUCION 3.10\MEPRYL\CapaPresentacion\frmHorario.cs:línea 597
+
+12/01/2026 22:10:06, CapaPresentacion.frmHorario.CargarMotivoPorEspecialidad(), Referencia a objeto no establecida como instancia de un objeto.
+   en CapaPresentacion.frmHorario.CargarMotivoPorEspecialidad() en C:\Programador\SOLUCION 3.10\MEPRYL\CapaPresentacion\frmHorario.cs:línea 811
+   en CapaPresentacion.frmHorario.inicializarGrilla(EntidadFactoryBase ef, String filtro) en C:\Programador\SOLUCION 3.10\MEPRYL\CapaPresentacion\frmHorario.cs:línea 244
+
+12/01/2026 22:10:13, System.Windows.Forms.CurrencyManager.Find(), El valor no puede ser nulo.
+Nombre del parámetro: key
+   en System.Windows.Forms.CurrencyManager.Find(PropertyDescriptor property, Object key, Boolean keepIndex)
+   en System.Windows.Forms.ListControl.set_SelectedValue(Object value)
+   en CapaPresentacion.frmHorario.mostrarDatosObjeto() en C:\Programador\SOLUCION 3.10\MEPRYL\CapaPresentacion\frmHorario.cs:línea 597
+
+12/01/2026 22:11:22, System.Windows.Forms.CurrencyManager.Find(), El valor no puede ser nulo.
+Nombre del parámetro: key
+   en System.Windows.Forms.CurrencyManager.Find(PropertyDescriptor property, Object key, Boolean keepIndex)
+   en System.Windows.Forms.ListControl.set_SelectedValue(Object value)
+   en CapaPresentacion.frmHorario.mostrarDatosObjeto() en C:\Programador\SOLUCION 3.10\MEPRYL\CapaPresentacion\frmHorario.cs:línea 597
+
+12/01/2026 22:11:22, System.Windows.Forms.CurrencyManager.Find(), El valor no puede ser nulo.
+Nombre del parámetro: key
+   en System.Windows.Forms.CurrencyManager.Find(PropertyDescriptor property, Object key, Boolean keepIndex)
+   en System.Windows.Forms.ListControl.set_SelectedValue(Object value)
+   en CapaPresentacion.frmHorario.mostrarDatosObjeto() en C:\Programador\SOLUCION 3.10\MEPRYL\CapaPresentacion\frmHorario.cs:línea 597
+
+14/01/2026 10:32:40, CapaPresentacion.frmHorario.CargarMotivoPorEspecialidad(), Referencia a objeto no establecida como instancia de un objeto.
+   en CapaPresentacion.frmHorario.CargarMotivoPorEspecialidad() en C:\Programador\SOLUCION 3.10\MEPRYL\CapaPresentacion\frmHorario.cs:línea 811
+   en CapaPresentacion.frmHorario.inicializarGrilla(EntidadFactoryBase ef, String filtro) en C:\Programador\SOLUCION 3.10\MEPRYL\CapaPresentacion\frmHorario.cs:línea 244
+
+16/01/2026 11:48:39, CapaPresentacionBase.frmBasePrincipal.usuarioValidado(), Referencia a objeto no establecida como instancia de un objeto.
+   en CapaPresentacionBase.frmBasePrincipal.usuarioValidado(Usuario usuario) en C:\Programador\SOLUCION 3.10\LibreriasBase\CapaPresentacionBase\frmBasePrincipal.cs:línea 190
+
+16/01/2026 11:51:21, CapaPresentacion.frmHorario.CargarMotivoPorEspecialidad(), Referencia a objeto no establecida como instancia de un objeto.
+   en CapaPresentacion.frmHorario.CargarMotivoPorEspecialidad() en C:\Programador\SOLUCION 3.10\MEPRYL\CapaPresentacion\frmHorario.cs:línea 811
+   en CapaPresentacion.frmHorario.inicializarGrilla(EntidadFactoryBase ef, String filtro) en C:\Programador\SOLUCION 3.10\MEPRYL\CapaPresentacion\frmHorario.cs:línea 244
+
+16/01/2026 11:52:46, CapaPresentacionBase.frmBasePrincipal.usuarioValidado(), Referencia a objeto no establecida como instancia de un objeto.
+   en CapaPresentacionBase.frmBasePrincipal.usuarioValidado(Usuario usuario) en C:\Programador\SOLUCION 3.10\LibreriasBase\CapaPresentacionBase\frmBasePrincipal.cs:línea 190
+
+17/01/2026 8:11:36, System.Windows.Forms.CurrencyManager.Find(), El valor no puede ser nulo.
+Nombre del parámetro: key
+   en System.Windows.Forms.CurrencyManager.Find(PropertyDescriptor property, Object key, Boolean keepIndex)
+   en System.Windows.Forms.ListControl.set_SelectedValue(Object value)
+   en CapaPresentacion.frmHorario.mostrarDatosObjeto()
+
+17/01/2026 8:12:39, System.Windows.Forms.CurrencyManager.Find(), El valor no puede ser nulo.
+Nombre del parámetro: key
+   en System.Windows.Forms.CurrencyManager.Find(PropertyDescriptor property, Object key, Boolean keepIndex)
+   en System.Windows.Forms.ListControl.set_SelectedValue(Object value)
+   en CapaPresentacion.frmHorario.mostrarDatosObjeto()
+
+17/01/2026 8:12:39, System.Windows.Forms.CurrencyManager.Find(), El valor no puede ser nulo.
+Nombre del parámetro: key
+   en System.Windows.Forms.CurrencyManager.Find(PropertyDescriptor property, Object key, Boolean keepIndex)
+   en System.Windows.Forms.ListControl.set_SelectedValue(Object value)
+   en CapaPresentacion.frmHorario.mostrarDatosObjeto()
+
+19/01/2026 10:22:25, System.Windows.Forms.CurrencyManager.Find(), El valor no puede ser nulo.
+Nombre del parámetro: key
+   en System.Windows.Forms.CurrencyManager.Find(PropertyDescriptor property, Object key, Boolean keepIndex)
+   en System.Windows.Forms.ListControl.set_SelectedValue(Object value)
+   en CapaPresentacion.frmHorario.mostrarDatosObjeto()
+
+19/01/2026 10:23:10, System.Windows.Forms.CurrencyManager.Find(), El valor no puede ser nulo.
+Nombre del parámetro: key
+   en System.Windows.Forms.CurrencyManager.Find(PropertyDescriptor property, Object key, Boolean keepIndex)
+   en System.Windows.Forms.ListControl.set_SelectedValue(Object value)
+   en CapaPresentacion.frmHorario.mostrarDatosObjeto()
+
+19/01/2026 10:23:10, System.Windows.Forms.CurrencyManager.Find(), El valor no puede ser nulo.
+Nombre del parámetro: key
+   en System.Windows.Forms.CurrencyManager.Find(PropertyDescriptor property, Object key, Boolean keepIndex)
+   en System.Windows.Forms.ListControl.set_SelectedValue(Object value)
+   en CapaPresentacion.frmHorario.mostrarDatosObjeto()
+
+19/01/2026 19:19:19, System.Windows.Forms.CurrencyManager.Find(), El valor no puede ser nulo.
+Nombre del parámetro: key
+   en System.Windows.Forms.CurrencyManager.Find(PropertyDescriptor property, Object key, Boolean keepIndex)
+   en System.Windows.Forms.ListControl.set_SelectedValue(Object value)
+   en CapaPresentacion.frmHorario.mostrarDatosObjeto()
+
+19/01/2026 19:20:10, System.Windows.Forms.CurrencyManager.Find(), El valor no puede ser nulo.
+Nombre del parámetro: key
+   en System.Windows.Forms.CurrencyManager.Find(PropertyDescriptor property, Object key, Boolean keepIndex)
+   en System.Windows.Forms.ListControl.set_SelectedValue(Object value)
+   en CapaPresentacion.frmHorario.mostrarDatosObjeto()
+
+19/01/2026 19:20:10, System.Windows.Forms.CurrencyManager.Find(), El valor no puede ser nulo.
+Nombre del parámetro: key
+   en System.Windows.Forms.CurrencyManager.Find(PropertyDescriptor property, Object key, Boolean keepIndex)
+   en System.Windows.Forms.ListControl.set_SelectedValue(Object value)
+   en CapaPresentacion.frmHorario.mostrarDatosObjeto()
+
+19/01/2026 19:45:49, System.Windows.Forms.CurrencyManager.Find(), El valor no puede ser nulo.
+Nombre del parámetro: key
+   en System.Windows.Forms.CurrencyManager.Find(PropertyDescriptor property, Object key, Boolean keepIndex)
+   en System.Windows.Forms.ListControl.set_SelectedValue(Object value)
+   en CapaPresentacion.frmHorario.mostrarDatosObjeto()
+
+19/01/2026 19:47:26, System.Windows.Forms.CurrencyManager.Find(), El valor no puede ser nulo.
+Nombre del parámetro: key
+   en System.Windows.Forms.CurrencyManager.Find(PropertyDescriptor property, Object key, Boolean keepIndex)
+   en System.Windows.Forms.ListControl.set_SelectedValue(Object value)
+   en CapaPresentacion.frmHorario.mostrarDatosObjeto()
+
+19/01/2026 19:47:26, System.Windows.Forms.CurrencyManager.Find(), El valor no puede ser nulo.
+Nombre del parámetro: key
+   en System.Windows.Forms.CurrencyManager.Find(PropertyDescriptor property, Object key, Boolean keepIndex)
+   en System.Windows.Forms.ListControl.set_SelectedValue(Object value)
+   en CapaPresentacion.frmHorario.mostrarDatosObjeto()
+
+20/01/2026 20:08:03, System.Windows.Forms.CurrencyManager.Find(), El valor no puede ser nulo.
+Nombre del parámetro: key
+   en System.Windows.Forms.CurrencyManager.Find(PropertyDescriptor property, Object key, Boolean keepIndex)
+   en System.Windows.Forms.ListControl.set_SelectedValue(Object value)
+   en CapaPresentacion.frmHorario.mostrarDatosObjeto()
+
+20/01/2026 20:09:10, System.Windows.Forms.CurrencyManager.Find(), El valor no puede ser nulo.
+Nombre del parámetro: key
+   en System.Windows.Forms.CurrencyManager.Find(PropertyDescriptor property, Object key, Boolean keepIndex)
+   en System.Windows.Forms.ListControl.set_SelectedValue(Object value)
+   en CapaPresentacion.frmHorario.mostrarDatosObjeto()
+
+20/01/2026 20:09:10, System.Windows.Forms.CurrencyManager.Find(), El valor no puede ser nulo.
+Nombre del parámetro: key
+   en System.Windows.Forms.CurrencyManager.Find(PropertyDescriptor property, Object key, Boolean keepIndex)
+   en System.Windows.Forms.ListControl.set_SelectedValue(Object value)
+   en CapaPresentacion.frmHorario.mostrarDatosObjeto()
+
+21/01/2026 22:07:04, System.Windows.Forms.CurrencyManager.Find(), El valor no puede ser nulo.
+Nombre del parámetro: key
+   en System.Windows.Forms.CurrencyManager.Find(PropertyDescriptor property, Object key, Boolean keepIndex)
+   en System.Windows.Forms.ListControl.set_SelectedValue(Object value)
+   en CapaPresentacion.frmHorario.mostrarDatosObjeto()
+
+21/01/2026 22:08:08, System.Windows.Forms.CurrencyManager.Find(), El valor no puede ser nulo.
+Nombre del parámetro: key
+   en System.Windows.Forms.CurrencyManager.Find(PropertyDescriptor property, Object key, Boolean keepIndex)
+   en System.Windows.Forms.ListControl.set_SelectedValue(Object value)
+   en CapaPresentacion.frmHorario.mostrarDatosObjeto()
+
+21/01/2026 22:08:08, System.Windows.Forms.CurrencyManager.Find(), El valor no puede ser nulo.
+Nombre del parámetro: key
+   en System.Windows.Forms.CurrencyManager.Find(PropertyDescriptor property, Object key, Boolean keepIndex)
+   en System.Windows.Forms.ListControl.set_SelectedValue(Object value)
+   en CapaPresentacion.frmHorario.mostrarDatosObjeto()
+
+27/01/2026 10:34:46, System.Windows.Forms.CurrencyManager.Find(), El valor no puede ser nulo.
+Nombre del parámetro: key
+   en System.Windows.Forms.CurrencyManager.Find(PropertyDescriptor property, Object key, Boolean keepIndex)
+   en System.Windows.Forms.ListControl.set_SelectedValue(Object value)
+   en CapaPresentacion.frmHorario.mostrarDatosObjeto()
+
+27/01/2026 10:37:16, System.Windows.Forms.CurrencyManager.Find(), El valor no puede ser nulo.
+Nombre del parámetro: key
+   en System.Windows.Forms.CurrencyManager.Find(PropertyDescriptor property, Object key, Boolean keepIndex)
+   en System.Windows.Forms.ListControl.set_SelectedValue(Object value)
+   en CapaPresentacion.frmHorario.mostrarDatosObjeto()
+
+27/01/2026 10:37:17, System.Windows.Forms.CurrencyManager.Find(), El valor no puede ser nulo.
+Nombre del parámetro: key
+   en System.Windows.Forms.CurrencyManager.Find(PropertyDescriptor property, Object key, Boolean keepIndex)
+   en System.Windows.Forms.ListControl.set_SelectedValue(Object value)
+   en CapaPresentacion.frmHorario.mostrarDatosObjeto()
+
+27/01/2026 17:49:57, System.Windows.Forms.CurrencyManager.Find(), El valor no puede ser nulo.
+Nombre del parámetro: key
+   en System.Windows.Forms.CurrencyManager.Find(PropertyDescriptor property, Object key, Boolean keepIndex)
+   en System.Windows.Forms.ListControl.set_SelectedValue(Object value)
+   en CapaPresentacion.frmHorario.mostrarDatosObjeto()
+
+27/01/2026 17:50:53, System.Windows.Forms.CurrencyManager.Find(), El valor no puede ser nulo.
+Nombre del parámetro: key
+   en System.Windows.Forms.CurrencyManager.Find(PropertyDescriptor property, Object key, Boolean keepIndex)
+   en System.Windows.Forms.ListControl.set_SelectedValue(Object value)
+   en CapaPresentacion.frmHorario.mostrarDatosObjeto()
+
+27/01/2026 17:50:53, System.Windows.Forms.CurrencyManager.Find(), El valor no puede ser nulo.
+Nombre del parámetro: key
+   en System.Windows.Forms.CurrencyManager.Find(PropertyDescriptor property, Object key, Boolean keepIndex)
+   en System.Windows.Forms.ListControl.set_SelectedValue(Object value)
+   en CapaPresentacion.frmHorario.mostrarDatosObjeto()
+
+28/01/2026 17:35:47, System.Windows.Forms.CurrencyManager.Find(), El valor no puede ser nulo.
+Nombre del parámetro: key
+   en System.Windows.Forms.CurrencyManager.Find(PropertyDescriptor property, Object key, Boolean keepIndex)
+   en System.Windows.Forms.ListControl.set_SelectedValue(Object value)
+   en CapaPresentacion.frmHorario.mostrarDatosObjeto()
+
+29/01/2026 9:10:47, System.Windows.Forms.CurrencyManager.Find(), El valor no puede ser nulo.
+Nombre del parámetro: key
+   en System.Windows.Forms.CurrencyManager.Find(PropertyDescriptor property, Object key, Boolean keepIndex)
+   en System.Windows.Forms.ListControl.set_SelectedValue(Object value)
+   en CapaPresentacion.frmHorario.mostrarDatosObjeto()
+
+29/01/2026 9:12:27, System.Windows.Forms.CurrencyManager.Find(), El valor no puede ser nulo.
+Nombre del parámetro: key
+   en System.Windows.Forms.CurrencyManager.Find(PropertyDescriptor property, Object key, Boolean keepIndex)
+   en System.Windows.Forms.ListControl.set_SelectedValue(Object value)
+   en CapaPresentacion.frmHorario.mostrarDatosObjeto()
+
+29/01/2026 9:12:27, System.Windows.Forms.CurrencyManager.Find(), El valor no puede ser nulo.
+Nombre del parámetro: key
+   en System.Windows.Forms.CurrencyManager.Find(PropertyDescriptor property, Object key, Boolean keepIndex)
+   en System.Windows.Forms.ListControl.set_SelectedValue(Object value)
+   en CapaPresentacion.frmHorario.mostrarDatosObjeto()
+
+29/01/2026 11:15:07, System.Windows.Forms.DataGridView.set_CurrentCell(), La celda actual no se puede establecer en una celda invisible.
+   en System.Windows.Forms.DataGridView.set_CurrentCell(DataGridViewCell value)
+   en CapaPresentacion.frmHorario.agregarRegistroGrilla(Resultado& resultado)
+
+29/01/2026 11:19:57, System.Windows.Forms.CurrencyManager.Find(), El valor no puede ser nulo.
+Nombre del parámetro: key
+   en System.Windows.Forms.CurrencyManager.Find(PropertyDescriptor property, Object key, Boolean keepIndex)
+   en System.Windows.Forms.ListControl.set_SelectedValue(Object value)
+   en CapaPresentacion.frmHorario.mostrarDatosObjeto()
+
+29/01/2026 20:09:16, System.Windows.Forms.CurrencyManager.Find(), El valor no puede ser nulo.
+Nombre del parámetro: key
+   en System.Windows.Forms.CurrencyManager.Find(PropertyDescriptor property, Object key, Boolean keepIndex)
+   en System.Windows.Forms.ListControl.set_SelectedValue(Object value)
+   en CapaPresentacion.frmHorario.mostrarDatosObjeto()
+
+29/01/2026 20:10:24, System.Windows.Forms.CurrencyManager.Find(), El valor no puede ser nulo.
+Nombre del parámetro: key
+   en System.Windows.Forms.CurrencyManager.Find(PropertyDescriptor property, Object key, Boolean keepIndex)
+   en System.Windows.Forms.ListControl.set_SelectedValue(Object value)
+   en CapaPresentacion.frmHorario.mostrarDatosObjeto()
+
+29/01/2026 20:10:24, System.Windows.Forms.CurrencyManager.Find(), El valor no puede ser nulo.
+Nombre del parámetro: key
+   en System.Windows.Forms.CurrencyManager.Find(PropertyDescriptor property, Object key, Boolean keepIndex)
+   en System.Windows.Forms.ListControl.set_SelectedValue(Object value)
+   en CapaPresentacion.frmHorario.mostrarDatosObjeto()
+
+30/01/2026 10:45:15, System.Windows.Forms.CurrencyManager.Find(), El valor no puede ser nulo.
+Nombre del parámetro: key
+   en System.Windows.Forms.CurrencyManager.Find(PropertyDescriptor property, Object key, Boolean keepIndex)
+   en System.Windows.Forms.ListControl.set_SelectedValue(Object value)
+   en CapaPresentacion.frmHorario.mostrarDatosObjeto()
+
+30/01/2026 10:49:24, CapaPresentacionBase.frmBasePrincipal.usuarioValidado(), Referencia a objeto no establecida como instancia de un objeto.
+   en CapaPresentacionBase.frmBasePrincipal.usuarioValidado(Usuario usuario)
+
+31/01/2026 10:50:34, System.Windows.Forms.CurrencyManager.Find(), El valor no puede ser nulo.
+Nombre del parámetro: key
+   en System.Windows.Forms.CurrencyManager.Find(PropertyDescriptor property, Object key, Boolean keepIndex)
+   en System.Windows.Forms.ListControl.set_SelectedValue(Object value)
+   en CapaPresentacion.frmHorario.mostrarDatosObjeto()
+
+31/01/2026 10:51:59, System.Windows.Forms.CurrencyManager.Find(), El valor no puede ser nulo.
+Nombre del parámetro: key
+   en System.Windows.Forms.CurrencyManager.Find(PropertyDescriptor property, Object key, Boolean keepIndex)
+   en System.Windows.Forms.ListControl.set_SelectedValue(Object value)
+   en CapaPresentacion.frmHorario.mostrarDatosObjeto()
+
+31/01/2026 10:52:00, System.Windows.Forms.CurrencyManager.Find(), El valor no puede ser nulo.
+Nombre del parámetro: key
+   en System.Windows.Forms.CurrencyManager.Find(PropertyDescriptor property, Object key, Boolean keepIndex)
+   en System.Windows.Forms.ListControl.set_SelectedValue(Object value)
+   en CapaPresentacion.frmHorario.mostrarDatosObjeto()
+
+01/02/2026 10:37:20, System.Windows.Forms.CurrencyManager.Find(), El valor no puede ser nulo.
+Nombre del parámetro: key
+   en System.Windows.Forms.CurrencyManager.Find(PropertyDescriptor property, Object key, Boolean keepIndex)
+   en System.Windows.Forms.ListControl.set_SelectedValue(Object value)
+   en CapaPresentacion.frmHorario.mostrarDatosObjeto()
+
+02/02/2026 7:35:04, System.Windows.Forms.CurrencyManager.Find(), El valor no puede ser nulo.
+Nombre del parámetro: key
+   en System.Windows.Forms.CurrencyManager.Find(PropertyDescriptor property, Object key, Boolean keepIndex)
+   en System.Windows.Forms.ListControl.set_SelectedValue(Object value)
+   en CapaPresentacion.frmHorario.mostrarDatosObjeto()
+
+02/02/2026 7:36:08, System.Windows.Forms.CurrencyManager.Find(), El valor no puede ser nulo.
+Nombre del parámetro: key
+   en System.Windows.Forms.CurrencyManager.Find(PropertyDescriptor property, Object key, Boolean keepIndex)
+   en System.Windows.Forms.ListControl.set_SelectedValue(Object value)
+   en CapaPresentacion.frmHorario.mostrarDatosObjeto()
+
+02/02/2026 7:36:08, System.Windows.Forms.CurrencyManager.Find(), El valor no puede ser nulo.
+Nombre del parámetro: key
+   en System.Windows.Forms.CurrencyManager.Find(PropertyDescriptor property, Object key, Boolean keepIndex)
+   en System.Windows.Forms.ListControl.set_SelectedValue(Object value)
+   en CapaPresentacion.frmHorario.mostrarDatosObjeto()
+
+02/02/2026 12:56:26, CapaPresentacionBase.frmBasePrincipal.usuarioValidado(), Referencia a objeto no establecida como instancia de un objeto.
+   en CapaPresentacionBase.frmBasePrincipal.usuarioValidado(Usuario usuario)
+
+02/02/2026 12:57:27, CapaPresentacionBase.frmBasePrincipal.usuarioValidado(), Referencia a objeto no establecida como instancia de un objeto.
+   en CapaPresentacionBase.frmBasePrincipal.usuarioValidado(Usuario usuario)
+
+03/02/2026 9:37:14, System.Windows.Forms.CurrencyManager.Find(), El valor no puede ser nulo.
+Nombre del parámetro: key
+   en System.Windows.Forms.CurrencyManager.Find(PropertyDescriptor property, Object key, Boolean keepIndex)
+   en System.Windows.Forms.ListControl.set_SelectedValue(Object value)
+   en CapaPresentacion.frmHorario.mostrarDatosObjeto()
+
+03/02/2026 9:37:25, System.Windows.Forms.CurrencyManager.Find(), El valor no puede ser nulo.
+Nombre del parámetro: key
+   en System.Windows.Forms.CurrencyManager.Find(PropertyDescriptor property, Object key, Boolean keepIndex)
+   en System.Windows.Forms.ListControl.set_SelectedValue(Object value)
+   en CapaPresentacion.frmHorario.mostrarDatosObjeto()
+
+03/02/2026 9:38:07, System.Windows.Forms.CurrencyManager.Find(), El valor no puede ser nulo.
+Nombre del parámetro: key
+   en System.Windows.Forms.CurrencyManager.Find(PropertyDescriptor property, Object key, Boolean keepIndex)
+   en System.Windows.Forms.ListControl.set_SelectedValue(Object value)
+   en CapaPresentacion.frmHorario.mostrarDatosObjeto()
+
+03/02/2026 9:38:08, System.Windows.Forms.CurrencyManager.Find(), El valor no puede ser nulo.
+Nombre del parámetro: key
+   en System.Windows.Forms.CurrencyManager.Find(PropertyDescriptor property, Object key, Boolean keepIndex)
+   en System.Windows.Forms.ListControl.set_SelectedValue(Object value)
+   en CapaPresentacion.frmHorario.mostrarDatosObjeto()
+
+04/02/2026 19:25:21, CapaPresentacionBase.frmBasePrincipal.usuarioValidado(), Referencia a objeto no establecida como instancia de un objeto.
+   en CapaPresentacionBase.frmBasePrincipal.usuarioValidado(Usuario usuario)
+
+04/02/2026 19:38:22, CapaPresentacionBase.frmBasePrincipal.usuarioValidado(), Referencia a objeto no establecida como instancia de un objeto.
+   en CapaPresentacionBase.frmBasePrincipal.usuarioValidado(Usuario usuario)
+
+04/02/2026 21:09:41, CapaPresentacionBase.frmBasePrincipal.usuarioValidado(), Referencia a objeto no establecida como instancia de un objeto.
+   en CapaPresentacionBase.frmBasePrincipal.usuarioValidado(Usuario usuario)
+
+05/02/2026 15:50:15, CapaPresentacionBase.frmBasePrincipal.usuarioValidado(), Referencia a objeto no establecida como instancia de un objeto.
+   en CapaPresentacionBase.frmBasePrincipal.usuarioValidado(Usuario usuario)
+
+09/02/2026 11:33:10, CapaPresentacionBase.frmBasePrincipal.usuarioValidado(), Referencia a objeto no establecida como instancia de un objeto.
+   en CapaPresentacionBase.frmBasePrincipal.usuarioValidado(Usuario usuario)
+
+09/02/2026 15:30:27, CapaPresentacionBase.frmBasePrincipal.usuarioValidado(), Referencia a objeto no establecida como instancia de un objeto.
+   en CapaPresentacionBase.frmBasePrincipal.usuarioValidado(Usuario usuario)
+
+09/02/2026 16:06:41, CapaPresentacionBase.frmBasePrincipal.usuarioValidado(), Referencia a objeto no establecida como instancia de un objeto.
+   en CapaPresentacionBase.frmBasePrincipal.usuarioValidado(Usuario usuario)
+
+10/02/2026 18:36:01, CapaPresentacionBase.frmBasePrincipal.usuarioValidado(), Referencia a objeto no establecida como instancia de un objeto.
+   en CapaPresentacionBase.frmBasePrincipal.usuarioValidado(Usuario usuario)
+
+13/02/2026 10:08:27, CapaPresentacionBase.frmBasePrincipal.usuarioValidado(), Referencia a objeto no establecida como instancia de un objeto.
+   en CapaPresentacionBase.frmBasePrincipal.usuarioValidado(Usuario usuario)
+
+13/02/2026 12:05:17, CapaPresentacionBase.frmBasePrincipal.usuarioValidado(), Referencia a objeto no establecida como instancia de un objeto.
+   en CapaPresentacionBase.frmBasePrincipal.usuarioValidado(Usuario usuario)
+
+15/02/2026 10:33:36, CapaPresentacionBase.frmBasePrincipal.usuarioValidado(), Referencia a objeto no establecida como instancia de un objeto.
+   en CapaPresentacionBase.frmBasePrincipal.usuarioValidado(Usuario usuario)
+
+23/02/2026 9:27:14, CapaPresentacionBase.frmBasePrincipal.usuarioValidado(), Referencia a objeto no establecida como instancia de un objeto.
+   en CapaPresentacionBase.frmBasePrincipal.usuarioValidado(Usuario usuario)
+
+11/03/2026 12:53:43, CapaPresentacionBase.frmBasePrincipal.usuarioValidado(), Referencia a objeto no establecida como instancia de un objeto.
+   en CapaPresentacionBase.frmBasePrincipal.usuarioValidado(Usuario usuario)
+
+11/03/2026 12:54:26, CapaPresentacionBase.frmBasePrincipal.usuarioValidado(), Referencia a objeto no establecida como instancia de un objeto.
+   en CapaPresentacionBase.frmBasePrincipal.usuarioValidado(Usuario usuario)
+
+11/03/2026 12:57:36, CapaPresentacionBase.frmBasePrincipal.usuarioValidado(), Referencia a objeto no establecida como instancia de un objeto.
+   en CapaPresentacionBase.frmBasePrincipal.usuarioValidado(Usuario usuario)
+
+11/03/2026 13:12:48, CapaPresentacionBase.frmBasePrincipal.usuarioValidado(), Referencia a objeto no establecida como instancia de un objeto.
+   en CapaPresentacionBase.frmBasePrincipal.usuarioValidado(Usuario usuario)
+
+13/03/2026 8:27:25, CapaPresentacionBase.frmBasePrincipal.usuarioValidado(), Referencia a objeto no establecida como instancia de un objeto.
+   en CapaPresentacionBase.frmBasePrincipal.usuarioValidado(Usuario usuario)
+
+26/03/2026 7:26:51, CapaPresentacionBase.frmBasePrincipal.usuarioValidado(), Referencia a objeto no establecida como instancia de un objeto.
+   en CapaPresentacionBase.frmBasePrincipal.usuarioValidado(Usuario usuario)
+
+26/03/2026 7:27:18, CapaPresentacionBase.frmBasePrincipal.usuarioValidado(), Referencia a objeto no establecida como instancia de un objeto.
+   en CapaPresentacionBase.frmBasePrincipal.usuarioValidado(Usuario usuario)
+
+26/03/2026 7:58:03, CapaPresentacionBase.frmBasePrincipal.usuarioValidado(), Referencia a objeto no establecida como instancia de un objeto.
+   en CapaPresentacionBase.frmBasePrincipal.usuarioValidado(Usuario usuario)
+
+31/03/2026 10:37:58, CapaPresentacionBase.frmBasePrincipal.usuarioValidado(), Referencia a objeto no establecida como instancia de un objeto.
+   en CapaPresentacionBase.frmBasePrincipal.usuarioValidado(Usuario usuario) en C:\Mepryl4.2\SOLUCION 4.2\LibreriasBase\CapaPresentacionBase\frmBasePrincipal.cs:línea 200
+
+31/03/2026 10:40:09, CapaPresentacionBase.frmBasePrincipal.usuarioValidado(), Referencia a objeto no establecida como instancia de un objeto.
+   en CapaPresentacionBase.frmBasePrincipal.usuarioValidado(Usuario usuario) en C:\Mepryl4.2\SOLUCION 4.2\LibreriasBase\CapaPresentacionBase\frmBasePrincipal.cs:línea 200
+
+17/04/2026 12:19:59, CapaPresentacionBase.frmBasePrincipal.usuarioValidado(), Referencia a objeto no establecida como instancia de un objeto.
+   en CapaPresentacionBase.frmBasePrincipal.usuarioValidado(Usuario usuario) en C:\Mepryl4.2\SOLUCION 4.2\LibreriasBase\CapaPresentacionBase\frmBasePrincipal.cs:línea 200
+
+18/04/2026 8:23:12, CapaPresentacionBase.frmBasePrincipal.usuarioValidado(), Referencia a objeto no establecida como instancia de un objeto.
+   en CapaPresentacionBase.frmBasePrincipal.usuarioValidado(Usuario usuario) en C:\Mepryl4.2\SOLUCION 4.2\LibreriasBase\CapaPresentacionBase\frmBasePrincipal.cs:línea 200
+
+06/05/2026 7:49:23, System.Collections.ArrayList.get_Item(), El índice estaba fuera del intervalo. Debe ser un valor no negativo e inferior al tamaño de la colección.
+Nombre del parámetro: index
+   en System.Collections.ArrayList.get_Item(Int32 index)
+   en System.Windows.Forms.DataGridViewRowCollection.SharedRow(Int32 rowIndex)
+   en System.Windows.Forms.DataGridViewRowCollection.get_Item(Int32 index)
+   en CapaPresentacion.frmPaciente.MostrarMensaje(Boolean blnMostrar) en C:\Mepryl4.2\SOLUCION 4.2\MEPRYL\CapaPresentacion\frmPaciente.cs:línea 548
+   en CapaPresentacion.frmPaciente.mostrarDatosObjeto() en C:\Mepryl4.2\SOLUCION 4.2\MEPRYL\CapaPresentacion\frmPaciente.cs:línea 493
+
+06/05/2026 7:49:32, System.Collections.ArrayList.get_Item(), El índice estaba fuera del intervalo. Debe ser un valor no negativo e inferior al tamaño de la colección.
+Nombre del parámetro: index
+   en System.Collections.ArrayList.get_Item(Int32 index)
+   en System.Windows.Forms.DataGridViewRowCollection.SharedRow(Int32 rowIndex)
+   en System.Windows.Forms.DataGridViewRowCollection.get_Item(Int32 index)
+   en CapaPresentacion.frmPaciente.MostrarMensaje(Boolean blnMostrar) en C:\Mepryl4.2\SOLUCION 4.2\MEPRYL\CapaPresentacion\frmPaciente.cs:línea 548
+   en CapaPresentacion.frmPaciente.mostrarDatosObjeto() en C:\Mepryl4.2\SOLUCION 4.2\MEPRYL\CapaPresentacion\frmPaciente.cs:línea 493
+
+06/05/2026 7:50:27, System.Collections.ArrayList.get_Item(), El índice estaba fuera del intervalo. Debe ser un valor no negativo e inferior al tamaño de la colección.
+Nombre del parámetro: index
+   en System.Collections.ArrayList.get_Item(Int32 index)
+   en System.Windows.Forms.DataGridViewRowCollection.SharedRow(Int32 rowIndex)
+   en System.Windows.Forms.DataGridViewRowCollection.get_Item(Int32 index)
+   en CapaPresentacion.frmPaciente.MostrarMensaje(Boolean blnMostrar) en C:\Mepryl4.2\SOLUCION 4.2\MEPRYL\CapaPresentacion\frmPaciente.cs:línea 548
+   en CapaPresentacion.frmPaciente.mostrarDatosObjeto() en C:\Mepryl4.2\SOLUCION 4.2\MEPRYL\CapaPresentacion\frmPaciente.cs:línea 493
+
+06/05/2026 7:50:36, System.Collections.ArrayList.get_Item(), El índice estaba fuera del intervalo. Debe ser un valor no negativo e inferior al tamaño de la colección.
+Nombre del parámetro: index
+   en System.Collections.ArrayList.get_Item(Int32 index)
+   en System.Windows.Forms.DataGridViewRowCollection.SharedRow(Int32 rowIndex)
+   en System.Windows.Forms.DataGridViewRowCollection.get_Item(Int32 index)
+   en CapaPresentacion.frmPaciente.MostrarMensaje(Boolean blnMostrar) en C:\Mepryl4.2\SOLUCION 4.2\MEPRYL\CapaPresentacion\frmPaciente.cs:línea 548
+   en CapaPresentacion.frmPaciente.mostrarDatosObjeto() en C:\Mepryl4.2\SOLUCION 4.2\MEPRYL\CapaPresentacion\frmPaciente.cs:línea 493
+
+06/05/2026 7:57:34, System.Collections.ArrayList.get_Item(), El índice estaba fuera del intervalo. Debe ser un valor no negativo e inferior al tamaño de la colección.
+Nombre del parámetro: index
+   en System.Collections.ArrayList.get_Item(Int32 index)
+   en System.Windows.Forms.DataGridViewRowCollection.SharedRow(Int32 rowIndex)
+   en System.Windows.Forms.DataGridViewRowCollection.get_Item(Int32 index)
+   en CapaPresentacion.frmPaciente.MostrarMensaje(Boolean blnMostrar) en C:\Mepryl4.2\SOLUCION 4.2\MEPRYL\CapaPresentacion\frmPaciente.cs:línea 548
+   en CapaPresentacion.frmPaciente.mostrarDatosObjeto() en C:\Mepryl4.2\SOLUCION 4.2\MEPRYL\CapaPresentacion\frmPaciente.cs:línea 493
+
+06/05/2026 7:59:35, System.Collections.ArrayList.get_Item(), El índice estaba fuera del intervalo. Debe ser un valor no negativo e inferior al tamaño de la colección.
+Nombre del parámetro: index
+   en System.Collections.ArrayList.get_Item(Int32 index)
+   en System.Windows.Forms.DataGridViewRowCollection.SharedRow(Int32 rowIndex)
+   en System.Windows.Forms.DataGridViewRowCollection.get_Item(Int32 index)
+   en CapaPresentacion.frmPaciente.MostrarMensaje(Boolean blnMostrar) en C:\Mepryl4.2\SOLUCION 4.2\MEPRYL\CapaPresentacion\frmPaciente.cs:línea 548
+   en CapaPresentacion.frmPaciente.mostrarDatosObjeto() en C:\Mepryl4.2\SOLUCION 4.2\MEPRYL\CapaPresentacion\frmPaciente.cs:línea 493
+
+06/05/2026 7:59:40, System.Collections.ArrayList.get_Item(), El índice estaba fuera del intervalo. Debe ser un valor no negativo e inferior al tamaño de la colección.
+Nombre del parámetro: index
+   en System.Collections.ArrayList.get_Item(Int32 index)
+   en System.Windows.Forms.DataGridViewRowCollection.SharedRow(Int32 rowIndex)
+   en System.Windows.Forms.DataGridViewRowCollection.get_Item(Int32 index)
+   en CapaPresentacion.frmPaciente.MostrarMensaje(Boolean blnMostrar) en C:\Mepryl4.2\SOLUCION 4.2\MEPRYL\CapaPresentacion\frmPaciente.cs:línea 548
+   en CapaPresentacion.frmPaciente.mostrarDatosObjeto() en C:\Mepryl4.2\SOLUCION 4.2\MEPRYL\CapaPresentacion\frmPaciente.cs:línea 493
+
