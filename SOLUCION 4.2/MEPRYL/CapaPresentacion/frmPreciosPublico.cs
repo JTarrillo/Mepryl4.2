@@ -28,6 +28,9 @@ namespace CapaPresentacion
 
         private void frmPreciosPublico_Load(object sender, EventArgs e)
         {
+            foreach (DataGridViewColumn col in dgvPrecios.Columns)
+                col.SortMode = DataGridViewColumnSortMode.NotSortable;
+
             nudAnio.Value = DateTime.Now.Year;
             cboMesVariacion.SelectedIndex = DateTime.Now.Month; // 0 = Todos, 1-12 = mes
             CargarGrilla();
@@ -70,8 +73,8 @@ namespace CapaPresentacion
                 }
             }
 
-            lblTotal.Text = "Prestaciones: " + dt.Rows.Count;
-            txtBuscar.Clear();
+            // Re-aplicar el filtro actual sin borrar el texto de búsqueda
+            txtBuscar_TextChanged(this, EventArgs.Empty);
         }
 
         private void dgvPrecios_ColumnHeaderMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
@@ -299,6 +302,72 @@ namespace CapaPresentacion
             {
                 lblVariacion.Text = "Incremento %:";
                 txtVariacion.Text = ((valor - 1) * 100).ToString("0.##");
+            }
+        }
+
+        private void dgvPrecios_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
+        {
+            if (e.RowIndex != -1 || e.ColumnIndex < 0) return;
+
+            string colName = dgvPrecios.Columns[e.ColumnIndex].Name;
+            Color backColor = colName.StartsWith("colCoef") ? Color.FromArgb(180, 0, 0) : Color.SeaGreen;
+
+            using (var brush = new System.Drawing.SolidBrush(backColor))
+                e.Graphics.FillRectangle(brush, e.CellBounds);
+
+            string text = dgvPrecios.Columns[e.ColumnIndex].HeaderText;
+            var font = e.CellStyle.Font ?? dgvPrecios.ColumnHeadersDefaultCellStyle.Font;
+            TextRenderer.DrawText(e.Graphics, text, font, e.CellBounds, Color.White,
+                TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.WordEllipsis);
+
+            using (var pen = new System.Drawing.Pen(Color.FromArgb(100, 100, 100)))
+            {
+                e.Graphics.DrawLine(pen, e.CellBounds.Right - 1, e.CellBounds.Top, e.CellBounds.Right - 1, e.CellBounds.Bottom - 1);
+                e.Graphics.DrawLine(pen, e.CellBounds.Left, e.CellBounds.Bottom - 1, e.CellBounds.Right, e.CellBounds.Bottom - 1);
+            }
+
+            e.Handled = true;
+        }
+
+        private void dgvPrecios_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            if (e.RowIndex < 0) return;
+            string col = dgvPrecios.Columns[e.ColumnIndex].Name;
+
+            if (col == "colMotivo")
+            {
+                e.CellStyle.BackColor          = Color.FromArgb(230, 245, 235);
+                e.CellStyle.ForeColor          = Color.FromArgb(20, 70, 40);
+                e.CellStyle.SelectionBackColor = Color.FromArgb(230, 245, 235);
+                e.CellStyle.SelectionForeColor = Color.FromArgb(20, 70, 40);
+            }
+            else if (col == "colTipo")
+            {
+                e.CellStyle.BackColor          = Color.White;
+                e.CellStyle.ForeColor          = Color.FromArgb(30, 30, 90);
+                e.CellStyle.SelectionBackColor = Color.White;
+                e.CellStyle.SelectionForeColor = Color.FromArgb(30, 30, 90);
+            }
+            else if (col == "colDescripcion")
+            {
+                e.CellStyle.BackColor          = Color.White;
+                e.CellStyle.ForeColor          = Color.FromArgb(20, 20, 20);
+                e.CellStyle.SelectionBackColor = Color.White;
+                e.CellStyle.SelectionForeColor = Color.FromArgb(20, 20, 20);
+            }
+            else if (col.StartsWith("colPromo"))
+            {
+                e.CellStyle.BackColor          = Color.White;
+                e.CellStyle.ForeColor          = Color.FromArgb(20, 20, 20);
+                e.CellStyle.SelectionBackColor = Color.White;
+                e.CellStyle.SelectionForeColor = Color.FromArgb(20, 20, 20);
+            }
+            else if (col.StartsWith("colCoef"))
+            {
+                e.CellStyle.BackColor          = Color.FromArgb(255, 210, 210);
+                e.CellStyle.ForeColor          = Color.FromArgb(140, 0, 0);
+                e.CellStyle.SelectionBackColor = Color.FromArgb(255, 210, 210);
+                e.CellStyle.SelectionForeColor = Color.FromArgb(140, 0, 0);
             }
         }
     }
