@@ -60,5 +60,30 @@ namespace CapaNegocioMepryl
         {
             precioPublico.GuardarCoeficiente(mes, anio, coeficiente);
         }
+
+        public DataTable ListarPreciosPublicoAnio(int anio)
+        {
+            return precioPublico.ListarPreciosPublicoAnio(anio);
+        }
+
+        public DataTable ListarCoeficientesAnio(int anio)
+        {
+            return precioPublico.ListarCoeficientesAnio(anio);
+        }
+
+        public void GuardarCoeficientesAnio(int anio, decimal[] coeficientes)
+        {
+            precioPublico.GuardarCoeficientesAnio(anio, coeficientes);
+        }
+
+        public void GuardarPreciosPublicoAnio(int anio, DataTable dtDatos)
+        {
+            precioPublico.GuardarPreciosPublicoAnio(anio, dtDatos);
+        }
+
+        public bool ExistenPreciosAnio(int anio)
+        {
+            return precioPublico.ExistenPreciosAnio(anio);
+        }
     }
 }
