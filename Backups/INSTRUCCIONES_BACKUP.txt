@@ -1,0 +1,31 @@
+INSTRUCCIONES PARA CREAR BACKUP MANUAL DE MEPRYLv2.1
+================================================
+
+FECHA: 07/05/2026
+
+PASO 1: Abrir SQL Server Management Studio
+- Conectarse al servidor: 192.168.1.254
+- Base de datos: MEPRYLv2.1
+
+PASO 2: Ejecutar el siguiente comando en una nueva consulta:
+-------------------------------------------------
+
+BACKUP DATABASE [MEPRYLv2.1] 
+TO DISK = 'C:\Mepryl4.2\Backups\MEPRYLv2.1_Backup_2026-05-07.bak'
+WITH 
+    FORMAT,
+    INIT,
+    NAME = 'MEPRYLv2.1-Completo Database Backup',
+    SKIP,
+    NOREWIND,
+    NOUNLOAD,
+    STATS = 10
+
+PASO 3: Verificar que el archivo se cree en:
+C:\Mepryl4.2\Backups\MEPRYLv2.1_Backup_2026-05-07.bak
+
+PASO 4: Confirmar que el backup sea válido
+- El archivo debe pesar varios MB/GB
+- No debe haber errores en la ejecución
+
+NOTA: Si la carpeta Backups no existe, crearla primero manualmente.

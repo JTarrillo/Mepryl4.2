@@ -48,16 +48,6 @@
             this.ribbonControl1.ColorScheme = DevExpress.XtraBars.Ribbon.RibbonControlColorScheme.Green;
             // 
             // 
-
-            this.ribbonPageGroup1.Name = "ribbonPageGroup1";
-            this.ribbonPageGroup1.ShowCaptionButton = false;
-            // Agregar los botones al grupo del ribbon
-            this.ribbonPageGroup1.ItemLinks.Add(this.bbiExpWeb);
-            this.ribbonPageGroup1.ItemLinks.Add(this.bbiDataSMS);
-            this.ribbonPageGroup1.ItemLinks.Add(this.bbiExpMedida);
-            this.ribbonPageGroup1.ItemLinks.Add(this.bbiExportarMesaEnt);
-            this.ribbonPageGroup1.ItemLinks.Add(this.bbiExportarConsolidadoPreventiva);
-            this.ribbonPageGroup1.ItemLinks.Add(this.bbiCrearTablaJumpy);
             // 
             this.ribbonControl1.ExpandCollapseItem.Id = 0;
             this.ribbonControl1.Items.AddRange(new DevExpress.XtraBars.BarItem[] {
