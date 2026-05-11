@@ -216,7 +216,19 @@ namespace CapaDatosMepryl
                 "ISNULL(m.nombre, '') AS Motivo, " +
                 "ISNULL(padre.descripcion, '') AS Tipo, " +
                 "e.descripcion AS Descripcion, " +
-                "ISNULL(e.IPCBase, 1.0) AS IPCBase, " +
+                "e.IPCBase AS IPCBase, " +
+                "ISNULL(MAX(CASE WHEN p.Mes = 1  THEN p.CoeficienteIndividual END), 0) AS Coef01, " +
+                "ISNULL(MAX(CASE WHEN p.Mes = 2  THEN p.CoeficienteIndividual END), 0) AS Coef02, " +
+                "ISNULL(MAX(CASE WHEN p.Mes = 3  THEN p.CoeficienteIndividual END), 0) AS Coef03, " +
+                "ISNULL(MAX(CASE WHEN p.Mes = 4  THEN p.CoeficienteIndividual END), 0) AS Coef04, " +
+                "ISNULL(MAX(CASE WHEN p.Mes = 5  THEN p.CoeficienteIndividual END), 0) AS Coef05, " +
+                "ISNULL(MAX(CASE WHEN p.Mes = 6  THEN p.CoeficienteIndividual END), 0) AS Coef06, " +
+                "ISNULL(MAX(CASE WHEN p.Mes = 7  THEN p.CoeficienteIndividual END), 0) AS Coef07, " +
+                "ISNULL(MAX(CASE WHEN p.Mes = 8  THEN p.CoeficienteIndividual END), 0) AS Coef08, " +
+                "ISNULL(MAX(CASE WHEN p.Mes = 9  THEN p.CoeficienteIndividual END), 0) AS Coef09, " +
+                "ISNULL(MAX(CASE WHEN p.Mes = 10 THEN p.CoeficienteIndividual END), 0) AS Coef10, " +
+                "ISNULL(MAX(CASE WHEN p.Mes = 11 THEN p.CoeficienteIndividual END), 0) AS Coef11, " +
+                "ISNULL(MAX(CASE WHEN p.Mes = 12 THEN p.CoeficienteIndividual END), 0) AS Coef12, " +
                 "ISNULL(MAX(CASE WHEN p.Mes = 1  THEN p.PrecioPromo END), 0) AS Promo01, " +
                 "ISNULL(MAX(CASE WHEN p.Mes = 2  THEN p.PrecioPromo END), 0) AS Promo02, " +
                 "ISNULL(MAX(CASE WHEN p.Mes = 3  THEN p.PrecioPromo END), 0) AS Promo03, " +
@@ -266,19 +278,21 @@ namespace CapaDatosMepryl
             for (int mes = 1; mes <= 12; mes++)
             {
                 string colPromo = "Promo" + mes.ToString("00");
+                string colCoef  = "Coef"  + mes.ToString("00");
                 StringBuilder sb = new StringBuilder();
 
                 for (int i = 0; i < dtDatos.Rows.Count; i++)
                 {
-                    string idEsp = dtDatos.Rows[i]["idEspecialidad"].ToString();
-                    string desc  = dtDatos.Rows[i]["Descripcion"].ToString().Replace("'", "''");
-                    string promo = dtDatos.Rows[i][colPromo].ToString().Replace(",", ".");
+                    string idEsp   = dtDatos.Rows[i]["idEspecialidad"].ToString();
+                    string desc    = dtDatos.Rows[i]["Descripcion"].ToString().Replace("'", "''");
+                    string promo   = dtDatos.Rows[i][colPromo].ToString().Replace(",", ".");
+                    string coefInd = dtDatos.Rows[i][colCoef].ToString().Replace(",", ".");
 
                     sb.Append("IF EXISTS (SELECT 1 FROM PrecioPublico WHERE idEspecialidad = '" + idEsp + "' AND Mes = " + mes + " AND Anio = " + anio + " AND Eliminado = 0) ");
-                    sb.Append("UPDATE PrecioPublico SET PrecioPromo = " + promo + ", FechaModificacion = GETDATE() ");
+                    sb.Append("UPDATE PrecioPublico SET PrecioPromo = " + promo + ", CoeficienteIndividual = " + coefInd + ", FechaModificacion = GETDATE() ");
                     sb.AppendLine("WHERE idEspecialidad = '" + idEsp + "' AND Mes = " + mes + " AND Anio = " + anio + " AND Eliminado = 0 ");
                     sb.Append("ELSE IF NOT EXISTS (SELECT 1 FROM PrecioPublico WHERE idEspecialidad = '" + idEsp + "' AND Mes = " + mes + " AND Anio = " + anio + ") ");
-                    sb.AppendLine("INSERT INTO PrecioPublico (idEspecialidad, Descripcion, Mes, Anio, PrecioLista, PrecioPromo, SeñaPromo, SeñaLista, LlevaPlanilla, ObservacionesExtra) VALUES('" + idEsp + "', '" + desc + "', " + mes + ", " + anio + ", 0, " + promo + ", 0, 0, 0, ''); ");
+                    sb.AppendLine("INSERT INTO PrecioPublico (idEspecialidad, Descripcion, Mes, Anio, PrecioLista, PrecioPromo, Se\u00f1aPromo, Se\u00f1aLista, LlevaPlanilla, ObservacionesExtra, CoeficienteIndividual) VALUES('" + idEsp + "', '" + desc + "', " + mes + ", " + anio + ", 0, " + promo + ", 0, 0, 0, '', " + coefInd + "); ");
                 }
 
                 if (sb.Length > 0)

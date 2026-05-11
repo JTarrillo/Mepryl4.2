@@ -1460,6 +1460,9 @@
     <EmbeddedResource Include="frmMuestraFactPorEmpresa.resx">
       <DependentUpon>frmMuestraFactPorEmpresa.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="frmPreciosPublico.resx">
+      <DependentUpon>frmPreciosPublico.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmReplicarHorario.resx">
       <DependentUpon>frmReplicarHorario.cs</DependentUpon>
     </EmbeddedResource>

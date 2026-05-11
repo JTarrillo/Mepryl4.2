@@ -30,12 +30,37 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmBusquedaLaboral));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.lbTitulo = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
             this.botBuscarPorDia = new System.Windows.Forms.Button();
             this.tpFecha = new System.Windows.Forms.DateTimePicker();
             this.dgv = new System.Windows.Forms.DataGridView();
+            this.IdConsulta = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Fecha = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Hora = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Identif = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.MotivoConsulta = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.IdEmpresa = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Empresa = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Tarea = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.DNI = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Paciente = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.IdPaciente = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.IdConsultaLaboral = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.TipoConsultaLaboral = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.EstadoAtencion = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Diagnostico = new System.Windows.Forms.DataGridViewImageColumn();
+            this.FechaAltaCitacion = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Dictamen = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.IdExamenLaboral = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.IdConsultorioLaboral = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ClinicoCargado = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.IdTipoExamen = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ExpC = new System.Windows.Forms.DataGridViewImageColumn();
+            this.ExpL = new System.Windows.Forms.DataGridViewImageColumn();
+            this.Cons = new System.Windows.Forms.DataGridViewImageColumn();
+            this.Env = new System.Windows.Forms.DataGridViewImageColumn();
             this.panel2 = new System.Windows.Forms.Panel();
             this.botBuscar = new System.Windows.Forms.Button();
             this.tpHasta = new System.Windows.Forms.DateTimePicker();
@@ -74,46 +99,12 @@
             this.rbpExamenLab = new DevExpress.XtraBars.Ribbon.RibbonPage();
             this.ribbonPageGroup1 = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
             this.timerActualizaEstados = new System.Windows.Forms.Timer(this.components);
-            this.IdConsulta = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Fecha = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Hora = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Identif = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.MotivoConsulta = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.IdEmpresa = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Empresa = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Tarea = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.DNI = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Paciente = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.IdPaciente = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.IdConsultaLaboral = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.TipoConsultaLaboral = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.EstadoAtencion = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Diagnostico = new System.Windows.Forms.DataGridViewImageColumn();
-            this.FechaAltaCitacion = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Dictamen = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.IdExamenLaboral = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.IdConsultorioLaboral = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ClinicoCargado = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.IdTipoExamen = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ExpC = new System.Windows.Forms.DataGridViewImageColumn();
-            this.ExpL = new System.Windows.Forms.DataGridViewImageColumn();
-            this.Cons = new System.Windows.Forms.DataGridViewImageColumn();
-            this.Env = new System.Windows.Forms.DataGridViewImageColumn();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgv)).BeginInit();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.rbcMenu)).BeginInit();
             this.SuspendLayout();
-            this.ribbonPageGroup1.ItemLinks.Add(this.bbiCasino);
-            this.ribbonPageGroup1.ItemLinks.Add(this.bbiLaboratorio);
-            this.ribbonPageGroup1.ItemLinks.Add(this.bbiExportarExam);
-            this.ribbonPageGroup1.ItemLinks.Add(this.bbiExportarOliv);
-            this.ribbonPageGroup1.ItemLinks.Add(this.bbiExportarAudio);
-            this.ribbonPageGroup1.ItemLinks.Add(this.bbiCambioEmpresa);
-            this.ribbonPageGroup1.ItemLinks.Add(this.bbiConsolidarEstudios);
-            this.ribbonPageGroup1.ItemLinks.Add(this.barButtonItem7);
-            this.ribbonPageGroup1.ItemLinks.Add(this.barButtonItem6);
             // 
             // lbTitulo
             // 
@@ -203,14 +194,206 @@
             this.dgv.Name = "dgv";
             this.dgv.ReadOnly = true;
             this.dgv.RowHeadersWidth = 25;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.dgv.RowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dgv.RowsDefaultCellStyle = dataGridViewCellStyle2;
             this.dgv.RowTemplate.Height = 25;
             this.dgv.Size = new System.Drawing.Size(1349, 218);
             this.dgv.TabIndex = 128;
             this.dgv.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgv_CellClick);
             this.dgv.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgv_CellDoubleClick);
             this.dgv.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dgv_KeyDown);
+            // 
+            // IdConsulta
+            // 
+            this.IdConsulta.HeaderText = "IdConsulta";
+            this.IdConsulta.Name = "IdConsulta";
+            this.IdConsulta.ReadOnly = true;
+            this.IdConsulta.Visible = false;
+            this.IdConsulta.Width = 84;
+            // 
+            // Fecha
+            // 
+            this.Fecha.HeaderText = "Fecha";
+            this.Fecha.Name = "Fecha";
+            this.Fecha.ReadOnly = true;
+            this.Fecha.Width = 61;
+            // 
+            // Hora
+            // 
+            this.Hora.HeaderText = "Hora";
+            this.Hora.Name = "Hora";
+            this.Hora.ReadOnly = true;
+            this.Hora.Width = 55;
+            // 
+            // Identif
+            // 
+            this.Identif.HeaderText = "Ident.";
+            this.Identif.Name = "Identif";
+            this.Identif.ReadOnly = true;
+            this.Identif.Width = 62;
+            // 
+            // MotivoConsulta
+            // 
+            this.MotivoConsulta.HeaderText = "Subtipo De Examen";
+            this.MotivoConsulta.Name = "MotivoConsulta";
+            this.MotivoConsulta.ReadOnly = true;
+            this.MotivoConsulta.Width = 115;
+            // 
+            // IdEmpresa
+            // 
+            this.IdEmpresa.HeaderText = "IdEmpresa";
+            this.IdEmpresa.Name = "IdEmpresa";
+            this.IdEmpresa.ReadOnly = true;
+            this.IdEmpresa.Visible = false;
+            this.IdEmpresa.Width = 83;
+            // 
+            // Empresa
+            // 
+            this.Empresa.HeaderText = "Empresa";
+            this.Empresa.Name = "Empresa";
+            this.Empresa.ReadOnly = true;
+            this.Empresa.Width = 73;
+            // 
+            // Tarea
+            // 
+            this.Tarea.HeaderText = "Tarea";
+            this.Tarea.Name = "Tarea";
+            this.Tarea.ReadOnly = true;
+            this.Tarea.Width = 60;
+            // 
+            // DNI
+            // 
+            this.DNI.HeaderText = "DNI";
+            this.DNI.Name = "DNI";
+            this.DNI.ReadOnly = true;
+            this.DNI.Width = 50;
+            // 
+            // Paciente
+            // 
+            this.Paciente.HeaderText = "Paciente";
+            this.Paciente.Name = "Paciente";
+            this.Paciente.ReadOnly = true;
+            this.Paciente.Width = 73;
+            // 
+            // IdPaciente
+            // 
+            this.IdPaciente.HeaderText = "IdPaciente";
+            this.IdPaciente.Name = "IdPaciente";
+            this.IdPaciente.ReadOnly = true;
+            this.IdPaciente.Visible = false;
+            this.IdPaciente.Width = 83;
+            // 
+            // IdConsultaLaboral
+            // 
+            this.IdConsultaLaboral.HeaderText = "IdConsultaLaboral";
+            this.IdConsultaLaboral.Name = "IdConsultaLaboral";
+            this.IdConsultaLaboral.ReadOnly = true;
+            this.IdConsultaLaboral.Visible = false;
+            this.IdConsultaLaboral.Width = 119;
+            // 
+            // TipoConsultaLaboral
+            // 
+            this.TipoConsultaLaboral.HeaderText = "TipoConsultaLaboral";
+            this.TipoConsultaLaboral.Name = "TipoConsultaLaboral";
+            this.TipoConsultaLaboral.ReadOnly = true;
+            this.TipoConsultaLaboral.Visible = false;
+            this.TipoConsultaLaboral.Width = 129;
+            // 
+            // EstadoAtencion
+            // 
+            this.EstadoAtencion.HeaderText = "Estado Atención";
+            this.EstadoAtencion.Name = "EstadoAtencion";
+            this.EstadoAtencion.ReadOnly = true;
+            this.EstadoAtencion.Width = 101;
+            // 
+            // Diagnostico
+            // 
+            this.Diagnostico.HeaderText = "Diagnostico";
+            this.Diagnostico.Image = ((System.Drawing.Image)(resources.GetObject("Diagnostico.Image")));
+            this.Diagnostico.ImageLayout = System.Windows.Forms.DataGridViewImageCellLayout.Zoom;
+            this.Diagnostico.Name = "Diagnostico";
+            this.Diagnostico.ReadOnly = true;
+            this.Diagnostico.Width = 68;
+            // 
+            // FechaAltaCitacion
+            // 
+            this.FechaAltaCitacion.HeaderText = "Fecha Alta/Citación";
+            this.FechaAltaCitacion.Name = "FechaAltaCitacion";
+            this.FechaAltaCitacion.ReadOnly = true;
+            this.FechaAltaCitacion.Width = 115;
+            // 
+            // Dictamen
+            // 
+            this.Dictamen.HeaderText = "Dictamen";
+            this.Dictamen.Name = "Dictamen";
+            this.Dictamen.ReadOnly = true;
+            this.Dictamen.Width = 76;
+            // 
+            // IdExamenLaboral
+            // 
+            this.IdExamenLaboral.HeaderText = "IdExamenLaboral";
+            this.IdExamenLaboral.Name = "IdExamenLaboral";
+            this.IdExamenLaboral.ReadOnly = true;
+            this.IdExamenLaboral.Visible = false;
+            this.IdExamenLaboral.Width = 115;
+            // 
+            // IdConsultorioLaboral
+            // 
+            this.IdConsultorioLaboral.HeaderText = "IdConsultorioLaboral";
+            this.IdConsultorioLaboral.Name = "IdConsultorioLaboral";
+            this.IdConsultorioLaboral.ReadOnly = true;
+            this.IdConsultorioLaboral.Visible = false;
+            this.IdConsultorioLaboral.Width = 131;
+            // 
+            // ClinicoCargado
+            // 
+            this.ClinicoCargado.HeaderText = "ClinicoCargado";
+            this.ClinicoCargado.Name = "ClinicoCargado";
+            this.ClinicoCargado.ReadOnly = true;
+            this.ClinicoCargado.Visible = false;
+            this.ClinicoCargado.Width = 103;
+            // 
+            // IdTipoExamen
+            // 
+            this.IdTipoExamen.HeaderText = "IdTipoExamen";
+            this.IdTipoExamen.Name = "IdTipoExamen";
+            this.IdTipoExamen.ReadOnly = true;
+            this.IdTipoExamen.Visible = false;
+            // 
+            // ExpC
+            // 
+            this.ExpC.HeaderText = "Exp-C";
+            this.ExpC.Image = ((System.Drawing.Image)(resources.GetObject("ExpC.Image")));
+            this.ExpC.ImageLayout = System.Windows.Forms.DataGridViewImageCellLayout.Zoom;
+            this.ExpC.Name = "ExpC";
+            this.ExpC.ReadOnly = true;
+            this.ExpC.Width = 42;
+            // 
+            // ExpL
+            // 
+            this.ExpL.HeaderText = "Exp-L";
+            this.ExpL.Image = ((System.Drawing.Image)(resources.GetObject("ExpL.Image")));
+            this.ExpL.ImageLayout = System.Windows.Forms.DataGridViewImageCellLayout.Zoom;
+            this.ExpL.Name = "ExpL";
+            this.ExpL.ReadOnly = true;
+            this.ExpL.Width = 40;
+            // 
+            // Cons
+            // 
+            this.Cons.HeaderText = "Cons";
+            this.Cons.Image = ((System.Drawing.Image)(resources.GetObject("Cons.Image")));
+            this.Cons.ImageLayout = System.Windows.Forms.DataGridViewImageCellLayout.Zoom;
+            this.Cons.Name = "Cons";
+            this.Cons.ReadOnly = true;
+            this.Cons.Width = 37;
+            // 
+            // Env
+            // 
+            this.Env.HeaderText = "Env";
+            this.Env.ImageLayout = System.Windows.Forms.DataGridViewImageCellLayout.Zoom;
+            this.Env.Name = "Env";
+            this.Env.ReadOnly = true;
+            this.Env.Width = 31;
             // 
             // panel2
             // 
@@ -611,7 +794,7 @@
             this.rbcMenu.MaxItemId = 10;
             this.rbcMenu.Name = "rbcMenu";
             this.rbcMenu.Pages.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPage[] {
-            this.rbpExamenLab});
+            ((DevExpress.XtraBars.Ribbon.RibbonPage)(this.rbpExamenLab))});
             this.rbcMenu.Size = new System.Drawing.Size(1349, 139);
             // 
             // bbiCasino
@@ -704,198 +887,6 @@
             // 
             this.timerActualizaEstados.Interval = 1000;
             this.timerActualizaEstados.Tick += new System.EventHandler(this.timerActualizaEstados_Tick);
-            // 
-            // IdConsulta
-            // 
-            this.IdConsulta.HeaderText = "IdConsulta";
-            this.IdConsulta.Name = "IdConsulta";
-            this.IdConsulta.ReadOnly = true;
-            this.IdConsulta.Visible = false;
-            this.IdConsulta.Width = 84;
-            // 
-            // Fecha
-            // 
-            this.Fecha.HeaderText = "Fecha";
-            this.Fecha.Name = "Fecha";
-            this.Fecha.ReadOnly = true;
-            this.Fecha.Width = 61;
-            // 
-            // Hora
-            // 
-            this.Hora.HeaderText = "Hora";
-            this.Hora.Name = "Hora";
-            this.Hora.ReadOnly = true;
-            this.Hora.Width = 55;
-            // 
-            // Identif
-            // 
-            this.Identif.HeaderText = "Ident.";
-            this.Identif.Name = "Identif";
-            this.Identif.ReadOnly = true;
-            this.Identif.Width = 62;
-            // 
-            // MotivoConsulta
-            // 
-            this.MotivoConsulta.HeaderText = "Subtipo De Examen";
-            this.MotivoConsulta.Name = "MotivoConsulta";
-            this.MotivoConsulta.ReadOnly = true;
-            this.MotivoConsulta.Width = 115;
-            // 
-            // IdEmpresa
-            // 
-            this.IdEmpresa.HeaderText = "IdEmpresa";
-            this.IdEmpresa.Name = "IdEmpresa";
-            this.IdEmpresa.ReadOnly = true;
-            this.IdEmpresa.Visible = false;
-            this.IdEmpresa.Width = 83;
-            // 
-            // Empresa
-            // 
-            this.Empresa.HeaderText = "Empresa";
-            this.Empresa.Name = "Empresa";
-            this.Empresa.ReadOnly = true;
-            this.Empresa.Width = 73;
-            // 
-            // Tarea
-            // 
-            this.Tarea.HeaderText = "Tarea";
-            this.Tarea.Name = "Tarea";
-            this.Tarea.ReadOnly = true;
-            this.Tarea.Width = 60;
-            // 
-            // DNI
-            // 
-            this.DNI.HeaderText = "DNI";
-            this.DNI.Name = "DNI";
-            this.DNI.ReadOnly = true;
-            this.DNI.Width = 50;
-            // 
-            // Paciente
-            // 
-            this.Paciente.HeaderText = "Paciente";
-            this.Paciente.Name = "Paciente";
-            this.Paciente.ReadOnly = true;
-            this.Paciente.Width = 73;
-            // 
-            // IdPaciente
-            // 
-            this.IdPaciente.HeaderText = "IdPaciente";
-            this.IdPaciente.Name = "IdPaciente";
-            this.IdPaciente.ReadOnly = true;
-            this.IdPaciente.Visible = false;
-            this.IdPaciente.Width = 83;
-            // 
-            // IdConsultaLaboral
-            // 
-            this.IdConsultaLaboral.HeaderText = "IdConsultaLaboral";
-            this.IdConsultaLaboral.Name = "IdConsultaLaboral";
-            this.IdConsultaLaboral.ReadOnly = true;
-            this.IdConsultaLaboral.Visible = false;
-            this.IdConsultaLaboral.Width = 119;
-            // 
-            // TipoConsultaLaboral
-            // 
-            this.TipoConsultaLaboral.HeaderText = "TipoConsultaLaboral";
-            this.TipoConsultaLaboral.Name = "TipoConsultaLaboral";
-            this.TipoConsultaLaboral.ReadOnly = true;
-            this.TipoConsultaLaboral.Visible = false;
-            this.TipoConsultaLaboral.Width = 129;
-            // 
-            // EstadoAtencion
-            // 
-            this.EstadoAtencion.HeaderText = "Estado Atención";
-            this.EstadoAtencion.Name = "EstadoAtencion";
-            this.EstadoAtencion.ReadOnly = true;
-            this.EstadoAtencion.Width = 101;
-            // 
-            // Diagnostico
-            // 
-            this.Diagnostico.HeaderText = "Diagnostico";
-            this.Diagnostico.Image = ((System.Drawing.Image)(resources.GetObject("Diagnostico.Image")));
-            this.Diagnostico.ImageLayout = System.Windows.Forms.DataGridViewImageCellLayout.Zoom;
-            this.Diagnostico.Name = "Diagnostico";
-            this.Diagnostico.ReadOnly = true;
-            this.Diagnostico.Width = 68;
-            // 
-            // FechaAltaCitacion
-            // 
-            this.FechaAltaCitacion.HeaderText = "Fecha Alta/Citación";
-            this.FechaAltaCitacion.Name = "FechaAltaCitacion";
-            this.FechaAltaCitacion.ReadOnly = true;
-            this.FechaAltaCitacion.Width = 115;
-            // 
-            // Dictamen
-            // 
-            this.Dictamen.HeaderText = "Dictamen";
-            this.Dictamen.Name = "Dictamen";
-            this.Dictamen.ReadOnly = true;
-            this.Dictamen.Width = 76;
-            // 
-            // IdExamenLaboral
-            // 
-            this.IdExamenLaboral.HeaderText = "IdExamenLaboral";
-            this.IdExamenLaboral.Name = "IdExamenLaboral";
-            this.IdExamenLaboral.ReadOnly = true;
-            this.IdExamenLaboral.Visible = false;
-            this.IdExamenLaboral.Width = 115;
-            // 
-            // IdConsultorioLaboral
-            // 
-            this.IdConsultorioLaboral.HeaderText = "IdConsultorioLaboral";
-            this.IdConsultorioLaboral.Name = "IdConsultorioLaboral";
-            this.IdConsultorioLaboral.ReadOnly = true;
-            this.IdConsultorioLaboral.Visible = false;
-            this.IdConsultorioLaboral.Width = 131;
-            // 
-            // ClinicoCargado
-            // 
-            this.ClinicoCargado.HeaderText = "ClinicoCargado";
-            this.ClinicoCargado.Name = "ClinicoCargado";
-            this.ClinicoCargado.ReadOnly = true;
-            this.ClinicoCargado.Visible = false;
-            this.ClinicoCargado.Width = 103;
-            // 
-            // IdTipoExamen
-            // 
-            this.IdTipoExamen.HeaderText = "IdTipoExamen";
-            this.IdTipoExamen.Name = "IdTipoExamen";
-            this.IdTipoExamen.ReadOnly = true;
-            this.IdTipoExamen.Visible = false;
-            // 
-            // ExpC
-            // 
-            this.ExpC.HeaderText = "Exp-C";
-            this.ExpC.Image = ((System.Drawing.Image)(resources.GetObject("ExpC.Image")));
-            this.ExpC.ImageLayout = System.Windows.Forms.DataGridViewImageCellLayout.Zoom;
-            this.ExpC.Name = "ExpC";
-            this.ExpC.ReadOnly = true;
-            this.ExpC.Width = 42;
-            // 
-            // ExpL
-            // 
-            this.ExpL.HeaderText = "Exp-L";
-            this.ExpL.Image = ((System.Drawing.Image)(resources.GetObject("ExpL.Image")));
-            this.ExpL.ImageLayout = System.Windows.Forms.DataGridViewImageCellLayout.Zoom;
-            this.ExpL.Name = "ExpL";
-            this.ExpL.ReadOnly = true;
-            this.ExpL.Width = 40;
-            // 
-            // Cons
-            // 
-            this.Cons.HeaderText = "Cons";
-            this.Cons.Image = ((System.Drawing.Image)(resources.GetObject("Cons.Image")));
-            this.Cons.ImageLayout = System.Windows.Forms.DataGridViewImageCellLayout.Zoom;
-            this.Cons.Name = "Cons";
-            this.Cons.ReadOnly = true;
-            this.Cons.Width = 37;
-            // 
-            // Env
-            // 
-            this.Env.HeaderText = "Env";
-            this.Env.ImageLayout = System.Windows.Forms.DataGridViewImageCellLayout.Zoom;
-            this.Env.Name = "Env";
-            this.Env.ReadOnly = true;
-            this.Env.Width = 31;
             // 
             // frmBusquedaLaboral
             // 
