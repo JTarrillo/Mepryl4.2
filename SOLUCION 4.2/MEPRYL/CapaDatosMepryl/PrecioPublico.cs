@@ -36,6 +36,7 @@ namespace CapaDatosMepryl
                             "ISNULL(p.SeñaLista, 0) AS SeñaLista, " +
                             "ISNULL(p.LlevaPlanilla, 0) AS LlevaPlanilla, " +
                             "ISNULL(p.ObservacionesExtra, '') AS ObservacionesExtra, " +
+                            "ISNULL(p.CoeficienteIndividual, 0) AS CoeficienteIndividual, " +
                             "ISNULL(m.nombre, '') AS Motivo, " +
                             "ISNULL(padre.descripcion, '') AS Tipo " +
                             "FROM Especialidad e " +
@@ -66,6 +67,7 @@ namespace CapaDatosMepryl
                 string señaLista = dtDatos.Rows[i]["SeñaLista"].ToString().Replace(",", ".");
                 string llevaPlanilla = (Convert.ToBoolean(dtDatos.Rows[i]["LlevaPlanilla"]) ? "1" : "0");
                 string obsExtra = dtDatos.Rows[i]["ObservacionesExtra"].ToString().Replace("'", "''");
+                string coeficienteIndividual = dtDatos.Rows[i]["CoeficienteIndividual"].ToString().Replace(",", ".");
 
                 sb.Append("IF EXISTS (SELECT 1 FROM PrecioPublico WHERE idEspecialidad = '" + idEspecialidad + "' AND Mes = " + mes + " AND Anio = " + anio + ") ");
                 sb.Append("UPDATE PrecioPublico SET ");
@@ -76,12 +78,13 @@ namespace CapaDatosMepryl
                 sb.Append("SeñaLista = " + señaLista + ", ");
                 sb.Append("LlevaPlanilla = " + llevaPlanilla + ", ");
                 sb.Append("ObservacionesExtra = '" + obsExtra + "', ");
+                sb.Append("CoeficienteIndividual = " + coeficienteIndividual + ", ");
                 sb.Append("FechaModificacion = GETDATE(), ");
                 sb.Append("Eliminado = 0 ");
                 sb.Append("WHERE idEspecialidad = '" + idEspecialidad + "' AND Mes = " + mes + " AND Anio = " + anio + " ");
                 sb.Append("ELSE ");
-                sb.Append("INSERT INTO PrecioPublico (idEspecialidad, Descripcion, Mes, Anio, PrecioLista, PrecioPromo, SeñaPromo, SeñaLista, LlevaPlanilla, ObservacionesExtra) ");
-                sb.AppendLine("VALUES('" + idEspecialidad + "', '" + descripcion + "', " + mes + ", " + anio + ", " + precioLista + ", " + precioPromo + ", " + señaPromo + ", " + señaLista + ", " + llevaPlanilla + ", '" + obsExtra + "'); ");
+                sb.Append("INSERT INTO PrecioPublico (idEspecialidad, Descripcion, Mes, Anio, PrecioLista, PrecioPromo, SeñaPromo, SeñaLista, LlevaPlanilla, ObservacionesExtra, CoeficienteIndividual) ");
+                sb.AppendLine("VALUES('" + idEspecialidad + "', '" + descripcion + "', " + mes + ", " + anio + ", " + precioLista + ", " + precioPromo + ", " + señaPromo + ", " + señaLista + ", " + llevaPlanilla + ", '" + obsExtra + "', " + coeficienteIndividual + "); ");
             }
 
             SQLConnector.obtenerTablaSegunConsultaString(sb.ToString());
@@ -184,17 +187,23 @@ namespace CapaDatosMepryl
         /// </summary>
         public void GuardarCoeficientesAnio(int anio, decimal[] coeficientes)
         {
-            StringBuilder sb = new StringBuilder();
-            for (int mes = 1; mes <= 12; mes++)
+            try
             {
-                string coef = coeficientes[mes - 1].ToString().Replace(",", ".");
-                sb.Append("IF EXISTS (SELECT 1 FROM CoeficientePrecio WHERE Mes = " + mes + " AND Anio = " + anio + ") ");
-                sb.Append("UPDATE CoeficientePrecio SET Coeficiente = " + coef + ", FechaModificacion = GETDATE() ");
-                sb.Append("WHERE Mes = " + mes + " AND Anio = " + anio + " ");
-                sb.Append("ELSE ");
-                sb.AppendLine("INSERT INTO CoeficientePrecio (Mes, Anio, Coeficiente) VALUES(" + mes + ", " + anio + ", " + coef + "); ");
+                for (int mes = 1; mes <= 12; mes++)
+                {
+                    string coef = coeficientes[mes - 1].ToString().Replace(",", ".");
+                    string strSQL = "IF EXISTS (SELECT 1 FROM CoeficientePrecio WHERE Mes = " + mes + " AND Anio = " + anio + ") " +
+                                    "UPDATE CoeficientePrecio SET Coeficiente = " + coef + ", FechaModificacion = GETDATE() WHERE Mes = " + mes + " AND Anio = " + anio + " " +
+                                  "ELSE " +
+                                  "INSERT INTO CoeficientePrecio (Mes, Anio, Coeficiente) VALUES(" + mes + ", " + anio + ", " + coef + ");";
+                    
+                    SQLConnector.obtenerTablaSegunConsultaString(strSQL);
+                }
             }
-            SQLConnector.obtenerTablaSegunConsultaString(sb.ToString());
+            catch (Exception ex)
+            {
+                throw new Exception("Error al guardar coeficientes: " + ex.Message);
+            }
         }
 
         /// <summary>
@@ -207,6 +216,7 @@ namespace CapaDatosMepryl
                 "ISNULL(m.nombre, '') AS Motivo, " +
                 "ISNULL(padre.descripcion, '') AS Tipo, " +
                 "e.descripcion AS Descripcion, " +
+                "ISNULL(e.IPCBase, 1.0) AS IPCBase, " +
                 "ISNULL(MAX(CASE WHEN p.Mes = 1  THEN p.PrecioPromo END), 0) AS Promo01, " +
                 "ISNULL(MAX(CASE WHEN p.Mes = 2  THEN p.PrecioPromo END), 0) AS Promo02, " +
                 "ISNULL(MAX(CASE WHEN p.Mes = 3  THEN p.PrecioPromo END), 0) AS Promo03, " +
@@ -225,7 +235,7 @@ namespace CapaDatosMepryl
                 "LEFT JOIN Especialidad padre ON e.IdPadre = padre.id " +
                 "WHERE e.Padre = 0 AND e.estado = 1 AND e.IdPadre IS NOT NULL " +
                 "AND e.id NOT IN (SELECT id FROM dbo.EspecialidadesEliminadas) " +
-                "GROUP BY e.id, m.nombre, padre.descripcion, e.descripcion " +
+                "GROUP BY e.id, m.nombre, padre.descripcion, e.descripcion, e.IPCBase " +
                 "ORDER BY m.nombre, padre.descripcion, e.descripcion";
             return SQLConnector.obtenerTablaSegunConsultaString(strSQL);
         }
@@ -233,11 +243,26 @@ namespace CapaDatosMepryl
         /// <summary>
         /// Guarda o actualiza PrecioPromo de los 12 meses del año (vista anual).
         /// No sobreescribe PrecioLista, SeñaPromo, SeñaLista ni ObservacionesExtra.
+        /// También actualiza el IPCBase en la tabla Especialidad.
         /// </summary>
         public void GuardarPreciosPublicoAnio(int anio, DataTable dtDatos)
         {
             if (dtDatos == null || dtDatos.Rows.Count == 0) return;
 
+            // Primero actualizar IPCBase en la tabla Especialidad
+            StringBuilder sbIPC = new StringBuilder();
+            for (int i = 0; i < dtDatos.Rows.Count; i++)
+            {
+                string idEsp = dtDatos.Rows[i]["idEspecialidad"].ToString();
+                string ipcBase = dtDatos.Rows[i]["IPCBase"].ToString().Replace(",", ".");
+                
+                sbIPC.AppendLine("UPDATE Especialidad SET IPCBase = " + ipcBase + " WHERE id = '" + idEsp + "'; ");
+            }
+            
+            if (sbIPC.Length > 0)
+                SQLConnector.obtenerTablaSegunConsultaString(sbIPC.ToString());
+
+            // Luego guardar los precios de cada mes
             for (int mes = 1; mes <= 12; mes++)
             {
                 string colPromo = "Promo" + mes.ToString("00");

@@ -64,12 +64,23 @@ namespace CapaPresentacion
                 dgvPrecios.Rows[idx].Cells["colMotivo"].Value        = row["Motivo"].ToString();
                 dgvPrecios.Rows[idx].Cells["colTipo"].Value          = row["Tipo"].ToString();
                 dgvPrecios.Rows[idx].Cells["colDescripcion"].Value   = row["Descripcion"].ToString();
+                
+                // Cargar IPC base desde la base de datos
+                decimal ipcBase = (row["IPCBase"] == DBNull.Value) ? 1.0m : Convert.ToDecimal(row["IPCBase"]);
+                dgvPrecios.Rows[idx].Cells["colIPCBase"].Value = ipcBase;
 
                 for (int mes = 1; mes <= 12; mes++)
                 {
                     string campo = "Promo" + mes.ToString("00");
-                    dgvPrecios.Rows[idx].Cells["col" + campo].Value = Convert.ToDecimal(row[campo]);
-                    dgvPrecios.Rows[idx].Cells["colCoef" + mes.ToString("00")].ReadOnly = true;
+                    decimal valorPromo = (row[campo] == DBNull.Value) ? 0 : Convert.ToDecimal(row[campo]);
+                    dgvPrecios.Rows[idx].Cells["col" + campo].Value = valorPromo;
+                    
+                    // Cargar coeficientes (usar coeficientes globales por ahora)
+                    if (mes <= 11)
+                    {
+                        // Por ahora usar solo coeficientes globales del encabezado
+                        dgvPrecios.Rows[idx].Cells["colCoef" + mes.ToString("00")].Value = _coefs[mes - 1];
+                    }
                 }
             }
 
@@ -94,6 +105,139 @@ namespace CapaPresentacion
                 System.Globalization.CultureInfo.InvariantCulture, out v)) return;
             _coefs[mes - 1] = v;
             dgvPrecios.Columns[e.ColumnIndex].HeaderText = v.ToString("0.##", System.Globalization.CultureInfo.CurrentCulture);
+            
+            // Guardar el coeficiente modificado en la base de datos inmediatamente
+            int anio = (int)nudAnio.Value;
+            precioPublico.GuardarCoeficientesAnio(anio, _coefs);
+            
+            // Aplicar cálculo para el mes correspondiente al coeficiente modificado
+            AplicarCalculoCoeficientesSucesivos(mes - 1);
+        }
+
+        private void AplicarCalculoCoeficientesSucesivos(int mesModificado)
+        {
+            try
+            {
+                // Desactivar eventos para evitar interferencias
+                dgvPrecios.CellEndEdit -= dgvPrecios_CellEndEdit;
+                
+                int mesInicio = (mesModificado == 1) ? 2 : mesModificado;
+                
+                // Por ahora calcular todas las filas (se puede modificar después para calcular solo una)
+                for (int mes = mesInicio; mes <= 12; mes++)
+                {
+                    foreach (DataGridViewRow row in dgvPrecios.Rows)
+                    {
+                        if (!row.Visible) continue;
+                        
+                        // Tomar el valor del mes anterior como base
+                        string colMesAnterior = "colPromo" + (mes - 1).ToString("00");
+                        decimal valorMesAnterior = ParseDecimal(row.Cells[colMesAnterior].Value);
+                        
+                        // Verificar si el mes actual ya tiene un valor manual (diferente de 0)
+                        string colActual = "colPromo" + mes.ToString("00");
+                        decimal valorActual = ParseDecimal(row.Cells[colActual].Value);
+                        
+                        decimal nuevoValor;
+                        
+                        // Si el mes actual tiene un valor manual, usarlo directamente
+                        if (valorActual != 0)
+                        {
+                            nuevoValor = valorActual; // Mantener valor manual
+                        }
+                        else
+                        {
+                            // Si no, calcular usando el coeficiente
+                            decimal coeficiente = _coefs[mes - 1];
+                            nuevoValor = valorMesAnterior * coeficiente;
+                        }
+                        
+                        // Actualizar el valor en la grilla
+                        int colIndex = dgvPrecios.Columns[colActual].Index;
+                        row.Cells[colIndex].Value = nuevoValor;
+                    }
+                }
+                
+                string mensaje = (mesModificado == 1) 
+                    ? $"Se han recalculado los precios desde Febrero hasta Diciembre aplicando los coeficientes sucesivamente."
+                    : $"Se han recalculado los precios desde {NombresMeses[mesModificado - 1]} hasta Diciembre aplicando los coeficientes sucesivamente.";
+                    
+                MessageBox.Show(mensaje, "Cálculo aplicado", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al aplicar cálculo de coeficientes: " + ex.Message, 
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                // Reactivar eventos
+                dgvPrecios.CellEndEdit += dgvPrecios_CellEndEdit;
+            }
+        }
+
+        private void AplicarCalculoCoeficientesSucesivosFila(int mesModificado, int rowIndex)
+        {
+            try
+            {
+                // Desactivar eventos para evitar interferencias
+                dgvPrecios.CellEndEdit -= dgvPrecios_CellEndEdit;
+                
+                int mesInicio = (mesModificado == 1) ? 2 : mesModificado;
+                DataGridViewRow filaActual = dgvPrecios.Rows[rowIndex];
+                
+                for (int mes = mesInicio; mes <= 12; mes++)
+                {
+                    if (!filaActual.Visible) continue;
+                    
+                    // Para el primer mes, usar el IPC base como punto de partida
+                    decimal valorBase;
+                    if (mes == 1)
+                    {
+                        // Usar el IPC base como punto de partida para Enero
+                        decimal ipcBase = ParseDecimal(filaActual.Cells["colIPCBase"].Value);
+                        valorBase = ipcBase; // IPC base (ej: 1.0)
+                    }
+                    else
+                    {
+                        // Para meses siguientes, usar el valor del mes anterior
+                        string colMesAnterior = "colPromo" + (mes - 1).ToString("00");
+                        valorBase = ParseDecimal(filaActual.Cells[colMesAnterior].Value);
+                    }
+                    
+                    // Verificar si el mes actual ya tiene un valor manual (diferente de 0)
+                    string colActual = "colPromo" + mes.ToString("00");
+                    decimal valorActual = ParseDecimal(filaActual.Cells[colActual].Value);
+                    
+                    decimal nuevoValor;
+                    
+                    // Si el mes actual tiene un valor manual, usarlo directamente
+                    if (valorActual != 0)
+                    {
+                        nuevoValor = valorActual; // Mantener valor manual
+                    }
+                    else
+                    {
+                        // Si no, calcular usando el coeficiente
+                        decimal coeficiente = _coefs[mes - 1];
+                        nuevoValor = valorBase * coeficiente;
+                    }
+                    
+                    // Actualizar el valor en la grilla
+                    int colIndex = dgvPrecios.Columns[colActual].Index;
+                    filaActual.Cells[colIndex].Value = nuevoValor;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al aplicar cálculo de coeficientes en la fila: " + ex.Message, 
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                // Reactivar eventos
+                dgvPrecios.CellEndEdit += dgvPrecios_CellEndEdit;
+            }
         }
 
         private decimal[] ObtenerCoeficientesAnio(int anio)
@@ -108,6 +252,12 @@ namespace CapaPresentacion
                     result[mes - 1] = Convert.ToDecimal(row["Coeficiente"]);
             }
             return result;
+        }
+
+        private decimal AplicarFormulaIncremento(decimal valorN4, decimal incrementoPromosFebrero)
+        {
+            // Implementación de la fórmula: =+N4*Incremento_Promos_Febrero
+            return valorN4 * incrementoPromosFebrero;
         }
 
         private void btnCargar_Click(object sender, EventArgs e) => CargarGrilla();
@@ -126,6 +276,7 @@ namespace CapaPresentacion
                 DataTable dtGuardar = new DataTable();
                 dtGuardar.Columns.Add("idEspecialidad", typeof(string));
                 dtGuardar.Columns.Add("Descripcion",    typeof(string));
+                dtGuardar.Columns.Add("IPCBase",       typeof(decimal));
                 for (int mes = 1; mes <= 12; mes++)
                     dtGuardar.Columns.Add("Promo" + mes.ToString("00"), typeof(decimal));
 
@@ -138,6 +289,7 @@ namespace CapaPresentacion
                     DataRow dr = dtGuardar.NewRow();
                     dr["idEspecialidad"] = row.Cells["colIdEspecialidad"].Value?.ToString() ?? "";
                     dr["Descripcion"]    = row.Cells["colDescripcion"].Value?.ToString()    ?? "";
+                    dr["IPCBase"]       = ParseDecimal(row.Cells["colIPCBase"].Value);
                     for (int mes = 1; mes <= 12; mes++)
                         dr["Promo" + mes.ToString("00")] = ParseDecimal(row.Cells["colPromo" + mes.ToString("00")].Value);
                     dtGuardar.Rows.Add(dr);
@@ -362,12 +514,114 @@ namespace CapaPresentacion
                 e.CellStyle.SelectionBackColor = Color.White;
                 e.CellStyle.SelectionForeColor = Color.FromArgb(20, 20, 20);
             }
+            else if (col == "colIPCBase")
+            {
+                e.CellStyle.BackColor          = Color.FromArgb(240, 240, 240);
+                e.CellStyle.ForeColor          = Color.FromArgb(0, 100, 200);
+                e.CellStyle.SelectionBackColor = Color.FromArgb(220, 230, 240);
+                e.CellStyle.SelectionForeColor = Color.FromArgb(0, 100, 200);
+            }
             else if (col.StartsWith("colCoef"))
             {
                 e.CellStyle.BackColor          = Color.FromArgb(255, 210, 210);
                 e.CellStyle.ForeColor          = Color.FromArgb(140, 0, 0);
                 e.CellStyle.SelectionBackColor = Color.FromArgb(255, 210, 210);
                 e.CellStyle.SelectionForeColor = Color.FromArgb(140, 0, 0);
+            }
+        }
+
+        private void dgvPrecios_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
+        {
+            string colName = dgvPrecios.Columns[e.ColumnIndex].Name;
+            
+            // Permitir editar las columnas de precios (colPromo), coeficientes (colCoef) e IPCBase
+            if (!colName.StartsWith("colPromo") && !colName.StartsWith("colCoef") && colName != "colIPCBase")
+            {
+                e.Cancel = true;
+                return;
+            }
+        }
+
+        private void dgvPrecios_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        {
+            string colName = dgvPrecios.Columns[e.ColumnIndex].Name;
+            
+            if (colName == "colIPCBase")
+            {
+                // Validar y formatear el valor ingresado para IPCBase
+                var cell = dgvPrecios.Rows[e.RowIndex].Cells[e.ColumnIndex];
+                decimal value = ParseDecimal(cell.Value);
+                
+                // Asegurar que el valor no sea negativo ni cero
+                if (value <= 0) value = 1.0m;
+                
+                cell.Value = value;
+                
+                // Recalcular todos los meses de esta fila usando el nuevo IPCBase como base
+                AplicarCalculoCoeficientesSucesivosFila(1, e.RowIndex);
+            }
+            else if (colName.StartsWith("colPromo"))
+            {
+                // Validar y formatear el valor ingresado
+                var cell = dgvPrecios.Rows[e.RowIndex].Cells[e.ColumnIndex];
+                decimal value = ParseDecimal(cell.Value);
+                
+                // Asegurar que el valor no sea negativo
+                if (value < 0) value = 0;
+                
+                cell.Value = value;
+                
+                // Obtener el mes de la columna editada y aplicar cálculo sucesivo solo a la fila actual
+                int mes = int.Parse(colName.Substring(8)); // "colPromo01" -> 8 para obtener "01"
+                AplicarCalculoCoeficientesSucesivosFila(mes, e.RowIndex);
+            }
+            else if (colName.StartsWith("colCoef"))
+            {
+                // Manejar edición de celdas de coeficiente
+                var cell = dgvPrecios.Rows[e.RowIndex].Cells[e.ColumnIndex];
+                decimal value = ParseDecimal(cell.Value);
+                
+                // Asegurar que el valor no sea negativo
+                if (value < 0) value = 0;
+                
+                cell.Value = value;
+                
+                // Actualizar el array de coeficientes
+                int mes = int.Parse(colName.Substring(7)); // "colCoef01" -> 7 para obtener "01"
+                _coefs[mes - 1] = value;
+                
+                // Actualizar el encabezado de la columna
+                dgvPrecios.Columns[e.ColumnIndex].HeaderText = value.ToString("0.####", System.Globalization.CultureInfo.CurrentCulture);
+                
+                // Recalcular desde el mes anterior
+                AplicarCalculoCoeficientesSucesivos(mes - 1);
+            }
+        }
+
+        private void dgvPrecios_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
+        {
+            string colName = dgvPrecios.CurrentCell?.OwningColumn.Name ?? "";
+            
+            if ((colName.StartsWith("colPromo") || colName.StartsWith("colCoef") || colName == "colIPCBase") && e.Control is TextBox textBox)
+            {
+                // Remover manejadores anteriores para evitar duplicados
+                textBox.KeyPress -= NumericTextBox_KeyPress;
+                
+                // Agregar manejador para solo aceptar números
+                textBox.KeyPress += NumericTextBox_KeyPress;
+            }
+        }
+
+        private void NumericTextBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            // Permitir dígitos, backspace, y tecla de borrado
+            if (char.IsDigit(e.KeyChar) || e.KeyChar == '\b')
+            {
+                e.Handled = false;
+            }
+            else
+            {
+                e.Handled = true;
             }
         }
     }
