@@ -1,0 +1,315 @@
+<mxfile host="app.diagrams.net" modified="2026-05-12T00:00:00.000Z" agent="GitHub Copilot" version="21.0.0">
+  <diagram name="ConfigPrecioEspecialidad - Tablas y Relaciones" id="config-precio-relaciones">
+    <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- ============================================================ -->
+        <!-- TABLA: Especialidad                                           -->
+        <!-- ============================================================ -->
+        <mxCell id="esp_title" value="Especialidad" style="swimlane;fontStyle=1;align=center;startSize=28;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="40" y="80" width="340" height="440" as="geometry" />
+        </mxCell>
+        <mxCell id="esp_id" value="🔑 id  |  uniqueidentifier  |  PK" style="text;align=left;strokeColor=none;fillColor=none;spacingLeft=8;fontSize=11;fontStyle=1;" vertex="1" parent="esp_title">
+          <mxGeometry x="0" y="28" width="340" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="esp_codigo" value="codigo  |  varchar(50)" style="text;align=left;strokeColor=none;fillColor=none;spacingLeft=8;fontSize=11;" vertex="1" parent="esp_title">
+          <mxGeometry x="0" y="52" width="340" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="esp_desc" value="descripcion  |  varchar(256)" style="text;align=left;strokeColor=none;fillColor=none;spacingLeft=8;fontSize=11;" vertex="1" parent="esp_title">
+          <mxGeometry x="0" y="74" width="340" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="esp_idMotivo" value="🔗 idMotivoConsulta  |  int  |  FK→MotivoDeConsulta" style="text;align=left;strokeColor=none;fillColor=none;spacingLeft=8;fontSize=11;" vertex="1" parent="esp_title">
+          <mxGeometry x="0" y="96" width="340" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="esp_padre" value="Padre  |  bit  (0=prestación, 1=categoría)" style="text;align=left;strokeColor=none;fillColor=none;spacingLeft=8;fontSize=11;" vertex="1" parent="esp_title">
+          <mxGeometry x="0" y="118" width="340" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="esp_idpadre" value="🔗 IdPadre  |  varchar(50)  |  FK→Especialidad.id" style="text;align=left;strokeColor=none;fillColor=none;spacingLeft=8;fontSize=11;" vertex="1" parent="esp_title">
+          <mxGeometry x="0" y="140" width="340" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="esp_estado" value="estado  |  int  (1=activo, 0=inactivo)" style="text;align=left;strokeColor=none;fillColor=none;spacingLeft=8;fontSize=11;" vertex="1" parent="esp_title">
+          <mxGeometry x="0" y="162" width="340" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="esp_precioBase" value="precioBase  |  decimal  (snap último período)" style="text;align=left;strokeColor=none;fillColor=none;spacingLeft=8;fontSize=11;" vertex="1" parent="esp_title">
+          <mxGeometry x="0" y="184" width="340" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="esp_precioLista" value="precioLista  |  decimal  (snap último período)" style="text;align=left;strokeColor=none;fillColor=none;spacingLeft=8;fontSize=11;" vertex="1" parent="esp_title">
+          <mxGeometry x="0" y="206" width="340" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="esp_ipcbase" value="IPCBase  |  decimal  DEFAULT 1.0" style="text;align=left;strokeColor=none;fillColor=none;spacingLeft=8;fontSize=11;" vertex="1" parent="esp_title">
+          <mxGeometry x="0" y="228" width="340" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="esp_sync" value="registroBLOB / serverID / sincronizado / actualizacion_local  [SYNC]" style="text;align=left;strokeColor=none;fillColor=#fff2cc;spacingLeft=8;fontSize=10;fontStyle=2;" vertex="1" parent="esp_title">
+          <mxGeometry x="0" y="250" width="340" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="esp_orden" value="orden / tipo / descripcionInformes / codigo" style="text;align=left;strokeColor=none;fillColor=none;spacingLeft=8;fontSize=11;" vertex="1" parent="esp_title">
+          <mxGeometry x="0" y="280" width="340" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="esp_note" value="⚠️ No agregar columnas: el sistema de sync usa registroBLOB" style="text;align=left;strokeColor=none;fillColor=#f8cecc;spacingLeft=8;fontSize=10;fontStyle=2;" vertex="1" parent="esp_title">
+          <mxGeometry x="0" y="310" width="340" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================================ -->
+        <!-- TABLA: ConfigPrecioEspecialidad  (NUEVA)                     -->
+        <!-- ============================================================ -->
+        <mxCell id="cfg_title" value="ConfigPrecioEspecialidad  🆕" style="swimlane;fontStyle=1;align=center;startSize=28;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=13;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="480" y="80" width="340" height="280" as="geometry" />
+        </mxCell>
+        <mxCell id="cfg_id" value="🔑 id  |  int  |  IDENTITY PK" style="text;align=left;strokeColor=none;fillColor=none;spacingLeft=8;fontSize=11;fontStyle=1;" vertex="1" parent="cfg_title">
+          <mxGeometry x="0" y="28" width="340" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="cfg_idEsp" value="🔗 idEspecialidad  |  uniqueidentifier  |  FK+UNIQUE" style="text;align=left;strokeColor=none;fillColor=none;spacingLeft=8;fontSize=11;fontStyle=1;" vertex="1" parent="cfg_title">
+          <mxGeometry x="0" y="52" width="340" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="cfg_sPromo" value="SeñaPromo  |  decimal(18,2)  DEFAULT 0" style="text;align=left;strokeColor=none;fillColor=none;spacingLeft=8;fontSize=11;" vertex="1" parent="cfg_title">
+          <mxGeometry x="0" y="76" width="340" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="cfg_sLista" value="SeñaLista  |  decimal(18,2)  DEFAULT 0" style="text;align=left;strokeColor=none;fillColor=none;spacingLeft=8;fontSize=11;" vertex="1" parent="cfg_title">
+          <mxGeometry x="0" y="98" width="340" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="cfg_planilla" value="LlevaPlanilla  |  bit  DEFAULT 0" style="text;align=left;strokeColor=none;fillColor=none;spacingLeft=8;fontSize=11;" vertex="1" parent="cfg_title">
+          <mxGeometry x="0" y="120" width="340" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="cfg_obs" value="Observaciones  |  varchar(200)  NULL" style="text;align=left;strokeColor=none;fillColor=none;spacingLeft=8;fontSize=11;" vertex="1" parent="cfg_title">
+          <mxGeometry x="0" y="142" width="340" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="cfg_fecha" value="FechaModificacion  |  datetime  DEFAULT GETDATE()" style="text;align=left;strokeColor=none;fillColor=none;spacingLeft=8;fontSize=11;" vertex="1" parent="cfg_title">
+          <mxGeometry x="0" y="164" width="340" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="cfg_note" value="✅ Una fila por especialidad (UNIQUE en idEspecialidad).
+Solo se inserta si hay al menos un valor ≠ 0." style="text;align=left;strokeColor=none;fillColor=#d5e8d4;spacingLeft=8;fontSize=10;fontStyle=2;" vertex="1" parent="cfg_title">
+          <mxGeometry x="0" y="196" width="340" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================================ -->
+        <!-- TABLA: PrecioPublico                                          -->
+        <!-- ============================================================ -->
+        <mxCell id="pp_title" value="PrecioPublico" style="swimlane;fontStyle=1;align=center;startSize=28;fillColor=#ffe6cc;strokeColor=#d6b656;fontSize=13;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="480" y="440" width="340" height="380" as="geometry" />
+        </mxCell>
+        <mxCell id="pp_id" value="🔑 id  |  int  |  IDENTITY PK" style="text;align=left;strokeColor=none;fillColor=none;spacingLeft=8;fontSize=11;fontStyle=1;" vertex="1" parent="pp_title">
+          <mxGeometry x="0" y="28" width="340" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="pp_idEsp" value="🔗 idEspecialidad  |  uniqueidentifier  |  FK" style="text;align=left;strokeColor=none;fillColor=none;spacingLeft=8;fontSize=11;" vertex="1" parent="pp_title">
+          <mxGeometry x="0" y="52" width="340" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="pp_desc" value="Descripcion  |  varchar(256)  (copia desnormalizada)" style="text;align=left;strokeColor=none;fillColor=none;spacingLeft=8;fontSize=11;" vertex="1" parent="pp_title">
+          <mxGeometry x="0" y="74" width="340" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="pp_mes" value="Mes  |  int  (1 – 12)" style="text;align=left;strokeColor=none;fillColor=none;spacingLeft=8;fontSize=11;" vertex="1" parent="pp_title">
+          <mxGeometry x="0" y="96" width="340" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="pp_anio" value="Anio  |  int" style="text;align=left;strokeColor=none;fillColor=none;spacingLeft=8;fontSize=11;" vertex="1" parent="pp_title">
+          <mxGeometry x="0" y="118" width="340" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="pp_promoLista" value="PrecioPromo  /  PrecioLista  |  decimal" style="text;align=left;strokeColor=none;fillColor=none;spacingLeft=8;fontSize=11;" vertex="1" parent="pp_title">
+          <mxGeometry x="0" y="140" width="340" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="pp_coef" value="Coeficiente  /  CoeficienteIndividual  |  decimal" style="text;align=left;strokeColor=none;fillColor=none;spacingLeft=8;fontSize=11;" vertex="1" parent="pp_title">
+          <mxGeometry x="0" y="162" width="340" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="pp_elim" value="Eliminado  |  bit  (soft delete)" style="text;align=left;strokeColor=none;fillColor=none;spacingLeft=8;fontSize=11;" vertex="1" parent="pp_title">
+          <mxGeometry x="0" y="184" width="340" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="pp_fecha" value="FechaModificacion  |  datetime" style="text;align=left;strokeColor=none;fillColor=none;spacingLeft=8;fontSize=11;" vertex="1" parent="pp_title">
+          <mxGeometry x="0" y="206" width="340" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="pp_legacy" value="SeñaPromo / SeñaLista / LlevaPlanilla / ObservacionesExtra
+(legado — ahora en ConfigPrecioEspecialidad)" style="text;align=left;strokeColor=none;fillColor=#f8cecc;spacingLeft=8;fontSize=10;fontStyle=2;" vertex="1" parent="pp_title">
+          <mxGeometry x="0" y="228" width="340" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="pp_note" value="311 registros activos en 2026 → 156 especialidades × meses" style="text;align=left;strokeColor=none;fillColor=none;spacingLeft=8;fontSize=10;fontStyle=2;" vertex="1" parent="pp_title">
+          <mxGeometry x="0" y="270" width="340" height="22" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================================ -->
+        <!-- TABLA: CoeficientePrecio                                      -->
+        <!-- ============================================================ -->
+        <mxCell id="coef_title" value="CoeficientePrecio" style="swimlane;fontStyle=1;align=center;startSize=28;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=13;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="920" y="440" width="300" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="coef_id" value="🔑 id  |  int  |  IDENTITY PK" style="text;align=left;strokeColor=none;fillColor=none;spacingLeft=8;fontSize=11;fontStyle=1;" vertex="1" parent="coef_title">
+          <mxGeometry x="0" y="28" width="300" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="coef_mes" value="Mes  |  int  (1 – 12)" style="text;align=left;strokeColor=none;fillColor=none;spacingLeft=8;fontSize=11;" vertex="1" parent="coef_title">
+          <mxGeometry x="0" y="52" width="300" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="coef_anio" value="Anio  |  int" style="text;align=left;strokeColor=none;fillColor=none;spacingLeft=8;fontSize=11;" vertex="1" parent="coef_title">
+          <mxGeometry x="0" y="74" width="300" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="coef_val" value="Coeficiente  |  decimal  (factor global mes/año)" style="text;align=left;strokeColor=none;fillColor=none;spacingLeft=8;fontSize=11;" vertex="1" parent="coef_title">
+          <mxGeometry x="0" y="96" width="300" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="coef_fecha" value="FechaModificacion  |  datetime" style="text;align=left;strokeColor=none;fillColor=none;spacingLeft=8;fontSize=11;" vertex="1" parent="coef_title">
+          <mxGeometry x="0" y="118" width="300" height="22" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================================ -->
+        <!-- TABLA: MotivoDeConsulta                                       -->
+        <!-- ============================================================ -->
+        <mxCell id="motivo_title" value="MotivoDeConsulta" style="swimlane;fontStyle=1;align=center;startSize=28;fillColor=#f5f5f5;strokeColor=#666666;fontSize=13;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="40" y="600" width="280" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="motivo_id" value="🔑 id  |  int  |  PK" style="text;align=left;strokeColor=none;fillColor=none;spacingLeft=8;fontSize=11;fontStyle=1;" vertex="1" parent="motivo_title">
+          <mxGeometry x="0" y="28" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="motivo_nombre" value="nombre  |  varchar(100)" style="text;align=left;strokeColor=none;fillColor=none;spacingLeft=8;fontSize=11;" vertex="1" parent="motivo_title">
+          <mxGeometry x="0" y="52" width="280" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="motivo_desc" value="descripcion  |  varchar(200)" style="text;align=left;strokeColor=none;fillColor=none;spacingLeft=8;fontSize=11;" vertex="1" parent="motivo_title">
+          <mxGeometry x="0" y="74" width="280" height="22" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================================ -->
+        <!-- TABLA: TipoExamenDePaciente                                   -->
+        <!-- ============================================================ -->
+        <mxCell id="tep_title" value="TipoExamenDePaciente" style="swimlane;fontStyle=1;align=center;startSize=28;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=13;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="920" y="80" width="340" height="280" as="geometry" />
+        </mxCell>
+        <mxCell id="tep_id" value="🔑 id  |  uniqueidentifier  |  PK" style="text;align=left;strokeColor=none;fillColor=none;spacingLeft=8;fontSize=11;fontStyle=1;" vertex="1" parent="tep_title">
+          <mxGeometry x="0" y="28" width="340" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="tep_idTurno" value="🔗 idTurno  |  uniqueidentifier  |  FK→Turno" style="text;align=left;strokeColor=none;fillColor=none;spacingLeft=8;fontSize=11;" vertex="1" parent="tep_title">
+          <mxGeometry x="0" y="52" width="340" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="tep_idEsp" value="🔗 idEspecialidad  |  uniqueidentifier  |  FK" style="text;align=left;strokeColor=none;fillColor=none;spacingLeft=8;fontSize=11;" vertex="1" parent="tep_title">
+          <mxGeometry x="0" y="74" width="340" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="tep_precioExamen" value="precioExamen  |  decimal  (snapshot promo)" style="text;align=left;strokeColor=none;fillColor=none;spacingLeft=8;fontSize=11;" vertex="1" parent="tep_title">
+          <mxGeometry x="0" y="96" width="340" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="tep_precioLista" value="precioLista  |  decimal  (snapshot lista)" style="text;align=left;strokeColor=none;fillColor=none;spacingLeft=8;fontSize=11;" vertex="1" parent="tep_title">
+          <mxGeometry x="0" y="118" width="340" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="tep_flags" value="rm / imp / inf / factClub / mail / dictAut / impLab / cons" style="text;align=left;strokeColor=none;fillColor=none;spacingLeft=8;fontSize=11;" vertex="1" parent="tep_title">
+          <mxGeometry x="0" y="140" width="340" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="tep_note" value="Snapshot: el precio se copia al momento del examen.
+No se actualiza si cambia PrecioPublico después." style="text;align=left;strokeColor=none;fillColor=#fff2cc;spacingLeft=8;fontSize=10;fontStyle=2;" vertex="1" parent="tep_title">
+          <mxGeometry x="0" y="170" width="340" height="36" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================================ -->
+        <!-- TABLA: EspecialidadesEliminadas (filtro)                      -->
+        <!-- ============================================================ -->
+        <mxCell id="ee_title" value="EspecialidadesEliminadas  (vista/tabla filtro)" style="swimlane;fontStyle=1;align=center;startSize=28;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="920" y="700" width="300" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="ee_id" value="id  |  uniqueidentifier  (excluye de consultas activas)" style="text;align=left;strokeColor=none;fillColor=none;spacingLeft=8;fontSize=11;" vertex="1" parent="ee_title">
+          <mxGeometry x="0" y="32" width="300" height="22" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================================ -->
+        <!-- RELACIONES (flechas)                                           -->
+        <!-- ============================================================ -->
+
+        <!-- Especialidad → ConfigPrecioEspecialidad  (1 a 0..1) -->
+        <mxCell id="rel_esp_cfg" value="1 idEspecialidad (UNIQUE)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;exitX=1;exitY=0.3;exitDx=0;exitDy=0;entryX=0;entryY=0.35;entryDx=0;entryDy=0;strokeColor=#82b366;strokeWidth=2;endArrow=ERmanyToOne;startArrow=ERone;fontSize=10;" edge="1" parent="1" source="esp_title" target="cfg_title">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Especialidad → PrecioPublico  (1 a N) -->
+        <mxCell id="rel_esp_pp" value="1:N  idEspecialidad" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;exitX=1;exitY=0.7;exitDx=0;exitDy=0;entryX=0;entryY=0.2;entryDx=0;entryDy=0;strokeColor=#d6b656;strokeWidth=2;endArrow=ERmany;startArrow=ERone;fontSize=10;" edge="1" parent="1" source="esp_title" target="pp_title">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Especialidad → TipoExamenDePaciente  (1 a N) -->
+        <mxCell id="rel_esp_tep" value="1:N  idEspecialidad" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;exitX=1;exitY=0.15;exitDx=0;exitDy=0;entryX=0;entryY=0.35;entryDx=0;entryDy=0;strokeColor=#d6b656;strokeWidth=2;endArrow=ERmany;startArrow=ERone;fontSize=10;" edge="1" parent="1" source="esp_title" target="tep_title">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- MotivoDeConsulta → Especialidad  (1 a N) -->
+        <mxCell id="rel_motivo_esp" value="1:N  idMotivoConsulta" style="edgeStyle=orthogonalEdgeStyle;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.65;entryDx=0;entryDy=0;strokeColor=#666666;strokeWidth=2;endArrow=ERmany;startArrow=ERone;fontSize=10;" edge="1" parent="1" source="motivo_title" target="esp_title">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Especialidad auto-ref (Padre/Hijo) -->
+        <mxCell id="rel_esp_self" value="IdPadre (jerarquía)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;exitX=0;exitY=0.45;exitDx=0;exitDy=0;entryX=0;entryY=0.55;entryDx=0;entryDy=0;strokeColor=#6c8ebf;strokeWidth=1.5;dashed=1;endArrow=ERmany;startArrow=ERone;fontSize=10;" edge="1" parent="1" source="esp_title" target="esp_title">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="-20" y="230" />
+              <mxPoint x="-20" y="340" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- EspecialidadesEliminadas filtra Especialidad -->
+        <mxCell id="rel_ee_esp" value="NOT IN (excluye)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#b85450;strokeWidth=1.5;dashed=1;endArrow=block;fontSize=10;" edge="1" parent="1" source="ee_title" target="esp_title">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================================ -->
+        <!-- UI: frmPreciosPublico (TabControl)                            -->
+        <!-- ============================================================ -->
+        <mxCell id="ui_form" value="frmPreciosPublico" style="swimlane;fontStyle=1;align=center;startSize=28;fillColor=#d0e0e3;strokeColor=#006EAF;fontSize=14;fontColor=#006EAF;" vertex="1" parent="1">
+          <mxGeometry x="480" y="850" width="480" height="260" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ui_tab0" value="Tab 0 — Precios Públicos" style="swimlane;fontStyle=1;align=center;startSize=22;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="ui_form">
+          <mxGeometry x="10" y="30" width="215" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="ui_tab0_dg" value="dgvPrecios
+— Motivo / Tipo / Descripción
+— PrecioPromo × 12 meses
+— CoeficienteIndividual × 12" style="text;align=left;strokeColor=none;fillColor=none;spacingLeft=6;fontSize=10;" vertex="1" parent="ui_tab0">
+          <mxGeometry x="4" y="24" width="207" height="72" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ui_tab1" value="Tab 1 — Señas / Planilla  🆕" style="swimlane;fontStyle=1;align=center;startSize=22;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="ui_form">
+          <mxGeometry x="255" y="30" width="215" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="ui_tab1_dg" value="dgvConfig
+— Motivo / Tipo / Descripción (RO)
+— SeñaPromo / SeñaLista (editable)
+— LlevaPlanilla ☑ / Observaciones" style="text;align=left;strokeColor=none;fillColor=none;spacingLeft=6;fontSize=10;" vertex="1" parent="ui_tab1">
+          <mxGeometry x="4" y="24" width="207" height="72" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ui_shared" value="🔍 Buscador — filtra AMBAS tabs simultáneamente
+💾 Guardar — guarda AMBAS tabs en un solo click
+☑ Pestañas en la parte inferior (Alignment=Bottom)" style="text;align=left;strokeColor=none;fillColor=none;spacingLeft=8;fontSize=10;fontStyle=2;" vertex="1" parent="ui_form">
+          <mxGeometry x="10" y="140" width="460" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ui_tabs_label" value="TabControl (Alignment=Bottom)" style="text;align=center;strokeColor=#006EAF;fillColor=#d0e0e3;fontSize=11;fontStyle=1;" vertex="1" parent="ui_form">
+          <mxGeometry x="10" y="200" width="460" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- UI → ConfigPrecioEspecialidad -->
+        <mxCell id="rel_ui_cfg" value="ListarConfig / GuardarConfig" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#82b366;strokeWidth=2;dashed=1;endArrow=open;endFill=0;fontSize=10;" edge="1" parent="1" source="ui_form" target="cfg_title">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- UI → PrecioPublico -->
+        <mxCell id="rel_ui_pp" value="ListarPrecios / GuardarPrecios" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#d6b656;strokeWidth=2;dashed=1;endArrow=open;endFill=0;fontSize=10;" edge="1" parent="1" source="ui_form" target="pp_title">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================================ -->
+        <!-- LEYENDA                                                        -->
+        <!-- ============================================================ -->
+        <mxCell id="leyenda_box" value="Leyenda" style="swimlane;fontStyle=1;align=center;startSize=22;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="40" y="800" width="360" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="l1" value="🆕  Tabla nueva creada en esta implementación" style="text;align=left;strokeColor=none;fillColor=none;spacingLeft=8;fontSize=11;" vertex="1" parent="leyenda_box">
+          <mxGeometry x="4" y="24" width="352" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="l2" value="🔑  Clave primaria (PK)" style="text;align=left;strokeColor=none;fillColor=none;spacingLeft=8;fontSize=11;" vertex="1" parent="leyenda_box">
+          <mxGeometry x="4" y="46" width="352" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="l3" value="🔗  Clave foránea (FK)" style="text;align=left;strokeColor=none;fillColor=none;spacingLeft=8;fontSize=11;" vertex="1" parent="leyenda_box">
+          <mxGeometry x="4" y="68" width="352" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="l4" value="⚠️  Restricción de diseño (no modificar)" style="text;align=left;strokeColor=none;fillColor=none;spacingLeft=8;fontSize=11;" vertex="1" parent="leyenda_box">
+          <mxGeometry x="4" y="90" width="352" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="l5" value="—— línea punteada = flujo lógico / filtro SQL" style="text;align=left;strokeColor=none;fillColor=none;spacingLeft=8;fontSize=11;" vertex="1" parent="leyenda_box">
+          <mxGeometry x="4" y="112" width="352" height="22" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

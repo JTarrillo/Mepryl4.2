@@ -85,5 +85,15 @@ namespace CapaNegocioMepryl
         {
             return precioPublico.ExistenPreciosAnio(anio);
         }
+
+        public DataTable ListarConfigEspecialidades()
+        {
+            return precioPublico.ListarConfigEspecialidades();
+        }
+
+        public void GuardarConfigEspecialidades(DataTable dtDatos)
+        {
+            precioPublico.GuardarConfigEspecialidades(dtDatos);
+        }
     }
 }

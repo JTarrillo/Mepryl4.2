@@ -309,5 +309,60 @@ namespace CapaDatosMepryl
             DataTable dt = SQLConnector.obtenerTablaSegunConsultaString(strSQL);
             return dt != null && dt.Rows.Count > 0 && int.Parse(dt.Rows[0][0].ToString()) > 0;
         }
+
+        /// <summary>
+        /// Lista configuración de señas/planilla por especialidad (independiente del período).
+        /// </summary>
+        public DataTable ListarConfigEspecialidades()
+        {
+            string strSQL =
+                "SELECT e.id AS idEspecialidad, " +
+                "ISNULL(m.nombre,'') AS Motivo, " +
+                "ISNULL(padre.descripcion,'') AS Tipo, " +
+                "e.descripcion AS Descripcion, " +
+                "ISNULL(c.Se\u00f1aPromo, 0) AS Se\u00f1aPromo, " +
+                "ISNULL(c.Se\u00f1aLista, 0) AS Se\u00f1aLista, " +
+                "ISNULL(c.LlevaPlanilla, 0) AS LlevaPlanilla, " +
+                "ISNULL(c.Observaciones, '') AS Observaciones " +
+                "FROM Especialidad e " +
+                "LEFT JOIN ConfigPrecioEspecialidad c ON c.idEspecialidad = e.id " +
+                "LEFT JOIN MotivoDeConsulta m ON e.idMotivoConsulta = m.id " +
+                "LEFT JOIN Especialidad padre ON e.IdPadre = padre.id " +
+                "WHERE e.Padre = 0 AND e.estado = 1 AND e.IdPadre IS NOT NULL " +
+                "AND e.id NOT IN (SELECT id FROM dbo.EspecialidadesEliminadas) " +
+                "ORDER BY m.nombre, padre.descripcion, e.descripcion";
+            return SQLConnector.obtenerTablaSegunConsultaString(strSQL);
+        }
+
+        /// <summary>
+        /// Guarda señas/planilla/observaciones en ConfigPrecioEspecialidad.
+        /// Solo inserta si hay al menos un valor distinto de cero/vacío.
+        /// </summary>
+        public void GuardarConfigEspecialidades(DataTable dtDatos)
+        {
+            if (dtDatos == null || dtDatos.Rows.Count == 0) return;
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < dtDatos.Rows.Count; i++)
+            {
+                string id       = dtDatos.Rows[i]["idEspecialidad"].ToString();
+                string sPromo   = dtDatos.Rows[i]["Se\u00f1aPromo"].ToString().Replace(",", ".");
+                string sLista   = dtDatos.Rows[i]["Se\u00f1aLista"].ToString().Replace(",", ".");
+                string planilla = (Convert.ToBoolean(dtDatos.Rows[i]["LlevaPlanilla"]) ? "1" : "0");
+                string obs      = dtDatos.Rows[i]["Observaciones"].ToString().Replace("'", "''");
+
+                sb.AppendLine(
+                    "IF EXISTS (SELECT 1 FROM ConfigPrecioEspecialidad WHERE idEspecialidad='" + id + "') " +
+                    "UPDATE ConfigPrecioEspecialidad SET Se\u00f1aPromo=" + sPromo +
+                    ", Se\u00f1aLista=" + sLista +
+                    ", LlevaPlanilla=" + planilla +
+                    ", Observaciones='" + obs + "'" +
+                    ", FechaModificacion=GETDATE() WHERE idEspecialidad='" + id + "' " +
+                    "ELSE IF " + sPromo + "<>0 OR " + sLista + "<>0 OR " + planilla + "=1 OR LEN('" + obs + "')>0 " +
+                    "INSERT INTO ConfigPrecioEspecialidad(idEspecialidad,Se\u00f1aPromo,Se\u00f1aLista,LlevaPlanilla,Observaciones) " +
+                    "VALUES('" + id + "'," + sPromo + "," + sLista + "," + planilla + ",'" + obs + "');");
+            }
+            if (sb.Length > 0)
+                SQLConnector.obtenerTablaSegunConsultaString(sb.ToString());
+        }
     }
 }

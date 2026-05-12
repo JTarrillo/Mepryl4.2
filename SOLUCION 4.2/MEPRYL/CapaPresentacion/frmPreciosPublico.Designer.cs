@@ -66,7 +66,6 @@ namespace CapaPresentacion
             this.btnAplicar = new System.Windows.Forms.Button();
             this.mnuAplicar = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.mnuVariacion = new System.Windows.Forms.ToolStripMenuItem();
-            this.pnlCentro = new System.Windows.Forms.Panel();
             this.dgvPrecios = new System.Windows.Forms.DataGridView();
             this.colIdEspecialidad = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colIPCBase = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -97,12 +96,27 @@ namespace CapaPresentacion
             this.colCoef11 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colPromo12 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colCoef12 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.tabControl = new System.Windows.Forms.TabControl();
+            this.tabPrecios = new System.Windows.Forms.TabPage();
+            this.tabConfig = new System.Windows.Forms.TabPage();
+            this.dgvConfig = new System.Windows.Forms.DataGridView();
+            this.colCfgIdEsp = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colCfgMotivo = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colCfgTipo = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colCfgDescripcion = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colCfgSeñaPromo = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colCfgSeñaLista = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colCfgPlanilla = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.colCfgObservaciones = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.pnlSuperior.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudAnio)).BeginInit();
             this.pnlMenu.SuspendLayout();
             this.mnuAplicar.SuspendLayout();
-            this.pnlCentro.SuspendLayout();
+            this.tabControl.SuspendLayout();
+            this.tabPrecios.SuspendLayout();
+            this.tabConfig.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPrecios)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvConfig)).BeginInit();
             this.SuspendLayout();
             // 
             // lblTitulo
@@ -350,14 +364,118 @@ namespace CapaPresentacion
             this.mnuVariacion.Text = "Aplicar variación al mes seleccionado";
             this.mnuVariacion.Click += new System.EventHandler(this.mnuVariacion_Click);
             // 
-            // pnlCentro
+            // tabControl
             // 
-            this.pnlCentro.Controls.Add(this.dgvPrecios);
-            this.pnlCentro.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlCentro.Location = new System.Drawing.Point(0, 90);
-            this.pnlCentro.Name = "pnlCentro";
-            this.pnlCentro.Size = new System.Drawing.Size(1214, 467);
-            this.pnlCentro.TabIndex = 3;
+            this.tabControl.Controls.Add(this.tabPrecios);
+            this.tabControl.Controls.Add(this.tabConfig);
+            this.tabControl.Alignment = System.Windows.Forms.TabAlignment.Bottom;
+            this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabControl.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.tabControl.Location = new System.Drawing.Point(0, 90);
+            this.tabControl.Name = "tabControl";
+            this.tabControl.SelectedIndex = 0;
+            this.tabControl.Size = new System.Drawing.Size(1214, 467);
+            this.tabControl.TabIndex = 3;
+            // 
+            // tabPrecios
+            // 
+            this.tabPrecios.Controls.Add(this.dgvPrecios);
+            this.tabPrecios.Location = new System.Drawing.Point(4, 26);
+            this.tabPrecios.Name = "tabPrecios";
+            this.tabPrecios.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPrecios.Size = new System.Drawing.Size(1206, 437);
+            this.tabPrecios.TabIndex = 0;
+            this.tabPrecios.Text = "  Precios Públicos";
+            this.tabPrecios.UseVisualStyleBackColor = true;
+            // 
+            // tabConfig
+            // 
+            this.tabConfig.Controls.Add(this.dgvConfig);
+            this.tabConfig.Location = new System.Drawing.Point(4, 26);
+            this.tabConfig.Name = "tabConfig";
+            this.tabConfig.Padding = new System.Windows.Forms.Padding(3);
+            this.tabConfig.Size = new System.Drawing.Size(1206, 437);
+            this.tabConfig.TabIndex = 1;
+            this.tabConfig.Text = "  Señas / Planilla";
+            this.tabConfig.UseVisualStyleBackColor = true;
+            // 
+            // dgvConfig
+            // 
+            this.dgvConfig.AllowUserToAddRows = false;
+            this.dgvConfig.AllowUserToDeleteRows = false;
+            this.dgvConfig.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvConfig.BackgroundColor = System.Drawing.Color.White;
+            this.dgvConfig.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvConfig.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.colCfgIdEsp,
+            this.colCfgMotivo,
+            this.colCfgTipo,
+            this.colCfgDescripcion,
+            this.colCfgSeñaPromo,
+            this.colCfgSeñaLista,
+            this.colCfgPlanilla,
+            this.colCfgObservaciones});
+            this.dgvConfig.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvConfig.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
+            this.dgvConfig.EnableHeadersVisualStyles = false;
+            this.dgvConfig.Location = new System.Drawing.Point(3, 3);
+            this.dgvConfig.Name = "dgvConfig";
+            this.dgvConfig.RowHeadersVisible = false;
+            this.dgvConfig.RowTemplate.Height = 28;
+            this.dgvConfig.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
+            this.dgvConfig.Size = new System.Drawing.Size(1200, 431);
+            this.dgvConfig.TabIndex = 0;
+            // 
+            // colCfgIdEsp
+            // 
+            this.colCfgIdEsp.HeaderText = "Id";
+            this.colCfgIdEsp.Name = "colCfgIdEsp";
+            this.colCfgIdEsp.Visible = false;
+            // 
+            // colCfgMotivo
+            // 
+            this.colCfgMotivo.FillWeight = 80F;
+            this.colCfgMotivo.HeaderText = "Motivo";
+            this.colCfgMotivo.Name = "colCfgMotivo";
+            this.colCfgMotivo.ReadOnly = true;
+            // 
+            // colCfgTipo
+            // 
+            this.colCfgTipo.FillWeight = 100F;
+            this.colCfgTipo.HeaderText = "Tipo";
+            this.colCfgTipo.Name = "colCfgTipo";
+            this.colCfgTipo.ReadOnly = true;
+            // 
+            // colCfgDescripcion
+            // 
+            this.colCfgDescripcion.FillWeight = 200F;
+            this.colCfgDescripcion.HeaderText = "Descripción";
+            this.colCfgDescripcion.Name = "colCfgDescripcion";
+            this.colCfgDescripcion.ReadOnly = true;
+            // 
+            // colCfgSeñaPromo
+            // 
+            this.colCfgSeñaPromo.FillWeight = 80F;
+            this.colCfgSeñaPromo.HeaderText = "Seña Promo";
+            this.colCfgSeñaPromo.Name = "colCfgSeñaPromo";
+            // 
+            // colCfgSeñaLista
+            // 
+            this.colCfgSeñaLista.FillWeight = 80F;
+            this.colCfgSeñaLista.HeaderText = "Seña Lista";
+            this.colCfgSeñaLista.Name = "colCfgSeñaLista";
+            // 
+            // colCfgPlanilla
+            // 
+            this.colCfgPlanilla.FillWeight = 60F;
+            this.colCfgPlanilla.HeaderText = "Planilla";
+            this.colCfgPlanilla.Name = "colCfgPlanilla";
+            // 
+            // colCfgObservaciones
+            // 
+            this.colCfgObservaciones.FillWeight = 250F;
+            this.colCfgObservaciones.HeaderText = "Observaciones";
+            this.colCfgObservaciones.Name = "colCfgObservaciones";
             // 
             // dgvPrecios
             // 
@@ -753,7 +871,7 @@ namespace CapaPresentacion
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1364, 557);
-            this.Controls.Add(this.pnlCentro);
+            this.Controls.Add(this.tabControl);
             this.Controls.Add(this.pnlMenu);
             this.Controls.Add(this.pnlSuperior);
             this.Controls.Add(this.lblTitulo);
@@ -767,8 +885,11 @@ namespace CapaPresentacion
             this.pnlMenu.ResumeLayout(false);
             this.pnlMenu.PerformLayout();
             this.mnuAplicar.ResumeLayout(false);
-            this.pnlCentro.ResumeLayout(false);
+            this.tabPrecios.ResumeLayout(false);
+            this.tabConfig.ResumeLayout(false);
+            this.tabControl.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvPrecios)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvConfig)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -794,7 +915,18 @@ namespace CapaPresentacion
         private System.Windows.Forms.Button btnAplicar;
         private System.Windows.Forms.ContextMenuStrip mnuAplicar;
         private System.Windows.Forms.ToolStripMenuItem mnuVariacion;
-        private System.Windows.Forms.Panel pnlCentro;
+        private System.Windows.Forms.TabControl tabControl;
+        private System.Windows.Forms.TabPage tabPrecios;
+        private System.Windows.Forms.TabPage tabConfig;
+        private System.Windows.Forms.DataGridView dgvConfig;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colCfgIdEsp;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colCfgMotivo;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colCfgTipo;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colCfgDescripcion;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colCfgSeñaPromo;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colCfgSeñaLista;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn colCfgPlanilla;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colCfgObservaciones;
         private System.Windows.Forms.DataGridView dgvPrecios;
         private System.Windows.Forms.DataGridViewTextBoxColumn colIdEspecialidad;
         private System.Windows.Forms.DataGridViewTextBoxColumn colMotivo;

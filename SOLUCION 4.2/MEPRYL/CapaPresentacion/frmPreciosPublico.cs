@@ -31,6 +31,7 @@ namespace CapaPresentacion
             foreach (DataGridViewColumn col in dgvPrecios.Columns)
                 col.SortMode = DataGridViewColumnSortMode.NotSortable;
 
+            ConfigurarGrillaConfig();
             nudAnio.Value = DateTime.Now.Year;
             cboMesVariacion.SelectedIndex = DateTime.Now.Month; // 0 = Todos, 1-12 = mes
             CargarGrilla();
@@ -82,6 +83,8 @@ namespace CapaPresentacion
                 }
             }
 
+            // Cargar config de señas/planilla y luego re-aplicar filtro
+            CargarGrillaConfig();
             // Re-aplicar el filtro actual sin borrar el texto de búsqueda
             txtBuscar_TextChanged(this, EventArgs.Empty);
         }
@@ -286,6 +289,7 @@ namespace CapaPresentacion
                 }
 
                 precioPublico.GuardarPreciosPublicoAnio(anio, dtGuardar);
+                GuardarConfig();
                 MessageBox.Show("Precios guardados correctamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
@@ -412,6 +416,20 @@ namespace CapaPresentacion
             }
 
             lblTotal.Text = "Prestaciones: " + visibles;
+
+            // Filtrar también la pestaña de configuración
+            foreach (DataGridViewRow row in dgvConfig.Rows)
+            {
+                if (string.IsNullOrEmpty(filtro))
+                    row.Visible = true;
+                else
+                {
+                    string desc   = row.Cells["colCfgDescripcion"].Value?.ToString().ToLower() ?? "";
+                    string motivo = row.Cells["colCfgMotivo"].Value?.ToString().ToLower()      ?? "";
+                    string tipo   = row.Cells["colCfgTipo"].Value?.ToString().ToLower()        ?? "";
+                    row.Visible = desc.Contains(filtro) || motivo.Contains(filtro) || tipo.Contains(filtro);
+                }
+            }
         }
 
         private decimal ParseDecimal(object value)
@@ -608,6 +626,58 @@ namespace CapaPresentacion
             {
                 e.Handled = true;
             }
+        }
+
+        private void ConfigurarGrillaConfig()
+        {
+            foreach (DataGridViewColumn col in dgvConfig.Columns)
+                col.SortMode = DataGridViewColumnSortMode.NotSortable;
+
+            dgvConfig.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(0, 70, 140);
+            dgvConfig.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
+            dgvConfig.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dgvConfig.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+        }
+
+        private void CargarGrillaConfig()
+        {
+            dgvConfig.Rows.Clear();
+            DataTable dt = precioPublico.ListarConfigEspecialidades();
+            if (dt == null) return;
+            foreach (DataRow row in dt.Rows)
+            {
+                int idx = dgvConfig.Rows.Add();
+                dgvConfig.Rows[idx].Cells["colCfgIdEsp"].Value       = row["idEspecialidad"].ToString();
+                dgvConfig.Rows[idx].Cells["colCfgMotivo"].Value      = row["Motivo"].ToString();
+                dgvConfig.Rows[idx].Cells["colCfgTipo"].Value        = row["Tipo"].ToString();
+                dgvConfig.Rows[idx].Cells["colCfgDescripcion"].Value = row["Descripcion"].ToString();
+                dgvConfig.Rows[idx].Cells["colCfgSe\u00f1aPromo"].Value   = Convert.ToDecimal(row["Se\u00f1aPromo"]);
+                dgvConfig.Rows[idx].Cells["colCfgSe\u00f1aLista"].Value   = Convert.ToDecimal(row["Se\u00f1aLista"]);
+                dgvConfig.Rows[idx].Cells["colCfgPlanilla"].Value    = Convert.ToBoolean(row["LlevaPlanilla"]);
+                dgvConfig.Rows[idx].Cells["colCfgObservaciones"].Value = row["Observaciones"].ToString();
+            }
+        }
+
+        private void GuardarConfig()
+        {
+            DataTable dtConfig = new DataTable();
+            dtConfig.Columns.Add("idEspecialidad", typeof(string));
+            dtConfig.Columns.Add("Se\u00f1aPromo",      typeof(decimal));
+            dtConfig.Columns.Add("Se\u00f1aLista",      typeof(decimal));
+            dtConfig.Columns.Add("LlevaPlanilla",  typeof(bool));
+            dtConfig.Columns.Add("Observaciones",  typeof(string));
+
+            foreach (DataGridViewRow row in dgvConfig.Rows)
+            {
+                DataRow dr = dtConfig.NewRow();
+                dr["idEspecialidad"] = row.Cells["colCfgIdEsp"].Value?.ToString()         ?? "";
+                dr["Se\u00f1aPromo"]      = ParseDecimal(row.Cells["colCfgSe\u00f1aPromo"].Value);
+                dr["Se\u00f1aLista"]      = ParseDecimal(row.Cells["colCfgSe\u00f1aLista"].Value);
+                dr["LlevaPlanilla"]  = (row.Cells["colCfgPlanilla"].Value as bool?) ?? false;
+                dr["Observaciones"]  = row.Cells["colCfgObservaciones"].Value?.ToString()  ?? "";
+                dtConfig.Rows.Add(dr);
+            }
+            precioPublico.GuardarConfigEspecialidades(dtConfig);
         }
     }
 }
