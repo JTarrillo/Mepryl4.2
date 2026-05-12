@@ -51,7 +51,6 @@ namespace CapaPresentacion
             this.pnlSuperior = new System.Windows.Forms.Panel();
             this.lblAnio = new System.Windows.Forms.Label();
             this.nudAnio = new System.Windows.Forms.NumericUpDown();
-            this.btnCargar = new System.Windows.Forms.Button();
             this.lblBuscar = new System.Windows.Forms.Label();
             this.txtBuscar = new System.Windows.Forms.TextBox();
             this.lblTotal = new System.Windows.Forms.Label();
@@ -112,10 +111,10 @@ namespace CapaPresentacion
             ((System.ComponentModel.ISupportInitialize)(this.nudAnio)).BeginInit();
             this.pnlMenu.SuspendLayout();
             this.mnuAplicar.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvPrecios)).BeginInit();
             this.tabControl.SuspendLayout();
             this.tabPrecios.SuspendLayout();
             this.tabConfig.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvPrecios)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvConfig)).BeginInit();
             this.SuspendLayout();
             // 
@@ -137,7 +136,6 @@ namespace CapaPresentacion
             this.pnlSuperior.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(242)))), ((int)(((byte)(242)))));
             this.pnlSuperior.Controls.Add(this.lblAnio);
             this.pnlSuperior.Controls.Add(this.nudAnio);
-            this.pnlSuperior.Controls.Add(this.btnCargar);
             this.pnlSuperior.Controls.Add(this.lblBuscar);
             this.pnlSuperior.Controls.Add(this.txtBuscar);
             this.pnlSuperior.Controls.Add(this.lblTotal);
@@ -181,26 +179,11 @@ namespace CapaPresentacion
             0});
             this.nudAnio.ValueChanged += new System.EventHandler(this.nudAnio_ValueChanged);
             // 
-            // btnCargar
-            // 
-            this.btnCargar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(130)))), ((int)(((byte)(180)))));
-            this.btnCargar.FlatAppearance.BorderColor = System.Drawing.Color.RoyalBlue;
-            this.btnCargar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnCargar.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this.btnCargar.ForeColor = System.Drawing.Color.White;
-            this.btnCargar.Location = new System.Drawing.Point(135, 9);
-            this.btnCargar.Name = "btnCargar";
-            this.btnCargar.Size = new System.Drawing.Size(80, 30);
-            this.btnCargar.TabIndex = 2;
-            this.btnCargar.Text = "Cargar";
-            this.btnCargar.UseVisualStyleBackColor = false;
-            this.btnCargar.Click += new System.EventHandler(this.btnCargar_Click);
-            // 
             // lblBuscar
             // 
             this.lblBuscar.AutoSize = true;
             this.lblBuscar.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.lblBuscar.Location = new System.Drawing.Point(235, 14);
+            this.lblBuscar.Location = new System.Drawing.Point(135, 14);
             this.lblBuscar.Name = "lblBuscar";
             this.lblBuscar.Size = new System.Drawing.Size(52, 19);
             this.lblBuscar.TabIndex = 3;
@@ -209,7 +192,7 @@ namespace CapaPresentacion
             // txtBuscar
             // 
             this.txtBuscar.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.txtBuscar.Location = new System.Drawing.Point(290, 11);
+            this.txtBuscar.Location = new System.Drawing.Point(190, 11);
             this.txtBuscar.Name = "txtBuscar";
             this.txtBuscar.Size = new System.Drawing.Size(250, 25);
             this.txtBuscar.TabIndex = 4;
@@ -219,7 +202,7 @@ namespace CapaPresentacion
             // 
             this.lblTotal.AutoSize = true;
             this.lblTotal.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.lblTotal.Location = new System.Drawing.Point(555, 14);
+            this.lblTotal.Location = new System.Drawing.Point(455, 14);
             this.lblTotal.Name = "lblTotal";
             this.lblTotal.Size = new System.Drawing.Size(100, 19);
             this.lblTotal.TabIndex = 5;
@@ -227,7 +210,7 @@ namespace CapaPresentacion
             // 
             // pnlMenu
             // 
-            this.pnlMenu.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(248)))), ((int)(((byte)(248)))));
+            this.pnlMenu.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
             this.pnlMenu.Controls.Add(this.btnGuardar);
             this.pnlMenu.Controls.Add(this.btnCopiarAnio);
             this.pnlMenu.Controls.Add(this.lblMesVariacion);
@@ -236,10 +219,10 @@ namespace CapaPresentacion
             this.pnlMenu.Controls.Add(this.txtVariacion);
             this.pnlMenu.Controls.Add(this.chkFactor);
             this.pnlMenu.Controls.Add(this.btnAplicar);
-            this.pnlMenu.Dock = System.Windows.Forms.DockStyle.Right;
-            this.pnlMenu.Location = new System.Drawing.Point(1214, 90);
+            this.pnlMenu.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pnlMenu.Location = new System.Drawing.Point(0, 90);
             this.pnlMenu.Name = "pnlMenu";
-            this.pnlMenu.Size = new System.Drawing.Size(150, 467);
+            this.pnlMenu.Size = new System.Drawing.Size(1364, 58);
             this.pnlMenu.TabIndex = 2;
             // 
             // btnGuardar
@@ -251,7 +234,7 @@ namespace CapaPresentacion
             this.btnGuardar.ForeColor = System.Drawing.Color.White;
             this.btnGuardar.Location = new System.Drawing.Point(10, 10);
             this.btnGuardar.Name = "btnGuardar";
-            this.btnGuardar.Size = new System.Drawing.Size(130, 40);
+            this.btnGuardar.Size = new System.Drawing.Size(120, 36);
             this.btnGuardar.TabIndex = 0;
             this.btnGuardar.Text = "Guardar";
             this.btnGuardar.UseVisualStyleBackColor = false;
@@ -259,26 +242,26 @@ namespace CapaPresentacion
             // 
             // btnCopiarAnio
             // 
-            this.btnCopiarAnio.BackColor = System.Drawing.Color.SteelBlue;
-            this.btnCopiarAnio.FlatAppearance.BorderColor = System.Drawing.Color.RoyalBlue;
+            this.btnCopiarAnio.BackColor = System.Drawing.Color.White;
+            this.btnCopiarAnio.FlatAppearance.BorderColor = System.Drawing.Color.Black;
             this.btnCopiarAnio.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnCopiarAnio.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.btnCopiarAnio.ForeColor = System.Drawing.Color.White;
-            this.btnCopiarAnio.Location = new System.Drawing.Point(10, 60);
+            this.btnCopiarAnio.ForeColor = System.Drawing.Color.Black;
+            this.btnCopiarAnio.Location = new System.Drawing.Point(138, 10);
             this.btnCopiarAnio.Name = "btnCopiarAnio";
-            this.btnCopiarAnio.Size = new System.Drawing.Size(130, 40);
+            this.btnCopiarAnio.Size = new System.Drawing.Size(150, 36);
             this.btnCopiarAnio.TabIndex = 1;
-            this.btnCopiarAnio.Text = "Copiar desde\r\naño anterior";
+            this.btnCopiarAnio.Text = "Copiar año anterior";
             this.btnCopiarAnio.UseVisualStyleBackColor = false;
             this.btnCopiarAnio.Click += new System.EventHandler(this.btnCopiarAnio_Click);
             // 
             // lblMesVariacion
             // 
             this.lblMesVariacion.AutoSize = true;
-            this.lblMesVariacion.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.lblMesVariacion.Location = new System.Drawing.Point(10, 115);
+            this.lblMesVariacion.Font = new System.Drawing.Font("Segoe UI", 8F);
+            this.lblMesVariacion.Location = new System.Drawing.Point(308, 8);
             this.lblMesVariacion.Name = "lblMesVariacion";
-            this.lblMesVariacion.Size = new System.Drawing.Size(79, 15);
+            this.lblMesVariacion.Size = new System.Drawing.Size(77, 13);
             this.lblMesVariacion.TabIndex = 2;
             this.lblMesVariacion.Text = "Mes a aplicar:";
             // 
@@ -300,27 +283,27 @@ namespace CapaPresentacion
             "Octubre",
             "Noviembre",
             "Diciembre"});
-            this.cboMesVariacion.Location = new System.Drawing.Point(10, 132);
+            this.cboMesVariacion.Location = new System.Drawing.Point(308, 26);
             this.cboMesVariacion.Name = "cboMesVariacion";
-            this.cboMesVariacion.Size = new System.Drawing.Size(130, 23);
+            this.cboMesVariacion.Size = new System.Drawing.Size(120, 23);
             this.cboMesVariacion.TabIndex = 3;
             // 
             // lblVariacion
             // 
             this.lblVariacion.AutoSize = true;
-            this.lblVariacion.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.lblVariacion.Location = new System.Drawing.Point(10, 168);
+            this.lblVariacion.Font = new System.Drawing.Font("Segoe UI", 8F);
+            this.lblVariacion.Location = new System.Drawing.Point(440, 8);
             this.lblVariacion.Name = "lblVariacion";
-            this.lblVariacion.Size = new System.Drawing.Size(84, 15);
+            this.lblVariacion.Size = new System.Drawing.Size(80, 13);
             this.lblVariacion.TabIndex = 4;
             this.lblVariacion.Text = "Incremento %:";
             // 
             // txtVariacion
             // 
             this.txtVariacion.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.txtVariacion.Location = new System.Drawing.Point(10, 186);
+            this.txtVariacion.Location = new System.Drawing.Point(440, 25);
             this.txtVariacion.Name = "txtVariacion";
-            this.txtVariacion.Size = new System.Drawing.Size(130, 25);
+            this.txtVariacion.Size = new System.Drawing.Size(80, 25);
             this.txtVariacion.TabIndex = 5;
             this.txtVariacion.Text = "0";
             // 
@@ -328,7 +311,7 @@ namespace CapaPresentacion
             // 
             this.chkFactor.AutoSize = true;
             this.chkFactor.Font = new System.Drawing.Font("Segoe UI", 8F);
-            this.chkFactor.Location = new System.Drawing.Point(12, 216);
+            this.chkFactor.Location = new System.Drawing.Point(530, 28);
             this.chkFactor.Name = "chkFactor";
             this.chkFactor.Size = new System.Drawing.Size(127, 17);
             this.chkFactor.TabIndex = 6;
@@ -337,14 +320,14 @@ namespace CapaPresentacion
             // 
             // btnAplicar
             // 
-            this.btnAplicar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(105)))), ((int)(((byte)(30)))));
-            this.btnAplicar.FlatAppearance.BorderColor = System.Drawing.Color.Chocolate;
+            this.btnAplicar.BackColor = System.Drawing.Color.White;
+            this.btnAplicar.FlatAppearance.BorderColor = System.Drawing.Color.Black;
             this.btnAplicar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnAplicar.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this.btnAplicar.ForeColor = System.Drawing.Color.White;
-            this.btnAplicar.Location = new System.Drawing.Point(10, 240);
+            this.btnAplicar.ForeColor = System.Drawing.Color.Black;
+            this.btnAplicar.Location = new System.Drawing.Point(668, 10);
             this.btnAplicar.Name = "btnAplicar";
-            this.btnAplicar.Size = new System.Drawing.Size(130, 40);
+            this.btnAplicar.Size = new System.Drawing.Size(141, 36);
             this.btnAplicar.TabIndex = 7;
             this.btnAplicar.Text = "Aplicar ▼";
             this.btnAplicar.UseVisualStyleBackColor = false;
@@ -364,119 +347,6 @@ namespace CapaPresentacion
             this.mnuVariacion.Text = "Aplicar variación al mes seleccionado";
             this.mnuVariacion.Click += new System.EventHandler(this.mnuVariacion_Click);
             // 
-            // tabControl
-            // 
-            this.tabControl.Controls.Add(this.tabPrecios);
-            this.tabControl.Controls.Add(this.tabConfig);
-            this.tabControl.Alignment = System.Windows.Forms.TabAlignment.Bottom;
-            this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabControl.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.tabControl.Location = new System.Drawing.Point(0, 90);
-            this.tabControl.Name = "tabControl";
-            this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(1214, 467);
-            this.tabControl.TabIndex = 3;
-            // 
-            // tabPrecios
-            // 
-            this.tabPrecios.Controls.Add(this.dgvPrecios);
-            this.tabPrecios.Location = new System.Drawing.Point(4, 26);
-            this.tabPrecios.Name = "tabPrecios";
-            this.tabPrecios.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPrecios.Size = new System.Drawing.Size(1206, 437);
-            this.tabPrecios.TabIndex = 0;
-            this.tabPrecios.Text = "  Precios Públicos";
-            this.tabPrecios.UseVisualStyleBackColor = true;
-            // 
-            // tabConfig
-            // 
-            this.tabConfig.Controls.Add(this.dgvConfig);
-            this.tabConfig.Location = new System.Drawing.Point(4, 26);
-            this.tabConfig.Name = "tabConfig";
-            this.tabConfig.Padding = new System.Windows.Forms.Padding(3);
-            this.tabConfig.Size = new System.Drawing.Size(1206, 437);
-            this.tabConfig.TabIndex = 1;
-            this.tabConfig.Text = "  Señas / Planilla";
-            this.tabConfig.UseVisualStyleBackColor = true;
-            // 
-            // dgvConfig
-            // 
-            this.dgvConfig.AllowUserToAddRows = false;
-            this.dgvConfig.AllowUserToDeleteRows = false;
-            this.dgvConfig.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            this.dgvConfig.BackgroundColor = System.Drawing.Color.White;
-            this.dgvConfig.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvConfig.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.colCfgIdEsp,
-            this.colCfgMotivo,
-            this.colCfgTipo,
-            this.colCfgDescripcion,
-            this.colCfgSeñaPromo,
-            this.colCfgSeñaLista,
-            this.colCfgPlanilla,
-            this.colCfgObservaciones});
-            this.dgvConfig.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvConfig.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
-            this.dgvConfig.EnableHeadersVisualStyles = false;
-            this.dgvConfig.Location = new System.Drawing.Point(3, 3);
-            this.dgvConfig.Name = "dgvConfig";
-            this.dgvConfig.RowHeadersVisible = false;
-            this.dgvConfig.RowTemplate.Height = 28;
-            this.dgvConfig.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
-            this.dgvConfig.Size = new System.Drawing.Size(1200, 431);
-            this.dgvConfig.TabIndex = 0;
-            // 
-            // colCfgIdEsp
-            // 
-            this.colCfgIdEsp.HeaderText = "Id";
-            this.colCfgIdEsp.Name = "colCfgIdEsp";
-            this.colCfgIdEsp.Visible = false;
-            // 
-            // colCfgMotivo
-            // 
-            this.colCfgMotivo.FillWeight = 80F;
-            this.colCfgMotivo.HeaderText = "Motivo";
-            this.colCfgMotivo.Name = "colCfgMotivo";
-            this.colCfgMotivo.ReadOnly = true;
-            // 
-            // colCfgTipo
-            // 
-            this.colCfgTipo.FillWeight = 100F;
-            this.colCfgTipo.HeaderText = "Tipo";
-            this.colCfgTipo.Name = "colCfgTipo";
-            this.colCfgTipo.ReadOnly = true;
-            // 
-            // colCfgDescripcion
-            // 
-            this.colCfgDescripcion.FillWeight = 200F;
-            this.colCfgDescripcion.HeaderText = "Descripción";
-            this.colCfgDescripcion.Name = "colCfgDescripcion";
-            this.colCfgDescripcion.ReadOnly = true;
-            // 
-            // colCfgSeñaPromo
-            // 
-            this.colCfgSeñaPromo.FillWeight = 80F;
-            this.colCfgSeñaPromo.HeaderText = "Seña Promo";
-            this.colCfgSeñaPromo.Name = "colCfgSeñaPromo";
-            // 
-            // colCfgSeñaLista
-            // 
-            this.colCfgSeñaLista.FillWeight = 80F;
-            this.colCfgSeñaLista.HeaderText = "Seña Lista";
-            this.colCfgSeñaLista.Name = "colCfgSeñaLista";
-            // 
-            // colCfgPlanilla
-            // 
-            this.colCfgPlanilla.FillWeight = 60F;
-            this.colCfgPlanilla.HeaderText = "Planilla";
-            this.colCfgPlanilla.Name = "colCfgPlanilla";
-            // 
-            // colCfgObservaciones
-            // 
-            this.colCfgObservaciones.FillWeight = 250F;
-            this.colCfgObservaciones.HeaderText = "Observaciones";
-            this.colCfgObservaciones.Name = "colCfgObservaciones";
-            // 
             // dgvPrecios
             // 
             this.dgvPrecios.AllowUserToAddRows = false;
@@ -489,7 +359,7 @@ namespace CapaPresentacion
             this.dgvPrecios.BackgroundColor = System.Drawing.Color.White;
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle2.BackColor = System.Drawing.Color.SeaGreen;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Tahoma", 8.25F);
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             dataGridViewCellStyle2.ForeColor = System.Drawing.Color.White;
             dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.dgvPrecios.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
@@ -526,8 +396,8 @@ namespace CapaPresentacion
             this.colCoef12});
             dataGridViewCellStyle29.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle29.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle29.Font = new System.Drawing.Font("Segoe UI", 9F);
-            dataGridViewCellStyle29.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle29.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle29.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             dataGridViewCellStyle29.SelectionBackColor = System.Drawing.Color.White;
             dataGridViewCellStyle29.SelectionForeColor = System.Drawing.Color.Black;
             dataGridViewCellStyle29.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
@@ -535,12 +405,12 @@ namespace CapaPresentacion
             this.dgvPrecios.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvPrecios.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
             this.dgvPrecios.EnableHeadersVisualStyles = false;
-            this.dgvPrecios.Location = new System.Drawing.Point(0, 0);
+            this.dgvPrecios.Location = new System.Drawing.Point(3, 3);
             this.dgvPrecios.Name = "dgvPrecios";
             this.dgvPrecios.RowHeadersVisible = false;
             this.dgvPrecios.RowTemplate.Height = 28;
             this.dgvPrecios.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
-            this.dgvPrecios.Size = new System.Drawing.Size(1214, 467);
+            this.dgvPrecios.Size = new System.Drawing.Size(1350, 373);
             this.dgvPrecios.TabIndex = 0;
             this.dgvPrecios.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.dgvPrecios_CellBeginEdit);
             this.dgvPrecios.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvPrecios_CellEndEdit);
@@ -866,6 +736,118 @@ namespace CapaPresentacion
             this.colCoef12.HeaderText = "";
             this.colCoef12.Name = "colCoef12";
             // 
+            // tabControl
+            // 
+            this.tabControl.Alignment = System.Windows.Forms.TabAlignment.Bottom;
+            this.tabControl.Controls.Add(this.tabPrecios);
+            this.tabControl.Controls.Add(this.tabConfig);
+            this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabControl.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.tabControl.Location = new System.Drawing.Point(0, 148);
+            this.tabControl.Name = "tabControl";
+            this.tabControl.SelectedIndex = 0;
+            this.tabControl.Size = new System.Drawing.Size(1364, 409);
+            this.tabControl.TabIndex = 3;
+            // 
+            // tabPrecios
+            // 
+            this.tabPrecios.Controls.Add(this.dgvPrecios);
+            this.tabPrecios.Location = new System.Drawing.Point(4, 4);
+            this.tabPrecios.Name = "tabPrecios";
+            this.tabPrecios.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPrecios.Size = new System.Drawing.Size(1356, 379);
+            this.tabPrecios.TabIndex = 0;
+            this.tabPrecios.Text = "  Precios Públicos";
+            this.tabPrecios.UseVisualStyleBackColor = true;
+            // 
+            // tabConfig
+            // 
+            this.tabConfig.Controls.Add(this.dgvConfig);
+            this.tabConfig.Location = new System.Drawing.Point(4, 4);
+            this.tabConfig.Name = "tabConfig";
+            this.tabConfig.Padding = new System.Windows.Forms.Padding(3);
+            this.tabConfig.Size = new System.Drawing.Size(1206, 437);
+            this.tabConfig.TabIndex = 1;
+            this.tabConfig.Text = "  Señas / Planilla";
+            this.tabConfig.UseVisualStyleBackColor = true;
+            // 
+            // dgvConfig
+            // 
+            this.dgvConfig.AllowUserToAddRows = false;
+            this.dgvConfig.AllowUserToDeleteRows = false;
+            this.dgvConfig.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvConfig.BackgroundColor = System.Drawing.Color.White;
+            this.dgvConfig.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvConfig.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.colCfgIdEsp,
+            this.colCfgMotivo,
+            this.colCfgTipo,
+            this.colCfgDescripcion,
+            this.colCfgSeñaPromo,
+            this.colCfgSeñaLista,
+            this.colCfgPlanilla,
+            this.colCfgObservaciones});
+            this.dgvConfig.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvConfig.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
+            this.dgvConfig.EnableHeadersVisualStyles = false;
+            this.dgvConfig.Location = new System.Drawing.Point(3, 3);
+            this.dgvConfig.Name = "dgvConfig";
+            this.dgvConfig.RowHeadersVisible = false;
+            this.dgvConfig.RowTemplate.Height = 28;
+            this.dgvConfig.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
+            this.dgvConfig.Size = new System.Drawing.Size(1200, 431);
+            this.dgvConfig.TabIndex = 0;
+            // 
+            // colCfgIdEsp
+            // 
+            this.colCfgIdEsp.HeaderText = "Id";
+            this.colCfgIdEsp.Name = "colCfgIdEsp";
+            this.colCfgIdEsp.Visible = false;
+            // 
+            // colCfgMotivo
+            // 
+            this.colCfgMotivo.FillWeight = 80F;
+            this.colCfgMotivo.HeaderText = "Motivo";
+            this.colCfgMotivo.Name = "colCfgMotivo";
+            this.colCfgMotivo.ReadOnly = true;
+            // 
+            // colCfgTipo
+            // 
+            this.colCfgTipo.HeaderText = "Tipo";
+            this.colCfgTipo.Name = "colCfgTipo";
+            this.colCfgTipo.ReadOnly = true;
+            // 
+            // colCfgDescripcion
+            // 
+            this.colCfgDescripcion.FillWeight = 200F;
+            this.colCfgDescripcion.HeaderText = "Descripción";
+            this.colCfgDescripcion.Name = "colCfgDescripcion";
+            this.colCfgDescripcion.ReadOnly = true;
+            // 
+            // colCfgSeñaPromo
+            // 
+            this.colCfgSeñaPromo.FillWeight = 80F;
+            this.colCfgSeñaPromo.HeaderText = "Seña Promo";
+            this.colCfgSeñaPromo.Name = "colCfgSeñaPromo";
+            // 
+            // colCfgSeñaLista
+            // 
+            this.colCfgSeñaLista.FillWeight = 80F;
+            this.colCfgSeñaLista.HeaderText = "Seña Lista";
+            this.colCfgSeñaLista.Name = "colCfgSeñaLista";
+            // 
+            // colCfgPlanilla
+            // 
+            this.colCfgPlanilla.FillWeight = 60F;
+            this.colCfgPlanilla.HeaderText = "Planilla";
+            this.colCfgPlanilla.Name = "colCfgPlanilla";
+            // 
+            // colCfgObservaciones
+            // 
+            this.colCfgObservaciones.FillWeight = 250F;
+            this.colCfgObservaciones.HeaderText = "Observaciones";
+            this.colCfgObservaciones.Name = "colCfgObservaciones";
+            // 
             // frmPreciosPublico
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -885,10 +867,10 @@ namespace CapaPresentacion
             this.pnlMenu.ResumeLayout(false);
             this.pnlMenu.PerformLayout();
             this.mnuAplicar.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgvPrecios)).EndInit();
+            this.tabControl.ResumeLayout(false);
             this.tabPrecios.ResumeLayout(false);
             this.tabConfig.ResumeLayout(false);
-            this.tabControl.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dgvPrecios)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvConfig)).EndInit();
             this.ResumeLayout(false);
 
@@ -900,7 +882,6 @@ namespace CapaPresentacion
         private System.Windows.Forms.Panel pnlSuperior;
         private System.Windows.Forms.Label lblAnio;
         private System.Windows.Forms.NumericUpDown nudAnio;
-        private System.Windows.Forms.Button btnCargar;
         private System.Windows.Forms.Label lblBuscar;
         private System.Windows.Forms.TextBox txtBuscar;
         private System.Windows.Forms.Label lblTotal;

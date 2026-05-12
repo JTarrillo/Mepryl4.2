@@ -247,8 +247,6 @@ namespace CapaPresentacion
             return valorN4 * incrementoPromosFebrero;
         }
 
-        private void btnCargar_Click(object sender, EventArgs e) => CargarGrilla();
-
         private void nudAnio_ValueChanged(object sender, EventArgs e)
         {
             if (yaInicializado) CargarGrilla();
