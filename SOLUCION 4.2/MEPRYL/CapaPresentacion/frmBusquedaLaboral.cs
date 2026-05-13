@@ -144,22 +144,22 @@ namespace CapaPresentacion
                 imgCli = Image.FromFile("P:\\img-system\\blanco.png");
                 imgLab = Image.FromFile("P:\\img-system\\blanco.png");
                 imgCons = Image.FromFile("P:\\img-system\\blanco.png");
-                imgEnv = Image.FromFile("P:\\img-system\\blanco.png"); 
-                
+                imgEnv = Image.FromFile("P:\\img-system\\blanco.png");
+
                 if (!(string.IsNullOrEmpty(r.ItemArray[21].ToString())))
                 {
                     if (r.ItemArray[21].ToString() == "1")
-                        imgCli = Image.FromFile("P:\\img-system\\tick.png");                    
+                        imgCli = Image.FromFile("P:\\img-system\\tick.png");
                 }
                 if (!(string.IsNullOrEmpty(r.ItemArray[22].ToString())))
                 {
-                    if (r.ItemArray[22].ToString()== "1")
-                        imgLab = Image.FromFile("P:\\img-system\\tick.png");                    
+                    if (r.ItemArray[22].ToString() == "1")
+                        imgLab = Image.FromFile("P:\\img-system\\tick.png");
                 }
                 if (!(string.IsNullOrEmpty(r.ItemArray[23].ToString())))
                 {
                     if (r.ItemArray[23].ToString() == "1")
-                        imgCons = Image.FromFile("P:\\img-system\\tick.png");                    
+                        imgCons = Image.FromFile("P:\\img-system\\tick.png");
                 }
                 if (!(string.IsNullOrEmpty(r.ItemArray[24].ToString())))
                 {
@@ -185,7 +185,7 @@ namespace CapaPresentacion
                 else
                 {
                     dgv.Rows[dgv.Rows.Count - 1].Cells[14].Style.BackColor = Color.DarkSeaGreen;
-                }                
+                }
             }
             cambiarVisibilidadColumnas();
             dgv.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);
@@ -245,7 +245,8 @@ namespace CapaPresentacion
                 {
                     dgv.Rows[0].Cells[1].Selected = true;
                 }
-            }catch(System.ArgumentOutOfRangeException ex)
+            }
+            catch (System.ArgumentOutOfRangeException ex)
             {
                 if (dgv.Rows.Count > 0)
                 {
@@ -269,7 +270,7 @@ namespace CapaPresentacion
             else
             {
                 cargarExamenesSinFiltro(tpDesde.Value, tpHasta.Value, obtenerFiltro());
-            }            
+            }
         }
 
         private void cambiarEnabled(bool estPanel1, bool estPanel2)
@@ -277,7 +278,7 @@ namespace CapaPresentacion
             panel1.Enabled = estPanel1;
             panel2.Enabled = estPanel2;
         }
-        
+
         private void abrirVentanaCarga(DataGridViewCellEventArgs c)
         {
             intFilaSelecc = dgv.CurrentCell.RowIndex; // GRV - Modificado
@@ -292,7 +293,7 @@ namespace CapaPresentacion
 
             // GRV - Modificado
             //dgv.Rows[intFilaSelecc].Selected = true;
-            
+
         }
 
         private void abrirVentana(DataGridViewCell c)
@@ -303,7 +304,7 @@ namespace CapaPresentacion
                 //Utilidades.abrirFormulario(this.MdiParent, frm, new Configuracion());                
                 AbrirForm(frm);
                 frm.setearLabelTitulo(dgv.Rows[c.RowIndex].Cells[4].Value.ToString());
-                frm.setearValores(dgv.Rows[c.RowIndex].Cells[18].Value.ToString());                
+                frm.setearValores(dgv.Rows[c.RowIndex].Cells[18].Value.ToString());
             }
             else if (dgv.Rows[c.RowIndex].Cells[12].Value.ToString() == "1")
             {
@@ -322,7 +323,7 @@ namespace CapaPresentacion
                 else if (dgv.Rows[c.RowIndex].Cells[3].Value.ToString().Contains("EC"))
                 {
                     frm.setearValoresEstudioComplementario(dgv.Rows[c.RowIndex].Cells[20].Value.ToString(), dgv.Rows[c.RowIndex].Cells[5].Value.ToString());
-                }                
+                }
             }
 
             puntero = c.RowIndex;
@@ -457,7 +458,7 @@ namespace CapaPresentacion
                     MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
         }
-        
+
         private void mailExAptitud()
         {
             List<string> archivos = new List<string>();
@@ -580,7 +581,7 @@ namespace CapaPresentacion
         {
             if (dgv.SelectedCells != null && dgv.SelectedCells.Count > 0)
             {
-                frmCambioEmpresa frm = new frmCambioEmpresa(dgv.Rows[dgv.SelectedCells[0].RowIndex].Cells[20].Value.ToString(),this);
+                frmCambioEmpresa frm = new frmCambioEmpresa(dgv.Rows[dgv.SelectedCells[0].RowIndex].Cells[20].Value.ToString(), this);
                 frm.ShowDialog();
             }
         }
@@ -674,7 +675,7 @@ namespace CapaPresentacion
                 progressBar.Invoke(mi);
             }
         }
-        
+
         private void ExportarExamPDF()
         {
             int intCont = 0;
@@ -735,7 +736,7 @@ namespace CapaPresentacion
                                 }
                             }
                         }
-                                                
+
                         //SubProceso02 = new Thread(Exportacion_A02);
                         //SubProceso02.Start();
 
@@ -747,16 +748,16 @@ namespace CapaPresentacion
             if (!ListaErrorEpirometria())
             {
                 MessageBox.Show("El proceso de exportación ha finalizado.", "Laboral", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                
+
             }
-            
+
             OcultarProgresoBarra();
-            blnActualizaLista = true;            
+            blnActualizaLista = true;
             SubProceso02.Join();
             //
             //ProcesoRefrescarLista();
         }
-        
+
         private void botImprimirEx_Click(object sender, EventArgs e)
         {
 
@@ -819,7 +820,7 @@ namespace CapaPresentacion
 
             string strIdExamenLaboral = r.Cells[17].Value.ToString();
             string strIdTipoExamenDePaciente = r.Cells[20].Value.ToString();
-            string strNombreArchivo = "";            
+            string strNombreArchivo = "";
 
             DataTable dtConsulta = examenLaboral.cargarParametrosLaboratorio(strIdExamenLaboral, tipoReporte);
             Reportes report = new Reportes(new rptProtocoloLaboratorioLaboral());
@@ -828,13 +829,13 @@ namespace CapaPresentacion
             strNombreArchivo = r.Cells[3].Value.ToString() + " - " + r.Cells[8].Value.ToString() + " - " + ConvertirFechaString(r.Cells[1].Value.ToString()) + " - " + r.Cells[9].Value.ToString() + " - L.pdf";
 
             if (dtConsulta.Rows.Count > 0)
-            {                
+            {
                 bool blnPerfilLipidico01 = string.IsNullOrEmpty(dtConsulta.Rows[0].ItemArray[31].ToString());
                 bool blnPerfilLipidico02 = string.IsNullOrEmpty(dtConsulta.Rows[0].ItemArray[32].ToString());
                 bool blnCreatininaArbitro = string.IsNullOrEmpty(dtConsulta.Rows[0].ItemArray[66].ToString());
                 bool blnTieneOrina = string.IsNullOrEmpty(dtConsulta.Rows[0].ItemArray[48].ToString());
 
-                if (dtConsulta.Rows[0].ItemArray[31].ToString() != "0" && dtConsulta.Rows[0].ItemArray[31].ToString() != "0") 
+                if (dtConsulta.Rows[0].ItemArray[31].ToString() != "0" && dtConsulta.Rows[0].ItemArray[31].ToString() != "0")
                 {
                     if (blnPerfilLipidico01 && blnPerfilLipidico02)
                     {
@@ -844,7 +845,7 @@ namespace CapaPresentacion
                     }
                 }
 
-                if (!blnCreatininaArbitro) 
+                if (!blnCreatininaArbitro)
                 {
                     if (dtConsulta.Rows[0].ItemArray[66].ToString() != "0")
                     {
@@ -856,17 +857,17 @@ namespace CapaPresentacion
 
                 if (blnTieneOrina)
                 {
-                    
-                        strTipoLaboratorio = "LIBRETA";
-                        //report = null;
-                        //report = new Reportes(new rptProtocoloLaboratorioLaboral02());
-                    
+
+                    strTipoLaboratorio = "LIBRETA";
+                    //report = null;
+                    //report = new Reportes(new rptProtocoloLaboratorioLaboral02());
+
                 }
             }
 
             //report.ExportarLaboratorio(dtConsulta, 
             //    UtilMepryl.CreaDirectorioPorFecha(Convert.ToDateTime(r.Cells[1].Value.ToString()), 4, "CLINICOS Y LABORATORIOS") + strNombreArchivo);
-            
+
             //report.ExportarLaboratorio(dtConsulta,
             //    rpt.ReporteSalida("LABORATORIO-LABORAL", false, Convert.ToDateTime(r.Cells[1].Value.ToString()), strNombreArchivo));
             rpt.LaboratorioLaboral(dtConsulta, strNombreArchivo, Convert.ToDateTime(r.Cells[1].Value.ToString()), strTipoLaboratorio, blnImprimir);
@@ -884,9 +885,9 @@ namespace CapaPresentacion
         }
 
         private void LanzarReporteAudiometria(string strNroOrden, DateTime dtFecha)
-        {               
-            ReporteAudiometria repAudio = new ReporteAudiometria();            
-            repAudio.GeneraAutoReporteAudiometria(dtFecha, strNroOrden); 
+        {
+            ReporteAudiometria repAudio = new ReporteAudiometria();
+            repAudio.GeneraAutoReporteAudiometria(dtFecha, strNroOrden);
         }
 
         private byte[] imageToArray(string DNI)
@@ -904,7 +905,7 @@ namespace CapaPresentacion
                 if (pbFoto.Image != null) { pbFoto.Image.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg); }
                 return ms.ToArray();
             }
-            catch (System.IO.FileNotFoundException ex) 
+            catch (System.IO.FileNotFoundException ex)
             {
                 return null;
             }
@@ -930,7 +931,7 @@ namespace CapaPresentacion
             int intCont = 0;
 
             if (dgv.Rows.Count > 0)
-            {                
+            {
                 if (resultExamen02 == DialogResult.Yes)
                 {
                     foreach (DataGridViewRow row in dgv.Rows)
@@ -940,10 +941,10 @@ namespace CapaPresentacion
                                 && row.Cells[17].Value.ToString() != "0")
                         {
                             ExportarOliveraPDF(row);
-                            ExportarProtocoloPDF(row, 2, false);                            
+                            ExportarProtocoloPDF(row, 2, false);
                             IncreProcesoBarra(++intCont);
                         }
-                    }                                            
+                    }
                 }
                 else if (resultExamen02 == DialogResult.No)
                 {
@@ -960,19 +961,19 @@ namespace CapaPresentacion
                                     && row.Cells[17].Value.ToString() != "0")
                                 {
                                     ExportarOliveraPDF(row);
-                                    ExportarProtocoloPDF(row, 2, false);                                    
+                                    ExportarProtocoloPDF(row, 2, false);
                                     IncreProcesoBarra(++intCont);
                                 }
                             }
-                        }                        
+                        }
                     }
                 }
             }
 
             MessageBox.Show("El proceso de exportación ha finalizado.", "Laboral", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            
+
             OcultarProgresoBarra();
-            blnActualizaLista = true;            
+            blnActualizaLista = true;
             SubProceso02.Join();
             //
             //ProcesoRefrescarLista();
@@ -1123,12 +1124,12 @@ namespace CapaPresentacion
             frm.ShowDialog();
         }
 
-        private void GenerarReporteEspirometria(string strDNI, string strIdExamenLaboral, string strFecha, string strIdentificador, string strArchivoSalida, bool blnOlivera )
+        private void GenerarReporteEspirometria(string strDNI, string strIdExamenLaboral, string strFecha, string strIdentificador, string strArchivoSalida, bool blnOlivera)
         {
             ReporteEspirometria reporte = new ReporteEspirometria();
             CapaNegocioMepryl.Reportes resultado = new CapaNegocioMepryl.Reportes();
             DataTable dt = null;
-            dt = resultado.ReporteEspirometria(strIdExamenLaboral, strDNI);            
+            dt = resultado.ReporteEspirometria(strIdExamenLaboral, strDNI);
             bool blnTieneInforme = false;
             bool blnTieneImagen = false;
 
@@ -1136,13 +1137,13 @@ namespace CapaPresentacion
             {
                 blnTieneInforme = (!string.IsNullOrEmpty(r.ItemArray[4].ToString()));
             }
-            
+
             if (blnTieneInforme)
             {
                 blnTieneImagen = reporte.CargarEtiquetas(strDNI, strIdExamenLaboral, strFecha, strIdentificador, strArchivoSalida, blnOlivera);
-                
+
                 if (!blnTieneImagen)
-                    RegistrarError(strFecha, strIdentificador, strDNI, "No hay imagen de espirometría");                
+                    RegistrarError(strFecha, strIdentificador, strDNI, "No hay imagen de espirometría");
             }
         }
 
@@ -1150,7 +1151,7 @@ namespace CapaPresentacion
         {
             dtMensajeError = new DataTable();
 
-            dtMensajeError.Columns.Add("Fecha",typeof(System.String));
+            dtMensajeError.Columns.Add("Fecha", typeof(System.String));
             dtMensajeError.Columns.Add("Orden", typeof(System.String));
             dtMensajeError.Columns.Add("DNI", typeof(System.String));
             dtMensajeError.Columns.Add("Mensaje", typeof(System.String));
@@ -1255,18 +1256,18 @@ namespace CapaPresentacion
             if (dt.Rows.Count > 0)
             {
                 foreach (DataRow r in dt.Rows)
-                {                    
+                {
                     strDirectorioClinico = r.ItemArray[0].ToString();
                     strDirectorioLaboratorio = r.ItemArray[1].ToString();
                     strDirectorioRX = r.ItemArray[2].ToString();
-                    strDirectorioECG = r.ItemArray[3].ToString();                    
+                    strDirectorioECG = r.ItemArray[3].ToString();
                     strDirectorioEspirometria = r.ItemArray[4].ToString();
                     strDirectorioEEG = r.ItemArray[5].ToString();
                     strDirectorioEcodoppler = r.ItemArray[6].ToString();
                     strDirectorioAudioMetria = r.ItemArray[7].ToString();
                     strDirectorioPsicotecnico = r.ItemArray[8].ToString();
                     strDirectorioErgometria = r.ItemArray[9].ToString();
-                    strDirectorioConsolidar = r.ItemArray[10].ToString();                    
+                    strDirectorioConsolidar = r.ItemArray[10].ToString();
                 }
             }
         }
@@ -1379,7 +1380,7 @@ namespace CapaPresentacion
 
             string strError = "";
             string strUltimaFecha = "";
-            
+
             dt = dtTempConsolidar;
             dtTempConsolidar = null;
 
@@ -1426,7 +1427,7 @@ namespace CapaPresentacion
                             CargarArchivoAudiometria(strDia, strMes, r.ItemArray[1].ToString(), strNombreMes, 10, strAnio, r.ItemArray[2].ToString(), Boolean.Parse(r.ItemArray[11].ToString()));
                             CargarArchivoOtoscopia(strDia, strMes, r.ItemArray[1].ToString(), strNombreMes, 11, strAnio, r.ItemArray[2].ToString(), Boolean.Parse(r.ItemArray[14].ToString()));
                             CargarArchivoErgometria(strDia, strMes, r.ItemArray[1].ToString(), strNombreMes, 12, strAnio, r.ItemArray[2].ToString(), Boolean.Parse(r.ItemArray[12].ToString()));
-                            CargarArchivoEspirometria(strDia, strMes, strAnio, r.ItemArray[1].ToString(), strNombreMes, 13, r.ItemArray[2].ToString(), Boolean.Parse(r.ItemArray[15].ToString()));                            
+                            CargarArchivoEspirometria(strDia, strMes, strAnio, r.ItemArray[1].ToString(), strNombreMes, 13, r.ItemArray[2].ToString(), Boolean.Parse(r.ItemArray[15].ToString()));
                             CargarArchivoPsicotecnico(strDia, strMes, r.ItemArray[1].ToString(), strNombreMes, 14, strAnio, r.ItemArray[2].ToString(), Boolean.Parse(r.ItemArray[10].ToString()));
                             CargarArchivoEEG(strDia, strMes, r.ItemArray[1].ToString(), strNombreMes, 15, strAnio, r.ItemArray[2].ToString(), Boolean.Parse(r.ItemArray[9].ToString()));
                             CargarArchivoEcoDoppler(r.ItemArray[2].ToString(), strMes, strDia, strNombreMes, r.ItemArray[1].ToString(), 16, strAnio, Boolean.Parse(r.ItemArray[13].ToString()));
@@ -1435,7 +1436,7 @@ namespace CapaPresentacion
                         {
                             CargarArchivoLaboratorio(r.ItemArray[2].ToString(), strMes, strDia, strNombreMes, r.ItemArray[1].ToString(), 6, strAnio, Boolean.Parse(r.ItemArray[6].ToString()));
                             CargarArchivoRX(strDia, strMes, strAnio, r.ItemArray[1].ToString(), strNombreMes, 7, r.ItemArray[2].ToString(), Boolean.Parse(r.ItemArray[8].ToString()));
-                            
+
                         }
 
                         //if (Int32.Parse(r.ItemArray[1].ToString()) < 200 || Int32.Parse(r.ItemArray[1].ToString()) > 399)
@@ -1474,10 +1475,10 @@ namespace CapaPresentacion
                         if (string.IsNullOrEmpty(strUltimaFecha))
                             strUltimaFecha = Convert.ToDateTime(r.ItemArray[0]).ToShortDateString();
                     }
-                }                
-            }            
+                }
+            }
             OcultarProgresoBarra();
-            
+
             blnActualizaLista = true;
             SubProceso01.Join();
         }
@@ -1670,7 +1671,7 @@ namespace CapaPresentacion
         private void CargarArchivoAudiometria(string Dia, string Mes, string NroOrden, string NombreMes, int Posicion, string Anio, string DNI, bool Requerido)
         {
             string strDirectorioBase = "";
-            
+
             //string strFecha = Dia + "/" + Mes + "/" + Anio;
             string strFecha = Dia + Mes + Anio;
             string strFiltro = NroOrden + "-" + strFecha + "-*.pdf";
@@ -1728,7 +1729,7 @@ namespace CapaPresentacion
             string strFecha = Dia + Mes + Anio;
             string strFiltro = NroOrden + "_" + strFecha + "_*.pdf";
             bool blnVeri01 = false;
-                        
+
             strArchivoOtoscop = strDirectorioAudioMetria + "\\" + Anio + "\\" + "OTOSCOPIA.pdf";
 
             if (Requerido)
@@ -1770,7 +1771,7 @@ namespace CapaPresentacion
 
         private void CargarArchivoEEG(string Dia, string Mes, string NroOrden, string NombreMes, int Posicion, string Anio, string DNI, bool Requerido)
         {
-            string strDirectorioBase = "";            
+            string strDirectorioBase = "";
             //string strFecha = Dia + "/" + Mes + "/" + Anio;
             string strFecha = Dia + Mes + Anio;
             string strFiltro = NroOrden + "-" + strFecha + "-*.pdf";
@@ -1821,7 +1822,7 @@ namespace CapaPresentacion
 
         private void CargarArchivoPsicotecnico(string Dia, string Mes, string NroOrden, string NombreMes, int Posicion, string Anio, string DNI, bool Requerido)
         {
-            string strDirectorioBase = "";            
+            string strDirectorioBase = "";
             //string strFecha = Dia + "/" + Mes + "/" + Anio;
             string strFecha = Dia + Mes + Anio;
             string strFiltro = NroOrden + "-" + strFecha + "-*.pdf";
@@ -1872,9 +1873,9 @@ namespace CapaPresentacion
 
         private void CargarArchivoErgometria(string Dia, string Mes, string NroOrden, string NombreMes, int Posicion, string Anio, string DNI, bool Requerido)
         {
-            string strDirectorioBase = "";            
+            string strDirectorioBase = "";
             //string strFecha = Dia + "/" + Mes + "/" + Anio;
-            string strFecha = Dia + "_" + Mes+ "_" + Anio;
+            string strFecha = Dia + "_" + Mes + "_" + Anio;
             string strFiltro = NroOrden + "_*_" + strFecha + ".pdf";
             bool blnVeri01 = false;
 
@@ -2118,7 +2119,7 @@ namespace CapaPresentacion
                     if (intProcesoActivo == 1)
                     {
                         bbiConsolidarEstudios.Enabled = true;
-                        MessageBox.Show("¡El proceso ha finalizado!.", "Laboral", MessageBoxButtons.OK, MessageBoxIcon.Information);                        
+                        MessageBox.Show("¡El proceso ha finalizado!.", "Laboral", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     else if (intProcesoActivo == 2)
                     {
@@ -2320,12 +2321,12 @@ namespace CapaPresentacion
             CapaNegocioMepryl.ExamenPreventiva preventiva = new CapaNegocioMepryl.ExamenPreventiva();
 
             DataTable dt = null;
-            string strMail = ""; 
+            string strMail = "";
             string strBody = "";
             string strAsunto = "";
             string strArchivo = "";
-            string strNombreEmpresa = "";            
-            string strNombrePaciente = "";            
+            string strNombreEmpresa = "";
+            string strNombrePaciente = "";
             bool blnEnviado = false;
             int intValor = 0;
             string strIdPaciente = "";
@@ -2335,7 +2336,7 @@ namespace CapaPresentacion
             dt = Paciente.MailPacientePorEmpresa(strIdPaciente, strIdEmpresa);
 
             foreach (DataRow fila in dt.Rows)
-            {                
+            {
                 strNombreEmpresa = fila["razonSocial"].ToString();
                 strNombrePaciente = fila["Apellido"].ToString() + " " + fila["Nombres"].ToString();
 
@@ -2346,7 +2347,7 @@ namespace CapaPresentacion
                 else
                 {
                     strMail = fila["Email"].ToString();
-                }                
+                }
             }
             dt = null;
 
@@ -2403,7 +2404,7 @@ namespace CapaPresentacion
             if (blnEnviado)
                 preventiva.actualizarEnvioMail(strIDTipoExamen);
 
-            
+
             actualizar();
         }
 
@@ -2473,7 +2474,7 @@ namespace CapaPresentacion
                                 && row.Cells[17].Value.ToString() != "0")
                         {
                             ExportarAudioPDF(row);
-                            
+
                             // Comentar
                             progressBar.PerformStep();
                             // Comentar
@@ -2508,7 +2509,7 @@ namespace CapaPresentacion
                                     && row.Cells[17].Value.ToString() != "0")
                                 {
                                     ExportarAudioPDF(row);
-                                    
+
                                     // Comentar
                                     progressBar.PerformStep();
                                     // Comentar
