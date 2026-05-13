@@ -69,43 +69,45 @@ namespace CapaPresentacion
         private void FormatoGrilla()
         {
             dgvGrilla.Columns.Clear();
-            dgvGrilla.Columns.Add("IdConsulta", "IdConsulta");
-            dgvGrilla.Columns.Add("IdPaciente", "IdPaciente");
-            dgvGrilla.Columns.Add("IdTipoExamen", "IdTipoExamen");
-            dgvGrilla.Columns.Add("IdTurno", "IdTurno");
-            dgvGrilla.Columns.Add("Fecha", "Fecha");
-            dgvGrilla.Columns.Add("Hora", "Hora");
-            dgvGrilla.Columns.Add("Orden", "Orden");
-            dgvGrilla.Columns.Add("Tipo", "Tipo");
-            dgvGrilla.Columns.Add("TipoExamen", "Subtipo de Examen");
-            dgvGrilla.Columns.Add("NroExamen", "Nº Examen");            
-            dgvGrilla.Columns.Add("Dni", "Dni");            
-            dgvGrilla.Columns.Add("Apellido", "Apellido");            
-            dgvGrilla.Columns.Add("Nombre", "Nombre");            
-            dgvGrilla.Columns.Add("ObservacTurno", "Observac. Turno");            
-            dgvGrilla.Columns.Add("ObservacMesaEntrada", "Observac. Mesa Entrada");            
-            dgvGrilla.Columns.Add("RM", "RM");            
-            dgvGrilla.Columns.Add("FechaNaci", "FechaNaci");            
+            dgvGrilla.Columns.Add("IdConsulta", "IdConsulta");              // 0  hidden
+            dgvGrilla.Columns.Add("IdPaciente", "IdPaciente");              // 1  hidden
+            dgvGrilla.Columns.Add("IdTipoExamen", "IdTipoExamen");          // 2  hidden
+            dgvGrilla.Columns.Add("IdTurno", "IdTurno");                    // 3  hidden
+            dgvGrilla.Columns.Add("Fecha", "Fecha");                        // 4
+            dgvGrilla.Columns.Add("Hora", "Hora");                          // 5
+            dgvGrilla.Columns.Add("Orden", "Orden");                        // 6
+            dgvGrilla.Columns.Add("Tipo", "Tipo");                          // 7  hidden
+            dgvGrilla.Columns.Add("TipoPadre", "Tipo");                     // 8  ← NUEVO
+            dgvGrilla.Columns.Add("TipoExamen", "Subtipo de Examen");       // 9
+            dgvGrilla.Columns.Add("NroExamen", "Nº Examen");                // 10
+            dgvGrilla.Columns.Add("Dni", "Dni");                            // 11
+            dgvGrilla.Columns.Add("Apellido", "Apellido");                  // 12
+            dgvGrilla.Columns.Add("Nombre", "Nombre");                      // 13
+            dgvGrilla.Columns.Add("ObservacTurno", "Observac. Turno");      // 14
+            dgvGrilla.Columns.Add("ObservacMesaEntrada", "Observac. Mesa Entrada"); // 15
+            dgvGrilla.Columns.Add("RM", "RM");                              // 16 hidden
+            dgvGrilla.Columns.Add("FechaNaci", "FechaNaci");                // 17 hidden
             
             dgvGrilla.Columns[0].Visible = false;
             dgvGrilla.Columns[1].Visible = false;
             dgvGrilla.Columns[2].Visible = false;
             dgvGrilla.Columns[3].Visible = false;
             dgvGrilla.Columns[7].Visible = false;
-            dgvGrilla.Columns[15].Visible = false;
             dgvGrilla.Columns[16].Visible = false;
+            dgvGrilla.Columns[17].Visible = false;
 
             dgvGrilla.Columns[4].Width = 100;
             dgvGrilla.Columns[5].Width = 50;
             dgvGrilla.Columns[6].Width = 50;
-            dgvGrilla.Columns[8].Width = 180;
-            dgvGrilla.Columns[9].Width = 70;
-            dgvGrilla.Columns[10].Width = 80;
-            dgvGrilla.Columns[11].Width = 170;
-            dgvGrilla.Columns[12].Width = 180;
-            dgvGrilla.Columns[13].Width = 100;
+            dgvGrilla.Columns[8].Width = 150;
+            dgvGrilla.Columns[9].Width = 200;
+            dgvGrilla.Columns[10].Width = 70;
+            dgvGrilla.Columns[11].Width = 80;
+            dgvGrilla.Columns[12].Width = 170;
+            dgvGrilla.Columns[13].Width = 180;
             dgvGrilla.Columns[14].Width = 100;
-            dgvGrilla.Columns[15].Width = 30;
+            dgvGrilla.Columns[15].Width = 100;
+            dgvGrilla.Columns[16].Width = 30;
         }
 
         public void cargarGrilla()
@@ -123,7 +125,7 @@ namespace CapaPresentacion
                 agregar(r.ItemArray[0], r.ItemArray[1], r.ItemArray[2], r.ItemArray[3],
                 r.ItemArray[4], r.ItemArray[5], r.ItemArray[6], r.ItemArray[7], r.ItemArray[8], r.ItemArray[9],
                 r.ItemArray[10], r.ItemArray[11], r.ItemArray[12], r.ItemArray[13], r.ItemArray[14], r.ItemArray[15],
-                r.ItemArray[16]);
+                r.ItemArray[16], r.ItemArray[17]);
 
                 Color color = Color.White;
                 switch (r.ItemArray[7].ToString())
@@ -194,10 +196,10 @@ namespace CapaPresentacion
         }
 
         private void agregar(object IdConsulta, object IdPaciente, object IdTipoExamen, object IdTurno, object Fecha, object Hora, object Orden,
-                object Tipo, object TipoExamen, object NroExamen, object Dni, object Apellido, object Nombre, object ObservacTurno, object ObservacMesaEntrada, object RM,
+                object Tipo, object TipoPadre, object TipoExamen, object NroExamen, object Dni, object Apellido, object Nombre, object ObservacTurno, object ObservacMesaEntrada, object RM,
                 object FechaNaci)
         {
-            dgvGrilla.Rows.Add(IdConsulta, IdPaciente, IdTipoExamen, IdTurno, Fecha, Hora, Orden, Tipo, TipoExamen, NroExamen, Dni, Apellido, Nombre, ObservacTurno, ObservacMesaEntrada, RM, FechaNaci);
+            dgvGrilla.Rows.Add(IdConsulta, IdPaciente, IdTipoExamen, IdTurno, Fecha, Hora, Orden, Tipo, TipoPadre, TipoExamen, NroExamen, Dni, Apellido, Nombre, ObservacTurno, ObservacMesaEntrada, RM, FechaNaci);
         }
 
         private void colorearFila(DataGridViewRow row, int Fila)
@@ -1878,7 +1880,7 @@ namespace CapaPresentacion
             strMotivoConsulta = mesaEntrada.verificarTipoPaciente(ConvierteStringGuid(strIdPaciente)).ToString();
             strTipoConsulta = dgvGrilla.Rows[dgvGrilla.SelectedCells[0].RowIndex].Cells[7].Value.ToString();
                         
-            frmMesaSelecTipoExamen frmTipoExamen = new frmMesaSelecTipoExamen(strMotivoConsulta, strIdPaciente, strIdEmpresa, strIdTurno, strIdTipoExamen, strIdConsulta, strTipoConsulta);                                 
+            frmMesaSelecSubtipoExamen frmTipoExamen = new frmMesaSelecSubtipoExamen(strMotivoConsulta, strIdPaciente, strIdEmpresa, strIdTurno, strIdTipoExamen, strIdConsulta, strTipoConsulta);                                 
             frmTipoExamen.ShowDialog();
             //CambiarTipoExamenInvalidarConsulta();
             inicializar();
@@ -2259,10 +2261,10 @@ namespace CapaPresentacion
             }
             else
             {
+                int colIndex = int.TryParse(Columna, out int col) ? col : 11;
                 foreach (DataGridViewRow row in grid.Rows)
                 {
-
-                    if (row.Cells[10].Value.ToString() == TextoABuscar)
+                    if (row.Cells[colIndex].Value.ToString() == TextoABuscar)
                     {
                         row.Selected = true;
                         return true;
@@ -2338,7 +2340,7 @@ namespace CapaPresentacion
             List<string> strLista = new List<string>();
             string strEmpresa = "";
             string strTarea = "";
-            string strNroExam = dgvGrilla.CurrentRow.Cells[9].Value.ToString();
+            string strNroExam = dgvGrilla.CurrentRow.Cells[10].Value.ToString();
             int result = 0;
 
             if (int.TryParse(strNroExam, out result))

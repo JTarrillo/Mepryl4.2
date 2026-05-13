@@ -26,6 +26,16 @@ namespace CapaNegocioMepryl
             return mesaEntrada.cargarTiposDeExamenBuscar(strBuscar);
         }
 
+        public DataTable cargarSubtiposDeExamenBuscar(string strBuscar)
+        {
+            return mesaEntrada.cargarSubtiposDeExamenBuscar(strBuscar);
+        }
+
+        public DataTable cargarSubtiposDePadre(string strIdSubtipoActual)
+        {
+            return mesaEntrada.cargarSubtiposDePadre(strIdSubtipoActual);
+        }
+
         public void ActualizaTipoExamenIDConsulta(string IdConsulta, string IdEspecialidad)
         {
             mesaEntrada.ActualizaTipoExamenIDConsulta(IdConsulta, IdEspecialidad);

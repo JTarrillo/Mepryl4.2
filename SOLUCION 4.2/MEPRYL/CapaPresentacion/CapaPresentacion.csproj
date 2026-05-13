@@ -1015,6 +1015,12 @@
     <Compile Include="frmMesaEntrada.designer.cs">
       <DependentUpon>frmMesaEntrada.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmMesaSelecSubtipoExamen.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmMesaSelecSubtipoExamen.Designer.cs">
+      <DependentUpon>frmMesaSelecSubtipoExamen.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmMesaSelecTipoExamen.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -2361,7 +2361,7 @@ namespace CapaPresentacion
             this.Text = "Paciente preventiva";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.frmPaciente_FormClosed);
             this.Load += new System.EventHandler(this.frmPaciente_Load);
-            this.Controls.SetChildIndex(this.rbcMenu, 0);
+            //this.Controls.SetChildIndex(this.rbcMenu, 0);
             this.Controls.SetChildIndex(this.panDerecha, 0);
             this.Controls.SetChildIndex(this.panAbajo, 0);
             this.Controls.SetChildIndex(this.panCentro, 0);

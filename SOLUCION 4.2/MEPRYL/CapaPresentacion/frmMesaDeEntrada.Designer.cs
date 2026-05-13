@@ -1237,7 +1237,7 @@
             this.botCambiarTipoExamen.Name = "botCambiarTipoExamen";
             this.botCambiarTipoExamen.Size = new System.Drawing.Size(120, 45);
             this.botCambiarTipoExamen.TabIndex = 274;
-            this.botCambiarTipoExamen.Text = "Mod. Tipo\r\nExámen";
+            this.botCambiarTipoExamen.Text = "Modificar\r\nSubtipo";
             this.botCambiarTipoExamen.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.botCambiarTipoExamen.UseVisualStyleBackColor = true;
             this.botCambiarTipoExamen.Click += new System.EventHandler(this.botCambiarTipoExamen_Click);

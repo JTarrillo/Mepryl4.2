@@ -63,6 +63,39 @@ namespace CapaDatosMepryl
             where descripcion LIKE '%" + strValor + "%' order by convert(int,codigo)");
         }
 
+        public DataTable cargarSubtiposDeExamenBuscar(string strValor)
+        {
+            string valorSeguro = strValor.Replace("'", "''");
+            return SQLConnector.obtenerTablaSegunConsultaString(
+                $@"SELECT e.id, e.descripcion
+                   FROM dbo.Especialidad e
+                   WHERE e.descripcion LIKE '%{valorSeguro}%'
+                     AND e.Padre = 0
+                     AND e.estado = 1
+                     AND e.id NOT IN (SELECT id FROM dbo.EspecialidadesEliminadas)
+                   ORDER BY CASE WHEN ISNUMERIC(e.codigo) = 1 THEN CONVERT(int, e.codigo) ELSE 999999 END, e.codigo");
+        }
+
+        public DataTable cargarSubtiposDePadre(string strIdTipoExamenDePaciente)
+        {
+            // strIdTipoExamenDePaciente = TipoExamenDePaciente.id (Cells[2] de la grilla)
+            // Se join a TipoExamenDePaciente->Especialidad para obtener el IdPadre del subtipo actual
+            string idSeguro = strIdTipoExamenDePaciente.Replace("'", "''");
+            return SQLConnector.obtenerTablaSegunConsultaString(
+                $@"SELECT e.id, e.descripcion
+                   FROM dbo.Especialidad e
+                   WHERE e.IdPadre = (
+                       SELECT TOP 1 esp.IdPadre
+                       FROM dbo.TipoExamenDePaciente tep
+                       INNER JOIN dbo.Especialidad esp ON esp.id = tep.idEspecialidad
+                       WHERE tep.id = '{idSeguro}'
+                   )
+                     AND e.Padre = 0
+                     AND e.estado = 1
+                     AND e.id NOT IN (SELECT id FROM dbo.EspecialidadesEliminadas)
+                   ORDER BY CASE WHEN ISNUMERIC(e.codigo) = 1 THEN CONVERT(int, e.codigo) ELSE 999999 END, e.codigo");
+        }
+
         public void ActualizaTipoExamenIDConsulta(string IdConsulta, string IdEspecialidad)
         {
             List<string> updateIdTipoExamen = SQLConnector.generarListaParaProcedure("@idConsulta", "@idEspecialidad");
@@ -86,24 +119,25 @@ namespace CapaDatosMepryl
         private DataTable crearTablaRetornoGrilla()
         {
             DataTable retorno = new DataTable();
-            retorno.Columns.Add("IdConsulta");
-            retorno.Columns.Add("IdPaciente");
-            retorno.Columns.Add("IdTipoExamen");
-            retorno.Columns.Add("IdTurno");
-            retorno.Columns.Add("Fecha");
-            retorno.Columns.Add("Hora");
-            retorno.Columns.Add("Orden");
-            retorno.Columns.Add("Tipo");
-            retorno.Columns.Add("Tipo Examen");
-            retorno.Columns.Add("Nº Examen");
-            retorno.Columns.Add("Dni");
-            retorno.Columns.Add("Apellido");
-            retorno.Columns.Add("Nombre");
-            retorno.Columns.Add("Observac. Turno");
-            retorno.Columns.Add("Observac. Mesa Entrada");
-            retorno.Columns.Add("RM");
-            retorno.Columns.Add("FechaNaci");
-            retorno.Columns[15].DataType = System.Type.GetType("System.Boolean");
+            retorno.Columns.Add("IdConsulta");           // 0
+            retorno.Columns.Add("IdPaciente");           // 1
+            retorno.Columns.Add("IdTipoExamen");         // 2
+            retorno.Columns.Add("IdTurno");              // 3
+            retorno.Columns.Add("Fecha");                // 4
+            retorno.Columns.Add("Hora");                 // 5
+            retorno.Columns.Add("Orden");                // 6
+            retorno.Columns.Add("Tipo");                 // 7 (P/L/EC...)
+            retorno.Columns.Add("TipoPadre");            // 8 ← NUEVO
+            retorno.Columns.Add("Tipo Examen");          // 9
+            retorno.Columns.Add("Nº Examen");            // 10
+            retorno.Columns.Add("Dni");                  // 11
+            retorno.Columns.Add("Apellido");             // 12
+            retorno.Columns.Add("Nombre");               // 13
+            retorno.Columns.Add("Observac. Turno");      // 14
+            retorno.Columns.Add("Observac. Mesa Entrada"); // 15
+            retorno.Columns.Add("RM");                   // 16
+            retorno.Columns.Add("FechaNaci");            // 17
+            retorno.Columns[16].DataType = System.Type.GetType("System.Boolean");
             return retorno;
         }
 
@@ -205,10 +239,12 @@ namespace CapaDatosMepryl
             COALESCE(p.apellido, pl.apellido) as Apellido,
             COALESCE(p.nombres, pl.nombres) as Nombres,
             COALESCE(CONVERT(VARCHAR(10), p.fechaNacimiento, 103), CONVERT(VARCHAR(10), pl.fechaNacimiento, 103)) as FechaNaci,
-            ISNULL(t.observaciones, '') as ObservacionesTurno
+            ISNULL(t.observaciones, '') as ObservacionesTurno,
+            ISNULL(ePadre.descripcion, e.descripcion) as TipoPadre
             from Consulta c
             inner join dbo.TipoExamenDePaciente te on te.idConsulta = c.id
             inner join dbo.Especialidad e on te.idEspecialidad = e.id
+            left join dbo.Especialidad ePadre on e.IdPadre = ePadre.id and e.Padre = 0
             left join dbo.Paciente p on p.id = c.pacienteID
             left join dbo.PacienteLaboral pl on pl.id = c.pacienteID
             left join dbo.Turno t on t.id = te.idTurno and te.idTurno <> '00000000-0000-0000-0000-000000000000'
@@ -232,10 +268,12 @@ namespace CapaDatosMepryl
             COALESCE(p.apellido, pl.apellido) as Apellido,
             COALESCE(p.nombres, pl.nombres) as Nombres,
             COALESCE(CONVERT(VARCHAR(10), p.fechaNacimiento, 103), CONVERT(VARCHAR(10), pl.fechaNacimiento, 103)) as FechaNaci,
-            ISNULL(t.observaciones, '') as ObservacionesTurno
+            ISNULL(t.observaciones, '') as ObservacionesTurno,
+            ISNULL(ePadre.descripcion, e.descripcion) as TipoPadre
             from Consulta c
             inner join dbo.TipoExamenDePaciente te on te.idConsulta = c.id
             inner join dbo.Especialidad e on te.idEspecialidad = e.id
+            left join dbo.Especialidad ePadre on e.IdPadre = ePadre.id and e.Padre = 0
             left join dbo.Paciente p on p.id = c.pacienteID
             left join dbo.PacienteLaboral pl on pl.id = c.pacienteID
             left join dbo.Turno t on t.id = te.idTurno and te.idTurno <> '00000000-0000-0000-0000-000000000000'
@@ -279,7 +317,9 @@ namespace CapaDatosMepryl
         {
             retorno.Rows.Add(fila.ItemArray[0], fila.ItemArray[1], fila.ItemArray[2], fila.ItemArray[3],
                 Convert.ToDateTime(fila.ItemArray[4]).ToShortDateString(), String.Format("{0:HH:mm}", Convert.ToDateTime(fila.ItemArray[4])),
-                fila.ItemArray[5], fila.ItemArray[6], fila.ItemArray[9].ToString() + " " + fila.ItemArray[11].ToString(), fila.ItemArray[7],
+                fila.ItemArray[5], fila.ItemArray[6],
+                fila[17] == DBNull.Value ? string.Empty : fila[17].ToString(),  // TipoPadre
+                fila.ItemArray[9].ToString() + " " + fila.ItemArray[11].ToString(), fila.ItemArray[7],
                 fila[12] == DBNull.Value ? string.Empty : fila[12].ToString(),
                 fila[13] == DBNull.Value ? string.Empty : fila[13].ToString(),
                 fila[14] == DBNull.Value ? string.Empty : fila[14].ToString(),
