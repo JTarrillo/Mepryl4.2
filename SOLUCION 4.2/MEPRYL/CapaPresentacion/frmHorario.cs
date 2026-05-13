@@ -405,6 +405,8 @@ namespace CapaPresentacion
 
         public override string validarDatosIngresados()
         {
+            if (cboSubtipo.SelectedIndex == -1 || cboSubtipo.SelectedValue == null)
+                return "Debe seleccionar un Subtipo de Examen.";
             return "";
         }
 
@@ -418,17 +420,9 @@ namespace CapaPresentacion
                 rglEntidad.profesionalID = new Guid(Utilidades.comboObtenerID(ref cboProfesional));
                 rglEntidad.profesionalTexto = cboProfesional.Text;
 
-                // Usar subtipo si está seleccionado, si no el tipo
-                if (cboSubtipo.SelectedValue != null && cboSubtipo.SelectedIndex != -1)
-                {
-                    rglEntidad.especialidadID = new Guid(cboSubtipo.SelectedValue.ToString());
-                    rglEntidad.especialidadTexto = cboSubtipo.Text;
-                }
-                else
-                {
-                    rglEntidad.especialidadID = new Guid(cboEspecialidad.SelectedValue.ToString());
-                    rglEntidad.especialidadTexto = cboEspecialidad.Text;
-                }
+                // Solo guardar si se seleccionó un subtipo (Padre=0)
+                rglEntidad.especialidadID = new Guid(cboSubtipo.SelectedValue.ToString());
+                rglEntidad.especialidadTexto = cboSubtipo.Text;
 
                 rglEntidad.domingo = chDomingo.Checked;
                 rglEntidad.lunes = chLunes.Checked;
@@ -578,16 +572,8 @@ namespace CapaPresentacion
                 //Toma los datos en memoria
                 string codigo = horario.codigo;
                 string profesionalTexto = cboProfesional.Text;
-                // Mostrar el subtipo si está seleccionado, si no el tipo
-                string especialidadTexto;
-                if (cboSubtipo.SelectedValue != null && cboSubtipo.SelectedIndex != -1)
-                {
-                    especialidadTexto = cboSubtipo.Text;
-                }
-                else
-                {
-                    especialidadTexto = cboEspecialidad.Text;
-                }
+                // Siempre usa el subtipo (validarDatosIngresados garantiza que está seleccionado)
+                string especialidadTexto = cboSubtipo.Text;
 
                 bool domingo = chDomingo.Checked;
                 bool lunes = chLunes.Checked;
