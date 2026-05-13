@@ -563,8 +563,10 @@ namespace CapaPresentacion
                 
                 cell.Value = value;
                 
-                // Recalcular todos los meses de esta fila usando el nuevo IPCBase como base
-                AplicarCalculoCoeficientesSucesivosFila(1, e.RowIndex);
+                // Solo recalcular si se definió un valor base individual (>0).
+                // Si es 0 significa "usar coeficiente global" → no cascadear desde ENERO 0.
+                if (value > 0)
+                    AplicarCalculoCoeficientesSucesivosFila(1, e.RowIndex);
             }
             else if (colName.StartsWith("colPromo"))
             {
@@ -577,10 +579,13 @@ namespace CapaPresentacion
                 
                 cell.Value = value;
                 
-                // Obtener el mes de la columna editada y aplicar cálculo sucesivo solo a la fila actual
-                // Solo actualizar meses que ya tenían valor (no llenar ceros desde edición directa de precio)
-                int mes = int.Parse(colName.Substring(8)); // "colPromo01" -> 8 para obtener "01"
-                AplicarCalculoCoeficientesSucesivosFila(mes, e.RowIndex, cascadeSoloConValores: true);
+                // Solo cascadear si el valor ingresado es > 0.
+                // Si es 0 (click sin editar, o borrado) no propagar, para no destruir meses siguientes.
+                if (value > 0)
+                {
+                    int mes = int.Parse(colName.Substring(8)); // "colPromo01" -> 8 para obtener "01"
+                    AplicarCalculoCoeficientesSucesivosFila(mes, e.RowIndex, cascadeSoloConValores: true);
+                }
             }
             else if (colName.StartsWith("colCoef"))
             {

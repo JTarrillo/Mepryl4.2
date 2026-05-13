@@ -128,7 +128,7 @@ namespace CapaPresentacion
             this.lblTitulo.Name = "lblTitulo";
             this.lblTitulo.Size = new System.Drawing.Size(1364, 40);
             this.lblTitulo.TabIndex = 0;
-            this.lblTitulo.Text = "  Precios al Público — Vista Anual";
+            this.lblTitulo.Text = "  Precios Promos";
             this.lblTitulo.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // pnlSuperior
@@ -445,6 +445,7 @@ namespace CapaPresentacion
             this.colMotivo.HeaderText = "Motivo";
             this.colMotivo.Name = "colMotivo";
             this.colMotivo.ReadOnly = true;
+            this.colMotivo.Visible = false;
             // 
             // colTipo
             // 
@@ -452,6 +453,7 @@ namespace CapaPresentacion
             this.colTipo.HeaderText = "Tipo";
             this.colTipo.Name = "colTipo";
             this.colTipo.ReadOnly = true;
+            this.colTipo.Visible = false;
             // 
             // colDescripcion
             // 
@@ -766,7 +768,7 @@ namespace CapaPresentacion
             this.tabConfig.Location = new System.Drawing.Point(4, 4);
             this.tabConfig.Name = "tabConfig";
             this.tabConfig.Padding = new System.Windows.Forms.Padding(3);
-            this.tabConfig.Size = new System.Drawing.Size(1206, 437);
+            this.tabConfig.Size = new System.Drawing.Size(1356, 379);
             this.tabConfig.TabIndex = 1;
             this.tabConfig.Text = "  Señas / Planilla";
             this.tabConfig.UseVisualStyleBackColor = true;
@@ -795,7 +797,7 @@ namespace CapaPresentacion
             this.dgvConfig.RowHeadersVisible = false;
             this.dgvConfig.RowTemplate.Height = 28;
             this.dgvConfig.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
-            this.dgvConfig.Size = new System.Drawing.Size(1200, 431);
+            this.dgvConfig.Size = new System.Drawing.Size(1350, 373);
             this.dgvConfig.TabIndex = 0;
             // 
             // colCfgIdEsp
