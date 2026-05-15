@@ -30,11 +30,13 @@ namespace CapaDatosMepryl
             DataTable rawTurnos = SQLConnector.obtenerTablaSegunConsultaString(
                 @"select t.id as Id, t.fecha as Fecha, t.horaReferencia as Hora, t.nroOrden as Orden,
                 e.descripcion as SubtipoExamen, e.precioBase as PrecioBase,
+                ISNULL(ePadre.descripcion, CASE WHEN e.Padre = 0 THEN e.descripcion ELSE NULL END) as TipoPadre,
                 t.observaciones as Observaciones, t.codigo as Codigo,
                 t.asistio, t.reserva, t.pacienteID, t.abono, t.reservado, t.ocultar
                 from dbo.Turno t
                 inner join dbo.Horario h on t.horarioID = h.id
                 inner join dbo.Especialidad e on h.especialidadID = e.id
+                left join dbo.Especialidad ePadre on e.IdPadre = ePadre.id
                 where t.fecha >= '" + fechaDesde + "' and t.fecha < '" + fechaHasta +
                 "' and (t.recepcion = '0' or t.recepcion is NULL) and t.habilitado = '1' " +
                 strFiltro + " order by t.fecha asc, t.hora asc, t.nroOrden asc");
@@ -153,6 +155,7 @@ namespace CapaDatosMepryl
                 string idTurno    = r["Id"].ToString();
                 string idPaciente = r["pacienteID"].ToString();
                 string fecha      = Convert.ToDateTime(r["Fecha"]).ToShortDateString();
+                string tipoPadre  = r["TipoPadre"] == DBNull.Value ? string.Empty : r["TipoPadre"].ToString();
 
                 dictTE.TryGetValue(idTurno, out var teData);
                 string idTE       = teData.idTE ?? string.Empty;
@@ -177,7 +180,8 @@ namespace CapaDatosMepryl
                     { dni = pacRow["dni"].ToString(); paciente = pacRow["Paciente"].ToString(); }
 
                     retorno.Rows.Add(asistio, abono, idTurno, fecha, r["Hora"],
-                        r["Orden"], r["SubtipoExamen"].ToString() + " " + modificado,
+                        r["Orden"], tipoPadre,
+                        r["SubtipoExamen"].ToString() + " " + modificado,
                         dni, paciente, importe, empresaClub,
                         r["Observaciones"], r["Codigo"], idPaciente,
                         reservado, idEmpresa, ocultar);
@@ -186,7 +190,8 @@ namespace CapaDatosMepryl
                 {
                     string paciente = "RESERVA " + r["reserva"].ToString().ToUpper();
                     retorno.Rows.Add(asistio, abono, idTurno, fecha, r["Hora"],
-                        r["Orden"], r["SubtipoExamen"],
+                        r["Orden"], tipoPadre,
+                        r["SubtipoExamen"],
                         string.Empty, paciente, importe, string.Empty,
                         string.Empty, r["Codigo"], Guid.Empty,
                         reservado, string.Empty, ocultar);
@@ -204,6 +209,7 @@ namespace CapaDatosMepryl
             retorno.Columns.Add("Fecha");
             retorno.Columns.Add("Hora");
             retorno.Columns.Add("Nro");
+            retorno.Columns.Add("Tipo");
             retorno.Columns.Add("Subtipo de Examen");
             retorno.Columns.Add("Dni");
             retorno.Columns.Add("Paciente");
@@ -217,8 +223,8 @@ namespace CapaDatosMepryl
             retorno.Columns.Add("Ocultar");
             retorno.Columns[0].DataType = typeof(bool);
             retorno.Columns[1].DataType = typeof(bool);
-            retorno.Columns[14].DataType = typeof(bool);
-            retorno.Columns[16].DataType = typeof(bool);
+            retorno.Columns[15].DataType = typeof(bool);
+            retorno.Columns[17].DataType = typeof(bool);
             return retorno;
         }
                 
@@ -253,21 +259,22 @@ namespace CapaDatosMepryl
             retorno.Columns.Add("Fecha");       // 3
             retorno.Columns.Add("Hora");        // 4
             retorno.Columns.Add("Nro");         // 5
-            retorno.Columns.Add("Subtipo de Examen");      // 6
-            retorno.Columns.Add("Dni");         // 7
-            retorno.Columns.Add("Paciente");    // 8
-            retorno.Columns.Add("Importe");     // 9
-            retorno.Columns.Add("EmpresaClub"); // 10
-            retorno.Columns.Add("Observaciones");   // 11
-            retorno.Columns.Add("Codigo");      // 12
-            retorno.Columns.Add("IdPaciente");  // 13
-            retorno.Columns.Add("Reservado");   // 14
-            retorno.Columns.Add("IdEmpresa");   // 15
-            retorno.Columns.Add("Ocultar");     // 16
+            retorno.Columns.Add("Tipo");        // 6
+            retorno.Columns.Add("Subtipo de Examen");      // 7
+            retorno.Columns.Add("Dni");         // 8
+            retorno.Columns.Add("Paciente");    // 9
+            retorno.Columns.Add("Importe");     // 10
+            retorno.Columns.Add("EmpresaClub"); // 11
+            retorno.Columns.Add("Observaciones");   // 12
+            retorno.Columns.Add("Codigo");      // 13
+            retorno.Columns.Add("IdPaciente");  // 14
+            retorno.Columns.Add("Reservado");   // 15
+            retorno.Columns.Add("IdEmpresa");   // 16
+            retorno.Columns.Add("Ocultar");     // 17
             retorno.Columns[0].DataType = System.Type.GetType("System.Boolean");
             retorno.Columns[1].DataType = System.Type.GetType("System.Boolean");
-            retorno.Columns[14].DataType = System.Type.GetType("System.Boolean");
-            retorno.Columns[16].DataType = System.Type.GetType("System.Boolean");
+            retorno.Columns[15].DataType = System.Type.GetType("System.Boolean");
+            retorno.Columns[17].DataType = System.Type.GetType("System.Boolean");
 
             if (filtro.Where(x => Char.IsDigit(x)).Any())
             {
@@ -277,6 +284,7 @@ namespace CapaDatosMepryl
             else
             {
                 procesarFiltro(ref retorno, tabla, filtro, "Paciente");
+                procesarFiltro(ref retorno, tabla, filtro, "Tipo");
                 procesarFiltro(ref retorno, tabla, filtro, "Subtipo de Examen");
                 procesarFiltro(ref retorno, tabla, filtro, "EmpresaClub");
             }

@@ -1720,7 +1720,7 @@ namespace CapaPresentacion
                                  "Jugador habilitado", MessageBoxButtons.OK, MessageBoxIcon.Information);
                             actualizarExamenes();
                             if (modo == 1) { this.Close(); frm.ingresarPaciente(); }
-                            if (modo == 2) { this.Close(); frm.botonBuscarDni.PerformClick(); }
+                            //if (modo == 2) { this.Close(); frm.botonBuscarDni.PerformClick(); }
                         }
                     }
                     else

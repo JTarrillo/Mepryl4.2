@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="14.0">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -557,6 +557,12 @@
     </Compile>
     <Compile Include="frmReplicarHorario.Designer.cs">
       <DependentUpon>frmReplicarHorario.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmSeleccionTipoSubtipoExamen.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmSeleccionTipoSubtipoExamen.Designer.cs">
+      <DependentUpon>frmSeleccionTipoSubtipoExamen.cs</DependentUpon>
     </Compile>
     <Compile Include="frmTransferenciaDeLegajos.cs">
       <SubType>Form</SubType>
@@ -1468,6 +1474,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmReplicarHorario.resx">
       <DependentUpon>frmReplicarHorario.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmSeleccionTipoSubtipoExamen.resx">
+      <DependentUpon>frmSeleccionTipoSubtipoExamen.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmTransferenciaDeLegajos.resx">
       <DependentUpon>frmTransferenciaDeLegajos.cs</DependentUpon>

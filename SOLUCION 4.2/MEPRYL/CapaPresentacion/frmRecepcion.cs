@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -136,13 +136,14 @@ namespace CapaPresentacion
                 dgv.Columns[3].Width = 90;   // Fecha
                 dgv.Columns[4].Width = 70;   // Hora
                 dgv.Columns[5].Width = 50;   // Nro
-                dgv.Columns[6].Width = 230;  // Subtipo de Examen ← MÁS GRANDE
-                dgv.Columns[7].Width = 90;   // DNI
-                dgv.Columns[8].Width = 220;  // Paciente ← MÁS GRANDE
-                dgv.Columns[9].Width = 100;  // Importe
-                dgv.Columns[10].Width = 120; // Club/Empresa
-                dgv.Columns[11].Width = 150; // Observaciones
-                dgv.Columns[12].Width = 80;  // Codigo
+                dgv.Columns[6].Width = 150;  // Tipo
+                dgv.Columns[7].Width = 230;  // Subtipo de Examen ← MÁS GRANDE
+                dgv.Columns[8].Width = 90;   // DNI
+                dgv.Columns[9].Width = 220;  // Paciente ← MÁS GRANDE
+                dgv.Columns[10].Width = 100;  // Importe
+                dgv.Columns[11].Width = 120; // Club/Empresa
+                dgv.Columns[12].Width = 150; // Observaciones
+                dgv.Columns[13].Width = 80;  // Codigo
             }
             catch (Exception ex)
             {
@@ -154,18 +155,18 @@ namespace CapaPresentacion
             dgv.Columns[0].Visible = true;   // Asistio
             dgv.Columns[1].Visible = true;   // Abono
             dgv.Columns[2].Visible = false;  // IdTurno (oculta)
-            dgv.Columns[13].Visible = false; // IdPaciente (oculta)
-            dgv.Columns[14].Visible = false; // Reservado (oculta)
-            dgv.Columns[15].Visible = false; // IdEmpresa (oculta)
-            dgv.Columns[16].Visible = true;  // Ocultar
-            dgv.Columns[10].HeaderText = "Club/Empresa";
+            dgv.Columns[14].Visible = false; // IdPaciente (oculta)
+            dgv.Columns[15].Visible = false; // Reservado (oculta)
+            dgv.Columns[16].Visible = false; // IdEmpresa (oculta)
+            dgv.Columns[17].Visible = true;  // Ocultar
+            dgv.Columns[11].HeaderText = "Club/Empresa";
         }
         public void registrarIngreso()
         {
             string apellido, nombre, dni;
-            dni = dgv.SelectedRows[0].Cells[7].Value.ToString();
-            apellido = dgv.SelectedRows[0].Cells[8].Value.ToString();
-            nombre = dgv.SelectedRows[0].Cells[9].Value.ToString();
+            dni = dgv.SelectedRows[0].Cells[8].Value.ToString();
+            apellido = dgv.SelectedRows[0].Cells[9].Value.ToString();
+            nombre = dgv.SelectedRows[0].Cells[10].Value.ToString();
             object asistioVal = dgv.SelectedRows[0].Cells[0].Value;
             if (asistioVal != null && asistioVal != DBNull.Value && Convert.ToBoolean(asistioVal))
             {
@@ -274,7 +275,7 @@ namespace CapaPresentacion
         {
             if (dgv.SelectedRows.Count > 0)
             {
-                if (ventanilla.verificarTipoPaciente(new Guid(dgv.SelectedRows[0].Cells[13].Value.ToString())) == 'P')
+                if (ventanilla.verificarTipoPaciente(new Guid(dgv.SelectedRows[0].Cells[14].Value.ToString())) == 'P')
                 {
                     editarPacientePreventiva();
                 }
@@ -293,7 +294,7 @@ namespace CapaPresentacion
         private void editarPacientePreventiva()
         {
             frmPaciente fPaciente = new frmPaciente(new Configuracion(), true);
-            fPaciente.mostarDatosDni(dgv.SelectedRows[0].Cells[7].Value.ToString());
+            fPaciente.mostarDatosDni(dgv.SelectedRows[0].Cells[8].Value.ToString());
             fPaciente.objDelegateDevolverID = new frmPaciente.DelegateDevolverID(recargarDatosPacientePreventiva);
             fPaciente.ShowDialog();
         }
@@ -301,7 +302,7 @@ namespace CapaPresentacion
         private void editarPacienteLaboral()
         {
             frmPacienteLaboral fPaciente = new frmPacienteLaboral();
-            fPaciente.cargarPacienteEspecifico(dgv.SelectedRows[0].Cells[15].Value.ToString(), dgv.SelectedRows[0].Cells[13].Value.ToString());
+            fPaciente.cargarPacienteEspecifico(dgv.SelectedRows[0].Cells[16].Value.ToString(), dgv.SelectedRows[0].Cells[14].Value.ToString());
             fPaciente.objDelegateDevolverID = new frmPacienteLaboral.DelegateDevolverID(recargarDatosPacienteLaboral);
             fPaciente.ShowDialog();
         }
@@ -386,7 +387,7 @@ namespace CapaPresentacion
                 botEditarExamen.Enabled = false;
                 if (dgv.CurrentCell != null && dgv.SelectedRows.Count > 0)
                 {
-                    object reservado14 = dgv.SelectedRows[0].Cells[14].Value;
+                    object reservado14 = dgv.SelectedRows[0].Cells[15].Value;
                     bool esReservado14 = reservado14 != null && reservado14 != DBNull.Value && Convert.ToBoolean(reservado14);
                     if (!esReservado14)
                     {
@@ -429,17 +430,17 @@ namespace CapaPresentacion
             {
                 ventanilla.actualizarAbono(new Guid(dgv.SelectedRows[0].Cells[2].Value.ToString()), obtenerValorBooleano(e.RowIndex, 1));
             }
-            if (e.ColumnIndex == 16 && e.RowIndex >= 0)
+            if (e.ColumnIndex == 17 && e.RowIndex >= 0)
             {
-                ventanilla.actualizarOcultar(dgv.SelectedRows[0].Cells[2].Value.ToString(), obtenerValorBooleano(e.RowIndex, 16));
+                ventanilla.actualizarOcultar(dgv.SelectedRows[0].Cells[2].Value.ToString(), obtenerValorBooleano(e.RowIndex, 17));
                 dgv.CurrentCell = null;
                 //ocultarFilasDgv();
-                if (obtenerValorBooleano(e.RowIndex, 16))
+                if (obtenerValorBooleano(e.RowIndex, 17))
                 {
                     if (rdbMostrarTodo.Checked)
                     {
                         dgv.Rows[e.RowIndex].DefaultCellStyle.BackColor = Color.MistyRose;
-                        dgv.Rows[e.RowIndex].Cells[16].Value = true;
+                        dgv.Rows[e.RowIndex].Cells[17].Value = true;
                     }
                     else
                     {
@@ -456,7 +457,7 @@ namespace CapaPresentacion
                     dgv.Rows[e.RowIndex].Visible = true;
                     cm.ResumeBinding();
                     dgv.Rows[e.RowIndex].DefaultCellStyle.BackColor = Color.White;
-                    dgv.Rows[e.RowIndex].Cells[16].Value = false;
+                    dgv.Rows[e.RowIndex].Cells[17].Value = false;
                 }
 
                 MostrarTotales();
@@ -563,7 +564,7 @@ namespace CapaPresentacion
                     cm.SuspendBinding();
                     for (int fila = 0; fila < dgv.Rows.Count; fila++)
                     {
-                        object ocultar16a = dgv.Rows[fila].Cells[16].Value;
+                        object ocultar16a = dgv.Rows[fila].Cells[17].Value;
                         blnOcultar = ocultar16a != null && ocultar16a != DBNull.Value && Convert.ToBoolean(ocultar16a);
                         dgv.Rows[fila].Visible = !blnOcultar;
                     }
@@ -573,7 +574,7 @@ namespace CapaPresentacion
                 {
                     for (int fila = 0; fila < dgv.Rows.Count; fila++)
                     {
-                        object ocultar16b = dgv.Rows[fila].Cells[16].Value;
+                        object ocultar16b = dgv.Rows[fila].Cells[17].Value;
                         blnOcultar = ocultar16b != null && ocultar16b != DBNull.Value && Convert.ToBoolean(ocultar16b);
 
                         if (blnOcultar)
@@ -680,7 +681,7 @@ namespace CapaPresentacion
             int totalReservas = 0;
             foreach (DataGridViewRow row in dgv.Rows)
             {
-                object ocultar = row.Cells[16].Value;
+                object ocultar = row.Cells[17].Value;
                 bool esOculto = ocultar != null && ocultar != DBNull.Value && Convert.ToBoolean(ocultar);
                 if (esOculto)
                 {
@@ -689,7 +690,7 @@ namespace CapaPresentacion
                 else
                 {
                     totalNoOcultos++;
-                    object reservado = row.Cells[14].Value;
+                    object reservado = row.Cells[15].Value;
                     if (reservado != null && reservado != DBNull.Value && Convert.ToBoolean(reservado))
                         totalReservas++;
                 }
@@ -740,13 +741,13 @@ namespace CapaPresentacion
             }
 
             Guid idTurno = new Guid(dgv.SelectedRows[0].Cells[2].Value.ToString());
-            string nombrePac = dgv.SelectedRows[0].Cells[8].Value.ToString().Trim();
-            string dniPac = dgv.SelectedRows[0].Cells[7].Value.ToString().Trim();
-            string especialidad = dgv.SelectedRows[0].Cells[6].Value.ToString().Trim();
+            string nombrePac = dgv.SelectedRows[0].Cells[9].Value.ToString().Trim();
+            string dniPac = dgv.SelectedRows[0].Cells[8].Value.ToString().Trim();
+            string especialidad = dgv.SelectedRows[0].Cells[7].Value.ToString().Trim();
 
             decimal precioBase = 0m;
-            if (dgv.SelectedRows[0].Cells[9].Value != null && dgv.SelectedRows[0].Cells[9].Value != DBNull.Value)
-                decimal.TryParse(dgv.SelectedRows[0].Cells[9].Value.ToString(), out precioBase);
+            if (dgv.SelectedRows[0].Cells[10].Value != null && dgv.SelectedRows[0].Cells[10].Value != DBNull.Value)
+                decimal.TryParse(dgv.SelectedRows[0].Cells[10].Value.ToString(), out precioBase);
 
             // Verificar si ya tiene factura emitida
             var negFactura = new CapaNegocioMepryl.FacturacionElectronica();

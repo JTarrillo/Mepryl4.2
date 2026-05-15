@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,6 +19,21 @@ namespace CapaNegocioMepryl
         public DataTable cargarTiposDeExamen(string idMotivoConsulta)
         {
             return mesaEntrada.cargarTiposDeExamen(idMotivoConsulta);
+        }
+
+        public DataTable cargarSubtiposDeTipoPadre(string idTipoPadre)
+        {
+            return mesaEntrada.cargarSubtiposDeTipoPadre(idTipoPadre);
+        }
+
+        public DataTable cargarTodosTiposYSubtipos(string idMotivoConsulta)
+        {
+            return mesaEntrada.cargarTodosTiposYSubtipos(idMotivoConsulta);
+        }
+
+        public DataTable obtenerEspecialidadPorIdTipoExamen(string idTipoExamen)
+        {
+            return mesaEntrada.obtenerEspecialidadPorIdTipoExamen(idTipoExamen);
         }
 
         public DataTable cargarTiposDeExamenBuscar(string strBuscar)

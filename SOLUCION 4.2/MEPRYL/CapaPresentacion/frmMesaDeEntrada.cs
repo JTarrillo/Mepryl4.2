@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -24,6 +24,7 @@ namespace CapaPresentacion
         //private string strTipoConsulta = "";
         private string strIdEmpresaNuevoConsultorio = "";
         private int intFilaSelecc = 0;
+        private string _idMotivoConsultaActual;
 
         CapaNegocioMepryl.ExamenPreventiva exPreventiva;
         CapaNegocioMepryl.MesaEntrada mesaEntrada;
@@ -55,10 +56,59 @@ namespace CapaPresentacion
 
         private void llenarComboBox(string idMotivoConsulta)
         {
+            _idMotivoConsultaActual = idMotivoConsulta;
             cbTipoDeExamen.DataSource = mesaEntrada.cargarTiposDeExamen(idMotivoConsulta);
             cbTipoDeExamen.ValueMember = "id";
             cbTipoDeExamen.DisplayMember = "descripcion";
             cbTipoDeExamen.SelectedIndex = -1;
+            btnSeleccionarTipoExamen.Text = "Seleccionar Tipo y Subtipo de Examen";
+            
+        }
+
+        private void btnSeleccionarTipoExamen_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(_idMotivoConsultaActual))
+            {
+                MessageBox.Show("Primero debe seleccionar un Motivo de Consulta", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            frmSeleccionTipoSubtipoExamen frm = new frmSeleccionTipoSubtipoExamen(_idMotivoConsultaActual, 
+                global::CapaPresentacion.Properties.Resources.cancelar, 
+                botonBuscarDni.Image);
+            frm.objDelegateSeleccionSubtipo += new frmSeleccionTipoSubtipoExamen.DelegateSeleccionSubtipo(RecibirSubtipoSeleccionado);
+            frm.objDelegateBuscarPaciente += new frmSeleccionTipoSubtipoExamen.DelegateBuscarPaciente(RecibirSubtipoYBuscarPaciente);
+            frm.ShowDialog(this);
+        }
+
+        private void RecibirSubtipoSeleccionado(string idSubtipo, string descripcionSubtipo)
+        {
+            // Actualizamos el combo oculto para que el código existente siga funcionando
+            DataTable dtTodosTipos = mesaEntrada.cargarTodosTiposYSubtipos(_idMotivoConsultaActual);
+            
+            if (dtTodosTipos != null && dtTodosTipos.Rows.Count > 0)
+            {
+                cbTipoDeExamen.DataSource = dtTodosTipos;
+                cbTipoDeExamen.ValueMember = "id";
+                cbTipoDeExamen.DisplayMember = "descripcion";
+
+                // Buscamos y seleccionamos el subtipo con force
+                cbTipoDeExamen.SelectedIndex = -1;
+                Application.DoEvents();
+                cbTipoDeExamen.SelectedValue = idSubtipo;
+            }
+
+            // Actualizamos el botón y el TextBox
+           
+        }
+
+        private void RecibirSubtipoYBuscarPaciente(string idSubtipo, string descripcionSubtipo)
+        {
+            // Primero, actualizamos el subtipo
+            RecibirSubtipoSeleccionado(idSubtipo, descripcionSubtipo);
+
+            // Luego, ejecutamos el botón "Buscar Paciente"
+            botonBuscarDni_Click(this, EventArgs.Empty);
         }
 
         public void clickBuscar()
@@ -101,6 +151,8 @@ namespace CapaPresentacion
             dgvGrilla.Columns[6].Width = 50;
             dgvGrilla.Columns[8].Width = 150;
             dgvGrilla.Columns[9].Width = 200;
+            dgvGrilla.Columns[9].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dgvGrilla.Columns[9].HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dgvGrilla.Columns[10].Width = 70;
             dgvGrilla.Columns[11].Width = 80;
             dgvGrilla.Columns[12].Width = 170;
@@ -571,6 +623,42 @@ namespace CapaPresentacion
                     tbTipoExamen.Text = tbTipoExamen.Text + " (*)";
                 }
 
+                // Cargar y seleccionar el tipo/subtipo correcto en cbTipoDeExamen
+                var cellValue = dgvGrilla.Rows[dgvGrilla.CurrentCell.RowIndex].Cells[2].Value;
+                if (cellValue != null)
+                {
+                    string idTipoExamen = cellValue.ToString();
+                    DataTable dtEspecialidad = mesaEntrada.obtenerEspecialidadPorIdTipoExamen(idTipoExamen);
+                    
+                    if (dtEspecialidad != null && dtEspecialidad.Rows.Count > 0)
+                    {
+                        var idEspecialidadValue = dtEspecialidad.Rows[0]["idEspecialidad"];
+                        var idMotivoConsultaValue = dtEspecialidad.Rows[0]["idMotivoConsulta"];
+                        
+                        if (idEspecialidadValue != null && idMotivoConsultaValue != null)
+                        {
+                            string idEspecialidad = idEspecialidadValue.ToString();
+                            string idMotivoConsulta = idMotivoConsultaValue.ToString();
+                            
+                            _idMotivoConsultaActual = idMotivoConsulta;
+                            
+                            DataTable dtTodosTipos = mesaEntrada.cargarTodosTiposYSubtipos(idMotivoConsulta);
+                            if (dtTodosTipos != null && dtTodosTipos.Rows.Count > 0)
+                            {
+                                cbTipoDeExamen.DataSource = dtTodosTipos;
+                                cbTipoDeExamen.ValueMember = "id";
+                                cbTipoDeExamen.DisplayMember = "descripcion";
+                                
+                                cbTipoDeExamen.SelectedIndex = -1;
+                                Application.DoEvents();
+                                cbTipoDeExamen.SelectedValue = idEspecialidad;
+                            }
+                            
+                            btnSeleccionarTipoExamen.Text = "Seleccionar Tipo y Subtipo de Examen";
+                        }
+                    }
+                }
+
                 //if (!PacientePre.DebeRealizarExamenRX(entidad.Dni))
                 //{
                 //    tbTipoExamen.Text = entidad.TipoExamen.Descripcion + " (*)";
@@ -706,10 +794,27 @@ namespace CapaPresentacion
             panelTurnos.Visible = true;
             panelDatos.Visible = false;
             dgvTurno.DataSource = mesaEntrada.cargarTurnosSegunMotivoDeConsulta(motivoConsulta);
+            dgvTurno.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            dgvTurno.Location = new Point(8, 61);
+            dgvTurno.Size = new Size(panelTurnos.ClientSize.Width - 16, panelTurnos.ClientSize.Height - 69);
             dgvTurno.Columns[0].Visible = false;
-            dgvTurno.Columns[9].Visible = false;
             dgvTurno.Columns[10].Visible = false;
             dgvTurno.Columns[11].Visible = false;
+            dgvTurno.Columns[12].Visible = false;
+            dgvTurno.Columns[1].Width = 80;  // Fecha
+            dgvTurno.Columns[2].Width = 60;  // Hora
+            dgvTurno.Columns[3].HeaderText = "Tipo";
+            dgvTurno.Columns[3].Width = 130;
+            dgvTurno.Columns[4].HeaderText = "Subtipo de Examen";
+            dgvTurno.Columns[4].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgvTurno.Columns[4].MinimumWidth = 200;
+            dgvTurno.Columns[4].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dgvTurno.Columns[4].HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dgvTurno.Columns[5].Width = 150; // Apellido
+            dgvTurno.Columns[6].Width = 150; // Nombre
+            dgvTurno.Columns[7].Width = 120; // MotivoConsulta
+            dgvTurno.Columns[8].Width = 80;  // Codigo
+            dgvTurno.Columns[9].Width = 200; // Observaciones
             botonRegresarRecepcion.Visible = false; // true // GRV modificado
         }
 

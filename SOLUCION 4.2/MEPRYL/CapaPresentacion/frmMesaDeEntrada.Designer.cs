@@ -1,4 +1,4 @@
-﻿namespace CapaPresentacion
+namespace CapaPresentacion
 {
     partial class frmMesaDeEntrada
     {
@@ -29,13 +29,13 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle13 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle14 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMesaDeEntrada));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle15 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle16 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle17 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle18 = new System.Windows.Forms.DataGridViewCellStyle();
             this.lbTitulo = new System.Windows.Forms.Label();
             this.timer = new System.Windows.Forms.Timer(this.components);
             this.dgvGrilla = new System.Windows.Forms.DataGridView();
@@ -57,6 +57,7 @@
             this.RM = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.FechaNaci = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.btnSeleccionarTipoExamen = new System.Windows.Forms.Button();
             this.cbTipoDeExamen = new System.Windows.Forms.ComboBox();
             this.label10 = new System.Windows.Forms.Label();
             this.tbTotalR = new System.Windows.Forms.TextBox();
@@ -71,7 +72,6 @@
             this.botonConsultorio = new System.Windows.Forms.RadioButton();
             this.label9 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
-            this.botonBuscarDni = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
             this.lblNroExamenDato = new System.Windows.Forms.Label();
             this.lblNroExamen = new System.Windows.Forms.Label();
@@ -126,6 +126,7 @@
             this.botCambiarTipoExamen = new System.Windows.Forms.Button();
             this.btnSalir = new System.Windows.Forms.Button();
             this.defaultLookAndFeel1 = new DevExpress.LookAndFeel.DefaultLookAndFeel(this.components);
+            this.botonBuscarDni = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgvGrilla)).BeginInit();
             this.panel3.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -182,14 +183,14 @@
             this.ObservacMesaEntrada,
             this.RM,
             this.FechaNaci});
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Tahoma", 8.25F);
-            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvGrilla.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle13.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle13.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle13.Font = new System.Drawing.Font("Tahoma", 8.25F);
+            dataGridViewCellStyle13.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            dataGridViewCellStyle13.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle13.SelectionForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle13.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvGrilla.DefaultCellStyle = dataGridViewCellStyle13;
             this.dgvGrilla.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvGrilla.GridColor = System.Drawing.Color.LightGray;
             this.dgvGrilla.Location = new System.Drawing.Point(0, 334);
@@ -197,10 +198,10 @@
             this.dgvGrilla.Name = "dgvGrilla";
             this.dgvGrilla.ReadOnly = true;
             this.dgvGrilla.RowHeadersWidth = 25;
-            dataGridViewCellStyle2.BackColor = System.Drawing.Color.WhiteSmoke;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.Black;
-            this.dgvGrilla.RowsDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle14.BackColor = System.Drawing.Color.WhiteSmoke;
+            dataGridViewCellStyle14.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle14.ForeColor = System.Drawing.Color.Black;
+            this.dgvGrilla.RowsDefaultCellStyle = dataGridViewCellStyle14;
             this.dgvGrilla.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
             this.dgvGrilla.Size = new System.Drawing.Size(1206, 265);
             this.dgvGrilla.TabIndex = 31;
@@ -321,7 +322,7 @@
             // 
             // panel3
             // 
-            this.panel3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel3.Controls.Add(this.btnSeleccionarTipoExamen);
             this.panel3.Controls.Add(this.cbTipoDeExamen);
             this.panel3.Controls.Add(this.label10);
             this.panel3.Controls.Add(this.tbTotalR);
@@ -334,13 +335,22 @@
             this.panel3.Controls.Add(this.botonClinica);
             this.panel3.Controls.Add(this.tbTotalP);
             this.panel3.Controls.Add(this.botonConsultorio);
-            this.panel3.Controls.Add(this.label9);
-            this.panel3.Controls.Add(this.label5);
-            this.panel3.Controls.Add(this.botonBuscarDni);
             this.panel3.Location = new System.Drawing.Point(7, 3);
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(253, 186);
             this.panel3.TabIndex = 271;
+            // 
+            // btnSeleccionarTipoExamen
+            // 
+            this.btnSeleccionarTipoExamen.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.btnSeleccionarTipoExamen.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnSeleccionarTipoExamen.Location = new System.Drawing.Point(11, 112);
+            this.btnSeleccionarTipoExamen.Name = "btnSeleccionarTipoExamen";
+            this.btnSeleccionarTipoExamen.Size = new System.Drawing.Size(225, 57);
+            this.btnSeleccionarTipoExamen.TabIndex = 25;
+            this.btnSeleccionarTipoExamen.Text = "Seleccionar Tipo y Subtipo de Examen";
+            this.btnSeleccionarTipoExamen.UseVisualStyleBackColor = true;
+            this.btnSeleccionarTipoExamen.Click += new System.EventHandler(this.btnSeleccionarTipoExamen_Click);
             // 
             // cbTipoDeExamen
             // 
@@ -348,10 +358,11 @@
             this.cbTipoDeExamen.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbTipoDeExamen.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cbTipoDeExamen.FormattingEnabled = true;
-            this.cbTipoDeExamen.Location = new System.Drawing.Point(11, 113);
+            this.cbTipoDeExamen.Location = new System.Drawing.Point(-1000, -1000);
             this.cbTipoDeExamen.Name = "cbTipoDeExamen";
-            this.cbTipoDeExamen.Size = new System.Drawing.Size(225, 24);
+            this.cbTipoDeExamen.Size = new System.Drawing.Size(1, 24);
             this.cbTipoDeExamen.TabIndex = 25;
+            this.cbTipoDeExamen.Visible = false;
             // 
             // label10
             // 
@@ -360,7 +371,7 @@
             this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label10.Location = new System.Drawing.Point(8, 8);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(122, 16);
+            this.label10.Size = new System.Drawing.Size(121, 16);
             this.label10.TabIndex = 274;
             this.label10.Text = "Motivo de Consulta";
             // 
@@ -501,9 +512,10 @@
             this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label9.Location = new System.Drawing.Point(8, 94);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(107, 16);
+            this.label9.Size = new System.Drawing.Size(106, 16);
             this.label9.TabIndex = 268;
             this.label9.Text = "Tipo de Exámen";
+            this.label9.Visible = false;
             // 
             // label5
             // 
@@ -512,24 +524,10 @@
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label5.Location = new System.Drawing.Point(7, 91);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(107, 16);
+            this.label5.Size = new System.Drawing.Size(106, 16);
             this.label5.TabIndex = 268;
             this.label5.Text = "Tipo de Exámen";
-            // 
-            // botonBuscarDni
-            // 
-            this.botonBuscarDni.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.botonBuscarDni.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.botonBuscarDni.Image = ((System.Drawing.Image)(resources.GetObject("botonBuscarDni.Image")));
-            this.botonBuscarDni.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.botonBuscarDni.Location = new System.Drawing.Point(11, 143);
-            this.botonBuscarDni.Name = "botonBuscarDni";
-            this.botonBuscarDni.Size = new System.Drawing.Size(225, 32);
-            this.botonBuscarDni.TabIndex = 267;
-            this.botonBuscarDni.Text = "Buscar Paciente";
-            this.botonBuscarDni.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.botonBuscarDni.UseVisualStyleBackColor = true;
-            this.botonBuscarDni.Click += new System.EventHandler(this.botonBuscarDni_Click);
+            this.label5.Visible = false;
             // 
             // panel2
             // 
@@ -538,9 +536,9 @@
             this.panel2.Controls.Add(this.lblNroExamen);
             this.panel2.Controls.Add(this.lblNroOrden);
             this.panel2.Controls.Add(this.lblNroOrdenDato);
-            this.panel2.Location = new System.Drawing.Point(7, 187);
+            this.panel2.Location = new System.Drawing.Point(7, 195);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(253, 91);
+            this.panel2.Size = new System.Drawing.Size(253, 83);
             this.panel2.TabIndex = 270;
             // 
             // lblNroExamenDato
@@ -597,6 +595,7 @@
             this.panelDatos.Controls.Add(this.tbDni);
             this.panelDatos.Controls.Add(this.botonActualiz);
             this.panelDatos.Controls.Add(this.label4);
+            this.panelDatos.Controls.Add(this.botonBuscarDni);
             this.panelDatos.Controls.Add(this.tbObsMesaEntrada);
             this.panelDatos.Controls.Add(this.lblObservacion);
             this.panelDatos.Controls.Add(this.lblTelefono);
@@ -604,9 +603,9 @@
             this.panelDatos.Controls.Add(this.lblNacimiento);
             this.panelDatos.Controls.Add(this.lblDni);
             this.panelDatos.Controls.Add(this.lblNombre);
-            this.panelDatos.Location = new System.Drawing.Point(250, 3);
+            this.panelDatos.Location = new System.Drawing.Point(262, 3);
             this.panelDatos.Name = "panelDatos";
-            this.panelDatos.Size = new System.Drawing.Size(1091, 275);
+            this.panelDatos.Size = new System.Drawing.Size(1079, 275);
             this.panelDatos.TabIndex = 269;
             // 
             // txtEmail
@@ -615,7 +614,7 @@
             this.txtEmail.BackColor = System.Drawing.Color.White;
             this.txtEmail.CharacterCasing = System.Windows.Forms.CharacterCasing.Lower;
             this.txtEmail.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtEmail.Location = new System.Drawing.Point(21, 202);
+            this.txtEmail.Location = new System.Drawing.Point(15, 202);
             this.txtEmail.Multiline = true;
             this.txtEmail.Name = "txtEmail";
             this.txtEmail.ReadOnly = true;
@@ -627,7 +626,7 @@
             this.label11.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label11.AutoSize = true;
             this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label11.Location = new System.Drawing.Point(18, 183);
+            this.label11.Location = new System.Drawing.Point(12, 183);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(43, 15);
             this.label11.TabIndex = 291;
@@ -649,7 +648,7 @@
             this.panel1.Controls.Add(this.botEditarExamenLaboral);
             this.panel1.Location = new System.Drawing.Point(701, -1);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(366, 275);
+            this.panel1.Size = new System.Drawing.Size(389, 275);
             this.panel1.TabIndex = 290;
             // 
             // tbEstudiosComplementarios
@@ -658,7 +657,7 @@
             this.tbEstudiosComplementarios.BackColor = System.Drawing.Color.White;
             this.tbEstudiosComplementarios.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
             this.tbEstudiosComplementarios.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbEstudiosComplementarios.Location = new System.Drawing.Point(20, 229);
+            this.tbEstudiosComplementarios.Location = new System.Drawing.Point(31, 229);
             this.tbEstudiosComplementarios.Multiline = true;
             this.tbEstudiosComplementarios.Name = "tbEstudiosComplementarios";
             this.tbEstudiosComplementarios.ReadOnly = true;
@@ -670,7 +669,7 @@
             this.label8.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label8.AutoSize = true;
             this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label8.Location = new System.Drawing.Point(17, 210);
+            this.label8.Location = new System.Drawing.Point(28, 210);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(128, 15);
             this.label8.TabIndex = 298;
@@ -682,7 +681,7 @@
             this.tbRx.BackColor = System.Drawing.Color.White;
             this.tbRx.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
             this.tbRx.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbRx.Location = new System.Drawing.Point(20, 170);
+            this.tbRx.Location = new System.Drawing.Point(31, 170);
             this.tbRx.Multiline = true;
             this.tbRx.Name = "tbRx";
             this.tbRx.ReadOnly = true;
@@ -694,7 +693,7 @@
             this.label7.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label7.AutoSize = true;
             this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label7.Location = new System.Drawing.Point(17, 151);
+            this.label7.Location = new System.Drawing.Point(28, 151);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(44, 15);
             this.label7.TabIndex = 296;
@@ -706,7 +705,7 @@
             this.tbLaboratorio.BackColor = System.Drawing.Color.White;
             this.tbLaboratorio.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
             this.tbLaboratorio.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbLaboratorio.Location = new System.Drawing.Point(20, 111);
+            this.tbLaboratorio.Location = new System.Drawing.Point(31, 111);
             this.tbLaboratorio.Multiline = true;
             this.tbLaboratorio.Name = "tbLaboratorio";
             this.tbLaboratorio.ReadOnly = true;
@@ -718,7 +717,7 @@
             this.label6.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.Location = new System.Drawing.Point(17, 92);
+            this.label6.Location = new System.Drawing.Point(28, 92);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(90, 15);
             this.label6.TabIndex = 294;
@@ -730,7 +729,7 @@
             this.tbClinico.BackColor = System.Drawing.Color.White;
             this.tbClinico.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
             this.tbClinico.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbClinico.Location = new System.Drawing.Point(20, 67);
+            this.tbClinico.Location = new System.Drawing.Point(31, 67);
             this.tbClinico.Name = "tbClinico";
             this.tbClinico.ReadOnly = true;
             this.tbClinico.Size = new System.Drawing.Size(250, 21);
@@ -741,7 +740,7 @@
             this.label3.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(17, 48);
+            this.label3.Location = new System.Drawing.Point(28, 48);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(64, 15);
             this.label3.TabIndex = 292;
@@ -753,7 +752,7 @@
             this.tbTipoExamen.BackColor = System.Drawing.Color.White;
             this.tbTipoExamen.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
             this.tbTipoExamen.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbTipoExamen.Location = new System.Drawing.Point(19, 23);
+            this.tbTipoExamen.Location = new System.Drawing.Point(30, 23);
             this.tbTipoExamen.Name = "tbTipoExamen";
             this.tbTipoExamen.ReadOnly = true;
             this.tbTipoExamen.Size = new System.Drawing.Size(171, 21);
@@ -764,7 +763,7 @@
             this.label2.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(16, 4);
+            this.label2.Location = new System.Drawing.Point(27, 4);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(80, 15);
             this.label2.TabIndex = 290;
@@ -775,7 +774,7 @@
             this.botEditarExamenLaboral.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.botEditarExamenLaboral.Image = ((System.Drawing.Image)(resources.GetObject("botEditarExamenLaboral.Image")));
             this.botEditarExamenLaboral.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.botEditarExamenLaboral.Location = new System.Drawing.Point(198, 8);
+            this.botEditarExamenLaboral.Location = new System.Drawing.Point(253, 6);
             this.botEditarExamenLaboral.Name = "botEditarExamenLaboral";
             this.botEditarExamenLaboral.Size = new System.Drawing.Size(105, 49);
             this.botEditarExamenLaboral.TabIndex = 289;
@@ -791,7 +790,7 @@
             this.botonEditarPaciente.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.botonEditarPaciente.Image = ((System.Drawing.Image)(resources.GetObject("botonEditarPaciente.Image")));
             this.botonEditarPaciente.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.botonEditarPaciente.Location = new System.Drawing.Point(241, 14);
+            this.botonEditarPaciente.Location = new System.Drawing.Point(229, 14);
             this.botonEditarPaciente.Name = "botonEditarPaciente";
             this.botonEditarPaciente.Size = new System.Drawing.Size(142, 34);
             this.botonEditarPaciente.TabIndex = 287;
@@ -806,7 +805,7 @@
             this.tbNombre.BackColor = System.Drawing.Color.White;
             this.tbNombre.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
             this.tbNombre.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbNombre.Location = new System.Drawing.Point(19, 110);
+            this.tbNombre.Location = new System.Drawing.Point(13, 110);
             this.tbNombre.Name = "tbNombre";
             this.tbNombre.ReadOnly = true;
             this.tbNombre.Size = new System.Drawing.Size(201, 22);
@@ -817,7 +816,7 @@
             this.label1.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(16, 91);
+            this.label1.Location = new System.Drawing.Point(10, 91);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(61, 15);
             this.label1.TabIndex = 286;
@@ -829,7 +828,7 @@
             this.tbObsTurno.BackColor = System.Drawing.Color.White;
             this.tbObsTurno.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
             this.tbObsTurno.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbObsTurno.Location = new System.Drawing.Point(233, 200);
+            this.tbObsTurno.Location = new System.Drawing.Point(227, 200);
             this.tbObsTurno.Multiline = true;
             this.tbObsTurno.Name = "tbObsTurno";
             this.tbObsTurno.ReadOnly = true;
@@ -843,7 +842,7 @@
             this.tbTelefono.BackColor = System.Drawing.Color.White;
             this.tbTelefono.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
             this.tbTelefono.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbTelefono.Location = new System.Drawing.Point(19, 155);
+            this.tbTelefono.Location = new System.Drawing.Point(13, 155);
             this.tbTelefono.Name = "tbTelefono";
             this.tbTelefono.ReadOnly = true;
             this.tbTelefono.Size = new System.Drawing.Size(201, 22);
@@ -855,7 +854,7 @@
             this.tbNacimiento.BackColor = System.Drawing.Color.White;
             this.tbNacimiento.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
             this.tbNacimiento.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbNacimiento.Location = new System.Drawing.Point(121, 21);
+            this.tbNacimiento.Location = new System.Drawing.Point(115, 21);
             this.tbNacimiento.Name = "tbNacimiento";
             this.tbNacimiento.ReadOnly = true;
             this.tbNacimiento.Size = new System.Drawing.Size(99, 22);
@@ -868,7 +867,7 @@
             this.tbApellido.BackColor = System.Drawing.Color.White;
             this.tbApellido.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
             this.tbApellido.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbApellido.Location = new System.Drawing.Point(19, 66);
+            this.tbApellido.Location = new System.Drawing.Point(13, 66);
             this.tbApellido.Name = "tbApellido";
             this.tbApellido.ReadOnly = true;
             this.tbApellido.Size = new System.Drawing.Size(201, 22);
@@ -880,7 +879,7 @@
             this.tbDni.BackColor = System.Drawing.Color.White;
             this.tbDni.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
             this.tbDni.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbDni.Location = new System.Drawing.Point(19, 21);
+            this.tbDni.Location = new System.Drawing.Point(13, 21);
             this.tbDni.Name = "tbDni";
             this.tbDni.ReadOnly = true;
             this.tbDni.Size = new System.Drawing.Size(96, 22);
@@ -891,7 +890,7 @@
             // 
             this.botonActualiz.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.botonActualiz.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.botonActualiz.Location = new System.Drawing.Point(619, 207);
+            this.botonActualiz.Location = new System.Drawing.Point(613, 207);
             this.botonActualiz.Name = "botonActualiz";
             this.botonActualiz.Size = new System.Drawing.Size(76, 46);
             this.botonActualiz.TabIndex = 279;
@@ -904,7 +903,7 @@
             this.label4.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(230, 181);
+            this.label4.Location = new System.Drawing.Point(224, 181);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(123, 15);
             this.label4.TabIndex = 277;
@@ -916,7 +915,7 @@
             this.tbObsMesaEntrada.BackColor = System.Drawing.Color.White;
             this.tbObsMesaEntrada.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
             this.tbObsMesaEntrada.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbObsMesaEntrada.Location = new System.Drawing.Point(432, 200);
+            this.tbObsMesaEntrada.Location = new System.Drawing.Point(426, 200);
             this.tbObsMesaEntrada.Multiline = true;
             this.tbObsMesaEntrada.Name = "tbObsMesaEntrada";
             this.tbObsMesaEntrada.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
@@ -928,7 +927,7 @@
             this.lblObservacion.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.lblObservacion.AutoSize = true;
             this.lblObservacion.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblObservacion.Location = new System.Drawing.Point(429, 181);
+            this.lblObservacion.Location = new System.Drawing.Point(423, 181);
             this.lblObservacion.Name = "lblObservacion";
             this.lblObservacion.Size = new System.Drawing.Size(185, 15);
             this.lblObservacion.TabIndex = 276;
@@ -939,7 +938,7 @@
             this.lblTelefono.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.lblTelefono.AutoSize = true;
             this.lblTelefono.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTelefono.Location = new System.Drawing.Point(16, 136);
+            this.lblTelefono.Location = new System.Drawing.Point(10, 136);
             this.lblTelefono.Name = "lblTelefono";
             this.lblTelefono.Size = new System.Drawing.Size(97, 15);
             this.lblTelefono.TabIndex = 274;
@@ -956,29 +955,29 @@
             this.dgvInformacionPaciente.BackgroundColor = System.Drawing.SystemColors.ButtonFace;
             this.dgvInformacionPaciente.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.dgvInformacionPaciente.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.ButtonFace;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Tahoma", 8.25F);
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvInformacionPaciente.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle15.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle15.BackColor = System.Drawing.SystemColors.ButtonFace;
+            dataGridViewCellStyle15.Font = new System.Drawing.Font("Tahoma", 8.25F);
+            dataGridViewCellStyle15.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle15.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle15.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle15.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvInformacionPaciente.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle15;
             this.dgvInformacionPaciente.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvInformacionPaciente.Enabled = false;
             this.dgvInformacionPaciente.GridColor = System.Drawing.SystemColors.GrayText;
-            this.dgvInformacionPaciente.Location = new System.Drawing.Point(233, 65);
+            this.dgvInformacionPaciente.Location = new System.Drawing.Point(227, 65);
             this.dgvInformacionPaciente.MultiSelect = false;
             this.dgvInformacionPaciente.Name = "dgvInformacionPaciente";
             this.dgvInformacionPaciente.ReadOnly = true;
             this.dgvInformacionPaciente.RowHeadersVisible = false;
             this.dgvInformacionPaciente.RowHeadersWidth = 30;
-            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.ButtonFace;
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle4.ForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.ButtonFace;
-            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.Color.Black;
-            this.dgvInformacionPaciente.RowsDefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle16.BackColor = System.Drawing.SystemColors.ButtonFace;
+            dataGridViewCellStyle16.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle16.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle16.SelectionBackColor = System.Drawing.SystemColors.ButtonFace;
+            dataGridViewCellStyle16.SelectionForeColor = System.Drawing.Color.Black;
+            this.dgvInformacionPaciente.RowsDefaultCellStyle = dataGridViewCellStyle16;
             this.dgvInformacionPaciente.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvInformacionPaciente.Size = new System.Drawing.Size(470, 101);
             this.dgvInformacionPaciente.TabIndex = 272;
@@ -988,7 +987,7 @@
             this.lblNacimiento.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.lblNacimiento.AutoSize = true;
             this.lblNacimiento.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblNacimiento.Location = new System.Drawing.Point(118, 2);
+            this.lblNacimiento.Location = new System.Drawing.Point(112, 2);
             this.lblNacimiento.Name = "lblNacimiento";
             this.lblNacimiento.Size = new System.Drawing.Size(107, 15);
             this.lblNacimiento.TabIndex = 273;
@@ -999,7 +998,7 @@
             this.lblDni.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.lblDni.AutoSize = true;
             this.lblDni.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblDni.Location = new System.Drawing.Point(16, 2);
+            this.lblDni.Location = new System.Drawing.Point(10, 2);
             this.lblDni.Name = "lblDni";
             this.lblDni.Size = new System.Drawing.Size(28, 15);
             this.lblDni.TabIndex = 271;
@@ -1010,7 +1009,7 @@
             this.lblNombre.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.lblNombre.AutoSize = true;
             this.lblNombre.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblNombre.Location = new System.Drawing.Point(16, 47);
+            this.lblNombre.Location = new System.Drawing.Point(10, 47);
             this.lblNombre.Name = "lblNombre";
             this.lblNombre.Size = new System.Drawing.Size(51, 15);
             this.lblNombre.TabIndex = 270;
@@ -1026,9 +1025,9 @@
             this.panelTurnos.Controls.Add(this.tbBusqueda);
             this.panelTurnos.Controls.Add(this.cboTipoBusqueda);
             this.panelTurnos.Controls.Add(this.dgvTurno);
-            this.panelTurnos.Location = new System.Drawing.Point(273, 3);
+            this.panelTurnos.Location = new System.Drawing.Point(262, 3);
             this.panelTurnos.Name = "panelTurnos";
-            this.panelTurnos.Size = new System.Drawing.Size(999, 275);
+            this.panelTurnos.Size = new System.Drawing.Size(1079, 275);
             this.panelTurnos.TabIndex = 270;
             // 
             // btnRecepcion
@@ -1052,7 +1051,7 @@
             this.botonRegresarRecepcion.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.botonRegresarRecepcion.Image = ((System.Drawing.Image)(resources.GetObject("botonRegresarRecepcion.Image")));
             this.botonRegresarRecepcion.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.botonRegresarRecepcion.Location = new System.Drawing.Point(588, 10);
+            this.botonRegresarRecepcion.Location = new System.Drawing.Point(628, 10);
             this.botonRegresarRecepcion.Name = "botonRegresarRecepcion";
             this.botonRegresarRecepcion.Size = new System.Drawing.Size(179, 45);
             this.botonRegresarRecepcion.TabIndex = 268;
@@ -1068,7 +1067,7 @@
             this.botonLimpiar.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.botonLimpiar.Image = ((System.Drawing.Image)(resources.GetObject("botonLimpiar.Image")));
             this.botonLimpiar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.botonLimpiar.Location = new System.Drawing.Point(513, 16);
+            this.botonLimpiar.Location = new System.Drawing.Point(553, 16);
             this.botonLimpiar.Name = "botonLimpiar";
             this.botonLimpiar.Size = new System.Drawing.Size(90, 32);
             this.botonLimpiar.TabIndex = 272;
@@ -1082,7 +1081,7 @@
             this.botonBuscar.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.botonBuscar.Image = ((System.Drawing.Image)(resources.GetObject("botonBuscar.Image")));
             this.botonBuscar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.botonBuscar.Location = new System.Drawing.Point(412, 16);
+            this.botonBuscar.Location = new System.Drawing.Point(452, 16);
             this.botonBuscar.Name = "botonBuscar";
             this.botonBuscar.Size = new System.Drawing.Size(95, 32);
             this.botonBuscar.TabIndex = 271;
@@ -1095,7 +1094,7 @@
             this.tbBusqueda.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.tbBusqueda.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
             this.tbBusqueda.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbBusqueda.Location = new System.Drawing.Point(129, 17);
+            this.tbBusqueda.Location = new System.Drawing.Point(169, 17);
             this.tbBusqueda.Name = "tbBusqueda";
             this.tbBusqueda.Size = new System.Drawing.Size(269, 22);
             this.tbBusqueda.TabIndex = 270;
@@ -1108,7 +1107,7 @@
             this.cboTipoBusqueda.Items.AddRange(new object[] {
             "Apellido",
             "Código"});
-            this.cboTipoBusqueda.Location = new System.Drawing.Point(8, 16);
+            this.cboTipoBusqueda.Location = new System.Drawing.Point(48, 16);
             this.cboTipoBusqueda.Name = "cboTipoBusqueda";
             this.cboTipoBusqueda.Size = new System.Drawing.Size(115, 24);
             this.cboTipoBusqueda.TabIndex = 269;
@@ -1124,23 +1123,23 @@
             this.dgvTurno.BackgroundColor = System.Drawing.SystemColors.ControlLight;
             this.dgvTurno.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.dgvTurno.ColumnHeadersHeight = 25;
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle5.Font = new System.Drawing.Font("Tahoma", 8.25F);
-            dataGridViewCellStyle5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.Color.LightGray;
-            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvTurno.DefaultCellStyle = dataGridViewCellStyle5;
-            this.dgvTurno.Location = new System.Drawing.Point(8, 61);
+            dataGridViewCellStyle17.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle17.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle17.Font = new System.Drawing.Font("Tahoma", 8.25F);
+            dataGridViewCellStyle17.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            dataGridViewCellStyle17.SelectionBackColor = System.Drawing.Color.LightGray;
+            dataGridViewCellStyle17.SelectionForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle17.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvTurno.DefaultCellStyle = dataGridViewCellStyle17;
+            this.dgvTurno.Location = new System.Drawing.Point(48, 61);
             this.dgvTurno.MultiSelect = false;
             this.dgvTurno.Name = "dgvTurno";
             this.dgvTurno.RowHeadersVisible = false;
             this.dgvTurno.RowHeadersWidth = 30;
-            dataGridViewCellStyle6.BackColor = System.Drawing.Color.WhiteSmoke;
-            dataGridViewCellStyle6.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle6.ForeColor = System.Drawing.Color.Black;
-            this.dgvTurno.RowsDefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle18.BackColor = System.Drawing.Color.WhiteSmoke;
+            dataGridViewCellStyle18.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle18.ForeColor = System.Drawing.Color.Black;
+            this.dgvTurno.RowsDefaultCellStyle = dataGridViewCellStyle18;
             this.dgvTurno.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvTurno.Size = new System.Drawing.Size(976, 209);
             this.dgvTurno.TabIndex = 261;
@@ -1263,6 +1262,22 @@
             // 
             this.defaultLookAndFeel1.LookAndFeel.SkinName = "Office 2016 Colorful";
             // 
+            // botonBuscarDni
+            // 
+            this.botonBuscarDni.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.botonBuscarDni.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.botonBuscarDni.Image = ((System.Drawing.Image)(resources.GetObject("botonBuscarDni.Image")));
+            this.botonBuscarDni.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.botonBuscarDni.Location = new System.Drawing.Point(426, 14);
+            this.botonBuscarDni.Name = "botonBuscarDni";
+            this.botonBuscarDni.Size = new System.Drawing.Size(225, 32);
+            this.botonBuscarDni.TabIndex = 267;
+            this.botonBuscarDni.Text = "Buscar Paciente";
+            this.botonBuscarDni.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.botonBuscarDni.UseVisualStyleBackColor = true;
+            this.botonBuscarDni.Visible = false;
+            this.botonBuscarDni.Click += new System.EventHandler(this.botonBuscarDni_Click);
+            // 
             // frmMesaDeEntrada
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1309,6 +1324,7 @@
         private System.Windows.Forms.Timer timer;
         private System.Windows.Forms.DataGridView dgvGrilla;
         private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.Button btnSeleccionarTipoExamen;
         private System.Windows.Forms.ComboBox cbTipoDeExamen;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.TextBox tbTotalR;
@@ -1323,7 +1339,6 @@
         private System.Windows.Forms.RadioButton botonConsultorio;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label5;
-        public System.Windows.Forms.Button botonBuscarDni;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Label lblNroExamenDato;
         private System.Windows.Forms.Label lblNroExamen;
@@ -1395,5 +1410,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn ObservacMesaEntrada;
         private System.Windows.Forms.DataGridViewCheckBoxColumn RM;
         private System.Windows.Forms.DataGridViewTextBoxColumn FechaNaci;
+        public System.Windows.Forms.Button botonBuscarDni;
     }
 }
