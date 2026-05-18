@@ -36,6 +36,11 @@ namespace CapaNegocioMepryl
             return mesaEntrada.obtenerEspecialidadPorIdTipoExamen(idTipoExamen);
         }
 
+        public DataTable obtenerInfoEspecialidad(string idTipoExamen)
+        {
+            return mesaEntrada.obtenerInfoEspecialidad(idTipoExamen);
+        }
+
         public DataTable cargarTiposDeExamenBuscar(string strBuscar)
         {
             return mesaEntrada.cargarTiposDeExamenBuscar(strBuscar);

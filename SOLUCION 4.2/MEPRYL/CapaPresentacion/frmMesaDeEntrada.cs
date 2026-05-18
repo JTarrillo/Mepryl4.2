@@ -61,7 +61,7 @@ namespace CapaPresentacion
             cbTipoDeExamen.ValueMember = "id";
             cbTipoDeExamen.DisplayMember = "descripcion";
             cbTipoDeExamen.SelectedIndex = -1;
-            btnSeleccionarTipoExamen.Text = "Seleccionar Tipo y Subtipo de Examen";
+
             
         }
 
@@ -654,7 +654,6 @@ namespace CapaPresentacion
                                 cbTipoDeExamen.SelectedValue = idEspecialidad;
                             }
                             
-                            btnSeleccionarTipoExamen.Text = "Seleccionar Tipo y Subtipo de Examen";
                         }
                     }
                 }

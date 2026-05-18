@@ -1,9 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 using CapaNegocioMepryl;
 
@@ -11,226 +8,112 @@ namespace CapaPresentacion
 {
     public partial class frmMesaSelecSubtipoExamen : Form
     {
-        private string strMotivoConsulta = "";
-        private string strResultado = "";
-        private string strIdEmpresa = "";
-        private string strIdPaciente = "";
-        private string strIdTurno = "";
-        private string strIdTipoExamen = "";
-        private string strIdConsulta = "";
-        private string strResultadoID = "";
-        private string strTipoConsulta = "";
+        private string _strMotivoConsulta;
+        private string _strIdPaciente;
+        private string _strIdEmpresa;
+        private string _strIdTurno;
+        private string _strIdTipoExamen;
+        private string _strIdConsulta;
+        private string _strTipoConsulta;
+        private string _idEspecialidadActual;
 
-        CapaNegocioMepryl.MesaEntrada mesaEntrada;
-        CapaNegocioMepryl.ExamenPreventiva exPreventiva;
+        private MesaEntrada _mesaEntrada;
 
         public frmMesaSelecSubtipoExamen(string MotivoConsulta, string IdPaciente, string IdEmpresa, string IdTurno, string IdTipoExamen, string IdConsulta, string TipoConsulta)
         {
             InitializeComponent();
-            strMotivoConsulta = MotivoConsulta;
-            strTipoConsulta = TipoConsulta;
-            strIdEmpresa = IdEmpresa;
-            strIdPaciente = IdPaciente;
-            strIdTurno = IdTurno;
-            strIdTipoExamen = IdTipoExamen;
-            strIdConsulta = IdConsulta;
+            _strMotivoConsulta = MotivoConsulta;
+            _strIdPaciente = IdPaciente;
+            _strIdEmpresa = IdEmpresa;
+            _strIdTurno = IdTurno;
+            _strIdTipoExamen = IdTipoExamen;
+            _strIdConsulta = IdConsulta;
+            _strTipoConsulta = TipoConsulta;
+            _mesaEntrada = new MesaEntrada();
+        }
+
+        private void frmMesaSelecSubtipoExamen_Load(object sender, EventArgs e)
+        {
+            DataTable dtInfo = _mesaEntrada.obtenerInfoEspecialidad(_strIdTipoExamen);
+            if (dtInfo == null || dtInfo.Rows.Count == 0)
+            {
+                MessageBox.Show("No se pudo obtener la información del tipo de examen.", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            string idEspecialidad = dtInfo.Rows[0]["idEspecialidad"].ToString();
+            string idPadre = dtInfo.Rows[0]["idPadre"].ToString();
+            string idMotivoConsulta = dtInfo.Rows[0]["idMotivoConsulta"].ToString();
+
+            DataTable dtTipos = _mesaEntrada.cargarTiposDeExamen(idMotivoConsulta);
+            cbTipoPadre.DataSource = dtTipos;
+            cbTipoPadre.ValueMember = "id";
+            cbTipoPadre.DisplayMember = "descripcion";
+            cbTipoPadre.SelectedIndex = -1;
+
+            // Asignar DESPUÉS del binding para que el SelectedIndexChanged disparado por DataSource
+            // no consuma _idEspecialidadActual prematuramente con el primer item
+            _idEspecialidadActual = idEspecialidad;
+
+            // Pre-seleccionar el padre actual (dispara SelectedIndexChanged que carga cbSubtipo)
+            if (Guid.TryParse(idPadre, out Guid guidPadre))
+                cbTipoPadre.SelectedValue = guidPadre;
+        }
+
+        private void cbTipoPadre_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cbTipoPadre.SelectedIndex == -1 || cbTipoPadre.SelectedValue == null) return;
+            string idPadre = cbTipoPadre.SelectedValue.ToString();
+            if (!Guid.TryParse(idPadre, out _)) return;
+
+            DataTable dtSubtipos = _mesaEntrada.cargarSubtiposDeTipoPadre(idPadre);
+            cbSubtipo.DataSource = dtSubtipos;
+            cbSubtipo.ValueMember = "id";
+            cbSubtipo.DisplayMember = "descripcion";
+            cbSubtipo.SelectedIndex = -1;
+
+            // Pre-seleccionar subtipo actual (solo en la carga inicial)
+            if (!string.IsNullOrEmpty(_idEspecialidadActual))
+            {
+                if (Guid.TryParse(_idEspecialidadActual, out Guid guidSubtipo))
+                    cbSubtipo.SelectedValue = guidSubtipo;
+                _idEspecialidadActual = null;
+            }
+        }
+
+        private void botAceptar_Click(object sender, EventArgs e)
+        {
+            if (cbTipoPadre.SelectedIndex == -1)
+            {
+                MessageBox.Show("Debe seleccionar un Tipo de Examen.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            if (cbSubtipo.SelectedIndex == -1)
+            {
+                MessageBox.Show("Debe seleccionar un Subtipo de Examen.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            string idSubtipo = cbSubtipo.SelectedValue.ToString();
+            string nombreSubtipo = cbSubtipo.Text;
+
+            if (_strMotivoConsulta == _strTipoConsulta)
+            {
+                _mesaEntrada.ActualizaTipoExamenIDConsulta(_strIdConsulta, idSubtipo);
+            }
+            else
+            {
+                frmMesaDeEntrada frmMesaEntrada = new frmMesaDeEntrada();
+                frmMesaEntrada.CambiarTipoExamen(nombreSubtipo, _strMotivoConsulta, _strIdPaciente, _strIdEmpresa, _strIdTurno, _strIdConsulta, idSubtipo);
+            }
+
+            this.Close();
         }
 
         private void botCancelar_Click(object sender, EventArgs e)
         {
             this.Close();
-        }
-
-        private void botAceptar_Click(object sender, EventArgs e)
-        {
-            if (!(string.IsNullOrEmpty(strResultado)))
-            {
-                if (strMotivoConsulta == strTipoConsulta)
-                {
-                    mesaEntrada.ActualizaTipoExamenIDConsulta(strIdConsulta, TipoExamenID());
-                }
-                else
-                {
-                    frmMesaDeEntrada frmMesaEntrada = new frmMesaDeEntrada();
-                    frmMesaEntrada.CambiarTipoExamen(NombreTipoExamen(), strMotivoConsulta, strIdPaciente, strIdEmpresa, strIdTurno, strIdConsulta, TipoExamenID());
-                }
-
-                this.Close();
-            }
-            else
-            {
-                MessageBox.Show("Debe seleccionar un Subtipo de Exámen", "Seleccionar Subtipo de Exámen",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-        }
-
-        private void botonPreventiva_CheckedChanged(object sender, EventArgs e)
-        {
-            if (botonPreventiva.Checked)
-            {
-                llenarGridView("1");
-                strMotivoConsulta = "P";
-            }
-            else
-            {
-                dgvGrilla.DataSource = null;
-            }
-        }
-
-        private void llenarGridView(string idMotivoConsulta)
-        {
-            mesaEntrada = new MesaEntrada();
-            dgvGrilla.DataSource = mesaEntrada.cargarTiposDeExamen(idMotivoConsulta);
-            dgvGrilla.Columns[0].Visible = false;
-            dgvGrilla.Columns[1].Width = 285;
-            dgvGrilla.RowHeadersVisible = false;
-            dgvGrilla.ColumnHeadersVisible = false;
-        }
-
-        private void BuscarGridView(string strValor)
-        {
-            mesaEntrada = new MesaEntrada();
-            dgvGrilla.DataSource = mesaEntrada.cargarSubtiposDeExamenBuscar(strValor);
-            dgvGrilla.Columns[0].Visible = false;
-            dgvGrilla.Columns[1].Width = 285;
-            dgvGrilla.RowHeadersVisible = false;
-            dgvGrilla.ColumnHeadersVisible = false;
-        }
-
-        private void llenarGridViewPorPadre(string strIdSubtipoActual)
-        {
-            if (string.IsNullOrEmpty(strIdSubtipoActual)) return;
-            mesaEntrada = new MesaEntrada();
-            DataTable dt = mesaEntrada.cargarSubtiposDePadre(strIdSubtipoActual);
-            if (dt != null && dt.Rows.Count > 0)
-            {
-                dgvGrilla.DataSource = dt;
-                dgvGrilla.Columns[0].Visible = false;
-                dgvGrilla.Columns[1].Width = 285;
-                dgvGrilla.RowHeadersVisible = false;
-                dgvGrilla.ColumnHeadersVisible = false;
-            }
-        }
-
-        private void botonLaboral_CheckedChanged(object sender, EventArgs e)
-        {
-            if (botonLaboral.Checked)
-            {
-                llenarGridView("2");
-                strMotivoConsulta = "L";
-            }
-            else
-            {
-                dgvGrilla.DataSource = null;
-            }
-        }
-
-        private void botonClinica_CheckedChanged(object sender, EventArgs e)
-        {
-            if (botonClinica.Checked)
-            {
-                llenarGridView("3");
-                strMotivoConsulta = "EC";
-            }
-            else
-            {
-                dgvGrilla.DataSource = null;
-            }
-        }
-
-        private void botonConsultorio_CheckedChanged(object sender, EventArgs e)
-        {
-            if (botonConsultorio.Checked)
-            {
-                llenarGridView("4");
-                strMotivoConsulta = "CO";
-            }
-            else
-            {
-                dgvGrilla.DataSource = null;
-            }
-        }
-
-        private void botonRepeticion_CheckedChanged(object sender, EventArgs e)
-        {
-            if (botonRepeticion.Checked)
-            {
-                llenarGridView("5");
-                strMotivoConsulta = "R";
-            }
-            else
-            {
-                dgvGrilla.DataSource = null;
-            }
-        }
-
-        private void txtBuscar_TextChanged(object sender, EventArgs e)
-        {
-            BuscarGridView(txtBuscar.Text);
-        }
-
-        private void frmMesaSelecSubtipoExamen_Load(object sender, EventArgs e)
-        {
-            switch (strMotivoConsulta)
-            {
-                case "P":
-                    botonLaboral.Enabled = false;
-                    botonPreventiva.Checked = true;
-                    break;
-                case "L":
-                    botonPreventiva.Enabled = false;
-                    botonLaboral.Checked = true;
-                    break;
-            }
-            // Cascada: carga solo los subtipos del mismo tipo padre que el examen actual
-            llenarGridViewPorPadre(strIdTipoExamen);
-        }
-
-        private void IDTipoDeExamen(int intRowIndex)
-        {
-            strResultado = dgvGrilla.Rows[intRowIndex].Cells[1].Value.ToString();
-            strResultadoID = dgvGrilla.Rows[intRowIndex].Cells[0].Value.ToString();
-        }
-
-        public string NombreTipoExamen()
-        {
-            return strResultado;
-        }
-
-        private string TipoExamenID()
-        {
-            return strResultadoID;
-        }
-
-        private void dgvGrilla_CellClick(object sender, DataGridViewCellEventArgs e)
-        {
-            if ((e.RowIndex > -1))
-            {
-                IDTipoDeExamen(e.RowIndex);
-            }
-        }
-
-        private void dgvGrilla_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
-        {
-            if (e.RowIndex > -1)
-            {
-                IDTipoDeExamen(e.RowIndex);
-            }
-            botAceptar.PerformClick();
-        }
-
-        private void invalidarConsulta()
-        {
-            try
-            {
-                exPreventiva = new ExamenPreventiva();
-                exPreventiva.eliminarExamen(strIdTipoExamen, strIdConsulta);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Elimine manualmente el ingreso duplicado. Error:\n\n" + ex.ToString(),
-                        "Eliminar Consulta", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
         }
     }
 }

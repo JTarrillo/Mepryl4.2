@@ -614,6 +614,18 @@ namespace CapaDatosMepryl
                 WHERE tep.id = '{idSeguro}'");
         }
 
+        public DataTable obtenerInfoEspecialidad(string idTipoExamen)
+        {
+            string idSeguro = idTipoExamen.Replace("'", "''");
+            return SQLConnector.obtenerTablaSegunConsultaString($@"
+                SELECT esp.id as idEspecialidad,
+                       ISNULL(esp.idPadre, esp.id) as idPadre,
+                       CAST(esp.idMotivoConsulta AS nvarchar(10)) as idMotivoConsulta
+                FROM dbo.TipoExamenDePaciente tep
+                INNER JOIN dbo.Especialidad esp ON esp.id = tep.idEspecialidad
+                WHERE tep.id = '{idSeguro}'");
+        }
+
         public Entidades.Resultado ingresarTurno(Guid idTurno)
         {
             Entidades.Resultado retorno = new Entidades.Resultado();

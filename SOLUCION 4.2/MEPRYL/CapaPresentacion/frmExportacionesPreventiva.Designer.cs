@@ -127,12 +127,6 @@
             // 
             // ribbonPageGroup1
             // 
-            this.ribbonPageGroup1.ItemLinks.Add(this.bbiExpWeb);
-            this.ribbonPageGroup1.ItemLinks.Add(this.bbiDataSMS);
-            this.ribbonPageGroup1.ItemLinks.Add(this.bbiExpMedida);
-            this.ribbonPageGroup1.ItemLinks.Add(this.bbiExportarMesaEnt);
-            this.ribbonPageGroup1.ItemLinks.Add(this.bbiExportarConsolidadoPreventiva);
-            this.ribbonPageGroup1.ItemLinks.Add(this.bbiCrearTablaJumpy);
             this.ribbonPageGroup1.Name = "ribbonPageGroup1";
             this.ribbonPageGroup1.ShowCaptionButton = false;
             // 

@@ -46,7 +46,7 @@ namespace CapaPresentacion
         {
             DataTable consulta = SQLConnector.obtenerTablaSegunConsultaString(@"select c.id, c.pacienteID, tep.id, CONVERT(date, c.fecha), 
             e.descripcion, c.nroOrden, c.identificador,
-            c.tipo, tep.modificado from dbo.Consulta c inner join
+            c.tipo, tep.modificado, e.Padre, e.id as idEspecialidad, e.idMotivoConsulta from dbo.Consulta c inner join
             dbo.TipoExamenDePaciente tep on tep.idConsulta = c.id inner join dbo.Especialidad e on tep.idEspecialidad
             = e.id inner join dbo.MotivoDeConsulta mc on e.idMotivoConsulta = mc.id where Convert(Date,c.fecha) >= '" + fechaDesde + @"' 
             and Convert(Date,c.fecha) <= '" + fechaHasta + "' and c.nroOrden > 0 order by c.fecha asc, convert(int,c.nroOrden)");
@@ -78,7 +78,7 @@ namespace CapaPresentacion
             string fechaHasta = tpHasta.Value.ToShortDateString();
             DataTable consulta = SQLConnector.obtenerTablaSegunConsultaString(@"select c.id, c.pacienteID, tep.id, CONVERT(date, c.fecha), 
             e.descripcion, c.nroOrden, c.identificador,
-            c.tipo, tep.modificado from dbo.Consulta c inner join
+            c.tipo, tep.modificado, e.Padre, e.id as idEspecialidad, e.idMotivoConsulta from dbo.Consulta c inner join
             dbo.TipoExamenDePaciente tep on tep.idConsulta = c.id inner join dbo.Especialidad e on tep.idEspecialidad
             = e.id inner join dbo.MotivoDeConsulta mc on e.idMotivoConsulta = mc.id where Convert(Date,c.fecha) >= '" + fechaDesde + @"' 
             and Convert(Date,c.fecha) <= '" + fechaHasta + "'" + filtro + " and c.nroOrden > 0 order by c.fecha asc, convert(int,c.nroOrden) asc");
@@ -121,6 +121,8 @@ namespace CapaPresentacion
             retorno.Columns.Add("dni");
             retorno.Columns.Add("tipoConsulta");
             retorno.Columns.Add("nacimiento");
+            retorno.Columns.Add("esPadre");       // [12] 1=mal guardado, 0=correcto
+            retorno.Columns.Add("idMotivoConsulta"); // [13]
 
             foreach (DataRow r in consulta.Rows)
             {
@@ -138,7 +140,8 @@ namespace CapaPresentacion
                     }
                     retorno.Rows.Add(r.ItemArray[0], r.ItemArray[1], r.ItemArray[2], r.ItemArray[3],
                     r.ItemArray[4].ToString() + " " + r.ItemArray[8].ToString(), r.ItemArray[5], r.ItemArray[6], ((DataRow)dr).ItemArray[1], ((DataRow)dr).ItemArray[2],
-                    ((DataRow)dr).ItemArray[0], r.ItemArray[7], nacimientoString);
+                    ((DataRow)dr).ItemArray[0], r.ItemArray[7], nacimientoString,
+                    r.ItemArray[9], r.ItemArray[11]); // esPadre, idMotivoConsulta
 
                 }
                 progressBar.PerformStep();

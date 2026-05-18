@@ -29,13 +29,13 @@ namespace CapaPresentacion
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle13 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle14 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMesaDeEntrada));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle15 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle16 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle17 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle18 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
             this.lbTitulo = new System.Windows.Forms.Label();
             this.timer = new System.Windows.Forms.Timer(this.components);
             this.dgvGrilla = new System.Windows.Forms.DataGridView();
@@ -57,7 +57,6 @@ namespace CapaPresentacion
             this.RM = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.FechaNaci = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.panel3 = new System.Windows.Forms.Panel();
-            this.btnSeleccionarTipoExamen = new System.Windows.Forms.Button();
             this.cbTipoDeExamen = new System.Windows.Forms.ComboBox();
             this.label10 = new System.Windows.Forms.Label();
             this.tbTotalR = new System.Windows.Forms.TextBox();
@@ -102,6 +101,7 @@ namespace CapaPresentacion
             this.tbDni = new System.Windows.Forms.TextBox();
             this.botonActualiz = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
+            this.botonBuscarDni = new System.Windows.Forms.Button();
             this.tbObsMesaEntrada = new System.Windows.Forms.TextBox();
             this.lblObservacion = new System.Windows.Forms.Label();
             this.lblTelefono = new System.Windows.Forms.Label();
@@ -126,7 +126,6 @@ namespace CapaPresentacion
             this.botCambiarTipoExamen = new System.Windows.Forms.Button();
             this.btnSalir = new System.Windows.Forms.Button();
             this.defaultLookAndFeel1 = new DevExpress.LookAndFeel.DefaultLookAndFeel(this.components);
-            this.botonBuscarDni = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgvGrilla)).BeginInit();
             this.panel3.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -183,14 +182,14 @@ namespace CapaPresentacion
             this.ObservacMesaEntrada,
             this.RM,
             this.FechaNaci});
-            dataGridViewCellStyle13.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle13.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle13.Font = new System.Drawing.Font("Tahoma", 8.25F);
-            dataGridViewCellStyle13.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            dataGridViewCellStyle13.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle13.SelectionForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle13.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvGrilla.DefaultCellStyle = dataGridViewCellStyle13;
+            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle7.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle7.Font = new System.Drawing.Font("Tahoma", 8.25F);
+            dataGridViewCellStyle7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            dataGridViewCellStyle7.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle7.SelectionForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvGrilla.DefaultCellStyle = dataGridViewCellStyle7;
             this.dgvGrilla.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvGrilla.GridColor = System.Drawing.Color.LightGray;
             this.dgvGrilla.Location = new System.Drawing.Point(0, 334);
@@ -198,10 +197,10 @@ namespace CapaPresentacion
             this.dgvGrilla.Name = "dgvGrilla";
             this.dgvGrilla.ReadOnly = true;
             this.dgvGrilla.RowHeadersWidth = 25;
-            dataGridViewCellStyle14.BackColor = System.Drawing.Color.WhiteSmoke;
-            dataGridViewCellStyle14.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle14.ForeColor = System.Drawing.Color.Black;
-            this.dgvGrilla.RowsDefaultCellStyle = dataGridViewCellStyle14;
+            dataGridViewCellStyle8.BackColor = System.Drawing.Color.WhiteSmoke;
+            dataGridViewCellStyle8.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle8.ForeColor = System.Drawing.Color.Black;
+            this.dgvGrilla.RowsDefaultCellStyle = dataGridViewCellStyle8;
             this.dgvGrilla.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
             this.dgvGrilla.Size = new System.Drawing.Size(1206, 265);
             this.dgvGrilla.TabIndex = 31;
@@ -322,7 +321,6 @@ namespace CapaPresentacion
             // 
             // panel3
             // 
-            this.panel3.Controls.Add(this.btnSeleccionarTipoExamen);
             this.panel3.Controls.Add(this.cbTipoDeExamen);
             this.panel3.Controls.Add(this.label10);
             this.panel3.Controls.Add(this.tbTotalR);
@@ -337,20 +335,8 @@ namespace CapaPresentacion
             this.panel3.Controls.Add(this.botonConsultorio);
             this.panel3.Location = new System.Drawing.Point(7, 3);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(253, 186);
+            this.panel3.Size = new System.Drawing.Size(253, 178);
             this.panel3.TabIndex = 271;
-            // 
-            // btnSeleccionarTipoExamen
-            // 
-            this.btnSeleccionarTipoExamen.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.btnSeleccionarTipoExamen.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSeleccionarTipoExamen.Location = new System.Drawing.Point(11, 112);
-            this.btnSeleccionarTipoExamen.Name = "btnSeleccionarTipoExamen";
-            this.btnSeleccionarTipoExamen.Size = new System.Drawing.Size(225, 57);
-            this.btnSeleccionarTipoExamen.TabIndex = 25;
-            this.btnSeleccionarTipoExamen.Text = "Seleccionar Tipo y Subtipo de Examen";
-            this.btnSeleccionarTipoExamen.UseVisualStyleBackColor = true;
-            this.btnSeleccionarTipoExamen.Click += new System.EventHandler(this.btnSeleccionarTipoExamen_Click);
             // 
             // cbTipoDeExamen
             // 
@@ -358,7 +344,7 @@ namespace CapaPresentacion
             this.cbTipoDeExamen.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbTipoDeExamen.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cbTipoDeExamen.FormattingEnabled = true;
-            this.cbTipoDeExamen.Location = new System.Drawing.Point(-1000, -1000);
+            this.cbTipoDeExamen.Location = new System.Drawing.Point(-1000, -1004);
             this.cbTipoDeExamen.Name = "cbTipoDeExamen";
             this.cbTipoDeExamen.Size = new System.Drawing.Size(1, 24);
             this.cbTipoDeExamen.TabIndex = 25;
@@ -369,7 +355,7 @@ namespace CapaPresentacion
             this.label10.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label10.AutoSize = true;
             this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label10.Location = new System.Drawing.Point(8, 8);
+            this.label10.Location = new System.Drawing.Point(8, 4);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(121, 16);
             this.label10.TabIndex = 274;
@@ -392,7 +378,7 @@ namespace CapaPresentacion
             this.botonPreventiva.Appearance = System.Windows.Forms.Appearance.Button;
             this.botonPreventiva.BackColor = System.Drawing.Color.MistyRose;
             this.botonPreventiva.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.botonPreventiva.Location = new System.Drawing.Point(11, 28);
+            this.botonPreventiva.Location = new System.Drawing.Point(11, 24);
             this.botonPreventiva.Name = "botonPreventiva";
             this.botonPreventiva.Size = new System.Drawing.Size(37, 35);
             this.botonPreventiva.TabIndex = 20;
@@ -418,7 +404,7 @@ namespace CapaPresentacion
             this.botonRepeticion.Appearance = System.Windows.Forms.Appearance.Button;
             this.botonRepeticion.BackColor = System.Drawing.Color.LightYellow;
             this.botonRepeticion.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.botonRepeticion.Location = new System.Drawing.Point(198, 28);
+            this.botonRepeticion.Location = new System.Drawing.Point(198, 24);
             this.botonRepeticion.Name = "botonRepeticion";
             this.botonRepeticion.Size = new System.Drawing.Size(38, 35);
             this.botonRepeticion.TabIndex = 23;
@@ -444,7 +430,7 @@ namespace CapaPresentacion
             this.botonLaboral.Appearance = System.Windows.Forms.Appearance.Button;
             this.botonLaboral.BackColor = System.Drawing.Color.Moccasin;
             this.botonLaboral.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.botonLaboral.Location = new System.Drawing.Point(54, 28);
+            this.botonLaboral.Location = new System.Drawing.Point(54, 24);
             this.botonLaboral.Name = "botonLaboral";
             this.botonLaboral.Size = new System.Drawing.Size(35, 35);
             this.botonLaboral.TabIndex = 21;
@@ -470,7 +456,7 @@ namespace CapaPresentacion
             this.botonClinica.Appearance = System.Windows.Forms.Appearance.Button;
             this.botonClinica.BackColor = System.Drawing.Color.Azure;
             this.botonClinica.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.botonClinica.Location = new System.Drawing.Point(95, 28);
+            this.botonClinica.Location = new System.Drawing.Point(95, 24);
             this.botonClinica.Name = "botonClinica";
             this.botonClinica.Size = new System.Drawing.Size(53, 35);
             this.botonClinica.TabIndex = 22;
@@ -496,7 +482,7 @@ namespace CapaPresentacion
             this.botonConsultorio.Appearance = System.Windows.Forms.Appearance.Button;
             this.botonConsultorio.BackColor = System.Drawing.Color.LightSteelBlue;
             this.botonConsultorio.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.botonConsultorio.Location = new System.Drawing.Point(154, 28);
+            this.botonConsultorio.Location = new System.Drawing.Point(154, 24);
             this.botonConsultorio.Name = "botonConsultorio";
             this.botonConsultorio.Size = new System.Drawing.Size(38, 35);
             this.botonConsultorio.TabIndex = 24;
@@ -536,7 +522,7 @@ namespace CapaPresentacion
             this.panel2.Controls.Add(this.lblNroExamen);
             this.panel2.Controls.Add(this.lblNroOrden);
             this.panel2.Controls.Add(this.lblNroOrdenDato);
-            this.panel2.Location = new System.Drawing.Point(7, 195);
+            this.panel2.Location = new System.Drawing.Point(4, 187);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(253, 83);
             this.panel2.TabIndex = 270;
@@ -909,6 +895,22 @@ namespace CapaPresentacion
             this.label4.TabIndex = 277;
             this.label4.Text = "Observaciones Turno";
             // 
+            // botonBuscarDni
+            // 
+            this.botonBuscarDni.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.botonBuscarDni.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.botonBuscarDni.Image = ((System.Drawing.Image)(resources.GetObject("botonBuscarDni.Image")));
+            this.botonBuscarDni.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.botonBuscarDni.Location = new System.Drawing.Point(426, 14);
+            this.botonBuscarDni.Name = "botonBuscarDni";
+            this.botonBuscarDni.Size = new System.Drawing.Size(225, 32);
+            this.botonBuscarDni.TabIndex = 267;
+            this.botonBuscarDni.Text = "Buscar Paciente";
+            this.botonBuscarDni.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.botonBuscarDni.UseVisualStyleBackColor = true;
+            this.botonBuscarDni.Visible = false;
+            this.botonBuscarDni.Click += new System.EventHandler(this.botonBuscarDni_Click);
+            // 
             // tbObsMesaEntrada
             // 
             this.tbObsMesaEntrada.Anchor = System.Windows.Forms.AnchorStyles.None;
@@ -955,14 +957,14 @@ namespace CapaPresentacion
             this.dgvInformacionPaciente.BackgroundColor = System.Drawing.SystemColors.ButtonFace;
             this.dgvInformacionPaciente.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.dgvInformacionPaciente.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
-            dataGridViewCellStyle15.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle15.BackColor = System.Drawing.SystemColors.ButtonFace;
-            dataGridViewCellStyle15.Font = new System.Drawing.Font("Tahoma", 8.25F);
-            dataGridViewCellStyle15.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle15.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle15.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle15.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvInformacionPaciente.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle15;
+            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle9.BackColor = System.Drawing.SystemColors.ButtonFace;
+            dataGridViewCellStyle9.Font = new System.Drawing.Font("Tahoma", 8.25F);
+            dataGridViewCellStyle9.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle9.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle9.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle9.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvInformacionPaciente.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle9;
             this.dgvInformacionPaciente.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvInformacionPaciente.Enabled = false;
             this.dgvInformacionPaciente.GridColor = System.Drawing.SystemColors.GrayText;
@@ -972,12 +974,12 @@ namespace CapaPresentacion
             this.dgvInformacionPaciente.ReadOnly = true;
             this.dgvInformacionPaciente.RowHeadersVisible = false;
             this.dgvInformacionPaciente.RowHeadersWidth = 30;
-            dataGridViewCellStyle16.BackColor = System.Drawing.SystemColors.ButtonFace;
-            dataGridViewCellStyle16.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle16.ForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle16.SelectionBackColor = System.Drawing.SystemColors.ButtonFace;
-            dataGridViewCellStyle16.SelectionForeColor = System.Drawing.Color.Black;
-            this.dgvInformacionPaciente.RowsDefaultCellStyle = dataGridViewCellStyle16;
+            dataGridViewCellStyle10.BackColor = System.Drawing.SystemColors.ButtonFace;
+            dataGridViewCellStyle10.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle10.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle10.SelectionBackColor = System.Drawing.SystemColors.ButtonFace;
+            dataGridViewCellStyle10.SelectionForeColor = System.Drawing.Color.Black;
+            this.dgvInformacionPaciente.RowsDefaultCellStyle = dataGridViewCellStyle10;
             this.dgvInformacionPaciente.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvInformacionPaciente.Size = new System.Drawing.Size(470, 101);
             this.dgvInformacionPaciente.TabIndex = 272;
@@ -1123,23 +1125,23 @@ namespace CapaPresentacion
             this.dgvTurno.BackgroundColor = System.Drawing.SystemColors.ControlLight;
             this.dgvTurno.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.dgvTurno.ColumnHeadersHeight = 25;
-            dataGridViewCellStyle17.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle17.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle17.Font = new System.Drawing.Font("Tahoma", 8.25F);
-            dataGridViewCellStyle17.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            dataGridViewCellStyle17.SelectionBackColor = System.Drawing.Color.LightGray;
-            dataGridViewCellStyle17.SelectionForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle17.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvTurno.DefaultCellStyle = dataGridViewCellStyle17;
+            dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle11.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle11.Font = new System.Drawing.Font("Tahoma", 8.25F);
+            dataGridViewCellStyle11.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            dataGridViewCellStyle11.SelectionBackColor = System.Drawing.Color.LightGray;
+            dataGridViewCellStyle11.SelectionForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle11.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvTurno.DefaultCellStyle = dataGridViewCellStyle11;
             this.dgvTurno.Location = new System.Drawing.Point(48, 61);
             this.dgvTurno.MultiSelect = false;
             this.dgvTurno.Name = "dgvTurno";
             this.dgvTurno.RowHeadersVisible = false;
             this.dgvTurno.RowHeadersWidth = 30;
-            dataGridViewCellStyle18.BackColor = System.Drawing.Color.WhiteSmoke;
-            dataGridViewCellStyle18.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle18.ForeColor = System.Drawing.Color.Black;
-            this.dgvTurno.RowsDefaultCellStyle = dataGridViewCellStyle18;
+            dataGridViewCellStyle12.BackColor = System.Drawing.Color.WhiteSmoke;
+            dataGridViewCellStyle12.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle12.ForeColor = System.Drawing.Color.Black;
+            this.dgvTurno.RowsDefaultCellStyle = dataGridViewCellStyle12;
             this.dgvTurno.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvTurno.Size = new System.Drawing.Size(976, 209);
             this.dgvTurno.TabIndex = 261;
@@ -1262,22 +1264,6 @@ namespace CapaPresentacion
             // 
             this.defaultLookAndFeel1.LookAndFeel.SkinName = "Office 2016 Colorful";
             // 
-            // botonBuscarDni
-            // 
-            this.botonBuscarDni.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.botonBuscarDni.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.botonBuscarDni.Image = ((System.Drawing.Image)(resources.GetObject("botonBuscarDni.Image")));
-            this.botonBuscarDni.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.botonBuscarDni.Location = new System.Drawing.Point(426, 14);
-            this.botonBuscarDni.Name = "botonBuscarDni";
-            this.botonBuscarDni.Size = new System.Drawing.Size(225, 32);
-            this.botonBuscarDni.TabIndex = 267;
-            this.botonBuscarDni.Text = "Buscar Paciente";
-            this.botonBuscarDni.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.botonBuscarDni.UseVisualStyleBackColor = true;
-            this.botonBuscarDni.Visible = false;
-            this.botonBuscarDni.Click += new System.EventHandler(this.botonBuscarDni_Click);
-            // 
             // frmMesaDeEntrada
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1324,7 +1310,6 @@ namespace CapaPresentacion
         private System.Windows.Forms.Timer timer;
         private System.Windows.Forms.DataGridView dgvGrilla;
         private System.Windows.Forms.Panel panel3;
-        private System.Windows.Forms.Button btnSeleccionarTipoExamen;
         private System.Windows.Forms.ComboBox cbTipoDeExamen;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.TextBox tbTotalR;

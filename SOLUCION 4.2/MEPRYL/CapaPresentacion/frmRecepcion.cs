@@ -495,8 +495,20 @@ namespace CapaPresentacion
         {
             if (dgv.SelectedRows.Count > 0)
             {
-                object reservadoVal = dgv.SelectedRows[0].Cells[14].Value;
-                bool esReservado = reservadoVal != null && reservadoVal != DBNull.Value && Convert.ToBoolean(reservadoVal);
+                // 1. CAMBIO DE ÍNDICE: Usamos la celda [15] que es "Reservado" según tu método ocultarColumnasDgv
+                object reservadoVal = dgv.SelectedRows[0].Cells[15].Value;
+
+                // 2. CONVERSIÓN SEGURA: Evitamos el FormatException
+                bool esReservado = false;
+                if (reservadoVal != null && reservadoVal != DBNull.Value)
+                {
+                    // Intentamos convertir; si falla, queda en false por defecto
+                    bool.TryParse(reservadoVal.ToString(), out esReservado);
+
+                    // Opcional: Si tu DB usa "1" y "0", añade esta línea:
+                    if (reservadoVal.ToString() == "1") esReservado = true;
+                }
+
                 if (!esReservado)
                 {
                     frmAvisoExamenModificado fExamen = new frmAvisoExamenModificado(false);
@@ -506,30 +518,37 @@ namespace CapaPresentacion
                 }
                 else
                 {
-                    DialogResult result = MessageBox.Show("Los datos del paciente no fueron cargados. ¿Desea cargarlos ahora?", "Ingreso Paciente", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    DialogResult result = MessageBox.Show("Los datos del paciente no fueron cargados. ¿Desea cargarlos ahora?",
+                        "Ingreso Paciente", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
                     if (result == DialogResult.Yes)
                     {
                         abrirVentanaPaciente();
                     }
                     else
                     {
+                        // Aplicamos la misma lógica segura para 'Asistio' (Celda 0)
                         object asistioVal2 = dgv.SelectedRows[0].Cells[0].Value;
-                        if (asistioVal2 != null && asistioVal2 != DBNull.Value && Convert.ToBoolean(asistioVal2))
+                        bool asistio = false;
+                        if (asistioVal2 != null && asistioVal2 != DBNull.Value)
+                            bool.TryParse(asistioVal2.ToString(), out asistio);
+
+                        if (asistio)
                         {
-                            DialogResult result2 = MessageBox.Show("La siguiente reserva va a ser ingresada. ¿Desea continuar?", "Registrar Ingreso",
-                                MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                            DialogResult result2 = MessageBox.Show("La siguiente reserva va a ser ingresada. ¿Desea continuar?",
+                                "Registrar Ingreso", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
                             if (result2 == DialogResult.Yes)
                             {
                                 ventanilla.registrarIngreso(new Guid(dgv.SelectedRows[0].Cells[2].Value.ToString()));
                                 cargarDgv();
                                 MostrarExpIngreso();
-                                //ocultarFilasDgv();
                             }
                         }
                         else
                         {
-                            MessageBox.Show("¡Se debe registrar la asistencia del paciente antes de ingresarlo!", "Atención",
-                            MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                            MessageBox.Show("¡Se debe registrar la asistencia del paciente antes de ingresarlo!",
+                                "Atención", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                         }
                     }
                 }
