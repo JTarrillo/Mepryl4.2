@@ -16,6 +16,7 @@ namespace CapaPresentacion
         private string _strIdConsulta;
         private string _strTipoConsulta;
         private string _idEspecialidadActual;
+        private string _idEspecialidadOriginal;
 
         private MesaEntrada _mesaEntrada;
 
@@ -54,6 +55,7 @@ namespace CapaPresentacion
 
             // Asignar DESPUÉS del binding para que el SelectedIndexChanged disparado por DataSource
             // no consuma _idEspecialidadActual prematuramente con el primer item
+            _idEspecialidadOriginal = idEspecialidad;
             _idEspecialidadActual = idEspecialidad;
 
             // Pre-seleccionar el padre actual (dispara SelectedIndexChanged que carga cbSubtipo)
@@ -97,6 +99,13 @@ namespace CapaPresentacion
 
             string idSubtipo = cbSubtipo.SelectedValue.ToString();
             string nombreSubtipo = cbSubtipo.Text;
+
+            // Si no hubo cambio, cerrar sin hacer nada
+            if (string.Equals(idSubtipo, _idEspecialidadOriginal, StringComparison.OrdinalIgnoreCase))
+            {
+                this.Close();
+                return;
+            }
 
             if (_strMotivoConsulta == _strTipoConsulta)
             {
