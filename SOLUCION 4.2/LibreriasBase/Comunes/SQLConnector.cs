@@ -21,7 +21,7 @@ namespace Comunes
         {
             try
             {
-                cn = new SqlConnection(configuracion.getConectionString());
+                 cn = new SqlConnection(configuracion.getConectionString());
                 cn.Open();
                 return true;
             }

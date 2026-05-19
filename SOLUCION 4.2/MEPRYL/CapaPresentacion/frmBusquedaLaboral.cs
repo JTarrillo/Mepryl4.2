@@ -2294,23 +2294,10 @@ namespace CapaPresentacion
 
         private void ModoPermisos(bool blnVer, bool blnModificar, bool blnEliminar)
         {
-            if (blnVer == true)
-            {
-                ribbonPageGroup1.Enabled = false;
-                blnUsuarioPuedeModificar = blnModificar;
-            }
-
-            if (blnEliminar == false)
-            {
-                //ribbonPageGroup1.Enabled = true;
-                //bbiEliminar.Enabled = blnEliminar;
-            }
-
-            if (blnModificar == true)
-            {
-                ribbonPageGroup1.Enabled = true;
-                blnUsuarioPuedeModificar = blnModificar;
-            }
+            // Solo Cambio Empresa requiere permiso de modificar
+            // El resto (importar, exportar, consolidar, mail) siempre disponibles
+            bbiCambioEmpresa.Enabled = blnModificar;
+            blnUsuarioPuedeModificar = blnModificar;
         }
 
         private void AbrirOutlookCorreo(string strDNI, string strNroOrden, DateTime dtFecha, string strIDTipoExamen, string strIdEmpresa)

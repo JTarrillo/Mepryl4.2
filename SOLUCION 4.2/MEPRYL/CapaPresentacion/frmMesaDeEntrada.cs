@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -143,6 +143,7 @@ namespace CapaPresentacion
             dgvGrilla.Columns[2].Visible = false;
             dgvGrilla.Columns[3].Visible = false;
             dgvGrilla.Columns[7].Visible = false;
+            dgvGrilla.Columns[8].Visible = false;
             dgvGrilla.Columns[16].Visible = false;
             dgvGrilla.Columns[17].Visible = false;
 
@@ -425,7 +426,7 @@ namespace CapaPresentacion
             string strResultado = ""; // GRV - Modificado
             if (id == "")
             {
-                idPaciente = dgvTurno.SelectedRows[0].Cells[9].Value.ToString();
+                idPaciente = dgvTurno.SelectedRows[0].Cells[10].Value.ToString();
             }
             else
             {
@@ -506,7 +507,7 @@ namespace CapaPresentacion
             string idPaciente = "";
             if (id == "")
             {
-                idPaciente = dgvTurno.SelectedRows[0].Cells[9].Value.ToString();
+                idPaciente = dgvTurno.SelectedRows[0].Cells[10].Value.ToString();
             }
             else
             {
@@ -746,7 +747,7 @@ namespace CapaPresentacion
         private void dgvGrilla_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             mostrarDatos();
-            if (e.ColumnIndex == 15)
+            if (e.ColumnIndex == 16)
             {
                 List<string> lista = SQLConnector.generarListaParaProcedure("@idConsulta", "@valor");
                 if ((bool)dgvGrilla.Rows[dgvGrilla.CurrentCell.RowIndex].Cells[e.ColumnIndex].Value == true)
@@ -903,13 +904,13 @@ namespace CapaPresentacion
                 // ...existing code...
                 if (true)
                 {
-                    string idPacienteTurno = dgvTurno.SelectedRows[0].Cells[9].Value.ToString();
+                    string idPacienteTurno = dgvTurno.SelectedRows[0].Cells[10].Value.ToString();
                     System.Diagnostics.Debug.WriteLine($"[ingresarPaciente] idPacienteTurno: {idPacienteTurno}");
                     bool habilitado = estaHabilitado(idPacienteTurno);
                     System.Diagnostics.Debug.WriteLine($"[ingresarPaciente] estaHabilitado: {habilitado}");
                     if (habilitado)
                     {
-                        string motivo = dgvTurno.SelectedRows[0].Cells[6].Value.ToString();
+                        string motivo = dgvTurno.SelectedRows[0].Cells[7].Value.ToString();
                         System.Diagnostics.Debug.WriteLine($"[ingresarPaciente] motivo: {motivo}");
                         string idConsulta = "";
                         if (motivo == "PREVENTIVA")
@@ -1780,7 +1781,7 @@ namespace CapaPresentacion
                 MessageBox.Show("No se puede ingresar paciente ya que se encontró como inhabilitado. Por favor verifique en exámenes para volverlo a"
                     + " habilitar e ingresarlo nuevamente", "Jugador inhabilitado", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 DataTable paciente = SQLConnector.obtenerTablaSegunConsultaString(@"select dni from dbo.Paciente
-                    where id = '" + dgvTurno.SelectedRows[0].Cells[9].Value.ToString() + "'");
+                    where id = '" + dgvTurno.SelectedRows[0].Cells[10].Value.ToString() + "'");
                 frmBusquedaExamen busq = new frmBusquedaExamen(this, 1);
                 Utilidades.abrirFormulario(this.MdiParent, busq, new Configuracion());
                 busq.gbRango.Enabled = true;

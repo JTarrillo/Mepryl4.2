@@ -1469,6 +1469,9 @@
     <EmbeddedResource Include="frmLocalidadNacionalidad.resx">
       <DependentUpon>frmLocalidadNacionalidad.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="frmMesaSelecSubtipoExamen.resx">
+      <DependentUpon>frmMesaSelecSubtipoExamen.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmMuestraFactPorEmpresa.resx">
       <DependentUpon>frmMuestraFactPorEmpresa.cs</DependentUpon>
     </EmbeddedResource>

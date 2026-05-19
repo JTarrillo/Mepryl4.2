@@ -1229,20 +1229,10 @@ namespace CapaPresentacion
             OcultarPestanasRibbon();
             ColorRibbonLaboral();
 
-            // Si ya está abierto, solo traer al frente (evita re-parsear Excel ~1700ms)
-            foreach (Form frm in this.MdiChildren)
-            {
-                if (frm is frmReporteAudiometria2)
-                {
-                    frm.BringToFront();
-                    return;
-                }
-            }
-
             foreach (Form frm in this.MdiChildren.ToArray())
             {
-                frm.Dispose();
                 frm.Close();
+                frm.Dispose();
             }
 
             Utilidades.abrirFormulario(this, new frmReporteAudiometria2(this, true), this.configuracion);

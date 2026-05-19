@@ -17,7 +17,6 @@
 
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMesaSelecTipoExamen));
             this.lblTipo = new System.Windows.Forms.Label();
             this.lblSubtipo = new System.Windows.Forms.Label();
             this.cbTipoPadre = new System.Windows.Forms.ComboBox();
@@ -36,6 +35,16 @@
             this.lblTipo.TabIndex = 0;
             this.lblTipo.Text = "Tipo de Examen:";
             // 
+            // lblSubtipo
+            // 
+            this.lblSubtipo.AutoSize = true;
+            this.lblSubtipo.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblSubtipo.Location = new System.Drawing.Point(30, 90);
+            this.lblSubtipo.Name = "lblSubtipo";
+            this.lblSubtipo.Size = new System.Drawing.Size(127, 16);
+            this.lblSubtipo.TabIndex = 2;
+            this.lblSubtipo.Text = "Subtipo de Examen:";
+            // 
             // cbTipoPadre
             // 
             this.cbTipoPadre.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -46,16 +55,6 @@
             this.cbTipoPadre.Size = new System.Drawing.Size(1000, 24);
             this.cbTipoPadre.TabIndex = 1;
             this.cbTipoPadre.SelectedIndexChanged += new System.EventHandler(this.cbTipoPadre_SelectedIndexChanged);
-            // 
-            // lblSubtipo
-            // 
-            this.lblSubtipo.AutoSize = true;
-            this.lblSubtipo.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblSubtipo.Location = new System.Drawing.Point(30, 90);
-            this.lblSubtipo.Name = "lblSubtipo";
-            this.lblSubtipo.Size = new System.Drawing.Size(127, 16);
-            this.lblSubtipo.TabIndex = 2;
-            this.lblSubtipo.Text = "Subtipo de Examen:";
             // 
             // cbSubtipo
             // 
@@ -72,7 +71,7 @@
             this.botAceptar.BackColor = System.Drawing.SystemColors.Control;
             this.botAceptar.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.botAceptar.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.botAceptar.Image = ((System.Drawing.Image)(resources.GetObject("botAceptar.Image")));
+            this.botAceptar.Image = global::CapaPresentacion.Properties.Resources.disco_flexible;
             this.botAceptar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.botAceptar.Location = new System.Drawing.Point(716, 155);
             this.botAceptar.Name = "botAceptar";
@@ -89,7 +88,7 @@
             this.botCancelar.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.botCancelar.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.botCancelar.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.botCancelar.Image = ((System.Drawing.Image)(resources.GetObject("botCancelar.Image")));
+            this.botCancelar.Image = global::CapaPresentacion.Properties.Resources.cancelar;
             this.botCancelar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.botCancelar.Location = new System.Drawing.Point(884, 155);
             this.botCancelar.Name = "botCancelar";
@@ -119,10 +118,11 @@
             this.Name = "frmMesaSelecSubtipoExamen";
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Modificar Subtipo de Examen";
+            this.Text = "Modificar Tipo y Subtipo de Examen";
             this.Load += new System.EventHandler(this.frmMesaSelecSubtipoExamen_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
+
         }
 
         #endregion
