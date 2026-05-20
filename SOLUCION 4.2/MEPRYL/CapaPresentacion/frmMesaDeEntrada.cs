@@ -40,6 +40,9 @@ namespace CapaPresentacion
 
         private void inicializar()
         {
+            typeof(DataGridView).InvokeMember("DoubleBuffered",
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.SetProperty,
+                null, dgvGrilla, new object[] { true });
             cargarGrilla();
             setearTotales();
         }
@@ -1459,6 +1462,42 @@ namespace CapaPresentacion
             setearTotales();
             cargarTurnoSeleccionado();
             SeleccinarFilaTurno();
+            refrescarGrilla();
+        }
+
+        private void refrescarGrilla()
+        {
+            int filaActual = (dgvGrilla.CurrentCell != null) ? dgvGrilla.CurrentCell.RowIndex : -1;
+
+            dgvGrilla.SuspendLayout();
+            dgvGrilla.Rows.Clear();
+
+            foreach (DataRow r in mesaEntrada.cargarMesaEntrada().Rows)
+            {
+                agregar(r.ItemArray[0], r.ItemArray[1], r.ItemArray[2], r.ItemArray[3],
+                        r.ItemArray[4], r.ItemArray[5], r.ItemArray[6], r.ItemArray[7], r.ItemArray[8], r.ItemArray[9],
+                        r.ItemArray[10], r.ItemArray[11], r.ItemArray[12], r.ItemArray[13], r.ItemArray[14], r.ItemArray[15],
+                        r.ItemArray[16], r.ItemArray[17]);
+
+                Color color = Color.White;
+                switch (r.ItemArray[7].ToString())
+                {
+                    case "P": color = Color.MistyRose; break;
+                    case "L": color = Color.Moccasin; break;
+                    case "EC": color = Color.Azure; break;
+                    case "CO": color = Color.LightSteelBlue; break;
+                    case "R": color = Color.LightYellow; break;
+                }
+                dgvGrilla.Rows[dgvGrilla.Rows.Count - 1].DefaultCellStyle.BackColor = color;
+            }
+
+            if (dgvGrilla.Rows.Count > 0 && filaActual >= 0 && filaActual < dgvGrilla.Rows.Count)
+                dgvGrilla.CurrentCell = dgvGrilla.Rows[filaActual].Cells[4];
+            else if (dgvGrilla.Rows.Count > 0)
+                dgvGrilla.CurrentCell = dgvGrilla.Rows[0].Cells[4];
+
+            lblTotal.Text = "Total Pacientes: " + dgvGrilla.Rows.Count.ToString();
+            dgvGrilla.ResumeLayout();
         }
 
         private void generarLaboral(string idConsulta)

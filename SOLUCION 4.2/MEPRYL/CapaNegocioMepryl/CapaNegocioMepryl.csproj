@@ -94,14 +94,17 @@
     <Reference Include="PresentationFramework" />
     <Reference Include="Spire.Doc, Version=6.0.0.4040, Culture=neutral, PublicKeyToken=663f351905198cb3, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\e-iceblue\Spire.Doc-Fe\Bin\NET4.0\Spire.Doc.dll</HintPath>
+      <HintPath>..\Lib\Spire.Doc.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Spire.License">
-      <HintPath>..\..\..\..\..\..\..\..\Program Files (x86)\e-iceblue\Spire.Doc-Fe\Bin\NET4.0\Spire.License.dll</HintPath>
+      <HintPath>..\Lib\Spire.License.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Spire.Pdf, Version=3.9.206.4040, Culture=neutral, PublicKeyToken=663f351905198cb3, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\e-iceblue\Spire.Doc-Fe\Bin\NET4.0\Spire.Pdf.dll</HintPath>
+      <HintPath>..\Lib\Spire.Pdf.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
