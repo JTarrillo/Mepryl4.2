@@ -25,6 +25,11 @@ namespace CapaPresentacion
         private string strIdEmpresaNuevoConsultorio = "";
         private int intFilaSelecc = 0;
         private string _idMotivoConsultaActual;
+        private bool _mostrandoDatos = false;
+
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        private static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
+        private const int WM_SETREDRAW = 11;
 
         CapaNegocioMepryl.ExamenPreventiva exPreventiva;
         CapaNegocioMepryl.MesaEntrada mesaEntrada;
@@ -94,10 +99,6 @@ namespace CapaPresentacion
                 cbTipoDeExamen.DataSource = dtTodosTipos;
                 cbTipoDeExamen.ValueMember = "id";
                 cbTipoDeExamen.DisplayMember = "descripcion";
-
-                // Buscamos y seleccionamos el subtipo con force
-                cbTipoDeExamen.SelectedIndex = -1;
-                Application.DoEvents();
                 cbTipoDeExamen.SelectedValue = idSubtipo;
             }
 
@@ -586,7 +587,10 @@ namespace CapaPresentacion
 
         public void mostrarDatos()
         {
-           
+            if (_mostrandoDatos) return;
+            _mostrandoDatos = true;
+            try
+            {
 
             if (dgvGrilla.Rows[dgvGrilla.CurrentCell.RowIndex].Cells[0].Value != null)
             {
@@ -652,9 +656,6 @@ namespace CapaPresentacion
                                 cbTipoDeExamen.DataSource = dtTodosTipos;
                                 cbTipoDeExamen.ValueMember = "id";
                                 cbTipoDeExamen.DisplayMember = "descripcion";
-                                
-                                cbTipoDeExamen.SelectedIndex = -1;
-                                Application.DoEvents();
                                 cbTipoDeExamen.SelectedValue = idEspecialidad;
                             }
                             
@@ -681,6 +682,11 @@ namespace CapaPresentacion
 
                 deschekearComboBoxs();
                
+            }
+            }
+            finally
+            {
+                _mostrandoDatos = false;
             }
         }
 
@@ -916,6 +922,8 @@ namespace CapaPresentacion
                         string motivo = dgvTurno.SelectedRows[0].Cells[7].Value.ToString();
                         System.Diagnostics.Debug.WriteLine($"[ingresarPaciente] motivo: {motivo}");
                         string idConsulta = "";
+                        try
+                        {
                         if (motivo == "PREVENTIVA")
                             idConsulta = insertarEnBaseDeDatosPreventiva("P", 0, "");
                         if (motivo == "LABORAL")
@@ -990,6 +998,19 @@ namespace CapaPresentacion
                         {
                             dgvGrilla.CurrentCell = dgvGrilla.Rows[dgvGrilla.Rows.Count - 1].Cells[4];
                             puntero = dgvGrilla.CurrentCell.RowIndex;
+                        }
+                        }
+                        catch (Exception ex)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"[ingresarPaciente] ERROR: {ex.Message}");
+                            if (!string.IsNullOrEmpty(idConsulta))
+                            {
+                                try { SQLConnector.obtenerTablaSegunConsultaString("UPDATE dbo.Consulta SET nroOrden = -1 WHERE id = '" + idConsulta + "'"); } catch { }
+                                System.Diagnostics.Debug.WriteLine($"[ingresarPaciente] nroOrden liberado, idConsulta={idConsulta}");
+                            }
+                            MessageBox.Show("Error al ingresar paciente. Por favor intente nuevamente.\n\nDetalle: " + ex.Message,
+                                "Error de ingreso", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            cargarGrilla();
                         }
                     }
                     else
@@ -1467,9 +1488,14 @@ namespace CapaPresentacion
 
         private void refrescarGrilla()
         {
-            int filaActual = (dgvGrilla.CurrentCell != null) ? dgvGrilla.CurrentCell.RowIndex : -1;
+            // Guardar estado visual antes de limpiar
+            string idSeleccionado = (dgvGrilla.CurrentCell != null)
+                ? dgvGrilla.Rows[dgvGrilla.CurrentCell.RowIndex].Cells[0].Value?.ToString() ?? ""
+                : "";
+            int primeraFilaVisible = dgvGrilla.FirstDisplayedScrollingRowIndex;
 
-            dgvGrilla.SuspendLayout();
+            // Suprimir repintado para evitar parpadeo
+            SendMessage(dgvGrilla.Handle, WM_SETREDRAW, IntPtr.Zero, IntPtr.Zero);
             dgvGrilla.Rows.Clear();
 
             foreach (DataRow r in mesaEntrada.cargarMesaEntrada().Rows)
@@ -1491,13 +1517,33 @@ namespace CapaPresentacion
                 dgvGrilla.Rows[dgvGrilla.Rows.Count - 1].DefaultCellStyle.BackColor = color;
             }
 
-            if (dgvGrilla.Rows.Count > 0 && filaActual >= 0 && filaActual < dgvGrilla.Rows.Count)
-                dgvGrilla.CurrentCell = dgvGrilla.Rows[filaActual].Cells[4];
-            else if (dgvGrilla.Rows.Count > 0)
-                dgvGrilla.CurrentCell = dgvGrilla.Rows[0].Cells[4];
-
             lblTotal.Text = "Total Pacientes: " + dgvGrilla.Rows.Count.ToString();
-            dgvGrilla.ResumeLayout();
+
+            // Rehabilitar repintado antes de restaurar posición
+            SendMessage(dgvGrilla.Handle, WM_SETREDRAW, new IntPtr(1), IntPtr.Zero);
+            dgvGrilla.Refresh();
+
+            // Restaurar posición de scroll
+            if (primeraFilaVisible >= 0 && primeraFilaVisible < dgvGrilla.Rows.Count)
+                dgvGrilla.FirstDisplayedScrollingRowIndex = primeraFilaVisible;
+
+            // Restaurar fila seleccionada por ID (no por índice, por si cambió la cantidad de filas)
+            if (dgvGrilla.Rows.Count > 0)
+            {
+                int filaRestaurar = -1;
+                if (!string.IsNullOrEmpty(idSeleccionado))
+                {
+                    for (int i = 0; i < dgvGrilla.Rows.Count; i++)
+                    {
+                        if (dgvGrilla.Rows[i].Cells[0].Value?.ToString() == idSeleccionado)
+                        {
+                            filaRestaurar = i;
+                            break;
+                        }
+                    }
+                }
+                dgvGrilla.CurrentCell = dgvGrilla.Rows[filaRestaurar >= 0 ? filaRestaurar : 0].Cells[4];
+            }
         }
 
         private void generarLaboral(string idConsulta)
@@ -1643,6 +1689,13 @@ namespace CapaPresentacion
 
         private string ingresarConsultaLaboral(string idTe, int tipo)
         {
+            DataTable existente = SQLConnector.obtenerTablaSegunConsultaString(
+                "SELECT id FROM dbo.ConsultaLaboral WHERE idTipoExamen = '" + idTe + "'");
+            if (existente.Rows.Count > 0)
+            {
+                System.Diagnostics.Debug.WriteLine($"[ingresarConsultaLaboral] ya existe idTipoExamen={idTe}, devuelve id existente");
+                return existente.Rows[0][0].ToString();
+            }
             List<string> addConsultaLaboral = SQLConnector.generarListaParaProcedure("@idTipoExamen", "@tipo");
             return SQLConnector.executeProcedureWithReturnValue("sp_ConsultaLaboral_Insert", addConsultaLaboral, new Guid(idTe), tipo);
         }
