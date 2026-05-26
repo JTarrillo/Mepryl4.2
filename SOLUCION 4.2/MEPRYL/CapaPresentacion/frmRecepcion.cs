@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -86,9 +86,35 @@ namespace CapaPresentacion
 
         private void actualizarListadoManteniendoPosicion()
         {
-            int nroFila = dgv.SelectedRows[0].Index;
+            int nroFila = 0;
+            try
+            {
+                if (dgv.SelectedRows.Count > 0)
+                    nroFila = dgv.SelectedRows[0].Index;
+                else if (dgv.CurrentRow != null)
+                    nroFila = dgv.CurrentRow.Index;
+            }
+            catch
+            {
+                nroFila = 0;
+            }
+
             cargarDgv();
-            dgv.CurrentCell = dgv.Rows[nroFila].Cells[0];
+
+            if (dgv.Rows.Count == 0)
+                return;
+
+            if (nroFila >= dgv.Rows.Count)
+                nroFila = dgv.Rows.Count - 1;
+
+            try
+            {
+                dgv.CurrentCell = dgv.Rows[nroFila].Cells[0];
+            }
+            catch
+            {
+                // Si no se puede restaurar la celda, no hacemos nada.
+            }
         }
 
         private void botonBuscar_Click(object sender, EventArgs e)
@@ -413,6 +439,9 @@ namespace CapaPresentacion
             fTipoExamen.cargarSegunIdTurno(new Guid(dgv.SelectedRows[0].Cells[2].Value.ToString()));
             fTipoExamen.objDelegateModificado = new frmTipoExamen.DelegateModificado(actualizarListadoManteniendoPosicion);
             fTipoExamen.ShowDialog();
+
+            // Fuerza la recarga si el examen se modificó fuera del delegado o si el cambio no quedó reflejado.
+            actualizarListadoManteniendoPosicion();
         }
 
         private void dgv_CellClick(object sender, DataGridViewCellEventArgs e)

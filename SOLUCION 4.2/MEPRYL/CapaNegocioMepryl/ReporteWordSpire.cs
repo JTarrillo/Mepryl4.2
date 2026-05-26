@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Spire.Doc;
 using Spire.Doc.Documents;
 using System.Drawing;
@@ -33,7 +34,7 @@ namespace CapaNegocioMepryl
 
                 for (int i = 0; i < etiquetas.GetLength(0); i++)
                 {
-                    doc.Replace(etiquetas[i, 0], etiquetas[i, 1], true, true);
+                    ReemplazarTexto(etiquetas[i, 0], etiquetas[i, 1]);
                     
                     if (blnClinico)
                         verificaDictamenClinicoLaboral(etiquetas[i, 0], etiquetas[i, 1]);
@@ -73,7 +74,7 @@ namespace CapaNegocioMepryl
 
                 for (int i = 0; i < etiquetas.GetLength(0); i++)
                 {
-                    doc.Replace(etiquetas[i, 0], etiquetas[i, 1], true, true);
+                    ReemplazarTexto(etiquetas[i, 0], etiquetas[i, 1]);
                 }
                 Debug.WriteLine($"[diagnostico_spire] PrintWordDocument: etiquetas reemplazadas | cantidad={etiquetas.GetLength(0)}");
 
@@ -113,6 +114,91 @@ namespace CapaNegocioMepryl
             }
 
             return (Image)bmpImagen;
+        }
+
+        private void ReemplazarTexto(string textoOriginal, string textoReemplazo)
+        {
+            try
+            {
+                TextSelection[] selecciones = doc.FindAllString(textoOriginal, true, true);
+                if (selecciones != null && selecciones.Length > 0)
+                {
+                    foreach (TextSelection seleccion in selecciones)
+                    {
+                        seleccion.GetAsOneRange().Text = textoReemplazo;
+                    }
+                }
+                else
+                {
+                    doc.Replace(textoOriginal, textoReemplazo, true, true);
+                    // Reemplazar también en headers y footers (por si la etiqueta está en el encabezado)
+                    foreach (Section sec in doc.Sections)
+                    {
+                        try
+                        {
+                            if (sec.HeadersFooters != null)
+                            {
+                                if (sec.HeadersFooters.Header != null)
+                                {
+                                    foreach (Paragraph p in sec.HeadersFooters.Header.Paragraphs)
+                                    {
+                                        try { p.Replace(textoOriginal, textoReemplazo, true, true); } catch { }
+                                    }
+                                }
+                                if (sec.HeadersFooters.Footer != null)
+                                {
+                                    foreach (Paragraph p in sec.HeadersFooters.Footer.Paragraphs)
+                                    {
+                                        try { p.Replace(textoOriginal, textoReemplazo, true, true); } catch { }
+                                    }
+                                }
+                            }
+                        }
+                        catch { }
+                    }
+                    // Fallback: colapsar runs de párrafo y reemplazar si aparece la etiqueta
+                    foreach (Section sec2 in doc.Sections)
+                    {
+                        try
+                        {
+                            foreach (Paragraph p in sec2.Paragraphs)
+                            {
+                                try
+                                {
+                                    string combined = "";
+                                    foreach (DocumentObject obj in p.ChildObjects)
+                                    {
+                                        if (obj is TextRange)
+                                            combined += ((TextRange)obj).Text;
+                                        else
+                                            combined += " ";
+                                    }
+
+                                    if (!string.IsNullOrEmpty(combined) && combined.Contains(textoOriginal))
+                                    {
+                                        string replaced = combined.Replace(textoOriginal, textoReemplazo);
+                                        p.ChildObjects.Clear();
+                                        p.AppendText(replaced);
+
+                                        try
+                                        {
+                                            string logPath = Path.Combine(Path.GetTempPath(), "mepryl_reemplazo_spire.log");
+                                            File.AppendAllText(logPath, DateTime.Now.ToString("s") + " Replaced in paragraph: " + textoOriginal + " -> " + textoReemplazo + "\n");
+                                        }
+                                        catch { }
+                                    }
+                                }
+                                catch { }
+                            }
+                        }
+                        catch { }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[diagnostico_spire] ReemplazarTexto: excepcion en etiqueta {textoOriginal} | {ex.Message}");
+            }
         }
 
         private void ReemplazarImagen(string strEtiqueta, Image imgFoto)

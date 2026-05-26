@@ -129,6 +129,16 @@ namespace CapaDatosMepryl
             SQLConnector.executeProcedure("sp_TipoExamenDePaciente_UpdateTipoExamenPaciente", updateIdTipoExamen, IdConsulta, IdEspecialidad);
         }
 
+        public void ActualizaTipoExamenIDTipoExamen(string IdTipoExamen, string IdEspecialidad)
+        {
+            if (!Guid.TryParse(IdTipoExamen, out Guid guidIdTipoExamen))
+                return;
+            if (!Guid.TryParse(IdEspecialidad, out Guid guidIdEspecialidad))
+                return;
+
+            SQLConnector.EjecutarConsulta($"UPDATE dbo.TipoExamenDePaciente SET idEspecialidad = '{guidIdEspecialidad}' WHERE id = '{guidIdTipoExamen}'");
+        }
+
         public void ActualizaIdentificadorConsulta(string IdConsulta, string Tipo, string NroIdentificador)
         {
             List<string> updateIdentiConsulta = SQLConnector.generarListaParaProcedure("@idConsulta", "@identificador", "@tipo");

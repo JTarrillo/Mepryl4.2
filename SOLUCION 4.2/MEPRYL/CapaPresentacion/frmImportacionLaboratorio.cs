@@ -4,6 +4,8 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Text;
+using System.Text.RegularExpressions;
+using System.Diagnostics;
 using System.Windows.Forms;
 using System.Data.OleDb;
 using Comunes;
@@ -114,29 +116,113 @@ namespace CapaPresentacion
 
         private void procesarFila(DataRow row)
         {
-
-            string fecha = procesarFecha(row.ItemArray[0].ToString());
-            int examen = Convert.ToInt32(row.ItemArray[1].ToString());
-            DataTable tipoExamen = SQLConnector.obtenerTablaSegunConsultaString(@"Select tep.id from dbo.TipoExamenDePaciente 
-            tep inner join dbo.Consulta c on tep.idConsulta = c.id
-            where Convert(date,c.fecha) = '" + fecha + "' and c.identificador = '" + examen.ToString() + "'");
-            if (tipoExamen.Rows.Count > 0)
+            try
             {
-                procesarLaboratorio(tipoExamen.Rows[0].ItemArray[0].ToString(), row);
-                puntero++;
+                string fecha;
+                object rawFecha = row.ItemArray[0];
+                DateTime dtFecha;
+                if (rawFecha != null)
+                {
+                    // If OleDb returned a DateTime object directly
+                    if (rawFecha is DateTime)
+                    {
+                        fecha = ((DateTime)rawFecha).ToString("yyyy-MM-dd");
+                    }
+                    else
+                    {
+                        // Try treating as OLE Automation date (numeric)
+                        double oa;
+                        if (double.TryParse(rawFecha.ToString(), out oa))
+                        {
+                            try
+                            {
+                                DateTime fromOADate = DateTime.FromOADate(oa);
+                                fecha = fromOADate.ToString("yyyy-MM-dd");
+                            }
+                            catch
+                            {
+                                // Not a valid OADate, fallback to parsing as text
+                                if (DateTime.TryParse(rawFecha.ToString(), out dtFecha))
+                                    fecha = dtFecha.ToString("yyyy-MM-dd");
+                                else
+                                    fecha = procesarFecha(rawFecha.ToString());
+                            }
+                        }
+                        else if (DateTime.TryParse(rawFecha.ToString(), out dtFecha))
+                        {
+                            fecha = dtFecha.ToString("yyyy-MM-dd");
+                        }
+                        else
+                        {
+                            fecha = procesarFecha(rawFecha.ToString());
+                        }
+                    }
+                }
+                else
+                {
+                    fecha = string.Empty;
+                }
+                // Debug: imprimir estado de la fila antes de la consulta
+                Debug.WriteLine($"[ImportacionLaboratorio] Puntero={puntero} RawFecha='{rawFecha}' FechaParseada='{fecha}'");
+                int examen = Convert.ToInt32(row.ItemArray[1].ToString());
+                Debug.WriteLine($"[ImportacionLaboratorio] Examen='{examen}'");
+                DataTable tipoExamen = SQLConnector.obtenerTablaSegunConsultaString(@"Select tep.id from dbo.TipoExamenDePaciente 
+                tep inner join dbo.Consulta c on tep.idConsulta = c.id
+                where Convert(date,c.fecha) = '" + fecha + "' and c.identificador = '" + examen.ToString() + "'");
+                Debug.WriteLine($"[ImportacionLaboratorio] Query executed; tipoExamen.Rows.Count={tipoExamen.Rows.Count}");
+                if (tipoExamen.Rows.Count > 0)
+                {
+                    procesarLaboratorio(tipoExamen.Rows[0].ItemArray[0].ToString(), row);
+                    puntero++;
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log completo y continuar con la siguiente fila
+                Debug.WriteLine("[ImportacionLaboratorio] EXCEPTION while processing row: " + ex.ToString());
+                try
+                {
+                    // Añadir info de fila para ayudar en la diagnosis
+                    StringBuilder sb = new StringBuilder();
+                    for (int i = 0; i < row.ItemArray.Length; i++) sb.Append($"[{i}]='{row.ItemArray[i]}' ");
+                    Debug.WriteLine("[ImportacionLaboratorio] Row content: " + sb.ToString());
+                }
+                catch { }
+                // Marcar fila como inválida para reportarla al final
+                try { valoresInvalidos.Rows.Add(puntero, "EXCEPTION"); } catch { }
             }
 
         }
 
         private string procesarFecha(string fechaSinProcesar)
         {
+            if (string.IsNullOrWhiteSpace(fechaSinProcesar))
+                return fechaSinProcesar;
 
-            string año = "20" + fechaSinProcesar.Substring(4, 2);
-            string mes = fechaSinProcesar.Substring(2, 2);
-            string dia = fechaSinProcesar.Substring(0, 2);
-            return dia + '-' + mes + '-' + año;
+            DateTime dt;
+            if (DateTime.TryParse(fechaSinProcesar, out dt))
+            {
+                return dt.ToString("yyyy-MM-dd");
+            }
+
+            string digits = Regex.Replace(fechaSinProcesar, "\\D", "");
+            if (digits.Length == 6)
+            {
+                string dia = digits.Substring(0, 2);
+                string mes = digits.Substring(2, 2);
+                string año = "20" + digits.Substring(4, 2);
+                return año + "-" + mes + "-" + dia;
+            }
+            else if (digits.Length == 8)
+            {
+                string dia = digits.Substring(0, 2);
+                string mes = digits.Substring(2, 2);
+                string año = digits.Substring(4, 4);
+                return año + "-" + mes + "-" + dia;
+            }
+
+            return fechaSinProcesar;
         }
-
         private void procesarLaboratorio(string idTipoExamen, DataRow fila)
         {
             List<string> valores = new List<string>();

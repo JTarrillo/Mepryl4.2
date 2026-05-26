@@ -98,6 +98,7 @@ namespace CapaPresentacion
             agregarColumnaDgv("Estado", "Estado", false);
             agregarColumnaDgv("IdPadre", "IdPadre", false);              // ✅ NUEVO
             agregarColumnaDgv("IdSubtipo", "IdSubtipo", false);
+            agregarColumnaDgv("IdConsulta", "IdConsulta", false);
 
             // Permitir redimensionamiento en cada columna
             foreach (DataGridViewColumn col in dgv.Columns)
@@ -124,6 +125,7 @@ namespace CapaPresentacion
         {
             botAceptar.Visible = false;
             botCancelar.Visible = false;
+            botSelecSubtipoExamen.Visible = false;
             //panelLaboral.Enabled = false;  //GRV - Modificado para panel editable
             //panelPacientePreventiva.Enabled = false;   //GRV - Modificado para panel editable         
             pintarControlesPanelDeshabilitar();
@@ -634,15 +636,6 @@ namespace CapaPresentacion
                     btnWhatsApp.Visible = true; // WhatsApp visible para todos los tipos de turno
                     btnVerEstudio.Visible = true;
                     btnMoverTurno.Visible = true; // GRV - Modificado
-                    if (blnActivoMoverTurno)
-                    {
-                        botLiberar.Visible = false;
-                        btnCopiarInfo.Visible = false; //GRV - Modificado
-                        btnWhatsApp.Visible = false; // WhatsApp oculto en modo mover turno
-                        btnVerEstudio.Visible = false;
-                        btnMoverTurno.Visible = false; // GRV - Modificado
-                        botModificar.Visible = false;
-                    }
                 }
                 else
                 {
@@ -652,11 +645,6 @@ namespace CapaPresentacion
                     }
                     btnMoverTurno.Visible = false; // GRV - Modificado
                     btnWhatsApp.Visible = false; // WhatsApp oculto si no hay turno asignado
-                    if (blnActivoMoverTurno)
-                    {
-                        botAsignar.Visible = false;
-                        btnMoverTurno.Visible = true; // GRV - Modificado
-                    }
                     botModificar.Visible = false;
                     botLiberar.Visible = false;
                     btnCopiarInfo.Visible = false; //GRV - Modificado
@@ -671,6 +659,12 @@ namespace CapaPresentacion
                 btnCopiarInfo.Visible = false; //GRV - Modificado
                 btnWhatsApp.Visible = false; // WhatsApp oculto si no hay selección
                 btnVerEstudio.Visible = false;
+                btnMoverTurno.Visible = false;
+            }
+
+            if (!botAceptar.Visible && !botCancelar.Visible)
+            {
+                botSelecSubtipoExamen.Visible = false;
             }
         }
 
@@ -966,6 +960,7 @@ namespace CapaPresentacion
 
         private void botEditarExamenLaboral_Click(object sender, EventArgs e)
         {
+            modoEdicion();
             editarExamenLaboral();
         }
 
@@ -986,6 +981,56 @@ namespace CapaPresentacion
             if (tipoEx.Modificado)
             {
                 tbExamenLaboral.Text = tbExamenLaboral.Text + " MODIF.";
+            }
+        }
+
+        private void botSelecSubtipoExamen_Click(object sender, EventArgs e)
+        {
+            if (dgv.CurrentRow == null)
+            {
+                MessageBox.Show("Seleccione una fila de turno.", "Seleccionar Tipo/Subtipo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            try
+            {
+                string idTurno = dgv.CurrentRow.Cells[0].Value?.ToString() ?? "";
+                string idTipoExamen = dgv.CurrentRow.Cells["IdTipoExamen"].Value?.ToString() ?? "";
+                string idPaciente = dgv.CurrentRow.Cells["IdPaciente"].Value?.ToString() ?? "";
+                string idConsulta = dgv.CurrentRow.Cells["IdConsulta"].Value?.ToString() ?? "";
+
+                if (string.IsNullOrEmpty(idTipoExamen))
+                {
+                    MessageBox.Show("El turno no tiene tipo de examen válido.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                if (string.IsNullOrEmpty(idConsulta))
+                {
+                    MessageBox.Show("No se encontró IdConsulta para este turno.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                // Abrir frmMesaSelecSubtipoExamen con los datos del turno
+                // Parámetros: MotivoConsulta, IdPaciente, IdEmpresa, IdTurno, IdTipoExamen, IdConsulta, TipoConsulta
+                frmMesaSelecSubtipoExamen fMesa = new frmMesaSelecSubtipoExamen(
+                    "L",  // MotivoConsulta (por defecto)
+                    idPaciente,
+                    strIDEmpresa,
+                    idTurno,
+                    idTipoExamen,
+                    idConsulta,
+                    "L"   // TipoConsulta
+                );
+                
+                fMesa.ShowDialog();
+                
+                // Recargar la grilla después de que cierre el modal
+                cargarGrillaTurnosSinFiltro();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al abrir tipo/subtipo: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -1017,6 +1062,7 @@ namespace CapaPresentacion
             btnVerEstudio.Visible = false;
 
             btnMoverTurno.Visible = false;
+            botSelecSubtipoExamen.Visible = true;  // ✅ Mostrar solo en modo edición
 
             MuestraBotonesEditar();
 
@@ -1025,10 +1071,13 @@ namespace CapaPresentacion
 
         private void MuestraBotonesEditar()
         {
+            botSelecSubtipoExamen.Visible = false;
+
             if (panelPacientePreventiva.Visible)
             {
                 botEditarPacientePreventiva.Visible = true;
                 botEditarExamenPreventiva.Visible = true;
+                botSelecSubtipoExamen.Visible = true;
 
                 botEditarPacienteLaboral.Visible = false;
                 botEditarExamenLaboral.Visible = false;
@@ -1038,6 +1087,7 @@ namespace CapaPresentacion
             {
                 botEditarPacienteLaboral.Visible = true;
                 botEditarExamenLaboral.Visible = true;
+                botSelecSubtipoExamen.Visible = true;
 
                 botEditarPacientePreventiva.Visible = false;
                 botEditarExamenPreventiva.Visible = false;
@@ -1177,6 +1227,7 @@ namespace CapaPresentacion
 
         private void botEditarExamenPreventiva_Click(object sender, EventArgs e)
         {
+            modoEdicion();
             editarExamenPreventiva();
         }
 

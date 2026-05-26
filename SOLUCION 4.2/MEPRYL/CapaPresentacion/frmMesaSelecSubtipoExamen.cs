@@ -109,7 +109,7 @@ namespace CapaPresentacion
 
             if (_strMotivoConsulta == _strTipoConsulta)
             {
-                _mesaEntrada.ActualizaTipoExamenIDConsulta(_strIdConsulta, idSubtipo);
+                _mesaEntrada.ActualizaTipoExamenIDTipoExamen(_strIdTipoExamen, idSubtipo);
             }
             else
             {

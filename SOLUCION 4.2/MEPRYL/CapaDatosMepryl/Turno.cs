@@ -94,14 +94,15 @@ namespace CapaDatosMepryl
             tep.id as IdTipoExamen,
             t.habilitado as Habilitado,
             t.estadoID as IdEstado,
-            te.id as IdSubtipo,
-            ISNULL(tePadre.id, te.id) as IdPadre
+            COALESCE(tep.idEspecialidad, h.especialidadID) as IdSubtipo,
+            ISNULL(tePadre.id, te.id) as IdPadre,
+            tep.idConsulta as IdConsulta
         FROM dbo.Turno t
         INNER JOIN dbo.TurnoEstado e ON t.estadoID = e.id
         INNER JOIN dbo.Horario h ON t.horarioID = h.id
         INNER JOIN dbo.Profesional p ON h.profesionalID = p.id
         LEFT JOIN dbo.TipoExamenDePaciente tep ON tep.idTurno = t.id
-        LEFT JOIN dbo.Especialidad te ON h.especialidadID = te.id
+        LEFT JOIN dbo.Especialidad te ON COALESCE(tep.idEspecialidad, h.especialidadID) = te.id
         LEFT JOIN dbo.Especialidad tePadre ON te.IdPadre = tePadre.id AND te.Padre = 0
         WHERE convert(date, t.fecha) = convert(date, '" + fecha.ToShortDateString() + "', 105) "
                 + filtroTipoExamen + filtroHora + filtroEstado +
@@ -135,6 +136,7 @@ namespace CapaDatosMepryl
                 retorno.Columns.Add("Estado");
                 retorno.Columns.Add("IdPadre");        // ✅ NUEVO
                 retorno.Columns.Add("IdSubtipo");      // ✅ NUEVO
+                retorno.Columns.Add("IdConsulta");
 
                 foreach (DataRow r in turnos.Rows)
                 {
@@ -192,7 +194,8 @@ namespace CapaDatosMepryl
                         r.ItemArray[14].ToString(),     // IdTipoExamen
                         estado,
                         r.ItemArray[18].ToString(),     // IdPadre ✅
-                        r.ItemArray[17].ToString()      // IdSubtipo ✅
+                        r.ItemArray[17].ToString(),     // IdSubtipo ✅
+                        r.ItemArray[19].ToString()      // IdConsulta
                     );
                 }
                 return retorno;

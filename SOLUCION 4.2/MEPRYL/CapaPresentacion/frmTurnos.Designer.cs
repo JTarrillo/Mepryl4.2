@@ -29,7 +29,7 @@ namespace CapaPresentacion
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmTurnos));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             this.lbTitulo = new System.Windows.Forms.Label();
             this.labelSubTipoExamen = new System.Windows.Forms.Label();
             this.cboSubTipoExamen = new System.Windows.Forms.ComboBox();
@@ -53,6 +53,7 @@ namespace CapaPresentacion
             this.botEditarPacientePreventiva = new System.Windows.Forms.Button();
             this.botEditarPacienteLaboral = new System.Windows.Forms.Button();
             this.botEditarExamenLaboral = new System.Windows.Forms.Button();
+            this.botSelecSubtipoExamen = new System.Windows.Forms.Button();
             this.botTurno = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
             this.panelLaboral = new System.Windows.Forms.Panel();
@@ -286,6 +287,7 @@ namespace CapaPresentacion
             this.botonLaboratorio.Controls.Add(this.botEditarPacientePreventiva);
             this.botonLaboratorio.Controls.Add(this.botEditarPacienteLaboral);
             this.botonLaboratorio.Controls.Add(this.botEditarExamenLaboral);
+            this.botonLaboratorio.Controls.Add(this.botSelecSubtipoExamen);
             this.botonLaboratorio.Dock = System.Windows.Forms.DockStyle.Right;
             this.botonLaboratorio.Location = new System.Drawing.Point(1190, 50);
             this.botonLaboratorio.Name = "botonLaboratorio";
@@ -297,7 +299,7 @@ namespace CapaPresentacion
             this.btnWhatsApp.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold);
             this.btnWhatsApp.Image = ((System.Drawing.Image)(resources.GetObject("btnWhatsApp.Image")));
             this.btnWhatsApp.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnWhatsApp.Location = new System.Drawing.Point(9, 136);
+            this.btnWhatsApp.Location = new System.Drawing.Point(9, 198);
             this.btnWhatsApp.Name = "btnWhatsApp";
             this.btnWhatsApp.Size = new System.Drawing.Size(120, 45);
             this.btnWhatsApp.TabIndex = 135;
@@ -409,7 +411,7 @@ namespace CapaPresentacion
             this.botCancelar.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.botCancelar.Image = ((System.Drawing.Image)(resources.GetObject("botCancelar.Image")));
             this.botCancelar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.botCancelar.Location = new System.Drawing.Point(9, 307);
+            this.botCancelar.Location = new System.Drawing.Point(9, 319);
             this.botCancelar.Name = "botCancelar";
             this.botCancelar.Size = new System.Drawing.Size(120, 45);
             this.botCancelar.TabIndex = 6;
@@ -424,7 +426,7 @@ namespace CapaPresentacion
             this.botAceptar.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.botAceptar.Image = ((System.Drawing.Image)(resources.GetObject("botAceptar.Image")));
             this.botAceptar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.botAceptar.Location = new System.Drawing.Point(9, 249);
+            this.botAceptar.Location = new System.Drawing.Point(9, 259);
             this.botAceptar.Name = "botAceptar";
             this.botAceptar.Size = new System.Drawing.Size(120, 45);
             this.botAceptar.TabIndex = 5;
@@ -455,7 +457,7 @@ namespace CapaPresentacion
             this.botModificar.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.botModificar.Image = ((System.Drawing.Image)(resources.GetObject("botModificar.Image")));
             this.botModificar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.botModificar.Location = new System.Drawing.Point(9, 187);
+            this.botModificar.Location = new System.Drawing.Point(7, 146);
             this.botModificar.Name = "botModificar";
             this.botModificar.Size = new System.Drawing.Size(120, 45);
             this.botModificar.TabIndex = 3;
@@ -524,6 +526,21 @@ namespace CapaPresentacion
             this.botEditarExamenLaboral.UseVisualStyleBackColor = true;
             this.botEditarExamenLaboral.Visible = false;
             this.botEditarExamenLaboral.Click += new System.EventHandler(this.botEditarExamenLaboral_Click);
+            // 
+            // botSelecSubtipoExamen
+            // 
+            this.botSelecSubtipoExamen.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.botSelecSubtipoExamen.Image = ((System.Drawing.Image)(resources.GetObject("botSelecSubtipoExamen.Image")));
+            this.botSelecSubtipoExamen.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.botSelecSubtipoExamen.Location = new System.Drawing.Point(9, 143);
+            this.botSelecSubtipoExamen.Name = "botSelecSubtipoExamen";
+            this.botSelecSubtipoExamen.Size = new System.Drawing.Size(120, 45);
+            this.botSelecSubtipoExamen.TabIndex = 44;
+            this.botSelecSubtipoExamen.Text = "Seleccionar Tipo/Subt.";
+            this.botSelecSubtipoExamen.TextAlign = System.Drawing.ContentAlignment.BottomRight;
+            this.botSelecSubtipoExamen.UseVisualStyleBackColor = true;
+            this.botSelecSubtipoExamen.Visible = false;
+            this.botSelecSubtipoExamen.Click += new System.EventHandler(this.botSelecSubtipoExamen_Click);
             // 
             // botTurno
             // 
@@ -1151,14 +1168,14 @@ namespace CapaPresentacion
             this.dgvLigaYClub.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.dgvLigaYClub.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvLigaYClub.ColumnHeadersVisible = false;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Tahoma", 8.25F);
-            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(31)))), ((int)(((byte)(53)))));
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvLigaYClub.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Tahoma", 8.25F);
+            dataGridViewCellStyle4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvLigaYClub.DefaultCellStyle = dataGridViewCellStyle4;
             this.dgvLigaYClub.GridColor = System.Drawing.SystemColors.Control;
             this.dgvLigaYClub.Location = new System.Drawing.Point(15, 209);
             this.dgvLigaYClub.MultiSelect = false;
@@ -1991,6 +2008,7 @@ namespace CapaPresentacion
         private System.Windows.Forms.TextBox tbIdTipoExamenLaboral;
         private System.Windows.Forms.Button botEditarPacienteLaboral;
         private System.Windows.Forms.Button botEditarExamenLaboral;
+        private System.Windows.Forms.Button botSelecSubtipoExamen;
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.TextBox tbCuilLaboral;
         private System.Windows.Forms.Label label13;

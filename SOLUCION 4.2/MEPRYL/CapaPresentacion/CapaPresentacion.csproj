@@ -1568,6 +1568,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="rptProtocoloLaboratorioLaboral01.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>rptProtocoloLaboratorioLaboral012.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="rptProtocoloLaboratorioLaboral.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>

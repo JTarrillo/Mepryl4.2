@@ -61,6 +61,11 @@ namespace CapaNegocioMepryl
             mesaEntrada.ActualizaTipoExamenIDConsulta(IdConsulta, IdEspecialidad);
         }
 
+        public void ActualizaTipoExamenIDTipoExamen(string IdTipoExamen, string IdEspecialidad)
+        {
+            mesaEntrada.ActualizaTipoExamenIDTipoExamen(IdTipoExamen, IdEspecialidad);
+        }
+
         public void ActualizaIdentificadorConsulta(string IdConsulta, string Tipo, string NroIdentificador)
         {
             mesaEntrada.ActualizaIdentificadorConsulta(IdConsulta, Tipo, NroIdentificador);

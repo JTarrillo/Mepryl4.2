@@ -156,7 +156,9 @@ namespace CapaNegocioMepryl
 
             foreach (DataRow r in dt.Rows)
             {
-                Etiquetas[0, 0] = "<<Fecha>>"; Etiquetas[0, 1] = r.ItemArray[0].ToString();
+                // Etiquetas[0, 0] = "<<Fecha>>"; Etiquetas[0, 1] = r.ItemArray[0].ToString();
+                Etiquetas[0, 0] = "<<Fecha>>"; 
+                Etiquetas[0, 1] = r.ItemArray[0] != DBNull.Value ? Convert.ToDateTime(r.ItemArray[0]).ToString("dd-MM-yyyy") : "";
                 Etiquetas[1, 0] = "<<N>>"; Etiquetas[1, 1] = r.ItemArray[1].ToString();
                 Etiquetas[2, 0] = "<<Dni>>"; Etiquetas[2, 1] = r.ItemArray[2].ToString();
                 Etiquetas[3, 0] = "<<FechaNac>>"; Etiquetas[3, 1] = r.ItemArray[3].ToString();
@@ -211,7 +213,6 @@ namespace CapaNegocioMepryl
             
             return blnResultado;
         }
-
         public bool LaboratorioPreventiva(DataTable dt, string strNombreArchivo, DateTime dtFecha)
         {
             bool blnResultado = false;
@@ -220,7 +221,30 @@ namespace CapaNegocioMepryl
 
             foreach (DataRow r in dt.Rows)
             {
-                Etiquetas[0, 0] = "<<Fecha>>"; Etiquetas[0, 1] = r.ItemArray[0].ToString();
+                // --- BLOQUE SEGURO E INTELIGENTE PARA LA FECHA ---
+                Etiquetas[0, 0] = "<<Fecha>>";
+                if (r.ItemArray[0] != DBNull.Value)
+                {
+                    string valorFecha = r.ItemArray[0].ToString().Trim();
+                    double numeroExcel;
+
+                    // 1. ¿Es un número de serie de Excel (como 46115)?
+                    if (double.TryParse(valorFecha, out numeroExcel))
+                    {
+                        Etiquetas[0, 1] = DateTime.FromOADate(numeroExcel).ToString("dd-MM-yyyy");
+                    }
+                    // 2. Si no es un número, intentamos parsearlo como una fecha normal de C#
+                    else
+                    {
+                        Etiquetas[0, 1] = Convert.ToDateTime(r.ItemArray[0]).ToString("dd-MM-yyyy");
+                    }
+                }
+                else
+                {
+                    Etiquetas[0, 1] = ""; // Si viene vacío en la base de datos o Excel
+                }
+                // -------------------------------------------------
+
                 Etiquetas[1, 0] = "<<Nro>>"; Etiquetas[1, 1] = r.ItemArray[1].ToString();
                 Etiquetas[2, 0] = "<<Dni>>"; Etiquetas[2, 1] = r.ItemArray[2].ToString();
                 Etiquetas[3, 0] = "<<FechaNac>>"; Etiquetas[3, 1] = r.ItemArray[3].ToString();
@@ -253,11 +277,11 @@ namespace CapaNegocioMepryl
                 Etiquetas[30, 0] = "<<Hema>>"; Etiquetas[30, 1] = r.ItemArray[30].ToString();
                 Etiquetas[31, 0] = "<<Pio>>"; Etiquetas[31, 1] = r.ItemArray[31].ToString();
                 Etiquetas[32, 0] = "<<Mucus>>"; Etiquetas[32, 1] = r.ItemArray[32].ToString();
-                Etiquetas[33, 0] = "<<Observaciones>>"; Etiquetas[33, 1] = r.ItemArray[33].ToString();                
+                Etiquetas[33, 0] = "<<Observaciones>>"; Etiquetas[33, 1] = r.ItemArray[33].ToString();
             }
 
             CrearReporte.CreateWordDocument(PlantillaWord("LABORATORIO-PREVENTIVA", true), ReporteSalida("LABORATORIO-PREVENTIVA", true, dtFecha, strNombreArchivo), objImagen, Etiquetas, 'P', false);
-            blnResultado = true;            
+            blnResultado = true;
 
             return blnResultado;
         }
