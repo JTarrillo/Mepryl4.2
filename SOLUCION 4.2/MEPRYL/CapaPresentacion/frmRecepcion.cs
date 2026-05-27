@@ -162,7 +162,7 @@ namespace CapaPresentacion
                 dgv.Columns[3].Width = 90;   // Fecha
                 dgv.Columns[4].Width = 70;   // Hora
                 dgv.Columns[5].Width = 50;   // Nro
-                dgv.Columns[6].Width = 150;  // Tipo
+                // dgv.Columns[6].Width = 150;  // Tipo (oculta)
                 dgv.Columns[7].Width = 230;  // Subtipo de Examen ← MÁS GRANDE
                 dgv.Columns[8].Width = 90;   // DNI
                 dgv.Columns[9].Width = 220;  // Paciente ← MÁS GRANDE
@@ -181,6 +181,7 @@ namespace CapaPresentacion
             dgv.Columns[0].Visible = true;   // Asistio
             dgv.Columns[1].Visible = true;   // Abono
             dgv.Columns[2].Visible = false;  // IdTurno (oculta)
+            dgv.Columns[6].Visible = false;  // Tipo (oculta)
             dgv.Columns[14].Visible = false; // IdPaciente (oculta)
             dgv.Columns[15].Visible = false; // Reservado (oculta)
             dgv.Columns[16].Visible = false; // IdEmpresa (oculta)
