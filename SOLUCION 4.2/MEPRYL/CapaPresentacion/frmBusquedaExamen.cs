@@ -496,9 +496,9 @@ namespace CapaPresentacion
                 if (inf == "") { informado = false; }
 
 
-
-                if (valoresExamen.Rows.Count > 0 && (imp != "0" || impLab != "0" || cons != "0"))
-                {
+                if (valoresExamen.Rows.Count > 0)
+                    //if (valoresExamen.Rows.Count > 0 && (imp != "0" || impLab != "0" || cons != "0"))
+                {                                
                     string fisico = filtrarValores(valid, 0);
                     string lab = filtrarValores(valid, 1);
                     string rx = filtrarValores(valid, 2);

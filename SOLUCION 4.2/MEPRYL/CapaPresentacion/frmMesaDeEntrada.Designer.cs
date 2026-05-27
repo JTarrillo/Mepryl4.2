@@ -29,17 +29,33 @@ namespace CapaPresentacion
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle19 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle20 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMesaDeEntrada));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle21 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle22 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle23 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle24 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             this.lbTitulo = new System.Windows.Forms.Label();
             this.timer = new System.Windows.Forms.Timer(this.components);
             this.dgvGrilla = new System.Windows.Forms.DataGridView();
+            this.IdConsulta = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.IdPaciente = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.IdTipoExamen = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.IdTurno = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Fecha = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Hora = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Orden = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Tipo = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.TipoExamen = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.NroExamen = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Dni = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Apellido = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Nombre = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ObservacTurno = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ObservacMesaEntrada = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.RM = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.FechaNaci = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.panel3 = new System.Windows.Forms.Panel();
             this.cbTipoDeExamen = new System.Windows.Forms.ComboBox();
             this.label10 = new System.Windows.Forms.Label();
@@ -126,22 +142,6 @@ namespace CapaPresentacion
             this.dataGridViewTextBoxColumn14 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn15 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn16 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.IdConsulta = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.IdPaciente = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.IdTipoExamen = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.IdTurno = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Fecha = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Hora = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Orden = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Tipo = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.TipoExamen = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.NroExamen = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Dni = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Apellido = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Nombre = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ObservacTurno = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ObservacMesaEntrada = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.FechaNaci = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dgvGrilla)).BeginInit();
             this.panel3.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -198,14 +198,14 @@ namespace CapaPresentacion
             this.ObservacMesaEntrada,
             this.RM,
             this.FechaNaci});
-            dataGridViewCellStyle19.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle19.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle19.Font = new System.Drawing.Font("Tahoma", 8.25F);
-            dataGridViewCellStyle19.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            dataGridViewCellStyle19.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle19.SelectionForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle19.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvGrilla.DefaultCellStyle = dataGridViewCellStyle19;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Tahoma", 8.25F);
+            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvGrilla.DefaultCellStyle = dataGridViewCellStyle1;
             this.dgvGrilla.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvGrilla.GridColor = System.Drawing.Color.LightGray;
             this.dgvGrilla.Location = new System.Drawing.Point(0, 334);
@@ -213,10 +213,10 @@ namespace CapaPresentacion
             this.dgvGrilla.Name = "dgvGrilla";
             this.dgvGrilla.ReadOnly = true;
             this.dgvGrilla.RowHeadersWidth = 25;
-            dataGridViewCellStyle20.BackColor = System.Drawing.Color.WhiteSmoke;
-            dataGridViewCellStyle20.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle20.ForeColor = System.Drawing.Color.Black;
-            this.dgvGrilla.RowsDefaultCellStyle = dataGridViewCellStyle20;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.WhiteSmoke;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.Black;
+            this.dgvGrilla.RowsDefaultCellStyle = dataGridViewCellStyle2;
             this.dgvGrilla.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
             this.dgvGrilla.Size = new System.Drawing.Size(1206, 265);
             this.dgvGrilla.TabIndex = 31;
@@ -224,6 +224,101 @@ namespace CapaPresentacion
             this.dgvGrilla.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvGrilla_CellDoubleClick);
             this.dgvGrilla.CurrentCellChanged += new System.EventHandler(this.dgvGrilla_CurrentCellChanged);
             this.dgvGrilla.Sorted += new System.EventHandler(this.dgvGrilla_Sorted);
+            // 
+            // IdConsulta
+            // 
+            this.IdConsulta.HeaderText = "IdConsulta";
+            this.IdConsulta.Name = "IdConsulta";
+            this.IdConsulta.ReadOnly = true;
+            this.IdConsulta.Visible = false;
+            // 
+            // IdPaciente
+            // 
+            this.IdPaciente.HeaderText = "IdPaciente";
+            this.IdPaciente.Name = "IdPaciente";
+            this.IdPaciente.ReadOnly = true;
+            this.IdPaciente.Visible = false;
+            // 
+            // IdTipoExamen
+            // 
+            this.IdTipoExamen.HeaderText = "IdTipoExamen";
+            this.IdTipoExamen.Name = "IdTipoExamen";
+            this.IdTipoExamen.ReadOnly = true;
+            this.IdTipoExamen.Visible = false;
+            // 
+            // IdTurno
+            // 
+            this.IdTurno.HeaderText = "IdTurno";
+            this.IdTurno.Name = "IdTurno";
+            this.IdTurno.ReadOnly = true;
+            this.IdTurno.Visible = false;
+            // 
+            // Fecha
+            // 
+            this.Fecha.HeaderText = "Fecha";
+            this.Fecha.Name = "Fecha";
+            this.Fecha.ReadOnly = true;
+            // 
+            // Hora
+            // 
+            this.Hora.HeaderText = "Hora";
+            this.Hora.Name = "Hora";
+            this.Hora.ReadOnly = true;
+            // 
+            // Orden
+            // 
+            this.Orden.HeaderText = "Orden";
+            this.Orden.Name = "Orden";
+            this.Orden.ReadOnly = true;
+            // 
+            // Tipo
+            // 
+            this.Tipo.HeaderText = "Tipo";
+            this.Tipo.Name = "Tipo";
+            this.Tipo.ReadOnly = true;
+            this.Tipo.Visible = false;
+            // 
+            // TipoExamen
+            // 
+            this.TipoExamen.HeaderText = "Tipo Examen";
+            this.TipoExamen.Name = "TipoExamen";
+            this.TipoExamen.ReadOnly = true;
+            // 
+            // NroExamen
+            // 
+            this.NroExamen.HeaderText = "Nº Examen";
+            this.NroExamen.Name = "NroExamen";
+            this.NroExamen.ReadOnly = true;
+            // 
+            // Dni
+            // 
+            this.Dni.HeaderText = "Dni";
+            this.Dni.Name = "Dni";
+            this.Dni.ReadOnly = true;
+            // 
+            // Apellido
+            // 
+            this.Apellido.HeaderText = "Apellido";
+            this.Apellido.Name = "Apellido";
+            this.Apellido.ReadOnly = true;
+            // 
+            // Nombre
+            // 
+            this.Nombre.HeaderText = "Nombre";
+            this.Nombre.Name = "Nombre";
+            this.Nombre.ReadOnly = true;
+            // 
+            // ObservacTurno
+            // 
+            this.ObservacTurno.HeaderText = "Observac. Turno";
+            this.ObservacTurno.Name = "ObservacTurno";
+            this.ObservacTurno.ReadOnly = true;
+            // 
+            // ObservacMesaEntrada
+            // 
+            this.ObservacMesaEntrada.HeaderText = "Observac. Mesa Entrada";
+            this.ObservacMesaEntrada.Name = "ObservacMesaEntrada";
+            this.ObservacMesaEntrada.ReadOnly = true;
             // 
             // RM
             // 
@@ -233,6 +328,13 @@ namespace CapaPresentacion
             this.RM.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             this.RM.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
             this.RM.Visible = false;
+            // 
+            // FechaNaci
+            // 
+            this.FechaNaci.HeaderText = "FechaNaci";
+            this.FechaNaci.Name = "FechaNaci";
+            this.FechaNaci.ReadOnly = true;
+            this.FechaNaci.Visible = false;
             // 
             // panel3
             // 
@@ -872,14 +974,14 @@ namespace CapaPresentacion
             this.dgvInformacionPaciente.BackgroundColor = System.Drawing.SystemColors.ButtonFace;
             this.dgvInformacionPaciente.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.dgvInformacionPaciente.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
-            dataGridViewCellStyle21.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle21.BackColor = System.Drawing.SystemColors.ButtonFace;
-            dataGridViewCellStyle21.Font = new System.Drawing.Font("Tahoma", 8.25F);
-            dataGridViewCellStyle21.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle21.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle21.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle21.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvInformacionPaciente.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle21;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.ButtonFace;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Tahoma", 8.25F);
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvInformacionPaciente.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
             this.dgvInformacionPaciente.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvInformacionPaciente.Enabled = false;
             this.dgvInformacionPaciente.GridColor = System.Drawing.SystemColors.GrayText;
@@ -889,12 +991,12 @@ namespace CapaPresentacion
             this.dgvInformacionPaciente.ReadOnly = true;
             this.dgvInformacionPaciente.RowHeadersVisible = false;
             this.dgvInformacionPaciente.RowHeadersWidth = 30;
-            dataGridViewCellStyle22.BackColor = System.Drawing.SystemColors.ButtonFace;
-            dataGridViewCellStyle22.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle22.ForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle22.SelectionBackColor = System.Drawing.SystemColors.ButtonFace;
-            dataGridViewCellStyle22.SelectionForeColor = System.Drawing.Color.Black;
-            this.dgvInformacionPaciente.RowsDefaultCellStyle = dataGridViewCellStyle22;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.ButtonFace;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.ButtonFace;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.Color.Black;
+            this.dgvInformacionPaciente.RowsDefaultCellStyle = dataGridViewCellStyle4;
             this.dgvInformacionPaciente.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvInformacionPaciente.Size = new System.Drawing.Size(470, 101);
             this.dgvInformacionPaciente.TabIndex = 272;
@@ -1040,23 +1142,23 @@ namespace CapaPresentacion
             this.dgvTurno.BackgroundColor = System.Drawing.SystemColors.ControlLight;
             this.dgvTurno.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.dgvTurno.ColumnHeadersHeight = 25;
-            dataGridViewCellStyle23.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle23.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle23.Font = new System.Drawing.Font("Tahoma", 8.25F);
-            dataGridViewCellStyle23.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            dataGridViewCellStyle23.SelectionBackColor = System.Drawing.Color.LightGray;
-            dataGridViewCellStyle23.SelectionForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle23.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvTurno.DefaultCellStyle = dataGridViewCellStyle23;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle5.Font = new System.Drawing.Font("Tahoma", 8.25F);
+            dataGridViewCellStyle5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.Color.LightGray;
+            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvTurno.DefaultCellStyle = dataGridViewCellStyle5;
             this.dgvTurno.Location = new System.Drawing.Point(48, 61);
             this.dgvTurno.MultiSelect = false;
             this.dgvTurno.Name = "dgvTurno";
             this.dgvTurno.RowHeadersVisible = false;
             this.dgvTurno.RowHeadersWidth = 30;
-            dataGridViewCellStyle24.BackColor = System.Drawing.Color.WhiteSmoke;
-            dataGridViewCellStyle24.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle24.ForeColor = System.Drawing.Color.Black;
-            this.dgvTurno.RowsDefaultCellStyle = dataGridViewCellStyle24;
+            dataGridViewCellStyle6.BackColor = System.Drawing.Color.WhiteSmoke;
+            dataGridViewCellStyle6.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle6.ForeColor = System.Drawing.Color.Black;
+            this.dgvTurno.RowsDefaultCellStyle = dataGridViewCellStyle6;
             this.dgvTurno.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvTurno.Size = new System.Drawing.Size(976, 209);
             this.dgvTurno.TabIndex = 261;
@@ -1153,7 +1255,7 @@ namespace CapaPresentacion
             this.botCambiarTipoExamen.Name = "botCambiarTipoExamen";
             this.botCambiarTipoExamen.Size = new System.Drawing.Size(120, 60);
             this.botCambiarTipoExamen.TabIndex = 274;
-            this.botCambiarTipoExamen.Text = "Modificar\r\n Tipo y Subtipo";
+            this.botCambiarTipoExamen.Text = "Modificar\r\n Tipo/Sub.";
             this.botCambiarTipoExamen.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.botCambiarTipoExamen.UseVisualStyleBackColor = true;
             this.botCambiarTipoExamen.Click += new System.EventHandler(this.botCambiarTipoExamen_Click);
@@ -1279,108 +1381,6 @@ namespace CapaPresentacion
             this.dataGridViewTextBoxColumn16.Name = "dataGridViewTextBoxColumn16";
             this.dataGridViewTextBoxColumn16.ReadOnly = true;
             this.dataGridViewTextBoxColumn16.Visible = false;
-            // 
-            // IdConsulta
-            // 
-            this.IdConsulta.HeaderText = "IdConsulta";
-            this.IdConsulta.Name = "IdConsulta";
-            this.IdConsulta.ReadOnly = true;
-            this.IdConsulta.Visible = false;
-            // 
-            // IdPaciente
-            // 
-            this.IdPaciente.HeaderText = "IdPaciente";
-            this.IdPaciente.Name = "IdPaciente";
-            this.IdPaciente.ReadOnly = true;
-            this.IdPaciente.Visible = false;
-            // 
-            // IdTipoExamen
-            // 
-            this.IdTipoExamen.HeaderText = "IdTipoExamen";
-            this.IdTipoExamen.Name = "IdTipoExamen";
-            this.IdTipoExamen.ReadOnly = true;
-            this.IdTipoExamen.Visible = false;
-            // 
-            // IdTurno
-            // 
-            this.IdTurno.HeaderText = "IdTurno";
-            this.IdTurno.Name = "IdTurno";
-            this.IdTurno.ReadOnly = true;
-            this.IdTurno.Visible = false;
-            // 
-            // Fecha
-            // 
-            this.Fecha.HeaderText = "Fecha";
-            this.Fecha.Name = "Fecha";
-            this.Fecha.ReadOnly = true;
-            // 
-            // Hora
-            // 
-            this.Hora.HeaderText = "Hora";
-            this.Hora.Name = "Hora";
-            this.Hora.ReadOnly = true;
-            // 
-            // Orden
-            // 
-            this.Orden.HeaderText = "Orden";
-            this.Orden.Name = "Orden";
-            this.Orden.ReadOnly = true;
-            // 
-            // Tipo
-            // 
-            this.Tipo.HeaderText = "Tipo";
-            this.Tipo.Name = "Tipo";
-            this.Tipo.ReadOnly = true;
-            this.Tipo.Visible = false;
-            // 
-            // TipoExamen
-            // 
-            this.TipoExamen.HeaderText = "Tipo Examen";
-            this.TipoExamen.Name = "TipoExamen";
-            this.TipoExamen.ReadOnly = true;
-            // 
-            // NroExamen
-            // 
-            this.NroExamen.HeaderText = "Nº Examen";
-            this.NroExamen.Name = "NroExamen";
-            this.NroExamen.ReadOnly = true;
-            // 
-            // Dni
-            // 
-            this.Dni.HeaderText = "Dni";
-            this.Dni.Name = "Dni";
-            this.Dni.ReadOnly = true;
-            // 
-            // Apellido
-            // 
-            this.Apellido.HeaderText = "Apellido";
-            this.Apellido.Name = "Apellido";
-            this.Apellido.ReadOnly = true;
-            // 
-            // Nombre
-            // 
-            this.Nombre.HeaderText = "Nombre";
-            this.Nombre.Name = "Nombre";
-            this.Nombre.ReadOnly = true;
-            // 
-            // ObservacTurno
-            // 
-            this.ObservacTurno.HeaderText = "Observac. Turno";
-            this.ObservacTurno.Name = "ObservacTurno";
-            this.ObservacTurno.ReadOnly = true;
-            // 
-            // ObservacMesaEntrada
-            // 
-            this.ObservacMesaEntrada.HeaderText = "Observac. Mesa Entrada";
-            this.ObservacMesaEntrada.Name = "ObservacMesaEntrada";
-            this.ObservacMesaEntrada.ReadOnly = true;
-            // 
-            // FechaNaci
-            // 
-            this.FechaNaci.HeaderText = "FechaNaci";
-            this.FechaNaci.Name = "FechaNaci";
-            this.FechaNaci.ReadOnly = true;
-            this.FechaNaci.Visible = false;
             // 
             // frmMesaDeEntrada
             // 

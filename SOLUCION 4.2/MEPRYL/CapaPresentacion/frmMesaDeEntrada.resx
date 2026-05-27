@@ -441,18 +441,18 @@
   </data>
   <data name="botCambiarTipoExamen.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAI3SURBVFhH7ZfLSxtRFIezlEJ3/hlduejCTVwVNwMt3XUr
-        io8EpGKpgdRSKhIV48JXqhRRGkkLIqVqBCENxCg4DGg0QfPQNGOlGGNaDWLQOeVcmZLemdGYuRNceOC3
-        uXOG7+Ocy8CYTGWsQHX1w2Wz+ZHPbK6gnxleaxxXl2ptPU3b7bBntaZXa2uf0D2GVffQlHXmwyfppN8J
-        Z86r7Fks6bJMomvY3RLYSEqhZBa+TnwBWQIngeug+5nW6HBHi3clLG0f5ABTKIHrwDthetnnqnzVM16v
-        N6PT8w2Zs4smObzX5sjGBi59/s/AR38RAVkC1yFwXB2xbHe4qrZTh/AnD8ySiHghGxsAyEyBdDQJhRKB
-        UFLqHnJb/42JtUAhXI4sgevAO1GwJbYCuypwOcdRpzQyaLP8B2cpkIgsasLxHO8EzSbFQmD3BngisgCH
-        uXwzzSalV6AYOPYZIlAs3BCBK7hTAVaDY/A7QbNJlSJwWzjmtWOMjUA8vKANj6vDmQnENufg+Dp4WB3O
-        REA8EGF9phH2hbca8HnFO0wFeP80nPDvIeVrg+SqjYLPKfrp6BL4fS6B32ODnNBFIvraQOTfkAsX3/qm
-        6FeLLoGgsAXcs+cQX7ITAZxEaLYZdtZnFb1a0SXwrncQHtdwRMLv6QD+uxvEnz8UfdelZIGjXB6evqgn
-        EkFhk6yD7ikmJQukT8+JBH1+25QswCr3AvcCd1sguBEFlDAymgINna4H7Y6PVUYH/8BoNtZfcleDro+2
-        mDEAAAAASUVORK5CYII=
+        iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
+        wgAADsIBFShKgAAAAjdJREFUWEftl8tLG1EUh7OUQnf+GV256MJNXBU3Ay3ddSuKjwSkYqmB1FIqEhXj
+        wleqFFEaSQsipWoEIQ3EKDgMaDRB89A0Y6UYY1oNYtA55VyZkt6Z0Zi5E1x44Le5c4bv45zLwJhMZaxA
+        dfXDZbP5kc9srqCfGV5rHFeXam09TdvtsGe1pldra5/QPYZV99CUdebDJ+mk3wlnzqvsWSzpskyia9jd
+        EthISqFkFr5OfAFZAieB66D7mdbocEeLdyUsbR/kAFMogevAO2F62eeqfNUzXq83o9PzDZmziyY5vNfm
+        yMYGLn3+z8BHfxEBWQLXIXBcHbFsd7iqtlOH8CcPzJKIeCEbGwDITIF0NAmFEoFQUuoeclv/jYm1QCFc
+        jiyB68A7UbAltgK7KnA5x1GnNDJos/wHZymQiCxqwvEc7wTNJsVCYPcGeCKyAIe5fDPNJqVXoBg49hki
+        UCzcEIEruFMBVoNj8DtBs0mVInBbOOa1Y4yNQDy8oA2Pq8OZCcQ25+D4OnhYHc5EQDwQYX2mEfaFtxrw
+        ecU7TAV4/zSc8O8h5WuD5KqNgs8p+unoEvh9LoHfY4Oc0EUi+tpA5N+QCxff+qboV4sugaCwBdyz5xBf
+        shMBnERothl21mcVvVrRJfCudxAe13BEwu/pAP67G8SfPxR916VkgaNcHp6+qCcSQWGTrIPuKSYlC6RP
+        z4kEfX7blCzAKvcC9wJ3WyC4EQWUMDKaAg2drgftjo9VRgf/wGg21l9yV4Ouj7aYMQAAAABJRU5ErkJg
+        gg==
 </value>
   </data>
   <data name="btnSalir.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">

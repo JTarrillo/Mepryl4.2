@@ -84,8 +84,8 @@ namespace CapaPresentacion
             // 
             // panDerecha
             // 
-            this.panDerecha.Location = new System.Drawing.Point(595, 139);
-            this.panDerecha.Size = new System.Drawing.Size(126, 374);
+            this.panDerecha.Location = new System.Drawing.Point(595, 164);
+            this.panDerecha.Size = new System.Drawing.Size(126, 349);
             // 
             // panAbajo
             // 
@@ -125,7 +125,7 @@ namespace CapaPresentacion
             this.bbiEnviarCorreo,
             this.bbiCambiarClub,
             this.bbiUbicarConsolidado});
-            this.rbcMenu.Location = new System.Drawing.Point(0, 0);
+            this.rbcMenu.Location = new System.Drawing.Point(0, 25);
             this.rbcMenu.MaxItemId = 7;
             this.rbcMenu.Name = "rbcMenu";
             this.rbcMenu.Size = new System.Drawing.Size(721, 139);

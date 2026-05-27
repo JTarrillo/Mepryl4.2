@@ -1108,9 +1108,9 @@
             this.cboSubTipo.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboSubTipo.FormattingEnabled = true;
             this.cboSubTipo.IntegralHeight = false;
-            this.cboSubTipo.Location = new System.Drawing.Point(306, 25);
+            this.cboSubTipo.Location = new System.Drawing.Point(279, 25);
             this.cboSubTipo.Name = "cboSubTipo";
-            this.cboSubTipo.Size = new System.Drawing.Size(305, 24);
+            this.cboSubTipo.Size = new System.Drawing.Size(332, 24);
             this.cboSubTipo.TabIndex = 11;
             this.cboSubTipo.SelectedIndexChanged += new System.EventHandler(this.cboSubTipo_SelectedIndexChanged);
             this.cboSubTipo.SelectionChangeCommitted += new System.EventHandler(this.cboSubTipo_SelectionChangeCommitted);
@@ -1119,7 +1119,7 @@
             // 
             this.label23.AutoSize = true;
             this.label23.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label23.Location = new System.Drawing.Point(614, 5);
+            this.label23.Location = new System.Drawing.Point(838, 6);
             this.label23.Name = "label23";
             this.label23.Size = new System.Drawing.Size(124, 16);
             this.label23.TabIndex = 12;
@@ -1144,7 +1144,7 @@
             // 
             this.label11.AutoSize = true;
             this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label11.Location = new System.Drawing.Point(303, 6);
+            this.label11.Location = new System.Drawing.Point(392, 5);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(106, 16);
             this.label11.TabIndex = 8;
@@ -1161,7 +1161,7 @@
             this.cboMotivoConsulta.ItemHeight = 16;
             this.cboMotivoConsulta.Location = new System.Drawing.Point(15, 25);
             this.cboMotivoConsulta.Name = "cboMotivoConsulta";
-            this.cboMotivoConsulta.Size = new System.Drawing.Size(271, 24);
+            this.cboMotivoConsulta.Size = new System.Drawing.Size(246, 24);
             this.cboMotivoConsulta.TabIndex = 0;
             this.cboMotivoConsulta.SelectedIndexChanged += new System.EventHandler(this.cboMotivoConsulta_SelectedIndexChanged);
             this.cboMotivoConsulta.SelectionChangeCommitted += new System.EventHandler(this.cboMotivoConsulta_SelectionChangeCommitted);
@@ -1170,11 +1170,11 @@
             // 
             this.label22.AutoSize = true;
             this.label22.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label22.Location = new System.Drawing.Point(12, 6);
+            this.label22.Location = new System.Drawing.Point(12, 5);
             this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(121, 16);
+            this.label22.Size = new System.Drawing.Size(124, 16);
             this.label22.TabIndex = 10;
-            this.label22.Text = "Motivo de Consulta";
+            this.label22.Text = "Motivo de Consulta:";
             // 
             // tabAgregarTiposSubtipos
             // 

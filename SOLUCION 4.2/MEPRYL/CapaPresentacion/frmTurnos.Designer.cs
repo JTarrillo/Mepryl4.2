@@ -29,7 +29,7 @@ namespace CapaPresentacion
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmTurnos));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.lbTitulo = new System.Windows.Forms.Label();
             this.labelSubTipoExamen = new System.Windows.Forms.Label();
             this.cboSubTipoExamen = new System.Windows.Forms.ComboBox();
@@ -457,7 +457,7 @@ namespace CapaPresentacion
             this.botModificar.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.botModificar.Image = ((System.Drawing.Image)(resources.GetObject("botModificar.Image")));
             this.botModificar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.botModificar.Location = new System.Drawing.Point(7, 146);
+            this.botModificar.Location = new System.Drawing.Point(9, 143);
             this.botModificar.Name = "botModificar";
             this.botModificar.Size = new System.Drawing.Size(120, 45);
             this.botModificar.TabIndex = 3;
@@ -536,7 +536,7 @@ namespace CapaPresentacion
             this.botSelecSubtipoExamen.Name = "botSelecSubtipoExamen";
             this.botSelecSubtipoExamen.Size = new System.Drawing.Size(120, 45);
             this.botSelecSubtipoExamen.TabIndex = 44;
-            this.botSelecSubtipoExamen.Text = "Seleccionar Tipo/Subt.";
+            this.botSelecSubtipoExamen.Text = "Modificar Tipo/Subt.";
             this.botSelecSubtipoExamen.TextAlign = System.Drawing.ContentAlignment.BottomRight;
             this.botSelecSubtipoExamen.UseVisualStyleBackColor = true;
             this.botSelecSubtipoExamen.Visible = false;
@@ -1168,14 +1168,14 @@ namespace CapaPresentacion
             this.dgvLigaYClub.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.dgvLigaYClub.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvLigaYClub.ColumnHeadersVisible = false;
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("Tahoma", 8.25F);
-            dataGridViewCellStyle4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvLigaYClub.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Tahoma", 8.25F);
+            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvLigaYClub.DefaultCellStyle = dataGridViewCellStyle1;
             this.dgvLigaYClub.GridColor = System.Drawing.SystemColors.Control;
             this.dgvLigaYClub.Location = new System.Drawing.Point(15, 209);
             this.dgvLigaYClub.MultiSelect = false;

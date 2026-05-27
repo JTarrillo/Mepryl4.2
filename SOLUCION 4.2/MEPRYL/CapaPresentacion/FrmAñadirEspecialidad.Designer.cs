@@ -68,7 +68,6 @@
             this.btngravarespecialidades = new System.Windows.Forms.Button();
             this.dgvTiposExamenes = new System.Windows.Forms.DataGridView();
             this.tabItemsSecciones = new System.Windows.Forms.TabPage();
-            this.itemsPorSecciones = new CapaPresentacion.ItemsPorSecciones();
             this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -107,6 +106,7 @@
             this.EstadoClinico = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.CodigoClinico = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tabItemsSecciones2 = new System.Windows.Forms.TabPage();
+            this.itemsPorSecciones = new CapaPresentacion.ItemsPorSecciones();
             this.grpMotivo.SuspendLayout();
             this.tabControl.SuspendLayout();
             this.tabAgregar.SuspendLayout();
@@ -160,7 +160,7 @@
             // label2
             // 
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F);
-            this.label2.Location = new System.Drawing.Point(598, -1);
+            this.label2.Location = new System.Drawing.Point(779, -3);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(147, 20);
             this.label2.TabIndex = 5;
@@ -193,7 +193,7 @@
             // label1
             // 
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F);
-            this.label1.Location = new System.Drawing.Point(312, -1);
+            this.label1.Location = new System.Drawing.Point(347, -3);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(124, 20);
             this.label1.TabIndex = 4;
@@ -215,9 +215,9 @@
             this.cmbSubtipo.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F);
             this.cmbSubtipo.ForeColor = System.Drawing.SystemColors.WindowText;
             this.cmbSubtipo.IntegralHeight = false;
-            this.cmbSubtipo.Location = new System.Drawing.Point(601, 21);
+            this.cmbSubtipo.Location = new System.Drawing.Point(565, 23);
             this.cmbSubtipo.Name = "cmbSubtipo";
-            this.cmbSubtipo.Size = new System.Drawing.Size(573, 24);
+            this.cmbSubtipo.Size = new System.Drawing.Size(616, 24);
             this.cmbSubtipo.TabIndex = 1;
             this.cmbSubtipo.SelectedIndexChanged += new System.EventHandler(this.CmbSubtipo_SelectedIndexChanged);
             // 
@@ -228,9 +228,9 @@
             this.cmbTipoExamen.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F);
             this.cmbTipoExamen.ForeColor = System.Drawing.SystemColors.WindowText;
             this.cmbTipoExamen.IntegralHeight = false;
-            this.cmbTipoExamen.Location = new System.Drawing.Point(315, 23);
+            this.cmbTipoExamen.Location = new System.Drawing.Point(259, 23);
             this.cmbTipoExamen.Name = "cmbTipoExamen";
-            this.cmbTipoExamen.Size = new System.Drawing.Size(271, 24);
+            this.cmbTipoExamen.Size = new System.Drawing.Size(293, 24);
             this.cmbTipoExamen.TabIndex = 1;
             this.cmbTipoExamen.SelectedIndexChanged += new System.EventHandler(this.CmbTipoExamen_SelectedIndexChanged);
             // 
@@ -245,7 +245,7 @@
             this.cmbMotivoConsulta.ItemHeight = 16;
             this.cmbMotivoConsulta.Location = new System.Drawing.Point(15, 23);
             this.cmbMotivoConsulta.Name = "cmbMotivoConsulta";
-            this.cmbMotivoConsulta.Size = new System.Drawing.Size(271, 24);
+            this.cmbMotivoConsulta.Size = new System.Drawing.Size(226, 24);
             this.cmbMotivoConsulta.TabIndex = 1;
             this.cmbMotivoConsulta.SelectedIndexChanged += new System.EventHandler(this.cmbMotivoConsulta_SelectedIndexChanged_1);
             // 
@@ -469,15 +469,6 @@
             this.tabItemsSecciones.Size = new System.Drawing.Size(1172, 581);
             this.tabItemsSecciones.TabIndex = 6;
             this.tabItemsSecciones.Text = "Items por Secciones";
-            // 
-            // itemsPorSecciones
-            // 
-            this.itemsPorSecciones.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.itemsPorSecciones.Location = new System.Drawing.Point(0, 0);
-            this.itemsPorSecciones.Name = "itemsPorSecciones";
-            this.itemsPorSecciones.Size = new System.Drawing.Size(1172, 581);
-            this.itemsPorSecciones.TabIndex = 0;
-            this.itemsPorSecciones.Load += new System.EventHandler(this.itemsPorSecciones_Load);
             // 
             // dataGridViewTextBoxColumn1
             // 
@@ -887,6 +878,15 @@
             this.tabItemsSecciones2.Padding = new System.Windows.Forms.Padding(10);
             this.tabItemsSecciones2.Size = new System.Drawing.Size(1172, 491);
             this.tabItemsSecciones2.TabIndex = 3;
+            // 
+            // itemsPorSecciones
+            // 
+            this.itemsPorSecciones.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.itemsPorSecciones.Location = new System.Drawing.Point(0, 0);
+            this.itemsPorSecciones.Name = "itemsPorSecciones";
+            this.itemsPorSecciones.Size = new System.Drawing.Size(1172, 581);
+            this.itemsPorSecciones.TabIndex = 0;
+            this.itemsPorSecciones.Load += new System.EventHandler(this.itemsPorSecciones_Load);
             // 
             // FrmAñadirEspecialidad
             // 
