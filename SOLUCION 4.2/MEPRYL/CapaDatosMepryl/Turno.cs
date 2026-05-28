@@ -1465,6 +1465,7 @@ namespace CapaDatosMepryl
 
         public DataTable buscarTurnosPorDNI(string dni)
         {
+            System.Diagnostics.Debug.WriteLine($"[BUSCAR_TURNO][DATOS] buscarTurnosPorDNI() - DNI: '{dni}'");
             try
             {
                 string strSQL = @"
@@ -1485,14 +1486,15 @@ namespace CapaDatosMepryl
                         tep.id as IdTipoExamen,
                         t.habilitado as Habilitado,
                         t.estadoID as IdEstado,
-                        te.id as IdSubtipo,
-                        ISNULL(tePadre.id, te.id) as IdPadre
+                        COALESCE(tep.idEspecialidad, h.especialidadID) as IdSubtipo,
+                        ISNULL(tePadre.id, te.id) as IdPadre,
+                        tep.idConsulta as IdConsulta
                     FROM dbo.Turno t
                     INNER JOIN dbo.TurnoEstado e ON t.estadoID = e.id
                     INNER JOIN dbo.Horario h ON t.horarioID = h.id
                     INNER JOIN dbo.Profesional p ON h.profesionalID = p.id
                     LEFT JOIN dbo.TipoExamenDePaciente tep ON tep.idTurno = t.id
-                    LEFT JOIN dbo.Especialidad te ON h.especialidadID = te.id
+                    LEFT JOIN dbo.Especialidad te ON COALESCE(tep.idEspecialidad, h.especialidadID) = te.id
                     LEFT JOIN dbo.Especialidad tePadre ON te.IdPadre = tePadre.id AND te.Padre = 0
                     WHERE t.codigo = '" + dni + @"'
                     OR (t.pacienteID IN (
@@ -1502,12 +1504,15 @@ namespace CapaDatosMepryl
                     ))
                     ORDER BY t.fecha DESC, t.horaReferencia DESC";
 
+                System.Diagnostics.Debug.WriteLine($"[BUSCAR_TURNO][DATOS] Ejecutando consulta SQL para DNI");
                 DataTable turnos = SQLConnector.obtenerTablaSegunConsultaString(strSQL);
+                System.Diagnostics.Debug.WriteLine($"[BUSCAR_TURNO][DATOS] Consulta completada - Filas encontradas: {turnos.Rows.Count}");
                 return generarTablaRetornoTurno(turnos);
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error en buscarTurnosPorDNI: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"[BUSCAR_TURNO][DATOS] ❌ Error en buscarTurnosPorDNI: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"[BUSCAR_TURNO][DATOS] StackTrace: {ex.StackTrace}");
                 return new DataTable();
             }
         }
@@ -1517,6 +1522,7 @@ namespace CapaDatosMepryl
         /// </summary>
         public DataTable buscarTurnosPorNombre(string nombre)
         {
+            System.Diagnostics.Debug.WriteLine($"[BUSCAR_TURNO][DATOS] buscarTurnosPorNombre() - Nombre: '{nombre}'");
             try
             {
                 string strSQL = @"
@@ -1537,14 +1543,15 @@ namespace CapaDatosMepryl
                         tep.id as IdTipoExamen,
                         t.habilitado as Habilitado,
                         t.estadoID as IdEstado,
-                        te.id as IdSubtipo,
-                        ISNULL(tePadre.id, te.id) as IdPadre
+                        COALESCE(tep.idEspecialidad, h.especialidadID) as IdSubtipo,
+                        ISNULL(tePadre.id, te.id) as IdPadre,
+                        tep.idConsulta as IdConsulta
                     FROM dbo.Turno t
                     INNER JOIN dbo.TurnoEstado e ON t.estadoID = e.id
                     INNER JOIN dbo.Horario h ON t.horarioID = h.id
                     INNER JOIN dbo.Profesional p ON h.profesionalID = p.id
                     LEFT JOIN dbo.TipoExamenDePaciente tep ON tep.idTurno = t.id
-                    LEFT JOIN dbo.Especialidad te ON h.especialidadID = te.id
+                    LEFT JOIN dbo.Especialidad te ON COALESCE(tep.idEspecialidad, h.especialidadID) = te.id
                     LEFT JOIN dbo.Especialidad tePadre ON te.IdPadre = tePadre.id AND te.Padre = 0
                     WHERE t.pacienteID IN (
                         SELECT id FROM dbo.Paciente WHERE (apellido + ' ' + nombres) LIKE '" + nombre + @"%'
@@ -1553,12 +1560,15 @@ namespace CapaDatosMepryl
                     )
                     ORDER BY t.fecha DESC, t.horaReferencia DESC";
 
+                System.Diagnostics.Debug.WriteLine($"[BUSCAR_TURNO][DATOS] Ejecutando consulta SQL para Nombre");
                 DataTable turnos = SQLConnector.obtenerTablaSegunConsultaString(strSQL);
+                System.Diagnostics.Debug.WriteLine($"[BUSCAR_TURNO][DATOS] Consulta completada - Filas encontradas: {turnos.Rows.Count}");
                 return generarTablaRetornoTurno(turnos);
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error en buscarTurnosPorNombre: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"[BUSCAR_TURNO][DATOS] ❌ Error en buscarTurnosPorNombre: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"[BUSCAR_TURNO][DATOS] StackTrace: {ex.StackTrace}");
                 return new DataTable();
             }
         }

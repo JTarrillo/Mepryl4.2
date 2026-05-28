@@ -1707,8 +1707,12 @@ namespace CapaPresentacion
 
         private void botBuscar_Click(object sender, EventArgs e)
         {
+            System.Diagnostics.Debug.WriteLine($"[BUSCAR_TURNO] === INICIO DE BÚSQUEDA ===");
+            System.Diagnostics.Debug.WriteLine($"[BUSCAR_TURNO] Filtro ingresado: '{tbFiltro.Text.Trim()}'");
+
             if (tbFiltro.Text.Trim() == string.Empty)
             {
+                System.Diagnostics.Debug.WriteLine($"[BUSCAR_TURNO] ❌ Búsqueda vacía - Mostrando mensaje de advertencia");
                 MessageBox.Show("Por favor ingrese un DNI o nombre", "Búsqueda Vacía",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
@@ -1717,28 +1721,48 @@ namespace CapaPresentacion
             Cursor.Current = Cursors.WaitCursor;
             try
             {
+                System.Diagnostics.Debug.WriteLine($"[BUSCAR_TURNO] Ejecutando cargarGrillaTurnoConFiltro()");
                 cargarGrillaTurnoConFiltro();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[BUSCAR_TURNO] ❌ Error en botBuscar_Click: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"[BUSCAR_TURNO] StackTrace: {ex.StackTrace}");
+                MessageBox.Show($"Error al buscar turnos: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {
                 Cursor.Current = Cursors.Default;
+                System.Diagnostics.Debug.WriteLine($"[BUSCAR_TURNO] === FIN DE BÚSQUEDA ===");
             }
         }
 
         private void cargarGrillaTurnoConFiltro()
         {
             string filtro = tbFiltro.Text.Trim();
+            System.Diagnostics.Debug.WriteLine($"[BUSCAR_TURNO] cargarGrillaTurnoConFiltro() - Filtro: '{filtro}'");
 
-            if (EsDNI(filtro))
+            bool esDNI = EsDNI(filtro);
+            System.Diagnostics.Debug.WriteLine($"[BUSCAR_TURNO] ¿Es DNI? {esDNI}");
+
+            DataTable resultados = null;
+
+            if (esDNI)
             {
-                // Buscar por DNI
-                llenarDgv(turno.buscarTurnosPorDNI(filtro));
+                System.Diagnostics.Debug.WriteLine($"[BUSCAR_TURNO] 🔍 Buscando por DNI: '{filtro}'");
+                resultados = turno.buscarTurnosPorDNI(filtro);
             }
             else
             {
-                // Buscar por Nombre
-                llenarDgv(turno.buscarTurnosPorNombre(filtro));
+                System.Diagnostics.Debug.WriteLine($"[BUSCAR_TURNO] 🔍 Buscando por Nombre: '{filtro}'");
+                resultados = turno.buscarTurnosPorNombre(filtro);
             }
+
+            int cantidadResultados = resultados?.Rows.Count ?? 0;
+            System.Diagnostics.Debug.WriteLine($"[BUSCAR_TURNO] ✅ Resultados encontrados: {cantidadResultados}");
+
+            llenarDgv(resultados);
+            System.Diagnostics.Debug.WriteLine($"[BUSCAR_TURNO] Resultados cargados en el DataGridView");
         }
         /// <summary>
         /// Método mejorado para buscar turnos por DNI o Nombre
@@ -1808,17 +1832,25 @@ namespace CapaPresentacion
         private bool EsDNI(string valor)
         {
             valor = valor.Replace(" ", "");
+            System.Diagnostics.Debug.WriteLine($"[BUSCAR_TURNO] EsDNI() - Valor limpio: '{valor}', Longitud: {valor.Length}");
+
+            bool esValido = false;
             if (valor.Length >= 7 && valor.Length <= 8)
             {
-                return valor.All(char.IsDigit);
+                esValido = valor.All(char.IsDigit);
             }
-            return false;
+
+            System.Diagnostics.Debug.WriteLine($"[BUSCAR_TURNO] EsDNI() - Resultado: {esValido}");
+            return esValido;
         }
 
         private void botLimpiar_Click(object sender, EventArgs e)
         {
+            System.Diagnostics.Debug.WriteLine($"[BUSCAR_TURNO] === BOTÓN LIMPIAR PRESIONADO ===");
             tbFiltro.Clear();
+            System.Diagnostics.Debug.WriteLine($"[BUSCAR_TURNO] Textbox de filtro limpiado");
             cargarGrillaTurnosSinFiltro();
+            System.Diagnostics.Debug.WriteLine($"[BUSCAR_TURNO] Grilla restaurada sin filtro");
         }
 
         private void botAsignar_Click(object sender, EventArgs e)
