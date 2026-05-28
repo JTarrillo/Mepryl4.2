@@ -103,8 +103,7 @@ namespace CapaPresentacion
             this.colCfgMotivo = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colCfgTipo = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colCfgDescripcion = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colCfgSeñaPromo = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colCfgSeñaLista = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colCfgSe\u00f1a = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colCfgPlanilla = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.colCfgObservaciones = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.pnlSuperior.SuspendLayout();
@@ -785,8 +784,7 @@ namespace CapaPresentacion
             this.colCfgMotivo,
             this.colCfgTipo,
             this.colCfgDescripcion,
-            this.colCfgSeñaPromo,
-            this.colCfgSeñaLista,
+            this.colCfgSe\u00f1a,
             this.colCfgPlanilla,
             this.colCfgObservaciones});
             this.dgvConfig.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -826,17 +824,11 @@ namespace CapaPresentacion
             this.colCfgDescripcion.Name = "colCfgDescripcion";
             this.colCfgDescripcion.ReadOnly = true;
             // 
-            // colCfgSeñaPromo
+            // colCfgSeña
             // 
-            this.colCfgSeñaPromo.FillWeight = 80F;
-            this.colCfgSeñaPromo.HeaderText = "Seña Promo";
-            this.colCfgSeñaPromo.Name = "colCfgSeñaPromo";
-            // 
-            // colCfgSeñaLista
-            // 
-            this.colCfgSeñaLista.FillWeight = 80F;
-            this.colCfgSeñaLista.HeaderText = "Seña Lista";
-            this.colCfgSeñaLista.Name = "colCfgSeñaLista";
+            this.colCfgSeña.FillWeight = 80F;
+            this.colCfgSeña.HeaderText = "Seña";
+            this.colCfgSeña.Name = "colCfgSeña";
             // 
             // colCfgPlanilla
             // 
@@ -906,8 +898,7 @@ namespace CapaPresentacion
         private System.Windows.Forms.DataGridViewTextBoxColumn colCfgMotivo;
         private System.Windows.Forms.DataGridViewTextBoxColumn colCfgTipo;
         private System.Windows.Forms.DataGridViewTextBoxColumn colCfgDescripcion;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colCfgSeñaPromo;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colCfgSeñaLista;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colCfgSeña;
         private System.Windows.Forms.DataGridViewCheckBoxColumn colCfgPlanilla;
         private System.Windows.Forms.DataGridViewTextBoxColumn colCfgObservaciones;
         private System.Windows.Forms.DataGridView dgvPrecios;

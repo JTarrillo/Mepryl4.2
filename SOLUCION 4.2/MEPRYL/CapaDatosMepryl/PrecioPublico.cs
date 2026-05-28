@@ -29,22 +29,22 @@ namespace CapaDatosMepryl
         public DataTable ListarPreciosPublico(int mes, int anio)
         {
             string strSQL = "SELECT e.id AS idEspecialidad, e.descripcion AS Descripcion, " +
-                            "ISNULL(p.PrecioLista, 0) AS PrecioLista, " +
-                            "ISNULL(p.PrecioPromo, 0) AS PrecioPromo, " +
-                            "ISNULL(e.precioBase, 0) AS precioBase, " +
-                            "ISNULL(p.SeñaPromo, 0) AS SeñaPromo, " +
-                            "ISNULL(p.SeñaLista, 0) AS SeñaLista, " +
-                            "ISNULL(p.LlevaPlanilla, 0) AS LlevaPlanilla, " +
-                            "ISNULL(p.ObservacionesExtra, '') AS ObservacionesExtra, " +
-                            "ISNULL(p.CoeficienteIndividual, 0) AS CoeficienteIndividual, " +
-                            "ISNULL(m.nombre, '') AS Motivo, " +
-                            "ISNULL(padre.descripcion, '') AS Tipo " +
-                            "FROM Especialidad e " +
-                            "LEFT JOIN PrecioPublico p ON e.id = p.idEspecialidad AND p.Mes = " + mes + " AND p.Anio = " + anio + " AND p.Eliminado = 0 " +
-                            "LEFT JOIN MotivoDeConsulta m ON e.idMotivoConsulta = m.id " +
-                            "LEFT JOIN Especialidad padre ON e.IdPadre = padre.id " +
-                            "WHERE e.Padre = 0 AND e.estado = 1 AND e.IdPadre IS NOT NULL AND e.id NOT IN (SELECT id FROM dbo.EspecialidadesEliminadas) " +
-                            "ORDER BY m.nombre, padre.descripcion, e.descripcion";
+                "ISNULL(p.PrecioLista, 0) AS PrecioLista, " +
+                "ISNULL(p.PrecioPromo, 0) AS PrecioPromo, " +
+                "ISNULL(e.precioBase, 0) AS precioBase, " +
+                "ISNULL(p.Seña, 0) AS SeñaPromo, " +
+                "ISNULL(p.Seña, 0) AS SeñaLista, " +
+                "ISNULL(p.LlevaPlanilla, 0) AS LlevaPlanilla, " +
+                "ISNULL(p.ObservacionesExtra, '') AS ObservacionesExtra, " +
+                "ISNULL(p.CoeficienteIndividual, 0) AS CoeficienteIndividual, " +
+                "ISNULL(m.nombre, '') AS Motivo, " +
+                "ISNULL(padre.descripcion, '') AS Tipo " +
+                "FROM Especialidad e " +
+                "LEFT JOIN PrecioPublico p ON e.id = p.idEspecialidad AND p.Mes = " + mes + " AND p.Anio = " + anio + " AND p.Eliminado = 0 " +
+                "LEFT JOIN MotivoDeConsulta m ON e.idMotivoConsulta = m.id " +
+                "LEFT JOIN Especialidad padre ON e.IdPadre = padre.id " +
+                "WHERE e.Padre = 0 AND e.estado = 1 AND e.IdPadre IS NOT NULL AND e.id NOT IN (SELECT id FROM dbo.EspecialidadesEliminadas) " +
+                "ORDER BY m.nombre, padre.descripcion, e.descripcion";
             return SQLConnector.obtenerTablaSegunConsultaString(strSQL);
         }
 
@@ -68,14 +68,14 @@ namespace CapaDatosMepryl
                 string llevaPlanilla = (Convert.ToBoolean(dtDatos.Rows[i]["LlevaPlanilla"]) ? "1" : "0");
                 string obsExtra = dtDatos.Rows[i]["ObservacionesExtra"].ToString().Replace("'", "''");
                 string coeficienteIndividual = dtDatos.Rows[i]["CoeficienteIndividual"].ToString().Replace(",", ".");
+                string seña = señaPromo; // Usar señaPromo como valor principal
 
                 sb.Append("IF EXISTS (SELECT 1 FROM PrecioPublico WHERE idEspecialidad = '" + idEspecialidad + "' AND Mes = " + mes + " AND Anio = " + anio + ") ");
                 sb.Append("UPDATE PrecioPublico SET ");
                 sb.Append("Descripcion = '" + descripcion + "', ");
                 sb.Append("PrecioLista = " + precioLista + ", ");
                 sb.Append("PrecioPromo = " + precioPromo + ", ");
-                sb.Append("SeñaPromo = " + señaPromo + ", ");
-                sb.Append("SeñaLista = " + señaLista + ", ");
+                sb.Append("Seña = " + seña + ", ");
                 sb.Append("LlevaPlanilla = " + llevaPlanilla + ", ");
                 sb.Append("ObservacionesExtra = '" + obsExtra + "', ");
                 sb.Append("CoeficienteIndividual = " + coeficienteIndividual + ", ");
@@ -83,8 +83,8 @@ namespace CapaDatosMepryl
                 sb.Append("Eliminado = 0 ");
                 sb.Append("WHERE idEspecialidad = '" + idEspecialidad + "' AND Mes = " + mes + " AND Anio = " + anio + " ");
                 sb.Append("ELSE ");
-                sb.Append("INSERT INTO PrecioPublico (idEspecialidad, Descripcion, Mes, Anio, PrecioLista, PrecioPromo, SeñaPromo, SeñaLista, LlevaPlanilla, ObservacionesExtra, CoeficienteIndividual) ");
-                sb.AppendLine("VALUES('" + idEspecialidad + "', '" + descripcion + "', " + mes + ", " + anio + ", " + precioLista + ", " + precioPromo + ", " + señaPromo + ", " + señaLista + ", " + llevaPlanilla + ", '" + obsExtra + "', " + coeficienteIndividual + "); ");
+                sb.Append("INSERT INTO PrecioPublico (idEspecialidad, Descripcion, Mes, Anio, PrecioLista, PrecioPromo, Seña, LlevaPlanilla, ObservacionesExtra, CoeficienteIndividual) ");
+                sb.AppendLine("VALUES('" + idEspecialidad + "', '" + descripcion + "', " + mes + ", " + anio + ", " + precioLista + ", " + precioPromo + ", " + seña + ", " + llevaPlanilla + ", '" + obsExtra + "', " + coeficienteIndividual + "); ");
             }
 
             SQLConnector.obtenerTablaSegunConsultaString(sb.ToString());
@@ -106,11 +106,11 @@ namespace CapaDatosMepryl
         /// </summary>
         public void CopiarPrecios(int mesOrigen, int anioOrigen, int mesDestino, int anioDestino)
         {
-            string strSQL = "INSERT INTO PrecioPublico (idEspecialidad, Descripcion, Mes, Anio, PrecioLista, PrecioPromo, SeñaPromo, SeñaLista, LlevaPlanilla, ObservacionesExtra) " +
-                            "SELECT idEspecialidad, Descripcion, " + mesDestino + ", " + anioDestino + ", PrecioLista, PrecioPromo, SeñaPromo, SeñaLista, LlevaPlanilla, ObservacionesExtra " +
-                            "FROM PrecioPublico " +
-                            "WHERE Mes = " + mesOrigen + " AND Anio = " + anioOrigen + " AND Eliminado = 0 " +
-                            "AND idEspecialidad NOT IN (SELECT idEspecialidad FROM PrecioPublico WHERE Mes = " + mesDestino + " AND Anio = " + anioDestino + ")";
+            string strSQL = "INSERT INTO PrecioPublico (idEspecialidad, Descripcion, Mes, Anio, PrecioLista, PrecioPromo, Seña, LlevaPlanilla, ObservacionesExtra) " +
+                "SELECT idEspecialidad, Descripcion, " + mesDestino + ", " + anioDestino + ", PrecioLista, PrecioPromo, Seña, LlevaPlanilla, ObservacionesExtra " +
+                "FROM PrecioPublico " +
+                "WHERE Mes = " + mesOrigen + " AND Anio = " + anioOrigen + " AND Eliminado = 0 " +
+                "AND idEspecialidad NOT IN (SELECT idEspecialidad FROM PrecioPublico WHERE Mes = " + mesDestino + " AND Anio = " + anioDestino + ")";
             SQLConnector.obtenerTablaSegunConsultaString(strSQL);
         }
 
@@ -327,8 +327,8 @@ namespace CapaDatosMepryl
                 "ISNULL(m.nombre,'') AS Motivo, " +
                 "ISNULL(padre.descripcion,'') AS Tipo, " +
                 "e.descripcion AS Descripcion, " +
-                "ISNULL(c.Se\u00f1aPromo, 0) AS Se\u00f1aPromo, " +
-                "ISNULL(c.Se\u00f1aLista, 0) AS Se\u00f1aLista, " +
+                "ISNULL(c.Se\u00f1a, 0) AS Se\u00f1aPromo, " +
+                "ISNULL(c.Se\u00f1a, 0) AS Se\u00f1aLista, " +
                 "ISNULL(c.LlevaPlanilla, 0) AS LlevaPlanilla, " +
                 "ISNULL(c.Observaciones, '') AS Observaciones " +
                 "FROM Especialidad e " +
@@ -351,13 +351,13 @@ namespace CapaDatosMepryl
 
             // UPDATE set-based para registros existentes
             var sbUpd = new StringBuilder();
-            sbUpd.Append("UPDATE c SET c.Se\u00f1aPromo=v.SP,c.Se\u00f1aLista=v.SL,c.LlevaPlanilla=v.LP,c.Observaciones=v.Obs,c.FechaModificacion=GETDATE() " +
+            sbUpd.Append("UPDATE c SET c.Se\u00f1a=v.SP,c.LlevaPlanilla=v.LP,c.Observaciones=v.Obs,c.FechaModificacion=GETDATE() " +
                          "FROM dbo.ConfigPrecioEspecialidad c INNER JOIN (VALUES ");
 
             // INSERT para especialidades que no tienen config todavía
             var sbIns = new StringBuilder();
-            sbIns.Append("INSERT INTO dbo.ConfigPrecioEspecialidad(idEspecialidad,Se\u00f1aPromo,Se\u00f1aLista,LlevaPlanilla,Observaciones) " +
-                         "SELECT v.idEsp,v.SP,v.SL,v.LP,v.Obs FROM (VALUES ");
+            sbIns.Append("INSERT INTO dbo.ConfigPrecioEspecialidad(idEspecialidad,Se\u00f1a,LlevaPlanilla,Observaciones) " +
+                         "SELECT v.idEsp,v.SP,v.LP,v.Obs FROM (VALUES ");
 
             bool first = true;
             bool anyInsert = false;
@@ -368,10 +368,11 @@ namespace CapaDatosMepryl
                 string sLista   = dtDatos.Rows[i]["Se\u00f1aLista"].ToString().Replace(",", ".");
                 string planilla = (Convert.ToBoolean(dtDatos.Rows[i]["LlevaPlanilla"]) ? "1" : "0");
                 string obs      = dtDatos.Rows[i]["Observaciones"].ToString().Replace("'", "''");
+                string s        = sPromo; // Usar señaPromo como valor principal
 
                 if (!first) { sbUpd.Append(","); sbIns.Append(","); }
                 first = false;
-                string row = "('" + id + "'," + sPromo + "," + sLista + "," + planilla + ",'" + obs + "')";
+                string row = "('" + id + "'," + s + "," + planilla + ",'" + obs + "')";
                 sbUpd.Append(row);
 
                 // Solo incluir en INSERT si tiene algún valor distinto de cero/vacío
@@ -380,8 +381,8 @@ namespace CapaDatosMepryl
                 sbIns.Append(row);
             }
 
-            sbUpd.Append(") AS v(idEsp,SP,SL,LP,Obs) ON c.idEspecialidad=v.idEsp;");
-            sbIns.Append(") AS v(idEsp,SP,SL,LP,Obs) WHERE NOT EXISTS(SELECT 1 FROM dbo.ConfigPrecioEspecialidad c2 WHERE c2.idEspecialidad=v.idEsp);");
+            sbUpd.Append(") AS v(idEsp,SP,LP,Obs) ON c.idEspecialidad=v.idEsp;");
+            sbIns.Append(") AS v(idEsp,SP,LP,Obs) WHERE NOT EXISTS(SELECT 1 FROM dbo.ConfigPrecioEspecialidad c2 WHERE c2.idEspecialidad=v.idEsp);");
 
             SQLConnector.obtenerTablaSegunConsultaString(sbUpd.ToString());
             SQLConnector.obtenerTablaSegunConsultaString(sbIns.ToString());

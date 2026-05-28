@@ -654,8 +654,8 @@ namespace CapaPresentacion
                 dgvConfig.Rows[idx].Cells["colCfgMotivo"].Value      = row["Motivo"].ToString();
                 dgvConfig.Rows[idx].Cells["colCfgTipo"].Value        = row["Tipo"].ToString();
                 dgvConfig.Rows[idx].Cells["colCfgDescripcion"].Value = row["Descripcion"].ToString();
-                dgvConfig.Rows[idx].Cells["colCfgSe\u00f1aPromo"].Value   = Convert.ToDecimal(row["Se\u00f1aPromo"]);
-                dgvConfig.Rows[idx].Cells["colCfgSe\u00f1aLista"].Value   = Convert.ToDecimal(row["Se\u00f1aLista"]);
+                // Usamos solo una columna para Seña
+                dgvConfig.Rows[idx].Cells["colCfgSe\u00f1a"].Value = Convert.ToDecimal(row["Se\u00f1aPromo"]);
                 dgvConfig.Rows[idx].Cells["colCfgPlanilla"].Value    = Convert.ToBoolean(row["LlevaPlanilla"]);
                 dgvConfig.Rows[idx].Cells["colCfgObservaciones"].Value = row["Observaciones"].ToString();
             }
@@ -674,8 +674,10 @@ namespace CapaPresentacion
             {
                 DataRow dr = dtConfig.NewRow();
                 dr["idEspecialidad"] = row.Cells["colCfgIdEsp"].Value?.ToString()         ?? "";
-                dr["Se\u00f1aPromo"]      = ParseDecimal(row.Cells["colCfgSe\u00f1aPromo"].Value);
-                dr["Se\u00f1aLista"]      = ParseDecimal(row.Cells["colCfgSe\u00f1aLista"].Value);
+                // Usamos solo una columna para Seña
+                decimal seña = ParseDecimal(row.Cells["colCfgSe\u00f1a"].Value);
+                dr["Se\u00f1aPromo"] = seña;
+                dr["Se\u00f1aLista"] = seña;
                 dr["LlevaPlanilla"]  = (row.Cells["colCfgPlanilla"].Value as bool?) ?? false;
                 dr["Observaciones"]  = row.Cells["colCfgObservaciones"].Value?.ToString()  ?? "";
                 dtConfig.Rows.Add(dr);
