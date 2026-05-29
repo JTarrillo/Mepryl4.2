@@ -655,7 +655,7 @@ namespace CapaPresentacion
                 dgvConfig.Rows[idx].Cells["colCfgTipo"].Value        = row["Tipo"].ToString();
                 dgvConfig.Rows[idx].Cells["colCfgDescripcion"].Value = row["Descripcion"].ToString();
                 // Usamos solo una columna para Seña
-                dgvConfig.Rows[idx].Cells["colCfgSe\u00f1a"].Value = Convert.ToDecimal(row["Se\u00f1aPromo"]);
+                dgvConfig.Rows[idx].Cells["colCfgSe\u00f1a"].Value = Convert.ToDecimal(row["Se\u00f1a"]);
                 dgvConfig.Rows[idx].Cells["colCfgPlanilla"].Value    = Convert.ToBoolean(row["LlevaPlanilla"]);
                 dgvConfig.Rows[idx].Cells["colCfgObservaciones"].Value = row["Observaciones"].ToString();
             }
@@ -665,8 +665,7 @@ namespace CapaPresentacion
         {
             DataTable dtConfig = new DataTable();
             dtConfig.Columns.Add("idEspecialidad", typeof(string));
-            dtConfig.Columns.Add("Se\u00f1aPromo",      typeof(decimal));
-            dtConfig.Columns.Add("Se\u00f1aLista",      typeof(decimal));
+            dtConfig.Columns.Add("Se\u00f1a",      typeof(decimal));
             dtConfig.Columns.Add("LlevaPlanilla",  typeof(bool));
             dtConfig.Columns.Add("Observaciones",  typeof(string));
 
@@ -676,8 +675,7 @@ namespace CapaPresentacion
                 dr["idEspecialidad"] = row.Cells["colCfgIdEsp"].Value?.ToString()         ?? "";
                 // Usamos solo una columna para Seña
                 decimal seña = ParseDecimal(row.Cells["colCfgSe\u00f1a"].Value);
-                dr["Se\u00f1aPromo"] = seña;
-                dr["Se\u00f1aLista"] = seña;
+                dr["Se\u00f1a"] = seña;
                 dr["LlevaPlanilla"]  = (row.Cells["colCfgPlanilla"].Value as bool?) ?? false;
                 dr["Observaciones"]  = row.Cells["colCfgObservaciones"].Value?.ToString()  ?? "";
                 dtConfig.Rows.Add(dr);

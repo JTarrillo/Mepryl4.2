@@ -705,8 +705,7 @@ namespace CapaPresentacion
                     DataTable ppPrev2 = turno.ObtenerPrecioPublico(new Guid(idSubtipoPrev2), obtenerFecha());
                     if (ppPrev2.Rows.Count > 0)
                     {
-                        pacientePreventiva.TipoExamen.SeñaPromo = Convert.ToDouble(ppPrev2.Rows[0]["SeñaPromo"]);
-                        pacientePreventiva.TipoExamen.SeñaLista = Convert.ToDouble(ppPrev2.Rows[0]["SeñaLista"]);
+                        pacientePreventiva.TipoExamen.Seña = Convert.ToDouble(ppPrev2.Rows[0]["Seña"]);
                         pacientePreventiva.TipoExamen.LlevaPlanilla = Convert.ToBoolean(ppPrev2.Rows[0]["LlevaPlanilla"]);
                         pacientePreventiva.TipoExamen.ObservacionesExtra = ppPrev2.Rows[0]["ObservacionesExtra"].ToString();
                     }
@@ -743,7 +742,7 @@ namespace CapaPresentacion
             tipoExamenActual = turnoPrev.TipoExamen;
             // Auto-generar observaciones si tiene seña/planilla y la observación está vacía
             if (string.IsNullOrWhiteSpace(tbObservPreventiva.Text) &&
-                (tipoExamenActual.LlevaPlanilla || tipoExamenActual.SeñaPromo > 0 || tipoExamenActual.SeñaLista > 0))
+                (tipoExamenActual.LlevaPlanilla || tipoExamenActual.Seña > 0))
                 tbObservPreventiva.Text = generarObservaciones(tipoExamenActual);
             txtEmail.Text = turnoPrev.Mail;
             txtEdad.Text = (DateTime.Today.AddTicks(-turnoPrev.Nacimiento.Ticks).Year - 1).ToString();
@@ -798,8 +797,7 @@ namespace CapaPresentacion
                     DataTable ppLab2 = turno.ObtenerPrecioPublico(new Guid(idSubtipoLab2), obtenerFecha());
                     if (ppLab2.Rows.Count > 0)
                     {
-                        pacienteLaboral.TipoExamen.SeñaPromo = Convert.ToDouble(ppLab2.Rows[0]["SeñaPromo"]);
-                        pacienteLaboral.TipoExamen.SeñaLista = Convert.ToDouble(ppLab2.Rows[0]["SeñaLista"]);
+                        pacienteLaboral.TipoExamen.Seña = Convert.ToDouble(ppLab2.Rows[0]["Seña"]);
                         pacienteLaboral.TipoExamen.LlevaPlanilla = Convert.ToBoolean(ppLab2.Rows[0]["LlevaPlanilla"]);
                         pacienteLaboral.TipoExamen.ObservacionesExtra = ppLab2.Rows[0]["ObservacionesExtra"].ToString();
                     }
@@ -839,7 +837,7 @@ namespace CapaPresentacion
             tipoExamenActual = turnoLab.TipoExamen;
             // Auto-generar observaciones si tiene seña/planilla y la observación está vacía
             if (string.IsNullOrWhiteSpace(tbObservacionesLaboral.Text) &&
-                (tipoExamenActual.LlevaPlanilla || tipoExamenActual.SeñaPromo > 0 || tipoExamenActual.SeñaLista > 0))
+                (tipoExamenActual.LlevaPlanilla || tipoExamenActual.Seña > 0))
                 tbObservacionesLaboral.Text = generarObservaciones(tipoExamenActual);
             tbIdTipoExamenLaboral.Text = tipoExamenActual.IdTipoExamenPaciente.ToString();
             tbImporteLaboral.Text = tipoExamenActual.PrecioBase.ToString("N0");
@@ -1386,7 +1384,7 @@ namespace CapaPresentacion
 
         private string generarObservaciones(Entidades.TipoExamen te)
         {
-            // Formato: [ObsExtra | ] [PLANILLA | ] $ {Promo} - $ {SeñaPromo} (SEÑA) | LISTA: $ {Lista} - SEÑA = $ {Lista - SeñaLista}
+            // Formato: [ObsExtra | ] [PLANILLA | ] $ {Promo} - $ {Seña} (SEÑA) | LISTA: $ {Lista} - SEÑA = $ {Lista - Seña}
             var sb = new System.Text.StringBuilder();
 
             // Prefijo extra (ej: "EXPRESS")
@@ -1399,12 +1397,11 @@ namespace CapaPresentacion
 
             decimal promo = (decimal)te.PrecioBase;
             decimal lista = (decimal)te.PrecioLista;
-            decimal señaPromo = (decimal)te.SeñaPromo;
-            decimal señaLista = (decimal)te.SeñaLista;
+            decimal seña = (decimal)te.Seña;
 
             // Precio promo con seña
-            if (señaPromo > 0)
-                sb.Append("$ " + promo.ToString("N0") + " - $ " + señaPromo.ToString("N0") + " (SEÑA)");
+            if (seña > 0)
+                sb.Append("$ " + promo.ToString("N0") + " - $ " + seña.ToString("N0") + " (SEÑA)");
             else
                 sb.Append("$ " + promo.ToString("N0"));
 
@@ -1412,8 +1409,8 @@ namespace CapaPresentacion
             if (lista > 0)
             {
                 sb.Append(" | LISTA: $ " + lista.ToString("N0"));
-                if (señaLista > 0)
-                    sb.Append(" - SEÑA = $ " + (lista - señaLista).ToString("N0"));
+                if (seña > 0)
+                    sb.Append(" - SEÑA = $ " + (lista - seña).ToString("N0"));
             }
 
             return sb.ToString();

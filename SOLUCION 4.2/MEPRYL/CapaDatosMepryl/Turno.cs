@@ -1611,8 +1611,7 @@ namespace CapaDatosMepryl
         {
             return SQLConnector.obtenerTablaSegunConsultaString(
                 "SELECT pp.PrecioPromo, pp.PrecioLista, " +
-                "ISNULL(cfg.Seña, 0) AS SeñaPromo, " +
-                "ISNULL(cfg.Seña, 0) AS SeñaLista, " +
+                "ISNULL(cfg.Seña, 0) AS Seña, " +
                 "ISNULL(cfg.LlevaPlanilla, 0) AS LlevaPlanilla, " +
                 "ISNULL(cfg.Observaciones, '') AS ObservacionesExtra " +
                 "FROM dbo.PrecioPublico pp " +

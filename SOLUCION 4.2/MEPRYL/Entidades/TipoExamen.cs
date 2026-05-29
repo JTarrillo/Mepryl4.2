@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -258,8 +258,22 @@ namespace Entidades
             get; set;
         }
 
-        public double SeñaPromo { get; set; }
-        public double SeñaLista { get; set; }
+        public double Seña { get; set; }
+
+        [Obsolete("Use Seña instead")]
+        public double SeñaPromo
+        {
+            get { return Seña; }
+            set { Seña = value; }
+        }
+
+        [Obsolete("Use Seña instead")]
+        public double SeñaLista
+        {
+            get { return Seña; }
+            set { Seña = value; }
+        }
+
         public bool LlevaPlanilla { get; set; }
         public string ObservacionesExtra { get; set; }
 

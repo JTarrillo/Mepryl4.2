@@ -32,8 +32,7 @@ namespace CapaDatosMepryl
                 "ISNULL(p.PrecioLista, 0) AS PrecioLista, " +
                 "ISNULL(p.PrecioPromo, 0) AS PrecioPromo, " +
                 "ISNULL(e.precioBase, 0) AS precioBase, " +
-                "ISNULL(p.Seña, 0) AS SeñaPromo, " +
-                "ISNULL(p.Seña, 0) AS SeñaLista, " +
+                "ISNULL(p.Seña, 0) AS Seña, " +
                 "ISNULL(p.LlevaPlanilla, 0) AS LlevaPlanilla, " +
                 "ISNULL(p.ObservacionesExtra, '') AS ObservacionesExtra, " +
                 "ISNULL(p.CoeficienteIndividual, 0) AS CoeficienteIndividual, " +
@@ -63,12 +62,10 @@ namespace CapaDatosMepryl
                 string descripcion = dtDatos.Rows[i]["Descripcion"].ToString().Replace("'", "''");
                 string precioLista = dtDatos.Rows[i]["PrecioLista"].ToString().Replace(",", ".");
                 string precioPromo = dtDatos.Rows[i]["PrecioPromo"].ToString().Replace(",", ".");
-                string señaPromo = dtDatos.Rows[i]["SeñaPromo"].ToString().Replace(",", ".");
-                string señaLista = dtDatos.Rows[i]["SeñaLista"].ToString().Replace(",", ".");
+                string seña = dtDatos.Rows[i]["Seña"].ToString().Replace(",", ".");
                 string llevaPlanilla = (Convert.ToBoolean(dtDatos.Rows[i]["LlevaPlanilla"]) ? "1" : "0");
                 string obsExtra = dtDatos.Rows[i]["ObservacionesExtra"].ToString().Replace("'", "''");
                 string coeficienteIndividual = dtDatos.Rows[i]["CoeficienteIndividual"].ToString().Replace(",", ".");
-                string seña = señaPromo; // Usar señaPromo como valor principal
 
                 sb.Append("IF EXISTS (SELECT 1 FROM PrecioPublico WHERE idEspecialidad = '" + idEspecialidad + "' AND Mes = " + mes + " AND Anio = " + anio + ") ");
                 sb.Append("UPDATE PrecioPublico SET ");
@@ -327,8 +324,7 @@ namespace CapaDatosMepryl
                 "ISNULL(m.nombre,'') AS Motivo, " +
                 "ISNULL(padre.descripcion,'') AS Tipo, " +
                 "e.descripcion AS Descripcion, " +
-                "ISNULL(c.Se\u00f1a, 0) AS Se\u00f1aPromo, " +
-                "ISNULL(c.Se\u00f1a, 0) AS Se\u00f1aLista, " +
+                "ISNULL(c.Se\u00f1a, 0) AS Se\u00f1a, " +
                 "ISNULL(c.LlevaPlanilla, 0) AS LlevaPlanilla, " +
                 "ISNULL(c.Observaciones, '') AS Observaciones " +
                 "FROM Especialidad e " +
@@ -364,11 +360,9 @@ namespace CapaDatosMepryl
             for (int i = 0; i < dtDatos.Rows.Count; i++)
             {
                 string id       = dtDatos.Rows[i]["idEspecialidad"].ToString();
-                string sPromo   = dtDatos.Rows[i]["Se\u00f1aPromo"].ToString().Replace(",", ".");
-                string sLista   = dtDatos.Rows[i]["Se\u00f1aLista"].ToString().Replace(",", ".");
+                string s        = dtDatos.Rows[i]["Se\u00f1a"].ToString().Replace(",", ".");
                 string planilla = (Convert.ToBoolean(dtDatos.Rows[i]["LlevaPlanilla"]) ? "1" : "0");
                 string obs      = dtDatos.Rows[i]["Observaciones"].ToString().Replace("'", "''");
-                string s        = sPromo; // Usar señaPromo como valor principal
 
                 if (!first) { sbUpd.Append(","); sbIns.Append(","); }
                 first = false;
@@ -376,7 +370,7 @@ namespace CapaDatosMepryl
                 sbUpd.Append(row);
 
                 // Solo incluir en INSERT si tiene algún valor distinto de cero/vacío
-                if (sPromo != "0" && sPromo != "0." || sLista != "0" && sLista != "0." || planilla == "1" || obs.Length > 0)
+                if (s != "0" && s != "0." || planilla == "1" || obs.Length > 0)
                     anyInsert = true;
                 sbIns.Append(row);
             }
@@ -385,7 +379,8 @@ namespace CapaDatosMepryl
             sbIns.Append(") AS v(idEsp,SP,LP,Obs) WHERE NOT EXISTS(SELECT 1 FROM dbo.ConfigPrecioEspecialidad c2 WHERE c2.idEspecialidad=v.idEsp);");
 
             SQLConnector.obtenerTablaSegunConsultaString(sbUpd.ToString());
-            SQLConnector.obtenerTablaSegunConsultaString(sbIns.ToString());
+            if (anyInsert)
+                SQLConnector.obtenerTablaSegunConsultaString(sbIns.ToString());
         }
     }
 }
