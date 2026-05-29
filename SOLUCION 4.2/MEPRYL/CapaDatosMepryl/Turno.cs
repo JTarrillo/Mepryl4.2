@@ -282,6 +282,16 @@ namespace CapaDatosMepryl
                 retorno.IdPaciente = new Guid(infoTurno.Rows[0][1].ToString());
                 // GRV - Modificado
                 retorno.TipoExamen = tipoExamen.cargarEstudiosPorExamen(infoTurno.Rows[0][3].ToString());
+                
+                // Cargar la seña desde TipoExamenDePaciente, si existe (IMPORTANTE: después de cargar TipoExamen!)
+                if (infoTurno.Rows[0].ItemArray[8] != DBNull.Value)
+                {
+                    double señaFromTable = Convert.ToDouble(infoTurno.Rows[0].ItemArray[8].ToString());
+                    if (señaFromTable > 0)
+                    {
+                        retorno.TipoExamen.Seña = señaFromTable;
+                    }
+                }
                 DataTable infoPaciente = SQLConnector.obtenerTablaSegunConsultaString(@"select id, 
                 apellido + ' ' + nombres, fechaNacimiento, telefonos, celular, dni, Email from dbo.Paciente
                 where id = '" + infoTurno.Rows[0][1].ToString() + "'");
@@ -324,6 +334,7 @@ namespace CapaDatosMepryl
                 tep.modificado, 
                 tep.factClub, 
                 tep.precioExamen, 
+                tep.seña, 
                 e.descripcion AS descripcionEspecialidad
             FROM dbo.Turno t 
             INNER JOIN dbo.TipoExamenDePaciente tep ON tep.idTurno = t.id
@@ -355,6 +366,12 @@ namespace CapaDatosMepryl
                 entidadTipoExamen.PrecioBase = Convert.ToDouble(row["PrecioPromo"].ToString());
             if (row["PrecioLista"] != DBNull.Value)
                 entidadTipoExamen.PrecioLista = Convert.ToDouble(row["PrecioLista"].ToString());
+            if (row["Seña"] != DBNull.Value)
+                entidadTipoExamen.Seña = Convert.ToDouble(row["Seña"].ToString());
+            if (row["LlevaPlanilla"] != DBNull.Value)
+                entidadTipoExamen.LlevaPlanilla = Convert.ToBoolean(row["LlevaPlanilla"].ToString());
+            if (row["ObservacionesExtra"] != DBNull.Value)
+                entidadTipoExamen.ObservacionesExtra = row["ObservacionesExtra"].ToString();
         }
 
         public Entidades.TurnoLaboral cargarTurnoPacienteLaboral(Guid idTurno)
@@ -376,6 +393,16 @@ namespace CapaDatosMepryl
                 }
                 retorno.IdPaciente = new Guid(infoTurno.Rows[0][1].ToString());
                 retorno.TipoExamen = tipoExamen.cargarEstudiosPorExamen(infoTurno.Rows[0][3].ToString());
+                
+                // Cargar la seña desde TipoExamenDePaciente, si existe
+                if (infoTurno.Rows[0].ItemArray[8] != DBNull.Value)
+                {
+                    double señaFromTable = Convert.ToDouble(infoTurno.Rows[0].ItemArray[8].ToString());
+                    if (señaFromTable > 0)
+                    {
+                        retorno.TipoExamen.Seña = señaFromTable;
+                    }
+                }
                 DataTable infoPaciente = SQLConnector.obtenerTablaSegunConsultaString(@"select id, 
                 apellido + ' ' + nombres, telefonos, celular, dni, cuil, mail, fechaNacimiento from dbo.PacienteLaboral
                 where id = '" + infoTurno.Rows[0][1].ToString() + "'");
@@ -608,10 +635,10 @@ namespace CapaDatosMepryl
             try
             {
                 List<string> listAddTipoExamen = SQLConnector.generarListaParaProcedure("@idConsulta", "@idTurno", "@modificado",
-                "@idEspecialidad", "@importe", "@factClub", "@precioLista");
+                "@idEspecialidad", "@importe", "@factClub", "@precioLista", "@seña");
                 string idTipoExamen = SQLConnector.executeProcedureWithReturnValue("sp_TipoExamenDePaciente_Add", listAddTipoExamen, Guid.Empty, entidad.Id,
                 examenModificado(entidad.TipoExamen.Modificado), entidad.TipoExamen.Id, entidad.TipoExamen.PrecioBase,
-                facturaClubEmpresa(entidad.FacturaEmpresa), entidad.TipoExamen.PrecioLista);
+                facturaClubEmpresa(entidad.FacturaEmpresa), entidad.TipoExamen.PrecioLista, entidad.TipoExamen.Seña);
                 entidad.TipoExamen.IdTipoExamenPaciente = new Guid(idTipoExamen);
                 List<string> listAddEmpresaPorTipoExamen = SQLConnector.generarListaParaProcedure("@idTipoExamen", "@idEmpresa", "@tarea");
                 SQLConnector.executeProcedure("sp_empresaPorTipoDeExamen_Add", listAddEmpresaPorTipoExamen, new Guid(idTipoExamen),
@@ -696,10 +723,10 @@ namespace CapaDatosMepryl
                     //entidad.TipoExamen.Modificado = !PacientePre.DebeRealizarExamenRX(DNIPaciente(entidad.IdPaciente.ToString()));
 
                     List<string> listAddTipoExamen = SQLConnector.generarListaParaProcedure("@idConsulta", "@idTurno", "@modificado",
-                    "@idEspecialidad", "@importe", "@factClub", "@precioLista");
+                    "@idEspecialidad", "@importe", "@factClub", "@precioLista", "@seña");
                     string idTipoExamen = SQLConnector.executeProcedureWithReturnValue("sp_TipoExamenDePaciente_Add", listAddTipoExamen, Guid.Empty, entidad.Id,
                     examenModificado(entidad.TipoExamen.Modificado), entidad.TipoExamen.Id, entidad.TipoExamen.PrecioBase,
-                    facturaClubEmpresa(entidad.FacturaClub), entidad.TipoExamen.PrecioLista);
+                    facturaClubEmpresa(entidad.FacturaClub), entidad.TipoExamen.PrecioLista, entidad.TipoExamen.Seña);
                     entidad.TipoExamen.IdTipoExamenPaciente = new Guid(idTipoExamen);
                     List<string> listAddClubPorTipoExamen = SQLConnector.generarListaParaProcedure("@idTipoExamen", "@idClub");
                     foreach (DataRow r in entidad.LigaClub.Rows)
@@ -744,10 +771,10 @@ namespace CapaDatosMepryl
             {
                 tipoExamen.actualizarEstudiosPorExamen(entidad.TipoExamen);
                 List<string> listUpdateTipoExamen = SQLConnector.generarListaParaProcedure("@idTurno", "@valor",
-                "@importe", "@factClub", "@precioLista");
+                "@importe", "@factClub", "@precioLista", "@seña");
                 SQLConnector.executeProcedure("sp_TipoExamenDePaciente_Update", listUpdateTipoExamen, entidad.Id,
                 examenModificado(entidad.TipoExamen.Modificado), entidad.TipoExamen.PrecioBase,
-                facturaClubEmpresa(entidad.FacturaClub), entidad.TipoExamen.PrecioLista);
+                facturaClubEmpresa(entidad.FacturaClub), entidad.TipoExamen.PrecioLista, entidad.TipoExamen.Seña);
                 List<string> deleteClubesPorTipoExamen = SQLConnector.generarListaParaProcedure("@idTipoExamen");
                 SQLConnector.executeProcedure("sp_clubesPorTipoExamen_Delete", deleteClubesPorTipoExamen,
                     entidad.TipoExamen.IdTipoExamenPaciente);
@@ -782,10 +809,10 @@ namespace CapaDatosMepryl
             {
                 tipoExamen.actualizarEstudiosPorExamen(entidad.TipoExamen);
                 List<string> listUpdateTipoExamen = SQLConnector.generarListaParaProcedure("@idTurno", "@valor",
-                "@importe", "@factClub", "@precioLista");
+                "@importe", "@factClub", "@precioLista", "@seña");
                 SQLConnector.executeProcedure("sp_TipoExamenDePaciente_Update", listUpdateTipoExamen, entidad.Id,
                 examenModificado(entidad.TipoExamen.Modificado), entidad.TipoExamen.PrecioBase,
-                facturaClubEmpresa(entidad.FacturaEmpresa), entidad.TipoExamen.PrecioLista);
+                facturaClubEmpresa(entidad.FacturaEmpresa), entidad.TipoExamen.PrecioLista, entidad.TipoExamen.Seña);
                 List<string> listUpdateEmpresaPorTipoExamen = SQLConnector.generarListaParaProcedure("@idTipoExamen", "@idEmpresa", "@tarea");
                 SQLConnector.executeProcedure("sp_empresaPorTipoDeExamen_Update", listUpdateEmpresaPorTipoExamen,
                 entidad.TipoExamen.IdTipoExamenPaciente, entidad.IdEmpresa, entidad.Tarea);

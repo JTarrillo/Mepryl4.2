@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -1217,7 +1217,8 @@ namespace CapaDatosMepryl
             e.descripcion,
             tep.precioExamen,
             tep.modificado,
-            tep.precioLista
+            tep.precioLista,
+            tep.seña
         FROM dbo.TipoExamenDePaciente tep 
         INNER JOIN dbo.EstudiosPorExamen epe ON tep.id = epe.idTipoExamen
         INNER JOIN dbo.Especialidad e ON tep.idEspecialidad = e.id 
@@ -1242,6 +1243,13 @@ namespace CapaDatosMepryl
                 {
                     if (Double.TryParse(row["precioLista"].ToString(), out double precioLista))
                         retorno.PrecioLista = precioLista;
+                }
+
+                // Cargar la Seña desde la tabla
+                if (estudiosPorExamen.Columns.Contains("seña") && row["seña"] != DBNull.Value)
+                {
+                    if (Double.TryParse(row["seña"].ToString(), out double seña))
+                        retorno.Seña = seña;
                 }
 
                 if (!string.IsNullOrEmpty(row["modificado"].ToString()))
