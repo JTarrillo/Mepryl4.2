@@ -193,7 +193,7 @@
             this.tabPageResumen.Controls.Add(this.label19);
             this.tabPageResumen.Location = new System.Drawing.Point(4, 25);
             this.tabPageResumen.Name = "tabPageResumen";
-            this.tabPageResumen.Size = new System.Drawing.Size(1043, 519);
+            this.tabPageResumen.Size = new System.Drawing.Size(1173, 519);
             this.tabPageResumen.TabIndex = 4;
             this.tabPageResumen.Text = "Resúmen";
             // 
@@ -290,7 +290,7 @@
             this.tabPageClinico.Location = new System.Drawing.Point(4, 25);
             this.tabPageClinico.Name = "tabPageClinico";
             this.tabPageClinico.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageClinico.Size = new System.Drawing.Size(1043, 519);
+            this.tabPageClinico.Size = new System.Drawing.Size(1173, 519);
             this.tabPageClinico.TabIndex = 0;
             this.tabPageClinico.Text = "Ex. Clínico";
             // 
@@ -596,7 +596,7 @@
             this.tabPage3.Location = new System.Drawing.Point(4, 25);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(1043, 519);
+            this.tabPage3.Size = new System.Drawing.Size(1173, 519);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Rayos X";
             // 
@@ -764,7 +764,7 @@
             this.tabPageCardiologia.Location = new System.Drawing.Point(4, 25);
             this.tabPageCardiologia.Name = "tabPageCardiologia";
             this.tabPageCardiologia.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageCardiologia.Size = new System.Drawing.Size(1043, 519);
+            this.tabPageCardiologia.Size = new System.Drawing.Size(1173, 519);
             this.tabPageCardiologia.TabIndex = 3;
             this.tabPageCardiologia.Text = "Est. Complementarios";
             // 
@@ -821,9 +821,9 @@
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.Location = new System.Drawing.Point(12, 39);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(106, 16);
+            this.label1.Size = new System.Drawing.Size(127, 16);
             this.label1.TabIndex = 133;
-            this.label1.Text = "Tipo de Examen";
+            this.label1.Text = "Subtipo  de Examen";
             // 
             // label2
             // 
