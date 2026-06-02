@@ -6,15 +6,11 @@ namespace CapaPresentacion
 
         protected override void Dispose(bool disposing)
         {
-            try
+            if (disposing && (components != null))
             {
-                if (disposing && (components != null))
-                {
-                    components.Dispose();
-                }
-                base.Dispose(disposing);
+                components.Dispose();
             }
-            catch (System.ObjectDisposedException) { }
+            base.Dispose(disposing);
         }
 
         #region Windows Form Designer generated code
@@ -53,33 +49,8 @@ namespace CapaPresentacion
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle28 = new System.Windows.Forms.DataGridViewCellStyle();
             this.lblTitulo = new System.Windows.Forms.Label();
             this.pnlSuperior = new System.Windows.Forms.Panel();
-            this.lblMes = new System.Windows.Forms.Label();
-            this.cboMes = new System.Windows.Forms.ComboBox();
             this.lblAnio = new System.Windows.Forms.Label();
             this.nudAnio = new System.Windows.Forms.NumericUpDown();
-            this.btnCargar = new System.Windows.Forms.Button();
-            this.pnlMenu = new System.Windows.Forms.Panel();
-            this.btnGuardar = new System.Windows.Forms.Button();
-            this.btnCopiarMes = new System.Windows.Forms.Button();
-            this.btnVariacion = new System.Windows.Forms.Button();
-            this.btnCalcularLista = new System.Windows.Forms.Button();
-            this.mnuAplicar = new System.Windows.Forms.ContextMenuStrip();
-            this.mnuAplicarVariacion = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuVariacionPromo = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuVariacionLista = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuCalcularLista = new System.Windows.Forms.ToolStripMenuItem();
-            this.btnAplicar = new System.Windows.Forms.Button();
-            this.chkFactor = new System.Windows.Forms.CheckBox();
-            this.lblVariacion = new System.Windows.Forms.Label();
-            this.txtVariacion = new System.Windows.Forms.TextBox();
-            this.pnlCentro = new System.Windows.Forms.Panel();
-            this.dgvPrecios = new System.Windows.Forms.DataGridView();
-            this.colDescripcion = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colMotivo = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colTipo = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colPrecioLista = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colPrecioPromo = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colIdEspecialidad = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.lblBuscar = new System.Windows.Forms.Label();
             this.txtBuscar = new System.Windows.Forms.TextBox();
             this.lblTotal = new System.Windows.Forms.Label();
@@ -94,7 +65,6 @@ namespace CapaPresentacion
             this.btnAplicar = new System.Windows.Forms.Button();
             this.mnuAplicar = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.mnuVariacion = new System.Windows.Forms.ToolStripMenuItem();
-            this.pnlCentro = new System.Windows.Forms.Panel();
             this.dgvPrecios = new System.Windows.Forms.DataGridView();
             this.colIdEspecialidad = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colIPCBase = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -125,12 +95,26 @@ namespace CapaPresentacion
             this.colCoef11 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colPromo12 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colCoef12 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.tabControl = new System.Windows.Forms.TabControl();
+            this.tabPrecios = new System.Windows.Forms.TabPage();
+            this.tabConfig = new System.Windows.Forms.TabPage();
+            this.dgvConfig = new System.Windows.Forms.DataGridView();
+            this.colCfgIdEsp = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colCfgMotivo = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colCfgTipo = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colCfgDescripcion = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colCfgSe\u00f1a = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colCfgPlanilla = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.colCfgObservaciones = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.pnlSuperior.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudAnio)).BeginInit();
             this.pnlMenu.SuspendLayout();
             this.mnuAplicar.SuspendLayout();
-            this.pnlCentro.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPrecios)).BeginInit();
+            this.tabControl.SuspendLayout();
+            this.tabPrecios.SuspendLayout();
+            this.tabConfig.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvConfig)).BeginInit();
             this.SuspendLayout();
             // 
             // lblTitulo
@@ -151,7 +135,6 @@ namespace CapaPresentacion
             this.pnlSuperior.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(242)))), ((int)(((byte)(242)))));
             this.pnlSuperior.Controls.Add(this.lblAnio);
             this.pnlSuperior.Controls.Add(this.nudAnio);
-            this.pnlSuperior.Controls.Add(this.btnCargar);
             this.pnlSuperior.Controls.Add(this.lblBuscar);
             this.pnlSuperior.Controls.Add(this.txtBuscar);
             this.pnlSuperior.Controls.Add(this.lblTotal);
@@ -165,7 +148,7 @@ namespace CapaPresentacion
             // 
             this.lblAnio.AutoSize = true;
             this.lblAnio.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.lblAnio.Location = new System.Drawing.Point(195, 14);
+            this.lblAnio.Location = new System.Drawing.Point(12, 14);
             this.lblAnio.Name = "lblAnio";
             this.lblAnio.Size = new System.Drawing.Size(37, 19);
             this.lblAnio.TabIndex = 0;
@@ -195,25 +178,11 @@ namespace CapaPresentacion
             0});
             this.nudAnio.ValueChanged += new System.EventHandler(this.nudAnio_ValueChanged);
             // 
-            // btnCargar
-            // 
-            this.btnCargar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(130)))), ((int)(((byte)(180)))));
-            this.btnCargar.FlatAppearance.BorderColor = System.Drawing.Color.RoyalBlue;
-            this.btnCargar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnCargar.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this.btnCargar.Location = new System.Drawing.Point(315, 9);
-            this.btnCargar.Name = "btnCargar";
-            this.btnCargar.Size = new System.Drawing.Size(80, 30);
-            this.btnCargar.TabIndex = 2;
-            this.btnCargar.Text = "Cargar";
-            this.btnCargar.UseVisualStyleBackColor = true;
-            this.btnCargar.Click += new System.EventHandler(this.btnCargar_Click);
-            // 
             // lblBuscar
             // 
             this.lblBuscar.AutoSize = true;
             this.lblBuscar.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.lblBuscar.Location = new System.Drawing.Point(420, 14);
+            this.lblBuscar.Location = new System.Drawing.Point(135, 14);
             this.lblBuscar.Name = "lblBuscar";
             this.lblBuscar.Size = new System.Drawing.Size(52, 19);
             this.lblBuscar.TabIndex = 3;
@@ -222,7 +191,7 @@ namespace CapaPresentacion
             // txtBuscar
             // 
             this.txtBuscar.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.txtBuscar.Location = new System.Drawing.Point(475, 11);
+            this.txtBuscar.Location = new System.Drawing.Point(190, 11);
             this.txtBuscar.Name = "txtBuscar";
             this.txtBuscar.Size = new System.Drawing.Size(250, 25);
             this.txtBuscar.TabIndex = 4;
@@ -232,7 +201,7 @@ namespace CapaPresentacion
             // 
             this.lblTotal.AutoSize = true;
             this.lblTotal.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.lblTotal.Location = new System.Drawing.Point(740, 14);
+            this.lblTotal.Location = new System.Drawing.Point(455, 14);
             this.lblTotal.Name = "lblTotal";
             this.lblTotal.Size = new System.Drawing.Size(100, 19);
             this.lblTotal.TabIndex = 5;
@@ -240,17 +209,19 @@ namespace CapaPresentacion
             // 
             // pnlMenu
             // 
-            this.pnlMenu.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(248)))), ((int)(((byte)(248)))));
+            this.pnlMenu.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
             this.pnlMenu.Controls.Add(this.btnGuardar);
-            this.pnlMenu.Controls.Add(this.btnCopiarMes);
+            this.pnlMenu.Controls.Add(this.btnCopiarAnio);
+            this.pnlMenu.Controls.Add(this.lblMesVariacion);
+            this.pnlMenu.Controls.Add(this.cboMesVariacion);
             this.pnlMenu.Controls.Add(this.lblVariacion);
             this.pnlMenu.Controls.Add(this.txtVariacion);
             this.pnlMenu.Controls.Add(this.chkFactor);
             this.pnlMenu.Controls.Add(this.btnAplicar);
-            this.pnlMenu.Dock = System.Windows.Forms.DockStyle.Right;
-            this.pnlMenu.Location = new System.Drawing.Point(1214, 90);
+            this.pnlMenu.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pnlMenu.Location = new System.Drawing.Point(0, 90);
             this.pnlMenu.Name = "pnlMenu";
-            this.pnlMenu.Size = new System.Drawing.Size(150, 467);
+            this.pnlMenu.Size = new System.Drawing.Size(1364, 58);
             this.pnlMenu.TabIndex = 2;
             // 
             // btnGuardar
@@ -259,36 +230,37 @@ namespace CapaPresentacion
             this.btnGuardar.FlatAppearance.BorderColor = System.Drawing.Color.DarkGreen;
             this.btnGuardar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnGuardar.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.btnGuardar.ForeColor = System.Drawing.Color.White;
             this.btnGuardar.Location = new System.Drawing.Point(10, 10);
             this.btnGuardar.Name = "btnGuardar";
-            this.btnGuardar.Size = new System.Drawing.Size(130, 40);
+            this.btnGuardar.Size = new System.Drawing.Size(120, 36);
             this.btnGuardar.TabIndex = 0;
             this.btnGuardar.Text = "Guardar";
-            this.btnGuardar.UseVisualStyleBackColor = true;
+            this.btnGuardar.UseVisualStyleBackColor = false;
             this.btnGuardar.Click += new System.EventHandler(this.btnGuardar_Click);
             // 
             // btnCopiarAnio
             // 
-            this.btnCopiarAnio.BackColor = System.Drawing.Color.SteelBlue;
-            this.btnCopiarAnio.FlatAppearance.BorderColor = System.Drawing.Color.RoyalBlue;
+            this.btnCopiarAnio.BackColor = System.Drawing.Color.White;
+            this.btnCopiarAnio.FlatAppearance.BorderColor = System.Drawing.Color.Black;
             this.btnCopiarAnio.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnCopiarAnio.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.btnCopiarAnio.ForeColor = System.Drawing.Color.White;
-            this.btnCopiarAnio.Location = new System.Drawing.Point(10, 60);
+            this.btnCopiarAnio.ForeColor = System.Drawing.Color.Black;
+            this.btnCopiarAnio.Location = new System.Drawing.Point(138, 10);
             this.btnCopiarAnio.Name = "btnCopiarAnio";
-            this.btnCopiarAnio.Size = new System.Drawing.Size(130, 40);
+            this.btnCopiarAnio.Size = new System.Drawing.Size(150, 36);
             this.btnCopiarAnio.TabIndex = 1;
-            this.btnCopiarAnio.Text = "Copiar desde\r\naño anterior";
+            this.btnCopiarAnio.Text = "Copiar año anterior";
             this.btnCopiarAnio.UseVisualStyleBackColor = false;
             this.btnCopiarAnio.Click += new System.EventHandler(this.btnCopiarAnio_Click);
             // 
             // lblMesVariacion
             // 
             this.lblMesVariacion.AutoSize = true;
-            this.lblMesVariacion.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.lblMesVariacion.Location = new System.Drawing.Point(10, 115);
+            this.lblMesVariacion.Font = new System.Drawing.Font("Segoe UI", 8F);
+            this.lblMesVariacion.Location = new System.Drawing.Point(308, 8);
             this.lblMesVariacion.Name = "lblMesVariacion";
-            this.lblMesVariacion.Size = new System.Drawing.Size(79, 15);
+            this.lblMesVariacion.Size = new System.Drawing.Size(77, 13);
             this.lblMesVariacion.TabIndex = 2;
             this.lblMesVariacion.Text = "Mes a aplicar:";
             // 
@@ -310,27 +282,27 @@ namespace CapaPresentacion
             "Octubre",
             "Noviembre",
             "Diciembre"});
-            this.cboMesVariacion.Location = new System.Drawing.Point(10, 132);
+            this.cboMesVariacion.Location = new System.Drawing.Point(308, 26);
             this.cboMesVariacion.Name = "cboMesVariacion";
-            this.cboMesVariacion.Size = new System.Drawing.Size(130, 23);
+            this.cboMesVariacion.Size = new System.Drawing.Size(120, 23);
             this.cboMesVariacion.TabIndex = 3;
             // 
             // lblVariacion
             // 
             this.lblVariacion.AutoSize = true;
-            this.lblVariacion.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.lblVariacion.Location = new System.Drawing.Point(10, 120);
+            this.lblVariacion.Font = new System.Drawing.Font("Segoe UI", 8F);
+            this.lblVariacion.Location = new System.Drawing.Point(440, 8);
             this.lblVariacion.Name = "lblVariacion";
-            this.lblVariacion.Size = new System.Drawing.Size(84, 15);
+            this.lblVariacion.Size = new System.Drawing.Size(80, 13);
             this.lblVariacion.TabIndex = 4;
             this.lblVariacion.Text = "Incremento %:";
             // 
             // txtVariacion
             // 
             this.txtVariacion.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.txtVariacion.Location = new System.Drawing.Point(10, 140);
+            this.txtVariacion.Location = new System.Drawing.Point(440, 25);
             this.txtVariacion.Name = "txtVariacion";
-            this.txtVariacion.Size = new System.Drawing.Size(130, 25);
+            this.txtVariacion.Size = new System.Drawing.Size(80, 25);
             this.txtVariacion.TabIndex = 5;
             this.txtVariacion.Text = "0";
             // 
@@ -338,7 +310,7 @@ namespace CapaPresentacion
             // 
             this.chkFactor.AutoSize = true;
             this.chkFactor.Font = new System.Drawing.Font("Segoe UI", 8F);
-            this.chkFactor.Location = new System.Drawing.Point(12, 216);
+            this.chkFactor.Location = new System.Drawing.Point(530, 28);
             this.chkFactor.Name = "chkFactor";
             this.chkFactor.Size = new System.Drawing.Size(127, 17);
             this.chkFactor.TabIndex = 6;
@@ -347,13 +319,14 @@ namespace CapaPresentacion
             // 
             // btnAplicar
             // 
-            this.btnAplicar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(105)))), ((int)(((byte)(30)))));
-            this.btnAplicar.FlatAppearance.BorderColor = System.Drawing.Color.Chocolate;
+            this.btnAplicar.BackColor = System.Drawing.Color.White;
+            this.btnAplicar.FlatAppearance.BorderColor = System.Drawing.Color.Black;
             this.btnAplicar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnAplicar.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this.btnAplicar.Location = new System.Drawing.Point(10, 190);
+            this.btnAplicar.ForeColor = System.Drawing.Color.Black;
+            this.btnAplicar.Location = new System.Drawing.Point(668, 10);
             this.btnAplicar.Name = "btnAplicar";
-            this.btnAplicar.Size = new System.Drawing.Size(130, 40);
+            this.btnAplicar.Size = new System.Drawing.Size(141, 36);
             this.btnAplicar.TabIndex = 7;
             this.btnAplicar.Text = "Aplicar ▼";
             this.btnAplicar.UseVisualStyleBackColor = false;
@@ -373,15 +346,6 @@ namespace CapaPresentacion
             this.mnuVariacion.Text = "Aplicar variación al mes seleccionado";
             this.mnuVariacion.Click += new System.EventHandler(this.mnuVariacion_Click);
             // 
-            // pnlCentro
-            // 
-            this.pnlCentro.Controls.Add(this.dgvPrecios);
-            this.pnlCentro.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlCentro.Location = new System.Drawing.Point(0, 90);
-            this.pnlCentro.Name = "pnlCentro";
-            this.pnlCentro.Size = new System.Drawing.Size(1214, 467);
-            this.pnlCentro.TabIndex = 3;
-            // 
             // dgvPrecios
             // 
             this.dgvPrecios.AllowUserToAddRows = false;
@@ -394,7 +358,7 @@ namespace CapaPresentacion
             this.dgvPrecios.BackgroundColor = System.Drawing.Color.White;
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle2.BackColor = System.Drawing.Color.SeaGreen;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Tahoma", 8.25F);
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             dataGridViewCellStyle2.ForeColor = System.Drawing.Color.White;
             dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.dgvPrecios.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
@@ -431,8 +395,8 @@ namespace CapaPresentacion
             this.colCoef12});
             dataGridViewCellStyle29.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle29.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle29.Font = new System.Drawing.Font("Segoe UI", 9F);
-            dataGridViewCellStyle29.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle29.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle29.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             dataGridViewCellStyle29.SelectionBackColor = System.Drawing.Color.White;
             dataGridViewCellStyle29.SelectionForeColor = System.Drawing.Color.Black;
             dataGridViewCellStyle29.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
@@ -440,12 +404,12 @@ namespace CapaPresentacion
             this.dgvPrecios.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvPrecios.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
             this.dgvPrecios.EnableHeadersVisualStyles = false;
-            this.dgvPrecios.Location = new System.Drawing.Point(0, 0);
+            this.dgvPrecios.Location = new System.Drawing.Point(3, 3);
             this.dgvPrecios.Name = "dgvPrecios";
             this.dgvPrecios.RowHeadersVisible = false;
             this.dgvPrecios.RowTemplate.Height = 28;
             this.dgvPrecios.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
-            this.dgvPrecios.Size = new System.Drawing.Size(1214, 467);
+            this.dgvPrecios.Size = new System.Drawing.Size(1350, 373);
             this.dgvPrecios.TabIndex = 0;
             this.dgvPrecios.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.dgvPrecios_CellBeginEdit);
             this.dgvPrecios.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvPrecios_CellEndEdit);
@@ -820,8 +784,7 @@ namespace CapaPresentacion
             this.colCfgMotivo,
             this.colCfgTipo,
             this.colCfgDescripcion,
-            this.colCfgSeñaPromo,
-            this.colCfgSeñaLista,
+            this.colCfgSe\u00f1a,
             this.colCfgPlanilla,
             this.colCfgObservaciones});
             this.dgvConfig.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -861,17 +824,11 @@ namespace CapaPresentacion
             this.colCfgDescripcion.Name = "colCfgDescripcion";
             this.colCfgDescripcion.ReadOnly = true;
             // 
-            // colCfgSeñaPromo
+            // colCfgSeña
             // 
-            this.colCfgSeñaPromo.FillWeight = 80F;
-            this.colCfgSeñaPromo.HeaderText = "Seña Promo";
-            this.colCfgSeñaPromo.Name = "colCfgSeñaPromo";
-            // 
-            // colCfgSeñaLista
-            // 
-            this.colCfgSeñaLista.FillWeight = 80F;
-            this.colCfgSeñaLista.HeaderText = "Seña Lista";
-            this.colCfgSeñaLista.Name = "colCfgSeñaLista";
+            this.colCfgSeña.FillWeight = 80F;
+            this.colCfgSeña.HeaderText = "Seña";
+            this.colCfgSeña.Name = "colCfgSeña";
             // 
             // colCfgPlanilla
             // 
@@ -904,8 +861,11 @@ namespace CapaPresentacion
             this.pnlMenu.ResumeLayout(false);
             this.pnlMenu.PerformLayout();
             this.mnuAplicar.ResumeLayout(false);
-            this.pnlCentro.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvPrecios)).EndInit();
+            this.tabControl.ResumeLayout(false);
+            this.tabPrecios.ResumeLayout(false);
+            this.tabConfig.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgvConfig)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -914,35 +874,62 @@ namespace CapaPresentacion
 
         private System.Windows.Forms.Label lblTitulo;
         private System.Windows.Forms.Panel pnlSuperior;
-        private System.Windows.Forms.Label lblMes;
-        private System.Windows.Forms.ComboBox cboMes;
         private System.Windows.Forms.Label lblAnio;
         private System.Windows.Forms.NumericUpDown nudAnio;
-        private System.Windows.Forms.Button btnCargar;
+        private System.Windows.Forms.Label lblBuscar;
+        private System.Windows.Forms.TextBox txtBuscar;
+        private System.Windows.Forms.Label lblTotal;
         private System.Windows.Forms.Panel pnlMenu;
         private System.Windows.Forms.Button btnGuardar;
-        private System.Windows.Forms.Button btnCopiarMes;
-        private System.Windows.Forms.Button btnVariacion;
-        private System.Windows.Forms.Button btnCalcularLista;
-        private System.Windows.Forms.ContextMenuStrip mnuAplicar;
-        private System.Windows.Forms.ToolStripMenuItem mnuAplicarVariacion;
-        private System.Windows.Forms.ToolStripMenuItem mnuVariacionPromo;
-        private System.Windows.Forms.ToolStripMenuItem mnuVariacionLista;
-        private System.Windows.Forms.ToolStripMenuItem mnuCalcularLista;
-        private System.Windows.Forms.Button btnAplicar;
-        private System.Windows.Forms.CheckBox chkFactor;
+        private System.Windows.Forms.Button btnCopiarAnio;
+        private System.Windows.Forms.Label lblMesVariacion;
+        private System.Windows.Forms.ComboBox cboMesVariacion;
         private System.Windows.Forms.Label lblVariacion;
         private System.Windows.Forms.TextBox txtVariacion;
-        private System.Windows.Forms.Panel pnlCentro;
+        private System.Windows.Forms.CheckBox chkFactor;
+        private System.Windows.Forms.Button btnAplicar;
+        private System.Windows.Forms.ContextMenuStrip mnuAplicar;
+        private System.Windows.Forms.ToolStripMenuItem mnuVariacion;
+        private System.Windows.Forms.TabControl tabControl;
+        private System.Windows.Forms.TabPage tabPrecios;
+        private System.Windows.Forms.TabPage tabConfig;
+        private System.Windows.Forms.DataGridView dgvConfig;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colCfgIdEsp;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colCfgMotivo;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colCfgTipo;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colCfgDescripcion;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colCfgSeña;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn colCfgPlanilla;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colCfgObservaciones;
         private System.Windows.Forms.DataGridView dgvPrecios;
         private System.Windows.Forms.DataGridViewTextBoxColumn colIdEspecialidad;
         private System.Windows.Forms.DataGridViewTextBoxColumn colMotivo;
         private System.Windows.Forms.DataGridViewTextBoxColumn colTipo;
         private System.Windows.Forms.DataGridViewTextBoxColumn colDescripcion;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colPrecioLista;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colPrecioPromo;
-        private System.Windows.Forms.Label lblBuscar;
-        private System.Windows.Forms.TextBox txtBuscar;
-        private System.Windows.Forms.Label lblTotal;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colIPCBase;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colPromo01;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colCoef01;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colPromo02;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colCoef02;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colPromo03;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colCoef03;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colPromo04;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colCoef04;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colPromo05;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colCoef05;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colPromo06;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colCoef06;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colPromo07;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colCoef07;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colPromo08;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colCoef08;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colPromo09;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colCoef09;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colPromo10;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colCoef10;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colPromo11;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colCoef11;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colPromo12;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colCoef12;
     }
 }
