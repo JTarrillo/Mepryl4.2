@@ -10,11 +10,14 @@ namespace CapaPresentacion
     public partial class frmPreciosPublico : DevExpress.XtraEditors.XtraForm
     {
         private CapaNegocioMepryl.PrecioPublico precioPublico;
-        private DataTable dtOriginal;
         private bool yaInicializado = false;
-        private decimal[] _coefs;
-        private DataTable dt;
-        private readonly string[] NombresMeses = { "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre" };
+        private decimal[] _coefs = new decimal[12];
+
+        private static readonly string[] NombresMeses =
+        {
+            "Enero","Febrero","Marzo","Abril","Mayo","Junio",
+            "Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"
+        };
 
         public frmPreciosPublico(frmBasePrincipal parentForm)
         {
@@ -25,7 +28,12 @@ namespace CapaPresentacion
 
         private void frmPreciosPublico_Load(object sender, EventArgs e)
         {
+            foreach (DataGridViewColumn col in dgvPrecios.Columns)
+                col.SortMode = DataGridViewColumnSortMode.NotSortable;
+
+            ConfigurarGrillaConfig();
             nudAnio.Value = DateTime.Now.Year;
+            cboMesVariacion.SelectedIndex = DateTime.Now.Month; // 0 = Todos, 1-12 = mes
             CargarGrilla();
             yaInicializado = true;
         }
@@ -40,47 +48,45 @@ namespace CapaPresentacion
         private void CargarGrilla()
         {
             int anio = (int)nudAnio.Value;
-
             dgvPrecios.Rows.Clear();
 
             // Cargar coeficientes y mostrarlos en el encabezado de colCoef
             _coefs = ObtenerCoeficientesAnio(anio);
-            for (int m = 1; m <= 12; m++)
-                dgvPrecios.Columns["colCoef" + m.ToString("00")].HeaderText =
-                    _coefs[m - 1].ToString("0.##", System.Globalization.CultureInfo.CurrentCulture);
+            for (int mes = 1; mes <= 12; mes++)
+                dgvPrecios.Columns["colCoef" + mes.ToString("00")].HeaderText =
+                    _coefs[mes - 1].ToString("0.##", System.Globalization.CultureInfo.CurrentCulture);
             dgvPrecios.Columns["colIPCBase"].HeaderText = _coefs[0].ToString("0.##", System.Globalization.CultureInfo.CurrentCulture);
 
+            // Filas de datos
+            DataTable dt = precioPublico.ListarPreciosPublicoAnio(anio);
             foreach (DataRow row in dt.Rows)
             {
                 int idx = dgvPrecios.Rows.Add();
                 dgvPrecios.Rows[idx].Cells["colIdEspecialidad"].Value = row["idEspecialidad"].ToString();
-                dgvPrecios.Rows[idx].Cells["colMotivo"].Value        = row["Motivo"].ToString();
-                dgvPrecios.Rows[idx].Cells["colTipo"].Value          = row["Tipo"].ToString();
-                dgvPrecios.Rows[idx].Cells["colDescripcion"].Value   = row["Descripcion"].ToString();
-                
+                dgvPrecios.Rows[idx].Cells["colMotivo"].Value = row["Motivo"].ToString();
+                dgvPrecios.Rows[idx].Cells["colTipo"].Value = row["Tipo"].ToString();
+                dgvPrecios.Rows[idx].Cells["colDescripcion"].Value = row["Descripcion"].ToString();
+
                 // Cargar IPC base desde la base de datos (0 = sin valor individual, usa global)
                 decimal ipcBase = (row["IPCBase"] == DBNull.Value) ? 0m : Convert.ToDecimal(row["IPCBase"]);
                 dgvPrecios.Rows[idx].Cells["colIPCBase"].Value = ipcBase;
 
-                decimal precioLista = Convert.ToDecimal(row["PrecioLista"]);
-                decimal precioPromo = Convert.ToDecimal(row["PrecioPromo"]);
-                decimal precioBase = Convert.ToDecimal(row["precioBase"]);
-
-                // Cargar todos los meses desde la base de datos
-                for (int m = 1; m <= 12; m++)
+                for (int mes = 1; mes <= 12; mes++)
                 {
-                    string campoPromo = "Promo" + m.ToString("00");
-                    decimal valorPromo = (row[campoPromo] == DBNull.Value) ? 0 : Convert.ToDecimal(row[campoPromo]);
-                    dgvPrecios.Rows[idx].Cells["col" + campoPromo].Value = valorPromo;
-                    
-                    string campoCoef = "Coef" + m.ToString("00");
+                    string campo = "Promo" + mes.ToString("00");
+                    decimal valorPromo = (row[campo] == DBNull.Value) ? 0 : Convert.ToDecimal(row[campo]);
+                    dgvPrecios.Rows[idx].Cells["col" + campo].Value = valorPromo;
+
+                    string campoCoef = "Coef" + mes.ToString("00");
                     decimal coefInd = (row[campoCoef] == DBNull.Value) ? 0m : Convert.ToDecimal(row[campoCoef]);
-                    dgvPrecios.Rows[idx].Cells["colCoef" + m.ToString("00")].Value = coefInd;
+                    dgvPrecios.Rows[idx].Cells["colCoef" + mes.ToString("00")].Value = coefInd;
                 }
             }
 
-            lblTotal.Text = "Prestaciones: " + dt.Rows.Count;
-            txtBuscar.Clear();
+            // Cargar config de señas/planilla y luego re-aplicar filtro
+            CargarGrillaConfig();
+            // Re-aplicar el filtro actual sin borrar el texto de búsqueda
+            txtBuscar_TextChanged(this, EventArgs.Empty);
         }
 
         private void dgvPrecios_ColumnHeaderMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
@@ -100,11 +106,11 @@ namespace CapaPresentacion
                 System.Globalization.CultureInfo.InvariantCulture, out v)) return;
             _coefs[mes - 1] = v;
             dgvPrecios.Columns[e.ColumnIndex].HeaderText = v.ToString("0.##", System.Globalization.CultureInfo.CurrentCulture);
-            
+
             // Guardar el coeficiente modificado en la base de datos inmediatamente
             int anio = (int)nudAnio.Value;
             precioPublico.GuardarCoeficientesAnio(anio, _coefs);
-            
+
             // Aplicar cálculo para el mes correspondiente al coeficiente modificado
             AplicarCalculoCoeficientesSucesivos(mes);
         }
@@ -115,45 +121,45 @@ namespace CapaPresentacion
             {
                 // Desactivar eventos para evitar interferencias
                 dgvPrecios.CellEndEdit -= dgvPrecios_CellEndEdit;
-                
+
                 // colCoef{X} está entre mes X y mes X+1, por eso recalculamos desde X+1
                 int mesInicio = mesModificado + 1;
                 if (mesInicio > 12) return;
-                
+
                 foreach (DataGridViewRow row in dgvPrecios.Rows)
                 {
                     if (!row.Visible) continue;
-                    
+
                     // Capturar valores originales para no propagar a meses que estaban en 0
                     decimal[] originalValues = new decimal[13]; // índice 1..12
                     for (int m = mesInicio; m <= 12; m++)
                         originalValues[m] = ParseDecimal(row.Cells["colPromo" + m.ToString("00")].Value);
-                    
+
                     for (int mes = mesInicio; mes <= 12; mes++)
                     {
                         // Para el segundo mes en adelante: si el mes anterior era 0 originalmente, detener cascada
                         if (mes > mesInicio && originalValues[mes - 1] == 0m) continue;
-                        
+
                         string colMesAnterior = "colPromo" + (mes - 1).ToString("00");
                         decimal valorMesAnterior = ParseDecimal(row.Cells[colMesAnterior].Value);
-                        
+
                         string colActual = "colPromo" + mes.ToString("00");
-                        
+
                         // colCoef(mes-1) = coef entre el mes anterior y este mes
                         decimal coeficiente = _coefs[mes - 2];
                         decimal nuevoValor = valorMesAnterior * coeficiente;
-                        
+
                         int colIndex = dgvPrecios.Columns[colActual].Index;
                         row.Cells[colIndex].Value = nuevoValor;
                     }
                 }
-                
+
                 string mensaje = $"Se han recalculado los precios desde {NombresMeses[mesInicio - 1]} hasta Diciembre aplicando los coeficientes sucesivamente.";
                 MessageBox.Show(mensaje, "Cálculo aplicado", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error al aplicar cálculo de coeficientes: " + ex.Message, 
+                MessageBox.Show("Error al aplicar cálculo de coeficientes: " + ex.Message,
                     "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
@@ -169,20 +175,20 @@ namespace CapaPresentacion
             {
                 // Desactivar eventos para evitar interferencias
                 dgvPrecios.CellEndEdit -= dgvPrecios_CellEndEdit;
-                
+
                 // colCoef{X} está entre mes X y mes X+1, por eso recalculamos desde X+1
                 int mesInicio = mesModificado + 1;
                 DataGridViewRow filaActual = dgvPrecios.Rows[rowIndex];
-                
+
                 // Capturar valores originales para no propagar a meses que estaban en 0
                 decimal[] originalValues = new decimal[13]; // índice 1..12
                 for (int m = mesInicio; m <= 12; m++)
                     originalValues[m] = ParseDecimal(filaActual.Cells["colPromo" + m.ToString("00")].Value);
-                
+
                 for (int mes = mesInicio; mes <= 12; mes++)
                 {
                     if (!filaActual.Visible) continue;
-                    
+
                     if (cascadeSoloConValores)
                     {
                         // Editando precio directo: solo actualizar meses que ya tenían valor, nunca llenar ceros
@@ -193,25 +199,25 @@ namespace CapaPresentacion
                         // Editando coeficiente: el primer mes siempre se calcula; detener en el siguiente cero
                         if (mes > mesInicio && originalValues[mes - 1] == 0m) continue;
                     }
-                    
+
                     // Valor base: el precio del mes anterior
                     string colMesAnterior = "colPromo" + (mes - 1).ToString("00");
                     decimal valorBase = ParseDecimal(filaActual.Cells[colMesAnterior].Value);
-                    
+
                     string colActual = "colPromo" + mes.ToString("00");
-                    
+
                     // colCoef(mes-1) = coef entre el mes anterior y este mes
                     decimal coeficiente = ParseDecimal(filaActual.Cells["colCoef" + (mes - 1).ToString("00")].Value);
                     if (coeficiente == 0) coeficiente = _coefs[mes - 2];
                     decimal nuevoValor = valorBase * coeficiente;
-                    
+
                     int colIndex = dgvPrecios.Columns[colActual].Index;
                     filaActual.Cells[colIndex].Value = nuevoValor;
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error al aplicar cálculo de coeficientes en la fila: " + ex.Message, 
+                MessageBox.Show("Error al aplicar cálculo de coeficientes en la fila: " + ex.Message,
                     "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
@@ -241,8 +247,6 @@ namespace CapaPresentacion
             return valorN4 * incrementoPromosFebrero;
         }
 
-        private void btnCargar_Click(object sender, EventArgs e) => CargarGrilla();
-
         private void nudAnio_ValueChanged(object sender, EventArgs e)
         {
             if (yaInicializado) CargarGrilla();
@@ -256,12 +260,12 @@ namespace CapaPresentacion
 
                 DataTable dtGuardar = new DataTable();
                 dtGuardar.Columns.Add("idEspecialidad", typeof(string));
-                dtGuardar.Columns.Add("Descripcion",    typeof(string));
-                dtGuardar.Columns.Add("IPCBase",       typeof(decimal));
-                for (int m = 1; m <= 12; m++)
+                dtGuardar.Columns.Add("Descripcion", typeof(string));
+                dtGuardar.Columns.Add("IPCBase", typeof(decimal));
+                for (int mes = 1; mes <= 12; mes++)
                 {
-                    dtGuardar.Columns.Add("Promo" + m.ToString("00"), typeof(decimal));
-                    dtGuardar.Columns.Add("Coef"  + m.ToString("00"), typeof(decimal));
+                    dtGuardar.Columns.Add("Promo" + mes.ToString("00"), typeof(decimal));
+                    dtGuardar.Columns.Add("Coef" + mes.ToString("00"), typeof(decimal));
                 }
 
                 // Guardar coeficientes globales desde _coefs
@@ -270,20 +274,20 @@ namespace CapaPresentacion
                 foreach (DataGridViewRow row in dgvPrecios.Rows)
                 {
                     if (!row.Visible) continue;
-
                     DataRow dr = dtGuardar.NewRow();
                     dr["idEspecialidad"] = row.Cells["colIdEspecialidad"].Value?.ToString() ?? "";
-                    dr["Descripcion"]    = row.Cells["colDescripcion"].Value?.ToString()    ?? "";
-                    dr["IPCBase"]       = ParseDecimal(row.Cells["colIPCBase"].Value);
-                    for (int m = 1; m <= 12; m++)
+                    dr["Descripcion"] = row.Cells["colDescripcion"].Value?.ToString() ?? "";
+                    dr["IPCBase"] = ParseDecimal(row.Cells["colIPCBase"].Value);
+                    for (int mes = 1; mes <= 12; mes++)
                     {
-                        dr["Promo" + m.ToString("00")] = ParseDecimal(row.Cells["colPromo" + m.ToString("00")].Value);
-                        dr["Coef"  + m.ToString("00")] = ParseDecimal(row.Cells["colCoef"  + m.ToString("00")].Value);
+                        dr["Promo" + mes.ToString("00")] = ParseDecimal(row.Cells["colPromo" + mes.ToString("00")].Value);
+                        dr["Coef" + mes.ToString("00")] = ParseDecimal(row.Cells["colCoef" + mes.ToString("00")].Value);
                     }
                     dtGuardar.Rows.Add(dr);
                 }
 
                 precioPublico.GuardarPreciosPublicoAnio(anio, dtGuardar);
+                GuardarConfig();
                 MessageBox.Show("Precios guardados correctamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
@@ -304,20 +308,18 @@ namespace CapaPresentacion
                 return;
             }
 
-            if (precioPublico.ExistenPreciosAnio(anioActual))
-            {
-                DialogResult dr = MessageBox.Show(
-                    "Ya existen precios en " + anioActual + ". Se copiarán solo las prestaciones faltantes.\n¿Continuar?",
-                    "Confirmar", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if (dr != DialogResult.Yes) return;
-            }
+            DialogResult dr = MessageBox.Show(
+                "Se copiarán los precios de " + anioAnterior + " a " + anioActual +
+                " (solo prestaciones faltantes por mes).\n¿Continuar?",
+                "Confirmar", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (dr != DialogResult.Yes) return;
 
             try
             {
-                DataTable dtAnterior = precioPublico.ListarPreciosPublicoAnio(anioAnterior);
-                precioPublico.GuardarPreciosPublicoAnio(anioActual, dtAnterior);
-                MessageBox.Show("Precios copiados desde " + anioAnterior + ".",
-                    "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                for (int mes = 1; mes <= 12; mes++)
+                    precioPublico.CopiarPrecios(mes, anioAnterior, mes, anioActual);
+
+                MessageBox.Show("Precios copiados desde " + anioAnterior + ".", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 CargarGrilla();
             }
             catch (Exception ex)
@@ -331,22 +333,12 @@ namespace CapaPresentacion
             mnuAplicar.Show(btnAplicar, 0, btnAplicar.Height);
         }
 
-        private void btnVariacion_Click(object sender, EventArgs e)
+        private void mnuVariacion_Click(object sender, EventArgs e)
         {
-            AplicarVariacionGrilla(true, true, "ambos precios");
+            AplicarVariacionGrilla();
         }
 
-        private void btnVariacionPromo_Click(object sender, EventArgs e)
-        {
-            AplicarVariacionGrilla(false, true, "Precio Promo");
-        }
-
-        private void btnVariacionLista_Click(object sender, EventArgs e)
-        {
-            AplicarVariacionGrilla(true, false, "Precio Lista");
-        }
-
-        private void AplicarVariacionGrilla(bool aplicarLista, bool aplicarPromo, string descripcion)
+        private void AplicarVariacionGrilla()
         {
             decimal factor = ObtenerFactor();
             if (factor <= 0)
@@ -355,97 +347,48 @@ namespace CapaPresentacion
                 return;
             }
 
-            int seleccionadas = dgvPrecios.SelectedRows.Count;
-            bool todasSeleccionadas = seleccionadas == dgvPrecios.Rows.Count;
+            int mesIdx = cboMesVariacion.SelectedIndex; // 0 = Todos, 1-12 = mes
+            string alcanceMes = mesIdx == 0 ? "todos los meses" : NombresMeses[mesIdx - 1];
 
-            string alcance = todasSeleccionadas || seleccionadas == 0
+            int seleccionadas = 0;
+            foreach (DataGridViewRow r in dgvPrecios.SelectedRows)
+                seleccionadas++;
+            int totalData = dgvPrecios.Rows.Count;
+            string alcance = seleccionadas == 0 || seleccionadas >= totalData
                 ? "TODAS las prestaciones"
                 : seleccionadas + " prestación(es) seleccionada(s)";
 
             DialogResult dr = MessageBox.Show(
-                "Se aplicará variación (factor " + factor.ToString("0.##") + ") a " + descripcion + " en " + alcance + ".\n\n(Los cambios quedan en la grilla. Presione Guardar para confirmar.)\n¿Continuar?",
+                "Se aplicará factor " + factor.ToString("0.##") + " a " + alcanceMes + " en " + alcance + ".\n\n" +
+                "(Los cambios quedan en la grilla. Presione Guardar para confirmar.)\n¿Continuar?",
                 "Confirmar variación", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (dr != DialogResult.Yes) return;
 
-            List<DataGridViewRow> filasAplicar = new List<DataGridViewRow>();
-            if (todasSeleccionadas || seleccionadas == 0)
-            {
+            List<DataGridViewRow> filas = new List<DataGridViewRow>();
+            int totalDataRows = dgvPrecios.Rows.Count;
+            if (seleccionadas == 0 || seleccionadas >= totalDataRows)
                 foreach (DataGridViewRow row in dgvPrecios.Rows)
-                    filasAplicar.Add(row);
-            }
+                    filas.Add(row);
             else
-            {
                 foreach (DataGridViewRow row in dgvPrecios.SelectedRows)
-                    filasAplicar.Add(row);
-            }
+                    filas.Add(row);
 
-            foreach (DataGridViewRow row in filasAplicar)
+            int mesInicio = mesIdx == 0 ? 1 : mesIdx;
+            int mesFin = mesIdx == 0 ? 12 : mesIdx;
+
+            foreach (DataGridViewRow row in filas)
             {
-                if (aplicarLista)
+                for (int mes = mesInicio; mes <= mesFin; mes++)
                 {
-                    decimal lista = ParseDecimal(row.Cells["colPrecioLista"].Value) * factor;
-                    row.Cells["colPrecioLista"].Value = Math.Ceiling(lista / 1000m) * 1000m;
-                }
-                if (aplicarPromo)
-                {
-                    decimal promo = ParseDecimal(row.Cells["colPrecioPromo"].Value) * factor;
-                    row.Cells["colPrecioPromo"].Value = Math.Ceiling(promo / 1000m) * 1000m;
+                    string colName = "colPromo" + mes.ToString("00");
+                    decimal precio = ParseDecimal(row.Cells[colName].Value) * factor;
+                    row.Cells[colName].Value = Math.Ceiling(precio / 1000m) * 1000m;
                 }
             }
 
             txtVariacion.Text = "0";
-            MessageBox.Show("Variación aplicada a " + descripcion + " en " + alcance + ".\nRecuerde presionar Guardar para confirmar los cambios.",
+            MessageBox.Show("Variación aplicada a " + alcanceMes + " en " + alcance + ".\nRecuerde presionar Guardar para confirmar.",
                 "Variación aplicada", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
-
-        private void btnCalcularLista_Click(object sender, EventArgs e)
-        {
-            decimal factor = ObtenerFactor();
-            if (factor <= 0)
-            {
-                MessageBox.Show("Ingrese un valor válido.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            int seleccionadas = dgvPrecios.SelectedRows.Count;
-            bool todasSeleccionadas = seleccionadas == dgvPrecios.Rows.Count;
-
-            string alcance = todasSeleccionadas || seleccionadas == 0
-                ? "TODAS las prestaciones"
-                : seleccionadas + " prestación(es) seleccionada(s)";
-
-            DialogResult dr = MessageBox.Show(
-                "Se calculará Precio Lista = Redondear(Precio Promo × " + factor.ToString("0.##") + ") al millar en " + alcance + ".\n\n(Los cambios quedan en la grilla. Presione Guardar para confirmar.)\n¿Continuar?",
-                "Calcular Lista desde Promo", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            if (dr != DialogResult.Yes) return;
-
-            List<DataGridViewRow> filasAplicar = new List<DataGridViewRow>();
-            if (todasSeleccionadas || seleccionadas == 0)
-            {
-                foreach (DataGridViewRow row in dgvPrecios.Rows)
-                    filasAplicar.Add(row);
-            }
-            else
-            {
-                foreach (DataGridViewRow row in dgvPrecios.SelectedRows)
-                    filasAplicar.Add(row);
-            }
-
-            foreach (DataGridViewRow row in filasAplicar)
-            {
-                decimal promo = ParseDecimal(row.Cells["colPrecioPromo"].Value);
-                if (promo > 0)
-                {
-                    decimal lista = Math.Ceiling(promo * factor / 1000m) * 1000m;
-                    row.Cells["colPrecioLista"].Value = lista;
-                }
-            }
-
-            // Los coeficientes se guardan por año
-
-            txtVariacion.Text = "0";
-            MessageBox.Show("Precio Lista calculado en " + alcance + " (factor " + factor.ToString("0.##") + ").\nRecuerde presionar Guardar para confirmar los cambios.",
-                "Cálculo aplicado", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void txtBuscar_TextChanged(object sender, EventArgs e)
@@ -471,20 +414,18 @@ namespace CapaPresentacion
             }
 
             lblTotal.Text = "Prestaciones: " + visibles;
-        }
 
-        private void dgvPrecios_CellParsing(object sender, DataGridViewCellParsingEventArgs e)
-        {
-            if (e.ColumnIndex == colPrecioLista.Index || e.ColumnIndex == colPrecioPromo.Index)
+            // Filtrar también la pestaña de configuración
+            foreach (DataGridViewRow row in dgvConfig.Rows)
             {
-                if (e.Value != null)
+                if (string.IsNullOrEmpty(filtro))
+                    row.Visible = true;
+                else
                 {
-                    decimal result;
-                    if (decimal.TryParse(e.Value.ToString(), out result))
-                    {
-                        e.Value = result;
-                        e.ParsingApplied = true;
-                    }
+                    string desc = row.Cells["colCfgDescripcion"].Value?.ToString().ToLower() ?? "";
+                    string motivo = row.Cells["colCfgMotivo"].Value?.ToString().ToLower() ?? "";
+                    string tipo = row.Cells["colCfgTipo"].Value?.ToString().ToLower() ?? "";
+                    row.Visible = desc.Contains(filtro) || motivo.Contains(filtro) || tipo.Contains(filtro);
                 }
             }
         }
@@ -493,22 +434,15 @@ namespace CapaPresentacion
         {
             if (value == null || value == DBNull.Value) return 0;
             decimal result;
-            if (decimal.TryParse(value.ToString(), out result))
-                return result;
-            return 0;
+            return decimal.TryParse(value.ToString(), out result) ? result : 0;
         }
 
         private decimal ObtenerFactor()
         {
             decimal valor;
             string texto = txtVariacion.Text.Replace(".", ",");
-            if (!decimal.TryParse(texto, out valor))
-                return -1;
-
-            if (chkFactor.Checked)
-                return valor;
-            else
-                return 1 + valor / 100;
+            if (!decimal.TryParse(texto, out valor)) return -1;
+            return chkFactor.Checked ? valor : 1 + valor / 100;
         }
 
         private void chkFactor_CheckedChanged(object sender, EventArgs e)
@@ -520,13 +454,11 @@ namespace CapaPresentacion
             if (chkFactor.Checked)
             {
                 lblVariacion.Text = "Factor:";
-                // Convertir porcentaje a factor
                 txtVariacion.Text = (1 + valor / 100).ToString("0.##");
             }
             else
             {
                 lblVariacion.Text = "Incremento %:";
-                // Convertir factor a porcentaje
                 txtVariacion.Text = ((valor - 1) * 100).ToString("0.##");
             }
         }
@@ -562,43 +494,43 @@ namespace CapaPresentacion
 
             if (col == "colMotivo")
             {
-                e.CellStyle.BackColor          = Color.FromArgb(230, 245, 235);
-                e.CellStyle.ForeColor          = Color.FromArgb(20, 70, 40);
+                e.CellStyle.BackColor = Color.FromArgb(230, 245, 235);
+                e.CellStyle.ForeColor = Color.FromArgb(20, 70, 40);
                 e.CellStyle.SelectionBackColor = Color.FromArgb(230, 245, 235);
                 e.CellStyle.SelectionForeColor = Color.FromArgb(20, 70, 40);
             }
             else if (col == "colTipo")
             {
-                e.CellStyle.BackColor          = Color.White;
-                e.CellStyle.ForeColor          = Color.FromArgb(30, 30, 90);
+                e.CellStyle.BackColor = Color.White;
+                e.CellStyle.ForeColor = Color.FromArgb(30, 30, 90);
                 e.CellStyle.SelectionBackColor = Color.White;
                 e.CellStyle.SelectionForeColor = Color.FromArgb(30, 30, 90);
             }
             else if (col == "colDescripcion")
             {
-                e.CellStyle.BackColor          = Color.White;
-                e.CellStyle.ForeColor          = Color.FromArgb(20, 20, 20);
+                e.CellStyle.BackColor = Color.White;
+                e.CellStyle.ForeColor = Color.FromArgb(20, 20, 20);
                 e.CellStyle.SelectionBackColor = Color.White;
                 e.CellStyle.SelectionForeColor = Color.FromArgb(20, 20, 20);
             }
             else if (col.StartsWith("colPromo"))
             {
-                e.CellStyle.BackColor          = Color.White;
-                e.CellStyle.ForeColor          = Color.FromArgb(20, 20, 20);
+                e.CellStyle.BackColor = Color.White;
+                e.CellStyle.ForeColor = Color.FromArgb(20, 20, 20);
                 e.CellStyle.SelectionBackColor = Color.White;
                 e.CellStyle.SelectionForeColor = Color.FromArgb(20, 20, 20);
             }
             else if (col == "colIPCBase")
             {
-                e.CellStyle.BackColor          = Color.FromArgb(240, 240, 240);
-                e.CellStyle.ForeColor          = Color.FromArgb(0, 100, 200);
+                e.CellStyle.BackColor = Color.FromArgb(240, 240, 240);
+                e.CellStyle.ForeColor = Color.FromArgb(0, 100, 200);
                 e.CellStyle.SelectionBackColor = Color.FromArgb(220, 230, 240);
                 e.CellStyle.SelectionForeColor = Color.FromArgb(0, 100, 200);
             }
             else if (col.StartsWith("colCoef"))
             {
-                e.CellStyle.BackColor          = Color.FromArgb(255, 210, 210);
-                e.CellStyle.ForeColor          = Color.FromArgb(140, 0, 0);
+                e.CellStyle.BackColor = Color.FromArgb(255, 210, 210);
+                e.CellStyle.ForeColor = Color.FromArgb(140, 0, 0);
                 e.CellStyle.SelectionBackColor = Color.FromArgb(255, 210, 210);
                 e.CellStyle.SelectionForeColor = Color.FromArgb(140, 0, 0);
             }
@@ -607,7 +539,7 @@ namespace CapaPresentacion
         private void dgvPrecios_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
         {
             string colName = dgvPrecios.Columns[e.ColumnIndex].Name;
-            
+
             // Permitir editar las columnas de precios (colPromo), coeficientes (colCoef) e IPCBase
             if (!colName.StartsWith("colPromo") && !colName.StartsWith("colCoef") && colName != "colIPCBase")
             {
@@ -619,18 +551,18 @@ namespace CapaPresentacion
         private void dgvPrecios_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
             string colName = dgvPrecios.Columns[e.ColumnIndex].Name;
-            
+
             if (colName == "colIPCBase")
             {
                 // Validar y formatear el valor ingresado para IPCBase
                 var cell = dgvPrecios.Rows[e.RowIndex].Cells[e.ColumnIndex];
                 decimal value = ParseDecimal(cell.Value);
-                
+
                 // Permitir 0 (sin valor individual); solo rechazar negativos
                 if (value < 0) value = 0m;
-                
+
                 cell.Value = value;
-                
+
                 // Solo recalcular si se definió un valor base individual (>0).
                 // Si es 0 significa "usar coeficiente global" → no cascadear desde ENERO 0.
                 if (value > 0)
@@ -641,12 +573,12 @@ namespace CapaPresentacion
                 // Validar y formatear el valor ingresado
                 var cell = dgvPrecios.Rows[e.RowIndex].Cells[e.ColumnIndex];
                 decimal value = ParseDecimal(cell.Value);
-                
+
                 // Asegurar que el valor no sea negativo
                 if (value < 0) value = 0;
-                
+
                 cell.Value = value;
-                
+
                 // Solo cascadear si el valor ingresado es > 0.
                 // Si es 0 (click sin editar, o borrado) no propagar, para no destruir meses siguientes.
                 if (value > 0)
@@ -660,12 +592,12 @@ namespace CapaPresentacion
                 // Manejar edición de celdas de coeficiente (individual por fila, no afecta global)
                 var cell = dgvPrecios.Rows[e.RowIndex].Cells[e.ColumnIndex];
                 decimal value = ParseDecimal(cell.Value);
-                
+
                 // Asegurar que el valor no sea negativo
                 if (value < 0) value = 0;
-                
+
                 cell.Value = value;
-                
+
                 // Recalcular solo esta fila (el coeficiente global _coefs[] no cambia)
                 int mes = int.Parse(colName.Substring(7)); // "colCoef01" -> 7 para obtener "01"
                 AplicarCalculoCoeficientesSucesivosFila(mes, e.RowIndex);
@@ -675,12 +607,12 @@ namespace CapaPresentacion
         private void dgvPrecios_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
         {
             string colName = dgvPrecios.CurrentCell?.OwningColumn.Name ?? "";
-            
+
             if ((colName.StartsWith("colPromo") || colName.StartsWith("colCoef") || colName == "colIPCBase") && e.Control is TextBox textBox)
             {
                 // Remover manejadores anteriores para evitar duplicados
                 textBox.KeyPress -= NumericTextBox_KeyPress;
-                
+
                 // Agregar manejador para solo aceptar números
                 textBox.KeyPress += NumericTextBox_KeyPress;
             }
@@ -699,40 +631,56 @@ namespace CapaPresentacion
             }
         }
 
-        private void mnuVariacion_Click(object sender, EventArgs e)
+        private void ConfigurarGrillaConfig()
         {
-            // Aplicar variación al mes seleccionado
-            decimal factor = ObtenerFactor();
-            if (factor <= 0)
+            foreach (DataGridViewColumn col in dgvConfig.Columns)
+                col.SortMode = DataGridViewColumnSortMode.NotSortable;
+
+            dgvConfig.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(0, 70, 140);
+            dgvConfig.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
+            dgvConfig.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dgvConfig.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+        }
+
+        private void CargarGrillaConfig()
+        {
+            dgvConfig.Rows.Clear();
+            DataTable dt = precioPublico.ListarConfigEspecialidades();
+            if (dt == null) return;
+            foreach (DataRow row in dt.Rows)
             {
-                MessageBox.Show("Ingrese un valor válido.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
+                int idx = dgvConfig.Rows.Add();
+                dgvConfig.Rows[idx].Cells["colCfgIdEsp"].Value = row["idEspecialidad"].ToString();
+                dgvConfig.Rows[idx].Cells["colCfgMotivo"].Value = row["Motivo"].ToString();
+                dgvConfig.Rows[idx].Cells["colCfgTipo"].Value = row["Tipo"].ToString();
+                dgvConfig.Rows[idx].Cells["colCfgDescripcion"].Value = row["Descripcion"].ToString();
+                // Usamos solo una columna para Seña
+                dgvConfig.Rows[idx].Cells["colCfgSe\u00f1a"].Value = Convert.ToDecimal(row["Se\u00f1a"]);
+                dgvConfig.Rows[idx].Cells["colCfgPlanilla"].Value = Convert.ToBoolean(row["LlevaPlanilla"]);
+                dgvConfig.Rows[idx].Cells["colCfgObservaciones"].Value = row["Observaciones"].ToString();
             }
+        }
 
-            int mesSeleccionado = cboMesVariacion.SelectedIndex;
-            if (mesSeleccionado <= 0)
+        private void GuardarConfig()
+        {
+            DataTable dtConfig = new DataTable();
+            dtConfig.Columns.Add("idEspecialidad", typeof(string));
+            dtConfig.Columns.Add("Se\u00f1a", typeof(decimal));
+            dtConfig.Columns.Add("LlevaPlanilla", typeof(bool));
+            dtConfig.Columns.Add("Observaciones", typeof(string));
+
+            foreach (DataGridViewRow row in dgvConfig.Rows)
             {
-                MessageBox.Show("Seleccione un mes válido.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
+                DataRow dr = dtConfig.NewRow();
+                dr["idEspecialidad"] = row.Cells["colCfgIdEsp"].Value?.ToString() ?? "";
+                // Usamos solo una columna para Seña
+                decimal seña = ParseDecimal(row.Cells["colCfgSe\u00f1a"].Value);
+                dr["Se\u00f1a"] = seña;
+                dr["LlevaPlanilla"] = (row.Cells["colCfgPlanilla"].Value as bool?) ?? false;
+                dr["Observaciones"] = row.Cells["colCfgObservaciones"].Value?.ToString() ?? "";
+                dtConfig.Rows.Add(dr);
             }
-
-            DialogResult dr = MessageBox.Show(
-                "Se aplicará variación (factor " + factor.ToString("0.##") + ") al mes seleccionado.\n\n(Los cambios quedan en la grilla. Presione Guardar para confirmar.)\n¿Continuar?",
-                "Confirmar variación", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            if (dr != DialogResult.Yes) return;
-
-            foreach (DataGridViewRow row in dgvPrecios.Rows)
-            {
-                if (!row.Visible) continue;
-
-                string colName = "colPromo" + mesSeleccionado.ToString("00");
-                decimal promo = ParseDecimal(row.Cells[colName].Value) * factor;
-                row.Cells[colName].Value = Math.Ceiling(promo / 1000m) * 1000m;
-            }
-
-            txtVariacion.Text = "0";
-            MessageBox.Show("Variación aplicada al mes seleccionado.\nRecuerde presionar Guardar para confirmar los cambios.",
-                "Variación aplicada", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            precioPublico.GuardarConfigEspecialidades(dtConfig);
         }
     }
 }
