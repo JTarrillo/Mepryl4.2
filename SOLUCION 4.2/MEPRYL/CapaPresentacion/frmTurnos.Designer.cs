@@ -2077,8 +2077,6 @@ namespace CapaPresentacion
         private System.Windows.Forms.Label labelTipoExamen;
         private System.Windows.Forms.Label labelSubTipoExamen;
         private System.Windows.Forms.Button btnWhatsApp;
-        private System.Windows.Forms.CheckBox cbFactEmpresaLaboral;
-        private System.Windows.Forms.CheckBox cbExamenModificadoLaboral;
         private System.Windows.Forms.PictureBox pictureBox7;
     }
 }
