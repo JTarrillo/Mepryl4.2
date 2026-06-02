@@ -325,7 +325,7 @@ namespace CapaPresentacion
             this.btnCalcularLista.Click += new System.EventHandler(this.btnCalcularLista_Click);
 
             // 
-            // pnlCentro
+            // tabControl
             // 
             this.pnlCentro.Controls.Add(this.dgvPrecios);
             this.pnlCentro.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -432,7 +432,7 @@ namespace CapaPresentacion
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1364, 557);
-            this.Controls.Add(this.pnlCentro);
+            this.Controls.Add(this.tabControl);
             this.Controls.Add(this.pnlMenu);
             this.Controls.Add(this.pnlSuperior);
             this.Controls.Add(this.lblTitulo);

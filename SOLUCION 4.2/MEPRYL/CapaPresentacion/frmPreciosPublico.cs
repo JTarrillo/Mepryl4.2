@@ -314,6 +314,20 @@ namespace CapaPresentacion
             }
 
             lblTotal.Text = "Prestaciones: " + visibles;
+
+            // Filtrar también la pestaña de configuración
+            foreach (DataGridViewRow row in dgvConfig.Rows)
+            {
+                if (string.IsNullOrEmpty(filtro))
+                    row.Visible = true;
+                else
+                {
+                    string desc   = row.Cells["colCfgDescripcion"].Value?.ToString().ToLower() ?? "";
+                    string motivo = row.Cells["colCfgMotivo"].Value?.ToString().ToLower()      ?? "";
+                    string tipo   = row.Cells["colCfgTipo"].Value?.ToString().ToLower()        ?? "";
+                    row.Visible = desc.Contains(filtro) || motivo.Contains(filtro) || tipo.Contains(filtro);
+                }
+            }
         }
 
         private void dgvPrecios_CellParsing(object sender, DataGridViewCellParsingEventArgs e)
