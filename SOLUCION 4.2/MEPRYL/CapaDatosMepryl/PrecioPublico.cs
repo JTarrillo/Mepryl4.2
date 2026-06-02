@@ -157,5 +157,142 @@ namespace CapaDatosMepryl
                             "INSERT INTO CoeficientePrecio (Mes, Anio, Coeficiente) VALUES(" + mes + ", " + anio + ", " + coef + ")";
             SQLConnector.obtenerTablaSegunConsultaString(strSQL);
         }
+
+        /// <summary>
+        /// Devuelve los 12 coeficientes de un año (uno por mes).
+        /// </summary>
+        public DataTable ListarCoeficientesAnio(int anio)
+        {
+            string strSQL = "SELECT Mes, ISNULL(Coeficiente, 1) AS Coeficiente FROM CoeficientePrecio WHERE Anio = " + anio + " ORDER BY Mes";
+            return SQLConnector.obtenerTablaSegunConsultaString(strSQL);
+        }
+
+        /// <summary>
+        /// Guarda los 12 coeficientes de un año en un solo batch.
+        /// </summary>
+        public void GuardarCoeficientesAnio(int anio, decimal[] coeficientes)
+        {
+            try
+            {
+                for (int mes = 1; mes <= 12; mes++)
+                {
+                    string coef = coeficientes[mes - 1].ToString().Replace(",", ".");
+                    string strSQL = "IF EXISTS (SELECT 1 FROM CoeficientePrecio WHERE Mes = " + mes + " AND Anio = " + anio + ") " +
+                                    "UPDATE CoeficientePrecio SET Coeficiente = " + coef + ", FechaModificacion = GETDATE() WHERE Mes = " + mes + " AND Anio = " + anio + " " +
+                                  "ELSE " +
+                                  "INSERT INTO CoeficientePrecio (Mes, Anio, Coeficiente) VALUES(" + mes + ", " + anio + ", " + coef + ");";
+                    
+                    SQLConnector.obtenerTablaSegunConsultaString(strSQL);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al guardar coeficientes: " + ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Carga todos los meses del año en columnas pivoteadas (Promo01..Promo12)
+        /// </summary>
+        public DataTable ListarPreciosPublicoAnio(int anio)
+        {
+            string strSQL =
+                "SELECT e.id AS idEspecialidad, " +
+                "ISNULL(m.nombre, '') AS Motivo, " +
+                "ISNULL(padre.descripcion, '') AS Tipo, " +
+                "e.descripcion AS Descripcion, " +
+                "e.IPCBase AS IPCBase, " +
+                "ISNULL(MAX(CASE WHEN p.Mes = 1  THEN p.CoeficienteIndividual END), 0) AS Coef01, " +
+                "ISNULL(MAX(CASE WHEN p.Mes = 2  THEN p.CoeficienteIndividual END), 0) AS Coef02, " +
+                "ISNULL(MAX(CASE WHEN p.Mes = 3  THEN p.CoeficienteIndividual END), 0) AS Coef03, " +
+                "ISNULL(MAX(CASE WHEN p.Mes = 4  THEN p.CoeficienteIndividual END), 0) AS Coef04, " +
+                "ISNULL(MAX(CASE WHEN p.Mes = 5  THEN p.CoeficienteIndividual END), 0) AS Coef05, " +
+                "ISNULL(MAX(CASE WHEN p.Mes = 6  THEN p.CoeficienteIndividual END), 0) AS Coef06, " +
+                "ISNULL(MAX(CASE WHEN p.Mes = 7  THEN p.CoeficienteIndividual END), 0) AS Coef07, " +
+                "ISNULL(MAX(CASE WHEN p.Mes = 8  THEN p.CoeficienteIndividual END), 0) AS Coef08, " +
+                "ISNULL(MAX(CASE WHEN p.Mes = 9  THEN p.CoeficienteIndividual END), 0) AS Coef09, " +
+                "ISNULL(MAX(CASE WHEN p.Mes = 10 THEN p.CoeficienteIndividual END), 0) AS Coef10, " +
+                "ISNULL(MAX(CASE WHEN p.Mes = 11 THEN p.CoeficienteIndividual END), 0) AS Coef11, " +
+                "ISNULL(MAX(CASE WHEN p.Mes = 12 THEN p.CoeficienteIndividual END), 0) AS Coef12, " +
+                "ISNULL(MAX(CASE WHEN p.Mes = 1  THEN p.PrecioPromo END), 0) AS Promo01, " +
+                "ISNULL(MAX(CASE WHEN p.Mes = 2  THEN p.PrecioPromo END), 0) AS Promo02, " +
+                "ISNULL(MAX(CASE WHEN p.Mes = 3  THEN p.PrecioPromo END), 0) AS Promo03, " +
+                "ISNULL(MAX(CASE WHEN p.Mes = 4  THEN p.PrecioPromo END), 0) AS Promo04, " +
+                "ISNULL(MAX(CASE WHEN p.Mes = 5  THEN p.PrecioPromo END), 0) AS Promo05, " +
+                "ISNULL(MAX(CASE WHEN p.Mes = 6  THEN p.PrecioPromo END), 0) AS Promo06, " +
+                "ISNULL(MAX(CASE WHEN p.Mes = 7  THEN p.PrecioPromo END), 0) AS Promo07, " +
+                "ISNULL(MAX(CASE WHEN p.Mes = 8  THEN p.PrecioPromo END), 0) AS Promo08, " +
+                "ISNULL(MAX(CASE WHEN p.Mes = 9  THEN p.PrecioPromo END), 0) AS Promo09, " +
+                "ISNULL(MAX(CASE WHEN p.Mes = 10 THEN p.PrecioPromo END), 0) AS Promo10, " +
+                "ISNULL(MAX(CASE WHEN p.Mes = 11 THEN p.PrecioPromo END), 0) AS Promo11, " +
+                "ISNULL(MAX(CASE WHEN p.Mes = 12 THEN p.PrecioPromo END), 0) AS Promo12 " +
+                "FROM Especialidad e " +
+                "LEFT JOIN PrecioPublico p ON e.id = p.idEspecialidad AND p.Anio = " + anio + " AND p.Eliminado = 0 " +
+                "LEFT JOIN MotivoDeConsulta m ON e.idMotivoConsulta = m.id " +
+                "LEFT JOIN Especialidad padre ON e.IdPadre = padre.id " +
+                "WHERE e.Padre = 0 AND e.estado = 1 AND e.IdPadre IS NOT NULL " +
+                "AND e.id NOT IN (SELECT id FROM dbo.EspecialidadesEliminadas) " +
+                "GROUP BY e.id, m.nombre, padre.descripcion, e.descripcion, e.IPCBase " +
+                "ORDER BY m.nombre, padre.descripcion, e.descripcion";
+            return SQLConnector.obtenerTablaSegunConsultaString(strSQL);
+        }
+
+        /// <summary>
+        /// Guarda o actualiza PrecioPromo de los 12 meses del año (vista anual).
+        /// No sobreescribe PrecioLista, SeñaPromo, SeñaLista ni ObservacionesExtra.
+        /// También actualiza el IPCBase en la tabla Especialidad.
+        /// </summary>
+        public void GuardarPreciosPublicoAnio(int anio, DataTable dtDatos)
+        {
+            if (dtDatos == null || dtDatos.Rows.Count == 0) return;
+
+            // Primero actualizar IPCBase en la tabla Especialidad
+            StringBuilder sbIPC = new StringBuilder();
+            for (int i = 0; i < dtDatos.Rows.Count; i++)
+            {
+                string idEsp = dtDatos.Rows[i]["idEspecialidad"].ToString();
+                string ipcBase = dtDatos.Rows[i]["IPCBase"].ToString().Replace(",", ".");
+                
+                sbIPC.AppendLine("UPDATE Especialidad SET IPCBase = " + ipcBase + " WHERE id = '" + idEsp + "'; ");
+            }
+            
+            if (sbIPC.Length > 0)
+                SQLConnector.obtenerTablaSegunConsultaString(sbIPC.ToString());
+
+            // Luego guardar los precios de cada mes
+            for (int mes = 1; mes <= 12; mes++)
+            {
+                string colPromo = "Promo" + mes.ToString("00");
+                string colCoef  = "Coef"  + mes.ToString("00");
+                StringBuilder sb = new StringBuilder();
+
+                for (int i = 0; i < dtDatos.Rows.Count; i++)
+                {
+                    string idEsp   = dtDatos.Rows[i]["idEspecialidad"].ToString();
+                    string desc    = dtDatos.Rows[i]["Descripcion"].ToString().Replace("'", "''");
+                    string promo   = dtDatos.Rows[i][colPromo].ToString().Replace(",", ".");
+                    string coefInd = dtDatos.Rows[i][colCoef].ToString().Replace(",", ".");
+
+                    sb.Append("IF EXISTS (SELECT 1 FROM PrecioPublico WHERE idEspecialidad = '" + idEsp + "' AND Mes = " + mes + " AND Anio = " + anio + " AND Eliminado = 0) ");
+                    sb.Append("UPDATE PrecioPublico SET PrecioPromo = " + promo + ", CoeficienteIndividual = " + coefInd + ", FechaModificacion = GETDATE() ");
+                    sb.AppendLine("WHERE idEspecialidad = '" + idEsp + "' AND Mes = " + mes + " AND Anio = " + anio + " AND Eliminado = 0 ");
+                    sb.Append("ELSE IF NOT EXISTS (SELECT 1 FROM PrecioPublico WHERE idEspecialidad = '" + idEsp + "' AND Mes = " + mes + " AND Anio = " + anio + ") ");
+                    sb.AppendLine("INSERT INTO PrecioPublico (idEspecialidad, Descripcion, Mes, Anio, PrecioLista, PrecioPromo, Se\u00f1aPromo, Se\u00f1aLista, LlevaPlanilla, ObservacionesExtra, CoeficienteIndividual) VALUES('" + idEsp + "', '" + desc + "', " + mes + ", " + anio + ", 0, " + promo + ", 0, 0, 0, '', " + coefInd + "); ");
+                }
+
+                if (sb.Length > 0)
+                    SQLConnector.obtenerTablaSegunConsultaString(sb.ToString());
+            }
+        }
+
+        /// <summary>
+        /// Verifica si existen precios para cualquier mes del año dado.
+        /// </summary>
+        public bool ExistenPreciosAnio(int anio)
+        {
+            string strSQL = "SELECT COUNT(*) AS Cantidad FROM PrecioPublico WHERE Anio = " + anio + " AND Eliminado = 0";
+            DataTable dt = SQLConnector.obtenerTablaSegunConsultaString(strSQL);
+            return dt != null && dt.Rows.Count > 0 && int.Parse(dt.Rows[0][0].ToString()) > 0;
+        }
     }
 }
