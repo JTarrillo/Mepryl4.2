@@ -284,13 +284,13 @@ namespace CapaDatosMepryl
             for (int mes = 1; mes <= 12; mes++)
             {
                 string colPromo = "Promo" + mes.ToString("00");
-                string colCoef = "Coef" + mes.ToString("00");
+                string colCoef  = "Coef"  + mes.ToString("00");
                 for (int i = 0; i < dtDatos.Rows.Count; i++)
                 {
                     string idEsp = dtDatos.Rows[i]["idEspecialidad"].ToString();
-                    string desc = dtDatos.Rows[i]["Descripcion"].ToString().Replace("'", "''");
+                    string desc  = dtDatos.Rows[i]["Descripcion"].ToString().Replace("'", "''");
                     string promo = dtDatos.Rows[i][colPromo].ToString().Replace(",", ".");
-                    string coef = dtDatos.Rows[i][colCoef].ToString().Replace(",", ".");
+                    string coef  = dtDatos.Rows[i][colCoef].ToString().Replace(",", ".");
                     if (!first) { sbUpd.Append(","); sbIns.Append(","); }
                     first = false;
                     sbUpd.Append("('" + idEsp + "'," + mes + "," + promo + "," + coef + ")");
@@ -359,10 +359,10 @@ namespace CapaDatosMepryl
             bool anyInsert = false;
             for (int i = 0; i < dtDatos.Rows.Count; i++)
             {
-                string id = dtDatos.Rows[i]["idEspecialidad"].ToString();
-                string s = dtDatos.Rows[i]["Se\u00f1a"].ToString().Replace(",", ".");
+                string id       = dtDatos.Rows[i]["idEspecialidad"].ToString();
+                string s        = dtDatos.Rows[i]["Se\u00f1a"].ToString().Replace(",", ".");
                 string planilla = (Convert.ToBoolean(dtDatos.Rows[i]["LlevaPlanilla"]) ? "1" : "0");
-                string obs = dtDatos.Rows[i]["Observaciones"].ToString().Replace("'", "''");
+                string obs      = dtDatos.Rows[i]["Observaciones"].ToString().Replace("'", "''");
 
                 if (!first) { sbUpd.Append(","); sbIns.Append(","); }
                 first = false;

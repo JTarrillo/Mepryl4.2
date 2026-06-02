@@ -142,6 +142,9 @@ namespace CapaPresentacion
             botEditarPacienteLaboral.Visible = false;
             botEditarPacientePreventiva.Visible = false;
 
+            btnTogglePrecioPreventiva.Visible = false;
+            btnTogglePrecioLaboral.Visible = false;
+
             btnMoverTurno.Visible = true;
 
             dgv.Focus();
@@ -673,6 +676,40 @@ namespace CapaPresentacion
             panelPacientePreventiva.Visible = true;
             panelLaboral.Visible = false;
             Entidades.TurnoPreventiva pacientePreventiva = turno.cargarTurnoPacientePreventiva(new Guid(dgv.Rows[dgv.CurrentCell.RowIndex].Cells[0].Value.ToString()));
+
+            // Si PrecioLista es 0, buscarlo en PrecioPublico usando el IdSubtipo de la grilla
+            // (IdSubtipo apunta a la especialidad HIJA como FUTBOL METRO, que sí tiene precio;
+            //  TipoExamenDePaciente.idEspecialidad guarda el PADRE como FUTBOL, sin precio en PrecioPublico)
+            if (pacientePreventiva.TipoExamen.PrecioLista == 0)
+            {
+                string idSubtipoPrev = dgv.Rows[dgv.CurrentCell.RowIndex].Cells["IdSubtipo"].Value?.ToString() ?? "";
+                if (!string.IsNullOrEmpty(idSubtipoPrev) && idSubtipoPrev != Guid.Empty.ToString())
+                {
+                    DataTable ppPrev = turno.ObtenerPrecioPublico(new Guid(idSubtipoPrev), obtenerFecha());
+                    if (ppPrev.Rows.Count > 0 && Convert.ToDouble(ppPrev.Rows[0]["PrecioLista"].ToString()) > 0)
+                        pacientePreventiva.TipoExamen.PrecioLista = Convert.ToDouble(ppPrev.Rows[0]["PrecioLista"].ToString());
+                }
+            }
+
+            // Cargar campos de seña y planilla desde PrecioPublico (solo si no hay valor personalizado)
+            {
+                string idSubtipoPrev2 = dgv.Rows[dgv.CurrentCell.RowIndex].Cells["IdSubtipo"].Value?.ToString() ?? "";
+                if (!string.IsNullOrEmpty(idSubtipoPrev2) && idSubtipoPrev2 != Guid.Empty.ToString())
+                {
+                    DataTable ppPrev2 = turno.ObtenerPrecioPublico(new Guid(idSubtipoPrev2), obtenerFecha());
+                    if (ppPrev2.Rows.Count > 0)
+                    {
+                        // Solo cargar Seña desde PrecioPublico si no hay un valor personalizado (> 0)
+                        if (pacientePreventiva.TipoExamen.Seña <= 0)
+                        {
+                            pacientePreventiva.TipoExamen.Seña = Convert.ToDouble(ppPrev2.Rows[0]["Seña"]);
+                        }
+                        pacientePreventiva.TipoExamen.LlevaPlanilla = Convert.ToBoolean(ppPrev2.Rows[0]["LlevaPlanilla"]);
+                        pacientePreventiva.TipoExamen.ObservacionesExtra = ppPrev2.Rows[0]["ObservacionesExtra"].ToString();
+                    }
+                }
+            }
+
             llenarPanelPacientePreventiva(pacientePreventiva);
         }
 
@@ -698,14 +735,18 @@ namespace CapaPresentacion
                 ((DataGridViewImageColumn)dgvLigaYClub.Columns[1]).ImageLayout = DataGridViewImageCellLayout.Zoom;
                 ((DataGridViewImageColumn)dgvLigaYClub.Columns[1]).DefaultCellStyle.BackColor = System.Drawing.Color.Transparent;
             }
-            cbFactClubPreventiva.Checked = turnoPrev.FacturaClub;
             tbObservPreventiva.Text = turnoPrev.Observaciones;
             tipoExamenActual = turnoPrev.TipoExamen;
+            // Auto-generar observaciones si tiene seña/planilla y la observación está vacía
+            if (string.IsNullOrWhiteSpace(tbObservPreventiva.Text) &&
+                (tipoExamenActual.LlevaPlanilla || tipoExamenActual.Seña > 0))
+                tbObservPreventiva.Text = generarObservaciones(tipoExamenActual);
             txtEmail.Text = turnoPrev.Mail;
             txtEdad.Text = (DateTime.Today.AddTicks(-turnoPrev.Nacimiento.Ticks).Year - 1).ToString();
             tbIdTipoExamenPreventiva.Text = tipoExamenActual.IdTipoExamenPaciente.ToString();
-            tbImportePreventiva.Text = tipoExamenActual.PrecioBase.ToString();
-            cbExamenModifPreventiva.Checked = tipoExamenActual.Modificado;
+            tbImportePreventiva.Text = tipoExamenActual.PrecioBase.ToString("N0");
+            tbImporteListaPreventiva.Text = tipoExamenActual.PrecioLista.ToString("N0");
+            tbSeñaPreventiva.Text = tipoExamenActual.Seña.ToString("N0");
             tbExamenPreventiva.Text = tipoExamenActual.Descripcion;
             if (tipoExamenActual.Modificado)
             {
@@ -732,6 +773,38 @@ namespace CapaPresentacion
             test = dgv.Rows[dgv.CurrentCell.RowIndex].Cells[0].Value.ToString();
             test = dgv.Rows[dgv.CurrentCell.RowIndex].Cells[0].Value.ToString();
             Entidades.TurnoLaboral pacienteLaboral = turno.cargarTurnoPacienteLaboral(new Guid(dgv.Rows[dgv.CurrentCell.RowIndex].Cells[0].Value.ToString()));
+
+            // Si PrecioLista es 0, buscarlo en PrecioPublico usando el IdSubtipo de la grilla
+            if (pacienteLaboral.TipoExamen.PrecioLista == 0)
+            {
+                string idSubtipoLab = dgv.Rows[dgv.CurrentCell.RowIndex].Cells["IdSubtipo"].Value?.ToString() ?? "";
+                if (!string.IsNullOrEmpty(idSubtipoLab) && idSubtipoLab != Guid.Empty.ToString())
+                {
+                    DataTable ppLab = turno.ObtenerPrecioPublico(new Guid(idSubtipoLab), obtenerFecha());
+                    if (ppLab.Rows.Count > 0 && Convert.ToDouble(ppLab.Rows[0]["PrecioLista"].ToString()) > 0)
+                        pacienteLaboral.TipoExamen.PrecioLista = Convert.ToDouble(ppLab.Rows[0]["PrecioLista"].ToString());
+                }
+            }
+
+            // Cargar campos de seña y planilla desde PrecioPublico (solo si no hay valor personalizado)
+            {
+                string idSubtipoLab2 = dgv.Rows[dgv.CurrentCell.RowIndex].Cells["IdSubtipo"].Value?.ToString() ?? "";
+                if (!string.IsNullOrEmpty(idSubtipoLab2) && idSubtipoLab2 != Guid.Empty.ToString())
+                {
+                    DataTable ppLab2 = turno.ObtenerPrecioPublico(new Guid(idSubtipoLab2), obtenerFecha());
+                    if (ppLab2.Rows.Count > 0)
+                    {
+                        // Solo cargar Seña desde PrecioPublico si no hay un valor personalizado (> 0)
+                        if (pacienteLaboral.TipoExamen.Seña <= 0)
+                        {
+                            pacienteLaboral.TipoExamen.Seña = Convert.ToDouble(ppLab2.Rows[0]["Seña"]);
+                        }
+                        pacienteLaboral.TipoExamen.LlevaPlanilla = Convert.ToBoolean(ppLab2.Rows[0]["LlevaPlanilla"]);
+                        pacienteLaboral.TipoExamen.ObservacionesExtra = ppLab2.Rows[0]["ObservacionesExtra"].ToString();
+                    }
+                }
+            }
+
             llenarPanelPacienteLaboral(pacienteLaboral);
         }
 
@@ -760,13 +833,18 @@ namespace CapaPresentacion
             tbTareaLaboral.Text = turnoLab.Tarea;
             txtEmailLab.Text = turnoLab.Email;
             tbTelefonoLaboral.Text = turnoLab.Telefono;
-            cbFactEmpresaLaboral.Checked = turnoLab.FacturaEmpresa;
             tbObservacionesLaboral.Text = turnoLab.Observaciones;
             tipoExamenActual = turnoLab.TipoExamen;
+            // Auto-generar observaciones si tiene seña/planilla y la observación está vacía
+            if (string.IsNullOrWhiteSpace(tbObservacionesLaboral.Text) &&
+                (tipoExamenActual.LlevaPlanilla || tipoExamenActual.Seña > 0))
+                tbObservacionesLaboral.Text = generarObservaciones(tipoExamenActual);
             tbIdTipoExamenLaboral.Text = tipoExamenActual.IdTipoExamenPaciente.ToString();
-            tbImporteLaboral.Text = tipoExamenActual.PrecioBase.ToString();
-            cbExamenModificadoLaboral.Checked = tipoExamenActual.Modificado;
+            tbImporteLaboral.Text = tipoExamenActual.PrecioBase.ToString("N0");
+            tbImporteListaLaboral.Text = tipoExamenActual.PrecioLista.ToString("N0");
+            tbSeñaLaboral.Text = tipoExamenActual.Seña.ToString("N0");
             tbExamenLaboral.Text = dgv.Rows[dgv.CurrentCell.RowIndex].Cells["SubTipoExamen"].Value?.ToString();
+            if (tipoExamenActual.Modificado)
             {
                 tbExamenLaboral.Text = tbExamenLaboral.Text + " MODIF.";
             }
@@ -872,6 +950,27 @@ namespace CapaPresentacion
             panelPacientePreventiva.Visible = true;
             panelLaboral.Visible = false;
             Entidades.TurnoPreventiva pacientePreventiva = turno.nuevoTurnoPacientePreventiva(idPaciente, dgv.Rows[dgv.CurrentCell.RowIndex].Cells[0].Value.ToString());
+
+            // Buscar y actualizar precio desde PrecioPublico por periodo
+            DateTime fechaTurno = obtenerFecha();
+            string idSubtipoAsigPrev = dgv.Rows[dgv.CurrentCell.RowIndex].Cells["IdSubtipo"].Value?.ToString() ?? "";
+            if (!string.IsNullOrEmpty(idSubtipoAsigPrev))
+            {
+                DataTable ppAsigPrev = turno.ObtenerPrecioPublico(new Guid(idSubtipoAsigPrev), fechaTurno);
+                if (ppAsigPrev.Rows.Count > 0)
+                {
+                    pacientePreventiva.TipoExamen.PrecioBase = Convert.ToDouble(ppAsigPrev.Rows[0]["PrecioPromo"].ToString());
+                    pacientePreventiva.TipoExamen.PrecioLista = Convert.ToDouble(ppAsigPrev.Rows[0]["PrecioLista"].ToString());
+                    // Guardar precioLista actualizado en BD
+                    if (pacientePreventiva.TipoExamen.IdTipoExamenPaciente != Guid.Empty)
+                    {
+                        turno.ActualizarPrecioListaTipoExamenPaciente(
+                            pacientePreventiva.TipoExamen.IdTipoExamenPaciente,
+                            pacientePreventiva.TipoExamen.PrecioLista);
+                    }
+                }
+            }
+
             // GRV - Modificado verifica si el turno esta asignado
             //llenarPanelPacientePreventiva(pacientePreventiva);
             //modoEdicion();
@@ -911,6 +1010,27 @@ namespace CapaPresentacion
             test = dgv.Rows[dgv.CurrentCell.RowIndex].Cells[0].Value.ToString();
             test = dgv.Rows[dgv.CurrentCell.RowIndex].Cells[0].Value.ToString();
             Entidades.TurnoLaboral pacienteLaboral = turno.nuevoTurnoPacienteLaboral(idPaciente, dgv.Rows[dgv.CurrentCell.RowIndex].Cells[0].Value.ToString(), idEmpresa);
+
+            // Buscar y actualizar precio desde PrecioPublico por periodo
+            DateTime fechaTurno = obtenerFecha();
+            string idSubtipoAsigLab = dgv.Rows[dgv.CurrentCell.RowIndex].Cells["IdSubtipo"].Value?.ToString() ?? "";
+            if (!string.IsNullOrEmpty(idSubtipoAsigLab))
+            {
+                DataTable ppAsigLab = turno.ObtenerPrecioPublico(new Guid(idSubtipoAsigLab), fechaTurno);
+                if (ppAsigLab.Rows.Count > 0)
+                {
+                    pacienteLaboral.TipoExamen.PrecioBase = Convert.ToDouble(ppAsigLab.Rows[0]["PrecioPromo"].ToString());
+                    pacienteLaboral.TipoExamen.PrecioLista = Convert.ToDouble(ppAsigLab.Rows[0]["PrecioLista"].ToString());
+                    // Guardar precioLista actualizado en BD
+                    if (pacienteLaboral.TipoExamen.IdTipoExamenPaciente != Guid.Empty)
+                    {
+                        turno.ActualizarPrecioListaTipoExamenPaciente(
+                            pacienteLaboral.TipoExamen.IdTipoExamenPaciente,
+                            pacienteLaboral.TipoExamen.PrecioLista);
+                    }
+                }
+            }
+
             //GRV - Modificado Verifica si el turno esta asignado
             //llenarPanelPacienteLaboral(pacienteLaboral);
             //modoEdicion();
@@ -975,13 +1095,14 @@ namespace CapaPresentacion
         {
             tipoExamenActual = tipoEx;
             tbIdTipoExamenLaboral.Text = tipoEx.IdTipoExamenPaciente.ToString();
-            tbImporteLaboral.Text = tipoEx.PrecioBase.ToString();
-            cbExamenModificadoLaboral.Checked = tipoEx.Modificado;
+            tbImporteLaboral.Text = tipoEx.PrecioBase.ToString("N0");
+            tbImporteListaLaboral.Text = tipoEx.PrecioLista.ToString("N0");
             tbExamenLaboral.Text = tipoEx.Descripcion;
             if (tipoEx.Modificado)
             {
                 tbExamenLaboral.Text = tbExamenLaboral.Text + " MODIF.";
             }
+            resaltarPrecioActivoLaboral(tipoEx.UsarPrecioLista);
         }
 
         private void botSelecSubtipoExamen_Click(object sender, EventArgs e)
@@ -1066,6 +1187,10 @@ namespace CapaPresentacion
 
             MuestraBotonesEditar();
 
+            // Mostrar toggle de precio en el panel activo
+            btnTogglePrecioPreventiva.Visible = panelPacientePreventiva.Visible;
+            btnTogglePrecioLaboral.Visible = panelLaboral.Visible;
+
             pintarControlesPanelHabilitar(); //GRV - pinta los controles
         }
 
@@ -1105,6 +1230,8 @@ namespace CapaPresentacion
             CargarDatosMatrizTemp();
             // GRV
 
+            sincronizarImportesDesdePantalla();
+
             // GRV - Modificado verifica si el turno no esta ocupado
             //guardar();
 
@@ -1114,6 +1241,27 @@ namespace CapaPresentacion
             //cargarGrillaTurnosSinFiltro();
             // GRV
             MostrarUltimoRegistro();
+        }
+
+        private void sincronizarImportesDesdePantalla()
+        {
+            if (tipoExamenActual == null)
+                return;
+
+            if (panelPacientePreventiva.Visible)
+            {
+                tipoExamenActual.PrecioBase = obtenerDoubleDesdeTextBox(tbImportePreventiva.Text, tipoExamenActual.PrecioBase);
+                tipoExamenActual.PrecioLista = obtenerDoubleDesdeTextBox(tbImporteListaPreventiva.Text, tipoExamenActual.PrecioLista);
+                tipoExamenActual.Seña = obtenerDoubleDesdeTextBox(tbSeñaPreventiva.Text, tipoExamenActual.Seña);
+                return;
+            }
+
+            if (panelLaboral.Visible)
+            {
+                tipoExamenActual.PrecioBase = obtenerDoubleDesdeTextBox(tbImporteLaboral.Text, tipoExamenActual.PrecioBase);
+                tipoExamenActual.PrecioLista = obtenerDoubleDesdeTextBox(tbImporteListaLaboral.Text, tipoExamenActual.PrecioLista);
+                tipoExamenActual.Seña = obtenerDoubleDesdeTextBox(tbSeñaLaboral.Text, tipoExamenActual.Seña);
+            }
         }
 
         private void guardar()
@@ -1203,9 +1351,13 @@ namespace CapaPresentacion
             Entidades.TurnoPreventiva retorno = new Entidades.TurnoPreventiva();
             if (tbIdTurnoPreventiva.Text != string.Empty) { retorno.Id = new Guid(tbIdTurnoPreventiva.Text); }
             retorno.LigaClub = (DataTable)dgvLigaYClub.DataSource;
-            retorno.FacturaClub = cbFactClubPreventiva.Checked;
             retorno.Observaciones = tbObservPreventiva.Text;
             retorno.IdPaciente = new Guid(tbIdPacientePreventiva.Text);
+            if (tipoExamenActual != null)
+            {
+                double precioListaUI = obtenerDoubleDesdeTextBox(tbImporteListaPreventiva.Text, tipoExamenActual.PrecioLista);
+                tipoExamenActual.PrecioLista = precioListaUI;
+            }
             retorno.TipoExamen = tipoExamenActual;
             retorno.Consulta = "PREVENTIVA";
             return retorno;
@@ -1218,11 +1370,138 @@ namespace CapaPresentacion
             retorno.IdEmpresa = new Guid(tbIdEmpresaLaboral.Text);
             retorno.Tarea = tbTareaLaboral.Text;
             retorno.Observaciones = tbObservacionesLaboral.Text;
-            retorno.FacturaEmpresa = cbFactEmpresaLaboral.Checked;
             retorno.IdPaciente = new Guid(tbIdPacienteLaboral.Text);
+            if (tipoExamenActual != null)
+            {
+                double precioListaUI = obtenerDoubleDesdeTextBox(tbImporteListaLaboral.Text, tipoExamenActual.PrecioLista);
+                tipoExamenActual.PrecioLista = precioListaUI;
+            }
             retorno.TipoExamen = tipoExamenActual;
             retorno.Consulta = "LABORAL";
             return retorno;
+        }
+
+        private void resaltarPrecioActivoPreventiva(bool usarLista)
+        {
+            if (usarLista)
+            {
+                tbImporteListaPreventiva.BackColor = Color.PaleGreen;
+                tbImporteListaPreventiva.Font = new Font(tbImporteListaPreventiva.Font, FontStyle.Bold);
+                tbImportePreventiva.BackColor = SystemColors.Window;
+                tbImportePreventiva.Font = new Font(tbImportePreventiva.Font, FontStyle.Regular);
+            }
+            else
+            {
+                tbImportePreventiva.BackColor = Color.PaleGreen;
+                tbImportePreventiva.Font = new Font(tbImportePreventiva.Font, FontStyle.Bold);
+                tbImporteListaPreventiva.BackColor = SystemColors.Window;
+                tbImporteListaPreventiva.Font = new Font(tbImporteListaPreventiva.Font, FontStyle.Regular);
+            }
+            btnTogglePrecioPreventiva.BackColor = Color.PaleGreen;
+        }
+
+        private void resaltarPrecioActivoLaboral(bool usarLista)
+        {
+            if (usarLista)
+            {
+                tbImporteListaLaboral.BackColor = Color.PaleGreen;
+                tbImporteListaLaboral.Font = new Font(tbImporteListaLaboral.Font, FontStyle.Bold);
+                tbImporteLaboral.BackColor = SystemColors.Window;
+                tbImporteLaboral.Font = new Font(tbImporteLaboral.Font, FontStyle.Regular);
+            }
+            else
+            {
+                tbImporteLaboral.BackColor = Color.PaleGreen;
+                tbImporteLaboral.Font = new Font(tbImporteLaboral.Font, FontStyle.Bold);
+                tbImporteListaLaboral.BackColor = SystemColors.Window;
+                tbImporteListaLaboral.Font = new Font(tbImporteListaLaboral.Font, FontStyle.Regular);
+            }
+            btnTogglePrecioLaboral.BackColor = Color.PaleGreen;
+        }
+
+        private void btnTogglePrecioPreventiva_Click(object sender, EventArgs e)
+        {
+            if (tipoExamenActual == null) return;
+            tipoExamenActual.UsarPrecioLista = !tipoExamenActual.UsarPrecioLista;
+            resaltarPrecioActivoPreventiva(tipoExamenActual.UsarPrecioLista);
+            if (tipoExamenActual.SeñaPromo > 0 || tipoExamenActual.SeñaLista > 0 || tipoExamenActual.LlevaPlanilla || tipoExamenActual.Seña > 0)
+                tbObservPreventiva.Text = generarObservaciones(tipoExamenActual);
+        }
+
+        private void btnTogglePrecioLaboral_Click(object sender, EventArgs e)
+        {
+            if (tipoExamenActual == null) return;
+            tipoExamenActual.UsarPrecioLista = !tipoExamenActual.UsarPrecioLista;
+            resaltarPrecioActivoLaboral(tipoExamenActual.UsarPrecioLista);
+            if (tipoExamenActual.SeñaPromo > 0 || tipoExamenActual.SeñaLista > 0 || tipoExamenActual.LlevaPlanilla || tipoExamenActual.Seña > 0)
+                tbObservacionesLaboral.Text = generarObservaciones(tipoExamenActual);
+        }
+
+        private void tbSeñaPreventiva_TextChanged(object sender, EventArgs e)
+        {
+            if (tipoExamenActual == null) return;
+            tipoExamenActual.Seña = obtenerDoubleDesdeTextBox(tbSeñaPreventiva.Text, tipoExamenActual.Seña);
+            tbObservPreventiva.Text = generarObservaciones(tipoExamenActual);
+        }
+
+        private void tbSeñaLaboral_TextChanged(object sender, EventArgs e)
+        {
+            if (tipoExamenActual == null) return;
+            tipoExamenActual.Seña = obtenerDoubleDesdeTextBox(tbSeñaLaboral.Text, tipoExamenActual.Seña);
+            tbObservacionesLaboral.Text = generarObservaciones(tipoExamenActual);
+        }
+
+        private string generarObservaciones(Entidades.TipoExamen te)
+        {
+            // Formato: [ObsExtra | ] [PLANILLA | ] $ {Promo} - $ {Seña} (SEÑA) | LISTA: $ {Lista} - SEÑA = $ {Lista - Seña}
+            var sb = new System.Text.StringBuilder();
+
+            // Prefijo extra (ej: "EXPRESS")
+            if (!string.IsNullOrWhiteSpace(te.ObservacionesExtra))
+                sb.Append(te.ObservacionesExtra.Trim() + " | ");
+
+            // Indicador de planilla
+            if (te.LlevaPlanilla)
+                sb.Append("PLANILLA | ");
+
+            decimal promo = (decimal)te.PrecioBase;
+            decimal lista = (decimal)te.PrecioLista;
+            decimal seña = (decimal)te.Seña;
+
+            // Precio promo con seña
+            if (seña > 0)
+                sb.Append("$ " + promo.ToString("N0") + " - $ " + seña.ToString("N0") + " (SEÑA)");
+            else
+                sb.Append("$ " + promo.ToString("N0"));
+
+            // Precio lista con seña
+            if (lista > 0)
+            {
+                sb.Append(" | LISTA: $ " + lista.ToString("N0"));
+                if (seña > 0)
+                    sb.Append(" - SEÑA = $ " + (lista - seña).ToString("N0"));
+            }
+
+            return sb.ToString();
+        }
+
+        private double obtenerDoubleDesdeTextBox(string texto, double valorDefault)
+        {
+            if (string.IsNullOrWhiteSpace(texto))
+                return valorDefault;
+
+            double valor;
+            // Intento directo: maneja "103300" y "103.300" (miles en es-AR) y "103,300" (miles en en-US)
+            if (double.TryParse(texto, System.Globalization.NumberStyles.Any,
+                                 System.Globalization.CultureInfo.CurrentCulture, out valor))
+                return valor;
+
+            // Fallback: quitar separadores de miles (. y ,) y parsear como entero
+            string sinMiles = texto.Replace(".", "").Replace(",", "").Trim();
+            if (double.TryParse(sinMiles, out valor))
+                return valor;
+
+            return valorDefault;
         }
 
         private void botEditarExamenPreventiva_Click(object sender, EventArgs e)
@@ -1243,13 +1522,15 @@ namespace CapaPresentacion
         {
             tipoExamenActual = tipoEx;
             tbIdTipoExamenPreventiva.Text = tipoEx.IdTipoExamenPaciente.ToString();
-            tbImportePreventiva.Text = tipoEx.PrecioBase.ToString();
-            cbExamenModifPreventiva.Checked = tipoEx.Modificado;
+            tbImportePreventiva.Text = tipoEx.PrecioBase.ToString("N0");
+            tbImporteListaPreventiva.Text = tipoEx.PrecioLista.ToString("N0");
+            tbSeñaPreventiva.Text = tipoEx.Seña.ToString("N0");
             tbExamenPreventiva.Text = tipoEx.Descripcion;
             if (tipoEx.Modificado)
             {
                 tbExamenPreventiva.Text = tbExamenPreventiva.Text + " MODIF.";
             }
+            resaltarPrecioActivoPreventiva(tipoEx.UsarPrecioLista);
         }
 
         private void botLiberar_Click(object sender, EventArgs e)
@@ -1944,44 +2225,6 @@ namespace CapaPresentacion
             }
         }
 
-        private void cbFactClubPreventiva_CheckStateChanged(object sender, EventArgs e)
-        {
-            if (tipoExamenActual != null)
-            {
-                if (cbFactClubPreventiva.Checked)
-                {
-                    tbObservPreventiva.Text = "SE FACT. AL CLUB";
-                    tipoExamenActual.PrecioBase = 0;
-                    tbImportePreventiva.Text = tipoExamenActual.PrecioBase.ToString();
-                }
-                else
-                {
-                    tbObservPreventiva.Text = string.Empty;
-                    tipoExamenActual.PrecioBase = tipoEx.cargarEstudiosPorTipoExamen(tipoExamenActual.Id.ToString()).PrecioBase;
-                    tbImportePreventiva.Text = tipoExamenActual.PrecioBase.ToString();
-                }
-            }
-        }
-
-        private void cbFactEmpresaLaboral_CheckStateChanged(object sender, EventArgs e)
-        {
-            if (tipoExamenActual != null)
-            {
-                if (cbFactEmpresaLaboral.Checked)
-                {
-                    tbObservacionesLaboral.Text = "SE FACT. A LA EMPRESA";
-                    tipoExamenActual.PrecioBase = 0;
-                    tbImporteLaboral.Text = tipoExamenActual.PrecioBase.ToString();
-                }
-                else
-                {
-                    tbObservacionesLaboral.Text = string.Empty;
-                    tipoExamenActual.PrecioBase = tipoEx.cargarEstudiosPorTipoExamen(tipoExamenActual.Id.ToString()).PrecioBase;
-                    tbImporteLaboral.Text = tipoExamenActual.PrecioBase.ToString();
-                }
-            }
-        }
-
         // GRV - Ramírez Llamar a propiedaes del formulario turnos
         public void ProcesoConsultorio(string idPaciente, string idEmpresa, DateTime fechaTurno)
         {
@@ -2519,9 +2762,12 @@ namespace CapaPresentacion
             dgvLigaYClub.BackColor = Color.WhiteSmoke;
             tbExamenPreventiva.BackColor = Color.WhiteSmoke;
             tbImportePreventiva.BackColor = Color.WhiteSmoke;
+            tbImporteListaPreventiva.BackColor = Color.WhiteSmoke;
+            tbImporteListaPreventiva.ReadOnly = true;
+            tbSeñaPreventiva.BackColor = Color.WhiteSmoke;
+            tbSeñaPreventiva.ReadOnly = true;
             tbObservPreventiva.BackColor = Color.WhiteSmoke;
             tbObservPreventiva.ReadOnly = true;
-            cbFactClubPreventiva.Enabled = false;
 
             tbDniLaboral.BackColor = Color.WhiteSmoke;
             txtFNacLab.BackColor = Color.WhiteSmoke;
@@ -2533,9 +2779,12 @@ namespace CapaPresentacion
             tbTelefonoLaboral.BackColor = Color.WhiteSmoke;
             txtEmailLab.BackColor = Color.WhiteSmoke;
             tbImporteLaboral.BackColor = Color.WhiteSmoke;
+            tbImporteListaLaboral.BackColor = Color.WhiteSmoke;
+            tbImporteListaLaboral.ReadOnly = true;
+            tbSeñaLaboral.BackColor = Color.WhiteSmoke;
+            tbSeñaLaboral.ReadOnly = true;
             tbObservacionesLaboral.BackColor = Color.WhiteSmoke;
             tbObservacionesLaboral.ReadOnly = true;
-            cbFactEmpresaLaboral.Enabled = false;
         }
 
         private void pintarControlesPanelHabilitar()
@@ -2549,9 +2798,12 @@ namespace CapaPresentacion
             dgvLigaYClub.BackColor = Color.White;
             tbExamenPreventiva.BackColor = Color.White;
             tbImportePreventiva.BackColor = Color.White;
+            tbImporteListaPreventiva.BackColor = Color.White;
+            tbImporteListaPreventiva.ReadOnly = false;
+            tbSeñaPreventiva.BackColor = Color.White;
+            tbSeñaPreventiva.ReadOnly = false;
             tbObservPreventiva.BackColor = Color.White;
             tbObservPreventiva.ReadOnly = false;
-            cbFactClubPreventiva.Enabled = true;
 
             tbDniLaboral.BackColor = Color.White;
             txtFNacLab.BackColor = Color.White;
@@ -2563,9 +2815,12 @@ namespace CapaPresentacion
             tbTelefonoLaboral.BackColor = Color.White;
             txtEmailLab.BackColor = Color.White;
             tbImporteLaboral.BackColor = Color.White;
+            tbImporteListaLaboral.BackColor = Color.White;
+            tbImporteListaLaboral.ReadOnly = false;
+            tbSeñaLaboral.BackColor = Color.White;
+            tbSeñaLaboral.ReadOnly = false;
             tbObservacionesLaboral.BackColor = Color.White;
             tbObservacionesLaboral.ReadOnly = false;
-            cbFactEmpresaLaboral.Enabled = true;
         }
 
         private void btnCancelarMover_Click(object sender, EventArgs e)

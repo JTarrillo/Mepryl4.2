@@ -207,6 +207,15 @@ namespace CapaNegocioMepryl
         {
             return turno.buscarTurnosPorNombre(nombre);
         }
+        public DataTable ObtenerPrecioPublico(Guid idEspecialidad, DateTime fecha)
+        {
+            return turno.ObtenerPrecioPublico(idEspecialidad, fecha);
+        }
+
+        public void ActualizarPrecioListaTipoExamenPaciente(Guid idTipoExamenPaciente, double precioLista)
+        {
+            turno.ActualizarPrecioListaTipoExamenPaciente(idTipoExamenPaciente, precioLista);
+        }
     }
 }
 

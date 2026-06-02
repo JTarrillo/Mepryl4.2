@@ -87,6 +87,9 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.tbImporte = new System.Windows.Forms.TextBox();
+            this.lblImporteLista = new System.Windows.Forms.Label();
+            this.tbImporteLista = new System.Windows.Forms.TextBox();
+            this.btnUsarPrecio = new System.Windows.Forms.Button();
             this.tbId = new System.Windows.Forms.TextBox();
             this.botonLaboratorio.SuspendLayout();
             this.tabControl.SuspendLayout();
@@ -844,12 +847,42 @@
             this.tbImporte.TabIndex = 134;
             this.tbImporte.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
+            // lblImporteLista
+            // 
+            this.lblImporteLista.AutoSize = true;
+            this.lblImporteLista.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblImporteLista.Location = new System.Drawing.Point(490, 39);
+            this.lblImporteLista.Name = "lblImporteLista";
+            this.lblImporteLista.Size = new System.Drawing.Size(62, 16);
+            this.lblImporteLista.TabIndex = 137;
+            this.lblImporteLista.Text = "Imp. Lista";
+            // 
+            // tbImporteLista
+            // 
+            this.tbImporteLista.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tbImporteLista.Location = new System.Drawing.Point(490, 74);
+            this.tbImporteLista.Name = "tbImporteLista";
+            this.tbImporteLista.Size = new System.Drawing.Size(102, 22);
+            this.tbImporteLista.TabIndex = 138;
+            this.tbImporteLista.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // btnUsarPrecio
+            // 
+            this.btnUsarPrecio.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Bold);
+            this.btnUsarPrecio.Location = new System.Drawing.Point(604, 68);
+            this.btnUsarPrecio.Name = "btnUsarPrecio";
+            this.btnUsarPrecio.Size = new System.Drawing.Size(34, 28);
+            this.btnUsarPrecio.TabIndex = 139;
+            this.btnUsarPrecio.Text = "\u21C6";
+            this.btnUsarPrecio.UseVisualStyleBackColor = true;
+            this.btnUsarPrecio.Click += new System.EventHandler(this.btnUsarPrecio_Click);
+            // 
             // tbId
             // 
             this.tbId.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.tbId.Enabled = false;
             this.tbId.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbId.Location = new System.Drawing.Point(553, 75);
+            this.tbId.Location = new System.Drawing.Point(653, 75);
             this.tbId.Name = "tbId";
             this.tbId.Size = new System.Drawing.Size(37, 22);
             this.tbId.TabIndex = 136;
@@ -861,7 +894,10 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1326, 663);
+            this.Controls.Add(this.btnUsarPrecio);
             this.Controls.Add(this.tbId);
+            this.Controls.Add(this.lblImporteLista);
+            this.Controls.Add(this.tbImporteLista);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.tbImporte);
             this.Controls.Add(this.label1);
@@ -941,6 +977,9 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox tbImporte;
+        private System.Windows.Forms.Label lblImporteLista;
+        private System.Windows.Forms.TextBox tbImporteLista;
+        private System.Windows.Forms.Button btnUsarPrecio;
         private System.Windows.Forms.Button botCancelar;
         private System.Windows.Forms.Button botGuardar;
         private System.Windows.Forms.TextBox tbId;

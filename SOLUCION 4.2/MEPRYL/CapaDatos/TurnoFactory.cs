@@ -46,7 +46,7 @@ namespace CapaDatos
 
                 if (turno.pacienteID.ToString() != "00000000-0000-0000-0000-000000000000")
                 {
-                    SqlParameter[] p = new SqlParameter[4];
+                    SqlParameter[] p = new SqlParameter[5];
                     p[0] = new SqlParameter("@idTurno", turno.id);
                     if (turno.modificado)
                     {
@@ -58,6 +58,7 @@ namespace CapaDatos
                     }
                     p[2] = new SqlParameter("@importe", turno.importe);
                     p[3] = new SqlParameter("@factClub", convertirEnBool(turno.factClub));
+                    p[4] = new SqlParameter("@precioLista", turno.importeLista);
 
                     DataTable tipoDeExamenPaciente = SQLConnector.obtenerTablaSegunConsultaString("Select * from dbo.TipoExamenDePaciente where idTurno = '" + turno.id + "'");
                     if (tipoDeExamenPaciente.Rows.Count > 0)
@@ -70,14 +71,14 @@ namespace CapaDatos
                         DataTable especialidad = SQLConnector.obtenerTablaSegunConsultaString(@"select e.id from dbo.Turno t inner join dbo.Horario h on t.horarioID = h.id
                     inner join dbo.Especialidad e on h.especialidadID = e.id
                     where t.id = '" + turno.id + "'");
-                        List<string> lista = SQLConnector.generarListaParaProcedure("@idConsulta", "@idTurno", "@modificado", "@idEspecialidad", "@importe","factClub");
+                        List<string> lista = SQLConnector.generarListaParaProcedure("@idConsulta", "@idTurno", "@modificado", "@idEspecialidad", "@importe","factClub","@precioLista");
                         if (turno.modificado)
                         {
-                            retorno = SQLConnector.executeProcedureWithReturnValue("sp_TipoExamenDePaciente_Add", lista, new Guid("00000000-0000-0000-0000-000000000000"), turno.id, "(*)", new Guid(especialidad.Rows[0].ItemArray[0].ToString()), turno.importe, convertirEnBool(turno.factClub));
+                            retorno = SQLConnector.executeProcedureWithReturnValue("sp_TipoExamenDePaciente_Add", lista, new Guid("00000000-0000-0000-0000-000000000000"), turno.id, "(*)", new Guid(especialidad.Rows[0].ItemArray[0].ToString()), turno.importe, convertirEnBool(turno.factClub), turno.importeLista);
                         }
                         else
                         {
-                            retorno = SQLConnector.executeProcedureWithReturnValue("sp_TipoExamenDePaciente_Add", lista, new Guid("00000000-0000-0000-0000-000000000000"), turno.id, "", new Guid(especialidad.Rows[0].ItemArray[0].ToString()), turno.importe, convertirEnBool(turno.factClub));
+                            retorno = SQLConnector.executeProcedureWithReturnValue("sp_TipoExamenDePaciente_Add", lista, new Guid("00000000-0000-0000-0000-000000000000"), turno.id, "", new Guid(especialidad.Rows[0].ItemArray[0].ToString()), turno.importe, convertirEnBool(turno.factClub), turno.importeLista);
                         }
                     }
 
@@ -188,7 +189,7 @@ namespace CapaDatos
             Resultado resultado = new Resultado();
             try
             {
-                //Da el alta del registro vacío para obtener el ID
+                //Da el alta del registro vacï¿½o para obtener el ID
                 resultado = altaID(ent);
 
                 //Modifica el registro nuevo con los datos completos del alta
@@ -207,7 +208,7 @@ namespace CapaDatos
         }
 
 
-        //El alta manda todos los datos en una sola instrucción
+        //El alta manda todos los datos en una sola instrucciï¿½n
         public void altaRapida(string codigo, DateTime fecha, Guid estadoID, string hora, string horaReferencia,
                             int nroOrden, Guid pacienteID, Guid horarioID, string observaciones,
                             bool domingo, bool lunes, bool martes, bool miercoles, bool jueves, bool viernes, bool sabado,
@@ -286,7 +287,7 @@ namespace CapaDatos
             }
         }
 
-        //Lee el registro obtenido de la base de datos, cada implementación agrega los campos espefícicos.
+        //Lee el registro obtenido de la base de datos, cada implementaciï¿½n agrega los campos espefï¿½cicos.
         protected override EntidadBase leerRegistro(SqlDataReader dr)
         {
             Turno turno = new Turno(base.leerRegistro(dr));
@@ -468,7 +469,7 @@ namespace CapaDatos
                 {
                     string separador = "";
                     int contador = 0;
-                    //Si no encuentra para la fecha, el mismo día en la semana próxima... así hasta un mes.
+                    //Si no encuentra para la fecha, el mismo dï¿½a en la semana prï¿½xima... asï¿½ hasta un mes.
                     while (resultado == "" && contador < 5)
                     {
                         foreach (object[] row in listaOpciones.Values)
@@ -480,7 +481,7 @@ namespace CapaDatos
                             contador++;
                         }
                     }
-                    //Si no se encontró turno libre, se busca la proxima fecha disponible
+                    //Si no se encontrï¿½ turno libre, se busca la proxima fecha disponible
                     //RESPETAR EL DIA ELEGIDO POR EL USUARIO
                     //ACA ESTA LA LOGICA QUE HAY QUE CAMBIAR 
                     if (resultado == "")
@@ -539,7 +540,7 @@ namespace CapaDatos
             return listaOpciones;
         }
 
-        //Realiza la búsqueda de turnos libres en determinado segmento de fechas y horarios
+        //Realiza la bï¿½squeda de turnos libres en determinado segmento de fechas y horarios
         // 07/11/2014: Modificado para agregar diferentes especialidades
         private string buscarTurnosLibres(object[] row, ref DateTime fecha, ref string separador, bool buscarProximaFecha, EEspecialidad especialidad)
         {

@@ -1,0 +1,13 @@
+Se cambió el contexto de la base de datos a 'periodo'.
+id                                   codigo                                             fecha                   horaReferencia nroOrden    pacienteID                           TipoExamen                                                                                                                                                                                                                                                       EstadoTurno                                                                                                                                                                                                                                                     
+------------------------------------ -------------------------------------------------- ----------------------- -------------- ----------- ------------------------------------ ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(0 rows affected)
+Msg 207, Level 16, State 1, Server SERVIDOR-MEPRYL\SQLSERVERMEPRYL, Line 13
+El nombre de columna 'mail' no es válido.
+Msg 207, Level 16, State 1, Server SERVIDOR-MEPRYL\SQLSERVERMEPRYL, Line 22
+El nombre de columna 'codigo' no es válido.
+Msg 207, Level 16, State 1, Server SERVIDOR-MEPRYL\SQLSERVERMEPRYL, Line 22
+El nombre de columna 'observaciones' no es válido.
+Msg 102, Level 15, State 1, Server SERVIDOR-MEPRYL\SQLSERVERMEPRYL, Line 9
+Sintaxis incorrecta cerca de '±'.

@@ -22,9 +22,9 @@ using WindowsInput;
 
 namespace CapaPresentacion
 {
-    
 
-    public partial class frmPaciente : CapaPresentacionBase.frmBaseEntidadABM 
+
+    public partial class frmPaciente : CapaPresentacionBase.frmBaseEntidadABM
     {
         public Paciente rglEntidad;
         public string tipoConsulta = "";
@@ -37,7 +37,7 @@ namespace CapaPresentacion
         DataRow[] filtroTabla; // GRV - Modificado
         DataTable cacheDgv = new DataTable(); // GRV - Modificado
         private CapaNegocioMepryl.UtilidadesMepryl UtilMepryl = new CapaNegocioMepryl.UtilidadesMepryl(); // GRV - Modificado
-        
+
         int nroFila = -1;
         int puntero = -1;
         int celda = -1;
@@ -50,7 +50,7 @@ namespace CapaPresentacion
         private bool blnPresionarQuitar = false;
         private bool blnBuscarLiga = true;
         private bool blnBuscarClub = false;
-        
+
 
         public frmPaciente()
         {
@@ -58,7 +58,7 @@ namespace CapaPresentacion
             //UtilMepryl = new CapaNegocioMepryl.UtilidadesMepryl();
             tabPrincipal.TabPages.Remove(tabPage2);
             preventiva = new CapaNegocioMepryl.ExamenPreventiva();
-            txtMail.CharacterCasing = CharacterCasing.Lower;           
+            txtMail.CharacterCasing = CharacterCasing.Lower;
         }
 
         public frmPaciente(Configuracion config, bool mostrarBotonOk)
@@ -92,7 +92,7 @@ namespace CapaPresentacion
             preventiva = new CapaNegocioMepryl.ExamenPreventiva();
         }
 
-        public frmPaciente(frmRecepcion frm, int mod,Configuracion config, bool mostrarBotonOk)
+        public frmPaciente(frmRecepcion frm, int mod, Configuracion config, bool mostrarBotonOk)
             : base(config, mostrarBotonOk)
         {
             EntidadNombre = "Paciente";
@@ -133,7 +133,7 @@ namespace CapaPresentacion
 
         //Implementacion
         protected override void inicializarEntidad()
-        {          
+        {
             rglEntidad = new Paciente();
             //inicializarTabla();
         }
@@ -151,7 +151,7 @@ namespace CapaPresentacion
             botImprimir.Enabled = false;
             btnUbicar.Enabled = false;
 
-            tbCodigo.Select();            
+            tbCodigo.Select();
         }
 
         public void mostarDatosDni(string dni)
@@ -165,7 +165,7 @@ namespace CapaPresentacion
             //System.Windows.Forms.SendKeys.Send("{ENTER}");          
 
             if (recuperarObjetoPorCodigo(dni))
-                btnModificar01_Click(sender, new KeyPressEventArgs((char)Keys.Enter)); 
+                btnModificar01_Click(sender, new KeyPressEventArgs((char)Keys.Enter));
             else
                 butAgregar_Click(sender, new KeyPressEventArgs((char)Keys.Enter));
         }
@@ -185,7 +185,7 @@ namespace CapaPresentacion
             botMail.Enabled = true;
             botImprimir.Enabled = true;
             btnUbicar.Enabled = true;
-            
+
             this.Select();
 
             if (this.edicion == ModoEdicion.MODIFICANDO)
@@ -213,11 +213,11 @@ namespace CapaPresentacion
                 llenarDgvEmpresa();
                 tbDNI.Text = Regex.Replace(tbCodigo.Text, @"[^0-9]", "", RegexOptions.None);
                 switch (this.tipoConsulta)
-	            {
+                {
                     case "P":
                         rbPreventiva.Checked = true;
 
-                    
+
                         break;
                     case "L":
                         rbLaboral.Checked = true;
@@ -232,7 +232,7 @@ namespace CapaPresentacion
                             gbLaboral.Visible = false;
                             break;
                         }
-	            }
+                }
                 tbApellido.Select();
             }
         }
@@ -251,7 +251,7 @@ namespace CapaPresentacion
             cboLiga.ValueMember = "id";
             cboLiga.DisplayMember = "descripcion";
             cboLiga.SelectedIndex = 0;
-                
+
             //Aqui se llena el combo de la empresa
 
             inicializarEntidad();
@@ -296,7 +296,7 @@ namespace CapaPresentacion
                 navegador.agregarControl(new CapsulaControl((Control)dtpFechaNacimiento));
                 //navegador.agregarControl(new CapsulaControl((Control)cboLiga));
                 navegador.agregarControl(new CapsulaControl((Control)tbBuscarClub));
-             //   navegador.agregarControl(new CapsulaControl((Control)lbxClub));
+                //   navegador.agregarControl(new CapsulaControl((Control)lbxClub));
                 navegador.agregarControl(new CapsulaControl((Control)dgvEmpresa));
                 navegador.agregarControl(new CapsulaControl((Control)tbEmpresaTarea));
                 navegador.agregarControl(new CapsulaControl((Control)tbTelefonos));
@@ -344,11 +344,11 @@ namespace CapaPresentacion
             cboNacionalidad.SelectedIndex = 0;
         }
 
-    
+
         protected override void mostrarDatosObjeto()
         {
             int intAnioCatInicial = 0; // GRV - Modificado
-           
+
             base.mostrarDatosObjeto();
             try
             {
@@ -389,7 +389,7 @@ namespace CapaPresentacion
                     cboLocalidad.SelectedValue = rglEntidad.localidad;
                 }
                 tbDireccion.Text = rglEntidad.direccion;
-      
+
 
                 bool hacerPlaca = false;
                 lbTienePlaca.Text = "";
@@ -437,11 +437,11 @@ namespace CapaPresentacion
                         if ((categoriaPaciente == int.Parse(pp.categoriaInicial) || categoriaPaciente == int.Parse(pp.novenaCategoria)) && ligaOk)
                             hacerPlaca = true;
                     }
-                    
+
                     //----------
                     dr.Close();
-                }                
-                
+                }
+
                 cmd.Dispose();
                 con.Close();
 
@@ -475,7 +475,7 @@ namespace CapaPresentacion
                     hacerPlaca = true;
 
                 //hacerPlaca = DebeExamenRXParaNuevoClubIngresado();
-                
+
                 // GRV - Modificado                
                 //if (hacerPlaca)
                 //{
@@ -490,7 +490,7 @@ namespace CapaPresentacion
                 MostrarMensaje(hacerPlaca);
                 // GRV
 
-                if (dgvClubesAsignados.Rows.Count > 0 && !PacientePre.LigaEstaActiva(dgvClubesAsignados.Rows[0].Cells[1].Value.ToString()))
+                if (!PacientePre.LigaEstaActiva(dgvClubesAsignados.Rows[0].Cells[1].Value.ToString()))
                     lbTienePlaca.Text = "";
 
                 // GRV - Modificado - Muestra fecha �ltimo examen
@@ -509,8 +509,8 @@ namespace CapaPresentacion
                     tbFechaUltimoExamen.Visible = false;
                 }
 
-                if (dgvClubesAsignados.Rows.Count > 0 && !PacientePre.LigaEstaActiva(dgvClubesAsignados.Rows[0].Cells[1].Value.ToString()))
-                    tbFechaUltimoExamen.Text = "";                
+                if (!PacientePre.LigaEstaActiva(dgvClubesAsignados.Rows[0].Cells[1].Value.ToString()))
+                    tbFechaUltimoExamen.Text = "";
 
                 cargarExamenes();
 
@@ -545,7 +545,7 @@ namespace CapaPresentacion
                 lbTienePlaca.Text = "NO DEBE REALIZAR RX.";
             }
 
-            if (dgvClubesAsignados.Rows.Count > 0 && !PacientePre.VerificaRX(dgvClubesAsignados.Rows[0].Cells[1].Value.ToString()))
+            if (!PacientePre.VerificaRX(dgvClubesAsignados.Rows[0].Cells[1].Value.ToString()))
                 lbTienePlaca.Text = "";
         }
 
@@ -567,7 +567,7 @@ namespace CapaPresentacion
 
         public void cargarExamenes()
         {
-            
+
             if (puntero != -1) { dictamenFinalAutomatico(puntero); }
             if (dgvExamenes.Rows.Count > 0) { dgvExamenes.Rows.Clear(); }
             dgvExamenes.Columns[7].DefaultCellStyle.NullValue = null;
@@ -673,25 +673,26 @@ namespace CapaPresentacion
                 }
                 else
                 {
-                agregarFilaAlDgv(idTe, idC, fecha, nroEx,
-                liga, club, "0", setearImagen(clasif, "0"), "0", setearImagen(clasif, "0"),
-                "0", setearImagen(clasif, "0"), "0", setearImagen(clasif, "0"), "0", "NO CARGADO",
-                rm, "0", setearImagen(clasif, "0"), "0", setearImagen(clasif, "0"), "0", setearImagen(clasif, "0"), "0", setearImagen(clasif, "0"), retirado);
-                color = Color.WhiteSmoke;
+                    agregarFilaAlDgv(idTe, idC, fecha, nroEx,
+                    liga, club, "0", setearImagen(clasif, "0"), "0", setearImagen(clasif, "0"),
+                    "0", setearImagen(clasif, "0"), "0", setearImagen(clasif, "0"), "0", "NO CARGADO",
+                    rm, "0", setearImagen(clasif, "0"), "0", setearImagen(clasif, "0"), "0", setearImagen(clasif, "0"), "0", setearImagen(clasif, "0"), retirado);
+                    color = Color.WhiteSmoke;
                 }
                 dgvExamenes.Rows[dgvExamenes.Rows.Count - 1].Cells[15].Style.BackColor = color;
             }
 
-            
+
             //filtroTabla = cacheDgv.Select(obtenerFiltroString());
-            
+
             if (dgvExamenes.Rows.Count > 0 && puntero != -1) { dgvExamenes.CurrentCell = dgvExamenes.Rows[puntero].Cells[celda]; }
             if (dgvExamenes.Rows.Count > 0 && puntero == -1) { dgvExamenes.CurrentCell = dgvExamenes.Rows[0].Cells[2]; }
 
             dgvExamenes.ScrollBars = ScrollBars.Both;
         }
 
-        private void inicializarTabla() {
+        private void inicializarTabla()
+        {
             cacheDgv = new DataTable();
             cacheDgv.Columns.Add("idTe");
             cacheDgv.Columns.Add("idC");
@@ -707,9 +708,9 @@ namespace CapaPresentacion
             cacheDgv.Columns.Add("imgRX");
             cacheDgv.Columns.Add("car");
             cacheDgv.Columns.Add("imgCar");
-            cacheDgv.Columns.Add("valorFinal");            
+            cacheDgv.Columns.Add("valorFinal");
             cacheDgv.Columns.Add("final");
-            cacheDgv.Columns.Add("rm");            
+            cacheDgv.Columns.Add("rm");
             cacheDgv.Columns.Add("impEx");
             cacheDgv.Columns.Add("imgImpEx");
             cacheDgv.Columns.Add("impLab");
@@ -868,7 +869,7 @@ namespace CapaPresentacion
         }
 
         public override string validarDatosIngresados()
-        {   
+        {
             string strPerCategoria = "";
             string resultado = "";
 
@@ -901,7 +902,7 @@ namespace CapaPresentacion
                     if (!string.IsNullOrEmpty(strPerCategoria))
                         resultado += "\r\n\t- " + strPerCategoria;
                 }
-                
+
             }
             catch (Exception ex)
             {
@@ -957,94 +958,94 @@ namespace CapaPresentacion
             try
             {
                 //MessageBox.Show(cboaNroSucursal.cboCombo.Text);
-              //  inicializarEntidad();
-                    if (dgvClub.Rows.Count > 0)
-                    {
-                        //dgvClub.CurrentRow.Selected = false;
-                    }
-                    if (dgvClubesAsignados.Rows.Count > 0)
-                    {
-                        dgvClubesAsignados.CurrentRow.Selected = false;
-                    }
-                    dgvClub.DataSource = null;
-                    cboLiga.SelectedIndex = 0;
-                    rglEntidad.id = new Guid(tbId.Text);
-                    rglEntidad.codigo = Regex.Replace(tbDNI.Text, @"[^0-9]", "", RegexOptions.None);
-                    rglEntidad.apellido = tbApellido.Text.Trim();
-                    rglEntidad.nombres = tbNombres.Text.Trim();
-                    rglEntidad.dni = Regex.Replace(tbDNI.Text, @"[^0-9]", "", RegexOptions.None); 
-                    rglEntidad.fechaNacimiento = DateTime.Parse(dtpFechaNacimiento.Text);
+                //  inicializarEntidad();
+                if (dgvClub.Rows.Count > 0)
+                {
+                    //dgvClub.CurrentRow.Selected = false;
+                }
+                if (dgvClubesAsignados.Rows.Count > 0)
+                {
+                    dgvClubesAsignados.CurrentRow.Selected = false;
+                }
+                dgvClub.DataSource = null;
+                cboLiga.SelectedIndex = 0;
+                rglEntidad.id = new Guid(tbId.Text);
+                rglEntidad.codigo = Regex.Replace(tbDNI.Text, @"[^0-9]", "", RegexOptions.None);
+                rglEntidad.apellido = tbApellido.Text.Trim();
+                rglEntidad.nombres = tbNombres.Text.Trim();
+                rglEntidad.dni = Regex.Replace(tbDNI.Text, @"[^0-9]", "", RegexOptions.None);
+                rglEntidad.fechaNacimiento = DateTime.Parse(dtpFechaNacimiento.Text);
 
 
-                    string pacienteTipo = "PREVENTIVA";
-                    if (rbPreventiva.Checked)
-                    {
-                        pacienteTipo = "PREVENTIVA";
-                        List<string> l = SQLConnector.generarListaParaProcedure("@id");
-                        SQLConnector.executeProcedure("sp_Paciente_DeleteClub", l, rglEntidad.id);
+                string pacienteTipo = "PREVENTIVA";
+                if (rbPreventiva.Checked)
+                {
+                    pacienteTipo = "PREVENTIVA";
+                    List<string> l = SQLConnector.generarListaParaProcedure("@id");
+                    SQLConnector.executeProcedure("sp_Paciente_DeleteClub", l, rglEntidad.id);
 
-                        foreach (DataGridViewRow row in dgvClubesAsignados.Rows)
+                    foreach (DataGridViewRow row in dgvClubesAsignados.Rows)
+                    {
+                        try
                         {
-                            try
-                            {
-                                SqlParameter[] param = new SqlParameter[2];
-                                param[0] = new SqlParameter("@idPaciente", rglEntidad.id);
-                                param[1] = new SqlParameter("@idClub", row.Cells[3].Value);
-                                SqlHelper.ExecuteNonQuery(this.configuracion.getConectionString(), "sp_Paciente_AddClub", param);
-                            }
-                            catch (Exception ex)
-                            {
-                                ManejadorErrores.escribirLog(ex, true, this.configuracion);
-                                MessageBox.Show(ex.Message);
-                            }
-
+                            SqlParameter[] param = new SqlParameter[2];
+                            param[0] = new SqlParameter("@idPaciente", rglEntidad.id);
+                            param[1] = new SqlParameter("@idClub", row.Cells[3].Value);
+                            SqlHelper.ExecuteNonQuery(this.configuracion.getConectionString(), "sp_Paciente_AddClub", param);
                         }
+                        catch (Exception ex)
+                        {
+                            ManejadorErrores.escribirLog(ex, true, this.configuracion);
+                            MessageBox.Show(ex.Message);
+                        }
+
                     }
-                    else if (rbLaboral.Checked)
-                    {
-                        pacienteTipo = "LABORAL";
-                        rglEntidad.empresa.id = new Guid(dgvEmpresa.CurrentRow.Cells[0].Value.ToString());
-                        rglEntidad.empresaTarea = tbEmpresaTarea.Text;
-                        DataTable consulta = SQLConnector.obtenerTablaSegunConsultaString(@"select tep.id 
+                }
+                else if (rbLaboral.Checked)
+                {
+                    pacienteTipo = "LABORAL";
+                    rglEntidad.empresa.id = new Guid(dgvEmpresa.CurrentRow.Cells[0].Value.ToString());
+                    rglEntidad.empresaTarea = tbEmpresaTarea.Text;
+                    DataTable consulta = SQLConnector.obtenerTablaSegunConsultaString(@"select tep.id 
                     from dbo.Consulta c 
                     inner join dbo.TipoExamenDePaciente tep on tep.idConsulta = c.id
                     where CONVERT(date,c.fecha) = '" + DateTime.Today.ToShortDateString() + @"' and
                     c.pacienteID = '" + rglEntidad.id + "'");
-                        if (consulta.Rows.Count > 0)
-                        {
-                            List<string> list = SQLConnector.generarListaParaProcedure("@idTipoExamen",
-                                 "@idEmpresa", "@tarea");
-                            DataTable empPorTe = SQLConnector.obtenerTablaSegunConsultaString(@"select * from dbo.empresaPorTipoDeExamen
+                    if (consulta.Rows.Count > 0)
+                    {
+                        List<string> list = SQLConnector.generarListaParaProcedure("@idTipoExamen",
+                             "@idEmpresa", "@tarea");
+                        DataTable empPorTe = SQLConnector.obtenerTablaSegunConsultaString(@"select * from dbo.empresaPorTipoDeExamen
                         where idTipoExamen = '" + consulta.Rows[0].ItemArray[0].ToString() + "'");
-                            string procedure = "";
-                            if (empPorTe.Rows.Count > 0)
-                            {
-                                procedure = "sp_empresaPorTipoDeExamen_Update";
-                            }
-                            else
-                            {
-                                procedure = "sp_empresaPorTipoDeExamen_Add";
-
-                            }
-                            SQLConnector.executeProcedure(procedure, list,
-                                  new Guid(consulta.Rows[0].ItemArray[0].ToString()), rglEntidad.empresa.id, rglEntidad.empresaTarea);
+                        string procedure = "";
+                        if (empPorTe.Rows.Count > 0)
+                        {
+                            procedure = "sp_empresaPorTipoDeExamen_Update";
                         }
+                        else
+                        {
+                            procedure = "sp_empresaPorTipoDeExamen_Add";
+
+                        }
+                        SQLConnector.executeProcedure(procedure, list,
+                              new Guid(consulta.Rows[0].ItemArray[0].ToString()), rglEntidad.empresa.id, rglEntidad.empresaTarea);
                     }
-                    rglEntidad.pacienteTipo = (PacienteTipo)(new PacienteTipoFactory(this.configuracion, "PacienteTipo")).getByCodigo(pacienteTipo);
-                    rglEntidad.telefonos = tbTelefonos.Text;
-                    rglEntidad.celular = tbCelular.Text;
-                    rglEntidad.observaciones = tbObservaciones.Text;
-                    //rglEntidad.localidad = new Guid(cboLocalidad.SelectedValue.ToString());
-                    rglEntidad.direccion = tbDireccion.Text;
-                    //rglEntidad.nacionalidad = new Guid(cboNacionalidad.SelectedValue.ToString());
-                    tabPrincipal.SelectedIndex = 0;
-               
+                }
+                rglEntidad.pacienteTipo = (PacienteTipo)(new PacienteTipoFactory(this.configuracion, "PacienteTipo")).getByCodigo(pacienteTipo);
+                rglEntidad.telefonos = tbTelefonos.Text;
+                rglEntidad.celular = tbCelular.Text;
+                rglEntidad.observaciones = tbObservaciones.Text;
+                //rglEntidad.localidad = new Guid(cboLocalidad.SelectedValue.ToString());
+                rglEntidad.direccion = tbDireccion.Text;
+                //rglEntidad.nacionalidad = new Guid(cboNacionalidad.SelectedValue.ToString());
+                tabPrincipal.SelectedIndex = 0;
+
             }
             catch (Exception ex)
             {
                 ManejadorErrores.escribirLog(ex, true, this.configuracion);
             }
-      
+
         }
 
         protected override bool verificarDni()
@@ -1096,7 +1097,7 @@ namespace CapaPresentacion
                     dgvClubesAsignados.SelectedCells[2].Value = row.ItemArray[2];
                     dgvClubesAsignados.SelectedCells[3].Value = row.ItemArray[3];
                     dgvClubesAsignados.SelectedCells[4].Value = row.ItemArray[4];
-            
+
                 }
                 if (dgvClubesAsignados.Rows.Count > 0)
                 {
@@ -1106,22 +1107,13 @@ namespace CapaPresentacion
                 {
                     rbLaboral.Checked = true;
                 }
-
-                if (dgvClubesAsignados.Rows.Count == 0 && rbPreventiva.Checked)
-                {
-                    MessageBox.Show(
-                        "ATENCIÓN: Este paciente no tiene ningún club asignado en la base de datos.\nAsigne un club y guarde para corregir el dato.",
-                        "Paciente sin club",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Warning);
-                }
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString());
 
             }
-        }        
+        }
 
         protected override void dniDuplicados()
         {
@@ -1130,7 +1122,7 @@ namespace CapaPresentacion
             if (pacientesConMismoDni.Select("id <> '" + idPaciente1 + "'").Length > 0)
             {
                 string idPaciente2 = pacientesConMismoDni.Select("id <> '" + idPaciente1 + "'")[0][0].ToString();
-                abrirVentanaUnificacionHistoriaClinica(idPaciente1, idPaciente2);               
+                abrirVentanaUnificacionHistoriaClinica(idPaciente1, idPaciente2);
             }
         }
 
@@ -1385,8 +1377,8 @@ namespace CapaPresentacion
 
         private string ComboLiga(ComboBox combo)
         {
-            string resultado="";
-          
+            string resultado = "";
+
             switch (combo.Name)
             {
                 case "cboLiga":
@@ -1404,7 +1396,7 @@ namespace CapaPresentacion
         {
             if (openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-               
+
                 System.IO.StreamReader sr = new
                 System.IO.StreamReader(openFileDialog1.FileName);
                 this.txtRutaFoto.Text = openFileDialog1.FileName;
@@ -1420,7 +1412,7 @@ namespace CapaPresentacion
                 tbBuscarClub.Text = string.Empty;
         }
 
-  
+
         private DataTable obtenerTablaSegunConsultaString(string consulta)
         {
             DataTable dt = new DataTable();
@@ -1444,17 +1436,18 @@ namespace CapaPresentacion
             if (!blnBuscarLiga)
             {
                 if (!MuestraMensajeSiPacienteTieneLiga())
-                {                    
+                {
                     buscarClubes();
                 }
-            }else
+            }
+            else
             {
                 buscarLigas();
-                
+
             }
         }
 
-        
+
 
         private void dgvClub_DoubleClick(object sender, EventArgs e)
         {
@@ -1468,7 +1461,7 @@ namespace CapaPresentacion
                     buscarClubes();
                 }
 
-                
+
                 tbBuscarClub.Text = "";
             }
             else
@@ -1476,7 +1469,7 @@ namespace CapaPresentacion
                 agregarClubAlPaciente();
             }
         }
-        
+
         private void agregarClubAlPaciente()
         {
             try
@@ -1495,7 +1488,7 @@ namespace CapaPresentacion
                         dgvClubesAsignados.SelectedCells[4].Value = dgvClub.SelectedCells[1].Value;
                         dgvClubesAsignados.Rows[index].Selected = false;
                         cboLiga.SelectedIndex = 0;
-                        
+
                         dgvClub.DataSource = null;
                         //this.ActiveControl = cboLiga;
                         this.ActiveControl = tbBuscarClub;
@@ -1518,7 +1511,7 @@ namespace CapaPresentacion
             {
                 //
             }
-            
+
         }
 
         private void eliminarClub()
@@ -1526,14 +1519,14 @@ namespace CapaPresentacion
             DialogResult result = MessageBox.Show("Se va a eliminar el club asignado al paciente. �Desea continuar? ", "Eliminar Club Asignado ", MessageBoxButtons.YesNo);
             if (result == DialogResult.Yes)
             {
-               
-                    dgvClubesAsignados.Rows.RemoveAt(dgvClubesAsignados.SelectedRows[0].Index);
-                    cboLiga.SelectedIndex = 0;
-                    this.ActiveControl = cboLiga;
-                    if (dgvClubesAsignados.SelectedRows.Count > 0)
-                    {
-                        dgvClubesAsignados.CurrentCell.Selected = false;
-                    }
+
+                dgvClubesAsignados.Rows.RemoveAt(dgvClubesAsignados.SelectedRows[0].Index);
+                cboLiga.SelectedIndex = 0;
+                this.ActiveControl = cboLiga;
+                if (dgvClubesAsignados.SelectedRows.Count > 0)
+                {
+                    dgvClubesAsignados.CurrentCell.Selected = false;
+                }
             }
 
             // GRV - Modificado
@@ -1549,7 +1542,8 @@ namespace CapaPresentacion
             String nombreDeLiga = infoLiga.Row.ItemArray[2].ToString();
             foreach (DataGridViewRow row in dgvClubesAsignados.Rows)
             {
-                if (row.Cells[2].Value.ToString() == nombreDeLiga){
+                if (row.Cells[2].Value.ToString() == nombreDeLiga)
+                {
                     return true;
                 }
             }
@@ -1620,7 +1614,7 @@ namespace CapaPresentacion
             }
         }
 
-      
+
         private void dgvClub_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
@@ -1628,7 +1622,7 @@ namespace CapaPresentacion
                 if (blnBuscarLiga == true)
                 {
                     blnBuscarLiga = false;
-                    
+
                     if (!string.IsNullOrEmpty(dgvClub.SelectedCells[2].Value.ToString()))
                     {
                         cboLiga.Text = dgvClub.SelectedCells[2].Value.ToString();
@@ -1658,7 +1652,7 @@ namespace CapaPresentacion
                     e.SuppressKeyPress = true;
                     cboLiga.DroppedDown = true;
                 }
-              
+
             }
             else if (e.KeyCode == Keys.Right)
             {
@@ -1768,7 +1762,7 @@ namespace CapaPresentacion
             {
                 abrirLaboratorio(e.RowIndex);
             }
-            else if(e.ColumnIndex == 11)
+            else if (e.ColumnIndex == 11)
             {
                 abrirRX(e.RowIndex);
             }
@@ -1851,100 +1845,100 @@ namespace CapaPresentacion
             }
         }
 
-//        private void abrirClinico(int r)
-//        {
-//            if (dgvExamenes.Rows[r].Cells[6].Value.ToString() == "0")
-//            {
-//                Utilidades.abrirFormulario(this.MdiParent, new frmExamenFisico(this, dgvExamenes.Rows[dgvExamenes.SelectedCells[0].RowIndex]), new Configuracion());
-//            }
-//            else
-//            {
-//                DataTable valoresDelExamen = SQLConnector.obtenerTablaSegunConsultaString(@"select * from dbo.ValoresPorExamen where idTipoExamen 
-//                    = '" + dgvExamenes.Rows[dgvExamenes.SelectedCells[0].RowIndex].Cells[0].Value.ToString() + @"' and Convert(int,codigo) >= 1 and Convert(int,codigo) <= 29 
-//                    order by Convert(int,codigo) asc");
-//                  Utilidades.abrirFormulario(this.MdiParent, new frmExamenFisico(this, dgvExamenes.Rows[dgvExamenes.SelectedCells[0].RowIndex], valoresDelExamen), new Configuracion());              
-//            }
-//        }
+        //        private void abrirClinico(int r)
+        //        {
+        //            if (dgvExamenes.Rows[r].Cells[6].Value.ToString() == "0")
+        //            {
+        //                Utilidades.abrirFormulario(this.MdiParent, new frmExamenFisico(this, dgvExamenes.Rows[dgvExamenes.SelectedCells[0].RowIndex]), new Configuracion());
+        //            }
+        //            else
+        //            {
+        //                DataTable valoresDelExamen = SQLConnector.obtenerTablaSegunConsultaString(@"select * from dbo.ValoresPorExamen where idTipoExamen 
+        //                    = '" + dgvExamenes.Rows[dgvExamenes.SelectedCells[0].RowIndex].Cells[0].Value.ToString() + @"' and Convert(int,codigo) >= 1 and Convert(int,codigo) <= 29 
+        //                    order by Convert(int,codigo) asc");
+        //                  Utilidades.abrirFormulario(this.MdiParent, new frmExamenFisico(this, dgvExamenes.Rows[dgvExamenes.SelectedCells[0].RowIndex], valoresDelExamen), new Configuracion());              
+        //            }
+        //        }
 
-//        private void abrirLaboratorio(int r)
-//        {
-//            if (dgvExamenes.Rows[r].Cells[6].Value.ToString() != "0")
-//            {
-//                if (dgvExamenes.Rows[r].Cells[8].Value.ToString() == "0")
-//                {
-//                    Utilidades.abrirFormulario(this.MdiParent, new frmExamenLaboratorio(this, dgvExamenes.Rows[dgvExamenes.SelectedCells[0].RowIndex]), new Configuracion());
-//                }
-//                else
-//                {
-//                    DataTable valoresDelExamen = SQLConnector.obtenerTablaSegunConsultaString(@"select * from dbo.ValoresPorExamen where idTipoExamen 
-//                    = '" + dgvExamenes.Rows[dgvExamenes.SelectedCells[0].RowIndex].Cells[0].Value.ToString() + @"' and Convert(int,codigo) >= 30 and Convert(int,codigo) <= 69
-//                    order by Convert(int,codigo) asc");
-                  
-//                        Utilidades.abrirFormulario(this.MdiParent, new frmExamenLaboratorio(this, dgvExamenes.Rows[dgvExamenes.SelectedCells[0].RowIndex], valoresDelExamen), new Configuracion());
-                  
-                    
-//                }
-//            }
-//            else
-//            {
-//                MessageBox.Show("�Se debe cargar el examen cl�nico para poder cargar los dem�s estudios!", "Atenci�n",
-//                        MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-//            }
+        //        private void abrirLaboratorio(int r)
+        //        {
+        //            if (dgvExamenes.Rows[r].Cells[6].Value.ToString() != "0")
+        //            {
+        //                if (dgvExamenes.Rows[r].Cells[8].Value.ToString() == "0")
+        //                {
+        //                    Utilidades.abrirFormulario(this.MdiParent, new frmExamenLaboratorio(this, dgvExamenes.Rows[dgvExamenes.SelectedCells[0].RowIndex]), new Configuracion());
+        //                }
+        //                else
+        //                {
+        //                    DataTable valoresDelExamen = SQLConnector.obtenerTablaSegunConsultaString(@"select * from dbo.ValoresPorExamen where idTipoExamen 
+        //                    = '" + dgvExamenes.Rows[dgvExamenes.SelectedCells[0].RowIndex].Cells[0].Value.ToString() + @"' and Convert(int,codigo) >= 30 and Convert(int,codigo) <= 69
+        //                    order by Convert(int,codigo) asc");
 
-//        }
+        //                        Utilidades.abrirFormulario(this.MdiParent, new frmExamenLaboratorio(this, dgvExamenes.Rows[dgvExamenes.SelectedCells[0].RowIndex], valoresDelExamen), new Configuracion());
 
-//        private void abrirRX(int r)
-//        {
-//            if (dgvExamenes.Rows[r].Cells[6].Value.ToString() != "0")
-//            {
-//                if (dgvExamenes.Rows[r].Cells[10].Value.ToString() == "0")
-//                {
-//                    Utilidades.abrirFormulario(this.MdiParent, new frmRX(this, dgvExamenes.Rows[dgvExamenes.SelectedCells[0].RowIndex]), new Configuracion());
-//                }
-//                else
-//                {
-//                    DataTable valoresDelExamen = SQLConnector.obtenerTablaSegunConsultaString(@"select * from dbo.ValoresPorExamen where idTipoExamen 
-//                    = '" + dgvExamenes.Rows[dgvExamenes.SelectedCells[0].RowIndex].Cells[0].Value.ToString() + @"' and Convert(int,codigo) >= 70 and Convert(int,codigo) <= 75
-//                    order by Convert(int,codigo) asc");
-            
-//                        Utilidades.abrirFormulario(this.MdiParent, new frmRX(this, dgvExamenes.Rows[dgvExamenes.SelectedCells[0].RowIndex], valoresDelExamen), new Configuracion());
-               
-                    
-//                }
-//            }
-//            else
-//            {
-//                MessageBox.Show("�Se debe cargar el examen cl�nico para poder cargar los dem�s estudios!", "Atenci�n",
-//                     MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-//            }
-//        }
 
-//        private void abrirCard(int r)
-//        {
-//            if (dgvExamenes.Rows[r].Cells[6].Value.ToString() != "0")
-//            {
-//                if (dgvExamenes.Rows[r].Cells[12].Value.ToString() == "0")
-//                {
-//                    Utilidades.abrirFormulario(this.MdiParent, new frmExamenCardiologia(this, dgvExamenes.Rows[dgvExamenes.SelectedCells[0].RowIndex]), new Configuracion());
-//                }
-//                else
-//                {
-//                    DataTable valoresDelExamen = SQLConnector.obtenerTablaSegunConsultaString(@"select * from dbo.ValoresPorExamen where idTipoExamen 
-//                    = '" + dgvExamenes.Rows[dgvExamenes.SelectedCells[0].RowIndex].Cells[0].Value.ToString() + @"' and Convert(int,codigo) >= 80 and Convert(int,codigo) <= 82
-//                    order by Convert(int,codigo) asc");
+        //                }
+        //            }
+        //            else
+        //            {
+        //                MessageBox.Show("�Se debe cargar el examen cl�nico para poder cargar los dem�s estudios!", "Atenci�n",
+        //                        MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+        //            }
 
-                   
-//                        Utilidades.abrirFormulario(this.MdiParent, new frmExamenCardiologia(this, dgvExamenes.Rows[dgvExamenes.SelectedCells[0].RowIndex], valoresDelExamen), new Configuracion());
-                   
-                  
-//                }
-//            }
-//            else
-//            {
-//                MessageBox.Show("�Se debe cargar el examen cl�nico para poder cargar los dem�s estudios!", "Atenci�n",
-//                   MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-//            }
-//        }
+        //        }
+
+        //        private void abrirRX(int r)
+        //        {
+        //            if (dgvExamenes.Rows[r].Cells[6].Value.ToString() != "0")
+        //            {
+        //                if (dgvExamenes.Rows[r].Cells[10].Value.ToString() == "0")
+        //                {
+        //                    Utilidades.abrirFormulario(this.MdiParent, new frmRX(this, dgvExamenes.Rows[dgvExamenes.SelectedCells[0].RowIndex]), new Configuracion());
+        //                }
+        //                else
+        //                {
+        //                    DataTable valoresDelExamen = SQLConnector.obtenerTablaSegunConsultaString(@"select * from dbo.ValoresPorExamen where idTipoExamen 
+        //                    = '" + dgvExamenes.Rows[dgvExamenes.SelectedCells[0].RowIndex].Cells[0].Value.ToString() + @"' and Convert(int,codigo) >= 70 and Convert(int,codigo) <= 75
+        //                    order by Convert(int,codigo) asc");
+
+        //                        Utilidades.abrirFormulario(this.MdiParent, new frmRX(this, dgvExamenes.Rows[dgvExamenes.SelectedCells[0].RowIndex], valoresDelExamen), new Configuracion());
+
+
+        //                }
+        //            }
+        //            else
+        //            {
+        //                MessageBox.Show("�Se debe cargar el examen cl�nico para poder cargar los dem�s estudios!", "Atenci�n",
+        //                     MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+        //            }
+        //        }
+
+        //        private void abrirCard(int r)
+        //        {
+        //            if (dgvExamenes.Rows[r].Cells[6].Value.ToString() != "0")
+        //            {
+        //                if (dgvExamenes.Rows[r].Cells[12].Value.ToString() == "0")
+        //                {
+        //                    Utilidades.abrirFormulario(this.MdiParent, new frmExamenCardiologia(this, dgvExamenes.Rows[dgvExamenes.SelectedCells[0].RowIndex]), new Configuracion());
+        //                }
+        //                else
+        //                {
+        //                    DataTable valoresDelExamen = SQLConnector.obtenerTablaSegunConsultaString(@"select * from dbo.ValoresPorExamen where idTipoExamen 
+        //                    = '" + dgvExamenes.Rows[dgvExamenes.SelectedCells[0].RowIndex].Cells[0].Value.ToString() + @"' and Convert(int,codigo) >= 80 and Convert(int,codigo) <= 82
+        //                    order by Convert(int,codigo) asc");
+
+
+        //                        Utilidades.abrirFormulario(this.MdiParent, new frmExamenCardiologia(this, dgvExamenes.Rows[dgvExamenes.SelectedCells[0].RowIndex], valoresDelExamen), new Configuracion());
+
+
+        //                }
+        //            }
+        //            else
+        //            {
+        //                MessageBox.Show("�Se debe cargar el examen cl�nico para poder cargar los dem�s estudios!", "Atenci�n",
+        //                   MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+        //            }
+        //        }
         // GRV - Modificado
 
         //private void dictamenFinalAutomatico(int puntero)
@@ -2078,8 +2072,8 @@ namespace CapaPresentacion
 
             Entidades.Resultado result = report.imprimirYExportar(preventiva.cargarParametrosExamen(r.Cells[0].Value, r.Cells[1].Value),
             new dsExamenPreventiva(), preventiva.cargarDataSourceExamen(),
-                // GRV - Ram�rez - Modificado
-                // @"P:\ESTUDIOS TEMPORADA 2016\" + cargarRutaDestino(r,"E") + ".pdf");
+            // GRV - Ram�rez - Modificado
+            // @"P:\ESTUDIOS TEMPORADA 2016\" + cargarRutaDestino(r,"E") + ".pdf");
             DirectorioReporte(1) + cargarRutaDestino(r, "E") + ".pdf");
 
             if (result.Modo == 1) { preventiva.actualizarImpresionExamen(r.Cells[0].Value); }
@@ -2116,8 +2110,8 @@ namespace CapaPresentacion
 
             Entidades.Resultado result = report.imprimirYExportar(preventiva.cargarParametrosLaboratorio(r.Cells[0].Value, r.Cells[1].Value),
             new dsExamenPreventiva(), preventiva.cargarDataSourceProtocoloLaboratorio(),
-                // GRV - Ram�rez - Modificado
-                // @"P:\ESTUDIOS TEMPORADA 2016\" + cargarRutaDestino(r, "L") + ".pdf");
+            // GRV - Ram�rez - Modificado
+            // @"P:\ESTUDIOS TEMPORADA 2016\" + cargarRutaDestino(r, "L") + ".pdf");
             DirectorioReporte(2) + cargarRutaDestino(r, "L") + ".pdf");
 
             if (result.Modo == 1) { preventiva.actualizarImpresionLaboratorio(r.Cells[0].Value); }
@@ -2422,8 +2416,8 @@ namespace CapaPresentacion
                     string rutaPreventiva = reportPreventiva.exportarAPDF(preventiva.cargarParametrosExamen(dgvExamenes.Rows[cell.RowIndex].Cells[0].Value,
                         dgvExamenes.Rows[cell.RowIndex].Cells[1].Value),
                     new dsExamenPreventiva(), preventiva.cargarDataSourceExamen(),
-                        // GRV - Ram�rez - Modificado
-                        //@"P:\ESTUDIOS POR MAIL\" + cargarRutaDestino(dgvExamenes.Rows[cell.RowIndex], "E") + ".pdf");
+                    // GRV - Ram�rez - Modificado
+                    //@"P:\ESTUDIOS POR MAIL\" + cargarRutaDestino(dgvExamenes.Rows[cell.RowIndex], "E") + ".pdf");
                     DirectorioReporte(1) + cargarRutaDestino(dgvExamenes.Rows[cell.RowIndex], "E") + ".pdf");
                     archivos.Add(rutaPreventiva);
 
@@ -2431,8 +2425,8 @@ namespace CapaPresentacion
                     string rutaProtocolo = reportProtocolo.exportarAPDF(preventiva.cargarParametrosLaboratorio(dgvExamenes.Rows[cell.RowIndex].Cells[0].Value,
                     dgvExamenes.Rows[cell.RowIndex].Cells[1].Value),
                     new dsExamenPreventiva(), preventiva.cargarDataSourceProtocoloLaboratorio(),
-                        // GRV - Ram�rez - Modificado
-                        //@"P:\ESTUDIOS POR MAIL\" + cargarRutaDestino(dgvExamenes.Rows[cell.RowIndex], "P") + ".pdf");
+                    // GRV - Ram�rez - Modificado
+                    //@"P:\ESTUDIOS POR MAIL\" + cargarRutaDestino(dgvExamenes.Rows[cell.RowIndex], "P") + ".pdf");
                     DirectorioReporte(2) + cargarRutaDestino(dgvExamenes.Rows[cell.RowIndex], "P") + ".pdf");
                     archivos.Add(rutaProtocolo);
                     frm.agregarIdTipoExamen(new Guid(dgvExamenes.Rows[cell.RowIndex].Cells[0].Value.ToString()));
@@ -2702,7 +2696,7 @@ namespace CapaPresentacion
         }
 
         private void tbBuscarEmpresa_TextChanged(object sender, EventArgs e)
-        {            
+        {
             buscarEmpresa();
         }
 
@@ -2736,7 +2730,7 @@ namespace CapaPresentacion
         public void recibirIdPaciente(string idPaciente)
         {
             object s = null;
-            KeyPressEventArgs e = new KeyPressEventArgs((char)Keys.Enter);           
+            KeyPressEventArgs e = new KeyPressEventArgs((char)Keys.Enter);
 
             base.recuperarObjetoPorId(idPaciente);
             //modoEditable();
@@ -2756,7 +2750,7 @@ namespace CapaPresentacion
             else
             {
                 MessageBox.Show("Debe ingresar primero el DNI del paciente", "Foto paciente", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            }      
+            }
         }
 
         private void cargarImagen()
@@ -2807,7 +2801,7 @@ namespace CapaPresentacion
             string strRespuesta = "";
             int intAnioCatFinal = 0;
             int intAnioCatInicial = 0;
-            
+
             for (int i = 0; i < dgvClubesAsignados.Rows.Count; i++)
             {
                 intAnioCatFinal = PacientePre.AnioCategoriaJuvenil(dgvClubesAsignados.Rows[i].Cells[1].Value.ToString()); // ID de Liga
@@ -2862,14 +2856,14 @@ namespace CapaPresentacion
                 blnResultado = PacientePre.DebeRealizarExamenRX(tbDNI.Text);
             }
             else
-            {            
+            {
                 for (int i = 0; i < dgvClubesAsignados.Rows.Count; i++)
                 {
                     if (PacientePre.VerificaRX(dgvClubesAsignados.Rows[i].Cells[1].Value.ToString()))
                     {
                         blnResultado = PacientePre.DebeRealizarExamenRX(tbDNI.Text);
                     }
-                }                
+                }
             }
 
             return blnResultado;
@@ -2933,26 +2927,26 @@ namespace CapaPresentacion
                 catch (System.ArgumentOutOfRangeException ex)
                 {
                     cboLiga.DataSource = null;
-                }                
+                }
             }
         }
 
         private void cboLiga_Click(object sender, EventArgs e)
         {
             dgvClub.DataSource = null;
-            EliminarRegistroLigaComboBox();            
+            EliminarRegistroLigaComboBox();
         }
 
         private void verificaClubIngresado()
         {
             //if (blnPresionarQuitar == true)
-                MostrarMensaje(DebeExamenRXParaNuevoClubIngresado());
+            MostrarMensaje(DebeExamenRXParaNuevoClubIngresado());
 
             blnPresionarQuitar = false;
         }
 
         private bool DebeExamenRXParaNuevoClubIngresado()
-        {            
+        {
             int intAnioCatInicial = 0;
             bool hacerPlaca = false;
             bool blnAFAInfantil = false;
@@ -3079,7 +3073,7 @@ namespace CapaPresentacion
             {
 
             }
-        }       
+        }
 
         //private bool LigaAdmiteMenores(string strIdLiga)
         //{
@@ -3096,13 +3090,13 @@ namespace CapaPresentacion
         private bool MuestraMensajeSiPacienteTieneLiga()
         {
             bool blnRetorno = false;
-            
+
             for (int i = 0; i < dgvClubesAsignados.Rows.Count; i++)
             {
-                if(cboLiga.Text == dgvClubesAsignados.Rows[i].Cells[2].Value.ToString())
+                if (cboLiga.Text == dgvClubesAsignados.Rows[i].Cells[2].Value.ToString())
                 {
                     MessageBox.Show("El paciente ya juega en esa liga. Seleccione otra o verifique la categor�a");
-                    blnRetorno = true;                    
+                    blnRetorno = true;
                     return blnRetorno;
                 }
             }
@@ -3123,17 +3117,17 @@ namespace CapaPresentacion
 
         private void txtMail_KeyDown(object sender, KeyEventArgs e)
         {
-            
+
         }
 
         private void tbBuscarClub_KeyDown(object sender, KeyEventArgs e)
         {
             if ((e.KeyCode == Keys.Enter || e.KeyCode == Keys.Down) && dgvClub.Rows.Count > 0)
             {
-                dgvClub.Select();                
+                dgvClub.Select();
             }
             else if (e.KeyCode == Keys.Escape)
-            {                
+            {
                 tbBuscarClub.Select();
             }
         }
@@ -3267,13 +3261,13 @@ namespace CapaPresentacion
 
             //panCentro.Location = new Point(0, 170);
             tbCodigo.Select();
-            
+
         }
-        
+
         private void ColoresForma()
         {
             DevExpress.XtraEditors.StyleController Estilo = new DevExpress.XtraEditors.StyleController();
-            
+
 
             rbcMenu.ColorScheme = DevExpress.XtraBars.Ribbon.RibbonControlColorScheme.Blue;
             panel4.Location = new Point(855, 3);
@@ -3298,7 +3292,7 @@ namespace CapaPresentacion
             butOk_Click(sender, e);
         }
 
-       
+
 
         private void label3_Click(object sender, EventArgs e)
         {
@@ -3315,15 +3309,15 @@ namespace CapaPresentacion
             dgvClub.DataSource = PacientePre.ListarLigaActiva();
             dgvClub.Columns[0].Visible = false;
             dgvClub.Columns[1].Visible = false;
-        } 
+        }
 
         private void BusquedaClub()
         {
-            
+
         }
 
         private void BusquedaLiga()
-        {            
+        {
             buscarLigas();
         }
 

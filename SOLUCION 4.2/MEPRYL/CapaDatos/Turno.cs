@@ -30,6 +30,7 @@ namespace CapaDatos
         public DataTable clubes = new DataTable();
         public bool modificado = false;
         public double importe = 0;
+        public double importeLista = 0;
         public bool factClub = false;
 
 

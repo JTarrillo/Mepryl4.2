@@ -664,11 +664,19 @@ namespace CapaPresentacionBase
                     id = rglEntidad.id.ToString();
                 }
             }
+
+            System.Diagnostics.Debug.WriteLine("[DIAG-DELEGATE-ID] Form=" + this.GetType().Name +
+                " Id=" + id +
+                " DelegateActivo=" + (objDelegateDevolverID != null ? "SI" : "NO"));
+
             this.Close();
 
             //Devuelve el ID del Articulo Seleccionado
             if (objDelegateDevolverID != null)
+            {
+                System.Diagnostics.Debug.WriteLine("[DIAG-DELEGATE-ID] Invocando delegate desde " + this.GetType().Name + " con Id=" + id);
                 objDelegateDevolverID(id);
+            }
         }
 
         private void butOk_Leave(object sender, EventArgs e)

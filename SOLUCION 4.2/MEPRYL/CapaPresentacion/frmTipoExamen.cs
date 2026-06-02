@@ -20,6 +20,7 @@ namespace CapaPresentacion
 
         private Entidades.TipoExamen tipoExamen;
         private CapaNegocioMepryl.TipoExamen tep;
+        private bool _usarPrecioLista = false;
 
         public frmTipoExamen(Entidades.TipoExamen te)
         {
@@ -56,12 +57,14 @@ namespace CapaPresentacion
         private void inicializarFormulario()
         {
             tbTipoExamen.Text = tipoExamen.Descripcion;
-            tbImporte.Text = tipoExamen.PrecioBase.ToString();
+            tbImporte.Text = tipoExamen.PrecioBase.ToString("N0");
+            tbImporteLista.Text = tipoExamen.PrecioLista.ToString("N0");
             tbId.Text = tipoExamen.Id.ToString();
             if (tipoExamen.Modificado)
             {
                 tbTipoExamen.Text = tbTipoExamen.Text + " MODIF.";
             }
+            actualizarVisualesPrecio();
             llenarDataGrids();
         }
 
@@ -192,10 +195,17 @@ namespace CapaPresentacion
         private void actualizarDatosEntidad()
         {
             Double result;
-            if (tbImporte.Text != string.Empty && Double.TryParse(tbImporte.Text, out result))
+            if (tbImporte.Text != string.Empty && TryParseImporte(tbImporte.Text, out result))
             {
                 tipoExamen.PrecioBase = result;
             }
+            Double resultLista;
+            if (tbImporteLista.Text != string.Empty && TryParseImporte(tbImporteLista.Text, out resultLista))
+            {
+                tipoExamen.PrecioLista = resultLista;
+            }
+            // Guardar cuál precio eligió el usuario
+            tipoExamen.UsarPrecioLista = _usarPrecioLista;
             tipoExamen.Clinico = (DataTable)dgvClinico.DataSource;
             tipoExamen.Hematologia = (DataTable)dgvHematologia.DataSource;
             tipoExamen.QuimicaHematica = (DataTable)dgvQuimicaHematica.DataSource;
@@ -214,6 +224,42 @@ namespace CapaPresentacion
         private void tabControl_SelectedIndexChanged(object sender, EventArgs e)
         {
             actualizarResumen();
+        }
+
+        private void btnUsarPrecio_Click(object sender, EventArgs e)
+        {
+            _usarPrecioLista = !_usarPrecioLista;
+            actualizarVisualesPrecio();
+        }
+
+        private void actualizarVisualesPrecio()
+        {
+            if (_usarPrecioLista)
+            {
+                tbImporteLista.BackColor = Color.PaleGreen;
+                tbImporteLista.Font = new Font(tbImporteLista.Font, FontStyle.Bold);
+                tbImporte.BackColor = SystemColors.Window;
+                tbImporte.Font = new Font(tbImporte.Font, FontStyle.Regular);
+                btnUsarPrecio.BackColor = Color.PaleGreen;
+            }
+            else
+            {
+                tbImporte.BackColor = Color.PaleGreen;
+                tbImporte.Font = new Font(tbImporte.Font, FontStyle.Bold);
+                tbImporteLista.BackColor = SystemColors.Window;
+                tbImporteLista.Font = new Font(tbImporteLista.Font, FontStyle.Regular);
+                btnUsarPrecio.BackColor = SystemColors.Control;
+            }
+        }
+
+        private bool TryParseImporte(string texto, out double valor)
+        {
+            if (double.TryParse(texto, System.Globalization.NumberStyles.Any,
+                                System.Globalization.CultureInfo.CurrentCulture, out valor))
+                return true;
+            // Fallback: quitar separadores de miles y parsear como entero
+            string sinMiles = texto.Replace(".", "").Replace(",", "").Trim();
+            return double.TryParse(sinMiles, out valor);
         }
 
         // Método auxiliar para ordenar DataTable alfabéticamente por la columna de descripción

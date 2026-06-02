@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -1219,7 +1219,9 @@ namespace CapaDatosMepryl
             e.id AS IdEspecialidad,
             e.descripcion,
             tep.precioExamen,
-            tep.modificado
+            tep.modificado,
+            tep.precioLista,
+            tep.seña
         FROM dbo.TipoExamenDePaciente tep 
         INNER JOIN dbo.EstudiosPorExamen epe ON tep.id = epe.idTipoExamen
         INNER JOIN dbo.Especialidad e ON tep.idEspecialidad = e.id 
@@ -1238,6 +1240,19 @@ namespace CapaDatosMepryl
                 if (Double.TryParse(row["precioExamen"].ToString(), out double precio))
                 {
                     retorno.PrecioBase = precio;
+                }
+
+                if (estudiosPorExamen.Columns.Contains("precioLista") && row["precioLista"] != DBNull.Value)
+                {
+                    if (Double.TryParse(row["precioLista"].ToString(), out double precioLista))
+                        retorno.PrecioLista = precioLista;
+                }
+
+                // Cargar la Seña desde la tabla
+                if (estudiosPorExamen.Columns.Contains("seña") && row["seña"] != DBNull.Value)
+                {
+                    if (Double.TryParse(row["seña"].ToString(), out double seña))
+                        retorno.Seña = seña;
                 }
 
                 if (!string.IsNullOrEmpty(row["modificado"].ToString()))
@@ -1368,9 +1383,9 @@ namespace CapaDatosMepryl
 
                 // Un solo pase sobre los 207 items — sin DataTable.Select, sin DataTables intermedios
                 var sbClinico = new System.Text.StringBuilder();
-                var sbLab     = new System.Text.StringBuilder();
-                var sbRx      = new System.Text.StringBuilder();
-                var sbComp    = new System.Text.StringBuilder();
+                var sbLab = new System.Text.StringBuilder();
+                var sbRx = new System.Text.StringBuilder();
+                var sbComp = new System.Text.StringBuilder();
 
                 foreach (var (colIdx, code) in colItemIndices)
                 {
@@ -1379,19 +1394,19 @@ namespace CapaDatosMepryl
                     if (!itemsDict.TryGetValue(code, out var info)) continue;
 
                     System.Text.StringBuilder sb;
-                    if      (info.orden == 1)                    sb = sbClinico;
+                    if (info.orden == 1) sb = sbClinico;
                     else if (info.orden >= 2 && info.orden <= 7) sb = sbLab;
                     else if (info.orden >= 8 && info.orden <= 11) sb = sbRx;
-                    else if (info.orden == 12)                    sb = sbComp;
+                    else if (info.orden == 12) sb = sbComp;
                     else continue;
 
                     if (sb.Length > 0) sb.Append(" - ");
                     sb.Append(info.nombre);
                 }
 
-                retorno.TextoClinico       = sbClinico.ToString();
-                retorno.TextoLaboratorio   = sbLab.ToString();
-                retorno.TextoRx            = sbRx.ToString();
+                retorno.TextoClinico = sbClinico.ToString();
+                retorno.TextoLaboratorio = sbLab.ToString();
+                retorno.TextoRx = sbRx.ToString();
                 retorno.TextoEstComplement = sbComp.ToString();
 
                 resultado[idTE] = retorno;
@@ -1482,7 +1497,8 @@ namespace CapaDatosMepryl
             epe.item201, epe.item202, epe.item203, epe.item204, epe.item205, epe.item206, epe.item207,
             e.id AS IdEspecialidad,
             e.descripcion AS DescripcionEspecialidad,
-            e.precioBase AS PrecioEspecialidad
+            e.precioBase AS PrecioEspecialidad,
+            e.precioLista AS PrecioListaEspecialidad
         FROM dbo.EstudiosPorTipoExamen epe
         INNER JOIN dbo.Especialidad e ON epe.idEspecialidad = e.id 
         WHERE epe.idEspecialidad = '" + idTipoExamen + "'");
@@ -1503,6 +1519,9 @@ namespace CapaDatosMepryl
 
                     if (Double.TryParse(row["PrecioEspecialidad"].ToString(), out double precio))
                         retorno.PrecioBase = precio;
+
+                    if (Double.TryParse(row["PrecioListaEspecialidad"].ToString(), out double precioLista))
+                        retorno.PrecioLista = precioLista;
 
                     // ...existing code...
                     retorno.Clinico = cargarTablaItemTipoExamenPaciente(estudiosPorExamen, 1);

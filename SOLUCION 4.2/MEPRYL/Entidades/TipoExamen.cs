@@ -18,6 +18,12 @@ namespace Entidades
         private string descripcionInformes;
         private Double precioBase;
         private Double precioLista;
+        private Double seña;
+        private bool llevaPlanilla;
+        private string observacionesExtra;
+        private bool usarPrecioLista;
+        private Double señaPromo;
+        private Double señaLista;
         private DataTable clinico;
         private DataTable hematologia;
         private DataTable quimicaHematica;
@@ -52,6 +58,12 @@ namespace Entidades
             descripcionInformes = string.Empty;
             precioBase = 0;
             precioLista = 0;
+            seña = 0;
+            llevaPlanilla = false;
+            observacionesExtra = string.Empty;
+            usarPrecioLista = false;
+            señaPromo = 0;
+            señaLista = 0;
             clinico = new DataTable();
             hematologia = new DataTable();
             quimicaHematica = new DataTable();
@@ -155,6 +167,42 @@ namespace Entidades
         {
             get { return precioLista; }
             set { precioLista = value; }
+        }
+
+        public Double Seña
+        {
+            get { return seña; }
+            set { seña = value; }
+        }
+
+        public bool LlevaPlanilla
+        {
+            get { return llevaPlanilla; }
+            set { llevaPlanilla = value; }
+        }
+
+        public string ObservacionesExtra
+        {
+            get { return observacionesExtra; }
+            set { observacionesExtra = value; }
+        }
+
+        public bool UsarPrecioLista
+        {
+            get { return usarPrecioLista; }
+            set { usarPrecioLista = value; }
+        }
+
+        public Double SeñaPromo
+        {
+            get { return señaPromo; }
+            set { señaPromo = value; }
+        }
+
+        public Double SeñaLista
+        {
+            get { return señaLista; }
+            set { señaLista = value; }
         }
 
         public DataTable Clinico
