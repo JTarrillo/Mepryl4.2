@@ -1929,32 +1929,7 @@ namespace CapaPresentacion
             this.pictureBox7.Size = new System.Drawing.Size(45, 39);
             this.pictureBox7.TabIndex = 30;
             this.pictureBox7.TabStop = false;
-            // 
-            // cbFactEmpresaLaboral
-            // 
-            this.cbFactEmpresaLaboral.AutoSize = true;
-            this.cbFactEmpresaLaboral.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.cbFactEmpresaLaboral.Font = new System.Drawing.Font("Tahoma", 9.75F);
-            this.cbFactEmpresaLaboral.Location = new System.Drawing.Point(405, 124);
-            this.cbFactEmpresaLaboral.Name = "cbFactEmpresaLaboral";
-            this.cbFactEmpresaLaboral.Size = new System.Drawing.Size(161, 20);
-            this.cbFactEmpresaLaboral.TabIndex = 36;
-            this.cbFactEmpresaLaboral.Text = "Se factura a la empresa";
-            this.cbFactEmpresaLaboral.UseVisualStyleBackColor = true;
-            this.cbFactEmpresaLaboral.CheckStateChanged += new System.EventHandler(this.cbFactEmpresaLaboral_CheckStateChanged);
-            // 
-            // cbExamenModificadoLaboral
-            // 
-            this.cbExamenModificadoLaboral.AutoSize = true;
-            this.cbExamenModificadoLaboral.Enabled = false;
-            this.cbExamenModificadoLaboral.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.cbExamenModificadoLaboral.Font = new System.Drawing.Font("Tahoma", 9.75F);
-            this.cbExamenModificadoLaboral.Location = new System.Drawing.Point(405, 101);
-            this.cbExamenModificadoLaboral.Name = "cbExamenModificadoLaboral";
-            this.cbExamenModificadoLaboral.Size = new System.Drawing.Size(133, 20);
-            this.cbExamenModificadoLaboral.TabIndex = 35;
-            this.cbExamenModificadoLaboral.Text = "Examen Modificado";
-            this.cbExamenModificadoLaboral.UseVisualStyleBackColor = true;
+
             // 
             // frmTurnos
             // 
