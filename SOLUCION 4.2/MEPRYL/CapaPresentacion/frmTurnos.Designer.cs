@@ -161,8 +161,6 @@ namespace CapaPresentacion
             this.LblTurnos = new System.Windows.Forms.Label();
             this.panel3 = new System.Windows.Forms.Panel();
             this.pictureBox7 = new System.Windows.Forms.PictureBox();
-            this.cbFactEmpresaLaboral = new System.Windows.Forms.CheckBox();
-            this.cbExamenModificadoLaboral = new System.Windows.Forms.CheckBox();
             this.botonLaboratorio.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panelLaboral.SuspendLayout();
