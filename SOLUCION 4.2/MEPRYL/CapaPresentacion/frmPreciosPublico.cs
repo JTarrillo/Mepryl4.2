@@ -698,5 +698,41 @@ namespace CapaPresentacion
                 e.Handled = true;
             }
         }
+
+        private void mnuVariacion_Click(object sender, EventArgs e)
+        {
+            // Aplicar variación al mes seleccionado
+            decimal factor = ObtenerFactor();
+            if (factor <= 0)
+            {
+                MessageBox.Show("Ingrese un valor válido.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            int mesSeleccionado = cboMesVariacion.SelectedIndex;
+            if (mesSeleccionado <= 0)
+            {
+                MessageBox.Show("Seleccione un mes válido.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            DialogResult dr = MessageBox.Show(
+                "Se aplicará variación (factor " + factor.ToString("0.##") + ") al mes seleccionado.\n\n(Los cambios quedan en la grilla. Presione Guardar para confirmar.)\n¿Continuar?",
+                "Confirmar variación", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (dr != DialogResult.Yes) return;
+
+            foreach (DataGridViewRow row in dgvPrecios.Rows)
+            {
+                if (!row.Visible) continue;
+
+                string colName = "colPromo" + mesSeleccionado.ToString("00");
+                decimal promo = ParseDecimal(row.Cells[colName].Value) * factor;
+                row.Cells[colName].Value = Math.Ceiling(promo / 1000m) * 1000m;
+            }
+
+            txtVariacion.Text = "0";
+            MessageBox.Show("Variación aplicada al mes seleccionado.\nRecuerde presionar Guardar para confirmar los cambios.",
+                "Variación aplicada", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
     }
 }
