@@ -25,7 +25,6 @@ namespace CapaPresentacion
 
         private void frmPreciosPublico_Load(object sender, EventArgs e)
         {
-            cboMes.SelectedIndex = DateTime.Now.Month - 1;
             nudAnio.Value = DateTime.Now.Year;
             CargarGrilla();
             yaInicializado = true;
@@ -40,7 +39,6 @@ namespace CapaPresentacion
 
         private void CargarGrilla()
         {
-            int mes = cboMes.SelectedIndex + 1;
             int anio = (int)nudAnio.Value;
 
             dgvPrecios.Rows.Clear();
@@ -68,20 +66,17 @@ namespace CapaPresentacion
                 decimal precioPromo = Convert.ToDecimal(row["PrecioPromo"]);
                 decimal precioBase = Convert.ToDecimal(row["precioBase"]);
 
-                // Si no hay precios cargados, auto-completar Promo desde precioBase
-                if (precioLista == 0 && precioPromo == 0 && precioBase > 0)
+                // Cargar todos los meses desde la base de datos
+                for (int m = 1; m <= 12; m++)
                 {
-                    string campo = "Promo" + mes.ToString("00");
-                    decimal valorPromo = (row[campo] == DBNull.Value) ? 0 : Convert.ToDecimal(row[campo]);
-                    dgvPrecios.Rows[idx].Cells["col" + campo].Value = valorPromo;
+                    string campoPromo = "Promo" + m.ToString("00");
+                    decimal valorPromo = (row[campoPromo] == DBNull.Value) ? 0 : Convert.ToDecimal(row[campoPromo]);
+                    dgvPrecios.Rows[idx].Cells["col" + campoPromo].Value = valorPromo;
                     
-                    string campoCoef = "Coef" + mes.ToString("00");
+                    string campoCoef = "Coef" + m.ToString("00");
                     decimal coefInd = (row[campoCoef] == DBNull.Value) ? 0m : Convert.ToDecimal(row[campoCoef]);
-                    dgvPrecios.Rows[idx].Cells["colCoef" + mes.ToString("00")].Value = coefInd;
+                    dgvPrecios.Rows[idx].Cells["colCoef" + m.ToString("00")].Value = coefInd;
                 }
-
-                dgvPrecios.Rows[idx].Cells["colPrecioLista"].Value = precioLista;
-                dgvPrecios.Rows[idx].Cells["colPrecioPromo"].Value = precioPromo;
             }
 
             lblTotal.Text = "Prestaciones: " + dt.Rows.Count;
@@ -257,7 +252,6 @@ namespace CapaPresentacion
         {
             try
             {
-                int mes = cboMes.SelectedIndex + 1;
                 int anio = (int)nudAnio.Value;
 
                 DataTable dtGuardar = new DataTable();
@@ -289,7 +283,7 @@ namespace CapaPresentacion
                     dtGuardar.Rows.Add(dr);
                 }
 
-                precioPublico.GuardarPreciosPublico(mes, anio, dtGuardar);
+                precioPublico.GuardarPreciosPublicoAnio(anio, dtGuardar);
                 MessageBox.Show("Precios guardados correctamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
@@ -298,41 +292,31 @@ namespace CapaPresentacion
             }
         }
 
-        private void btnCopiarMes_Click(object sender, EventArgs e)
+        private void btnCopiarAnio_Click(object sender, EventArgs e)
         {
-            int mesActual = cboMes.SelectedIndex + 1;
             int anioActual = (int)nudAnio.Value;
+            int anioAnterior = anioActual - 1;
 
-            int mesAnterior = mesActual - 1;
-            int anioAnterior = anioActual;
-            if (mesAnterior < 1)
+            if (!precioPublico.ExistenPreciosAnio(anioAnterior))
             {
-                mesAnterior = 12;
-                anioAnterior--;
-            }
-
-            string nombreMesAnterior = cboMes.Items[mesAnterior - 1].ToString();
-            string nombreMesActual = cboMes.Items[mesActual - 1].ToString();
-
-            if (!precioPublico.ExistenPrecios(mesAnterior, anioAnterior))
-            {
-                MessageBox.Show("No existen precios en " + nombreMesAnterior + " " + anioAnterior + " para copiar.",
+                MessageBox.Show("No existen precios en " + anioAnterior + " para copiar.",
                     "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            if (precioPublico.ExistenPrecios(mesActual, anioActual))
+            if (precioPublico.ExistenPreciosAnio(anioActual))
             {
                 DialogResult dr = MessageBox.Show(
-                    "Ya existen precios en " + nombreMesActual + " " + anioActual + ". Se copiarán solo las prestaciones faltantes.\n¿Continuar?",
+                    "Ya existen precios en " + anioActual + ". Se copiarán solo las prestaciones faltantes.\n¿Continuar?",
                     "Confirmar", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (dr != DialogResult.Yes) return;
             }
 
             try
             {
-                precioPublico.CopiarPrecios(mesAnterior, anioAnterior, mesActual, anioActual);
-                MessageBox.Show("Precios copiados desde " + nombreMesAnterior + " " + anioAnterior + ".",
+                DataTable dtAnterior = precioPublico.ListarPreciosPublicoAnio(anioAnterior);
+                precioPublico.GuardarPreciosPublicoAnio(anioActual, dtAnterior);
+                MessageBox.Show("Precios copiados desde " + anioAnterior + ".",
                     "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 CargarGrilla();
             }
@@ -457,10 +441,7 @@ namespace CapaPresentacion
                 }
             }
 
-            // Guardar el coeficiente para este mes/año
-            int mes = cboMes.SelectedIndex + 1;
-            int anio = (int)nudAnio.Value;
-            precioPublico.GuardarCoeficiente(mes, anio, factor);
+            // Los coeficientes se guardan por año
 
             txtVariacion.Text = "0";
             MessageBox.Show("Precio Lista calculado en " + alcance + " (factor " + factor.ToString("0.##") + ").\nRecuerde presionar Guardar para confirmar los cambios.",
