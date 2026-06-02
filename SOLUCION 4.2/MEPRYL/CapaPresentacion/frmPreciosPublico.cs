@@ -12,6 +12,9 @@ namespace CapaPresentacion
         private CapaNegocioMepryl.PrecioPublico precioPublico;
         private DataTable dtOriginal;
         private bool yaInicializado = false;
+        private decimal[] _coefs;
+        private DataTable dt;
+        private readonly string[] NombresMeses = { "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre" };
 
         public frmPreciosPublico(frmBasePrincipal parentForm)
         {
@@ -44,9 +47,9 @@ namespace CapaPresentacion
 
             // Cargar coeficientes y mostrarlos en el encabezado de colCoef
             _coefs = ObtenerCoeficientesAnio(anio);
-            for (int mes = 1; mes <= 12; mes++)
-                dgvPrecios.Columns["colCoef" + mes.ToString("00")].HeaderText =
-                    _coefs[mes - 1].ToString("0.##", System.Globalization.CultureInfo.CurrentCulture);
+            for (int m = 1; m <= 12; m++)
+                dgvPrecios.Columns["colCoef" + m.ToString("00")].HeaderText =
+                    _coefs[m - 1].ToString("0.##", System.Globalization.CultureInfo.CurrentCulture);
             dgvPrecios.Columns["colIPCBase"].HeaderText = _coefs[0].ToString("0.##", System.Globalization.CultureInfo.CurrentCulture);
 
             foreach (DataRow row in dt.Rows)
@@ -83,6 +86,7 @@ namespace CapaPresentacion
 
             lblTotal.Text = "Prestaciones: " + dt.Rows.Count;
             txtBuscar.Clear();
+        }
 
         private void dgvPrecios_ColumnHeaderMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
         {
@@ -152,10 +156,15 @@ namespace CapaPresentacion
                 string mensaje = $"Se han recalculado los precios desde {NombresMeses[mesInicio - 1]} hasta Diciembre aplicando los coeficientes sucesivamente.";
                 MessageBox.Show(mensaje, "Cálculo aplicado", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
-            else
+            catch (Exception ex)
             {
-                decimal porcentaje = (coeficiente - 1) * 100;
-                txtVariacion.Text = porcentaje.ToString("0.##");
+                MessageBox.Show("Error al aplicar cálculo de coeficientes: " + ex.Message, 
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                // Reactivar eventos
+                dgvPrecios.CellEndEdit += dgvPrecios_CellEndEdit;
             }
         }
 
@@ -255,10 +264,10 @@ namespace CapaPresentacion
                 dtGuardar.Columns.Add("idEspecialidad", typeof(string));
                 dtGuardar.Columns.Add("Descripcion",    typeof(string));
                 dtGuardar.Columns.Add("IPCBase",       typeof(decimal));
-                for (int mes = 1; mes <= 12; mes++)
+                for (int m = 1; m <= 12; m++)
                 {
-                    dtGuardar.Columns.Add("Promo" + mes.ToString("00"), typeof(decimal));
-                    dtGuardar.Columns.Add("Coef"  + mes.ToString("00"), typeof(decimal));
+                    dtGuardar.Columns.Add("Promo" + m.ToString("00"), typeof(decimal));
+                    dtGuardar.Columns.Add("Coef"  + m.ToString("00"), typeof(decimal));
                 }
 
                 // Guardar coeficientes globales desde _coefs
@@ -272,10 +281,10 @@ namespace CapaPresentacion
                     dr["idEspecialidad"] = row.Cells["colIdEspecialidad"].Value?.ToString() ?? "";
                     dr["Descripcion"]    = row.Cells["colDescripcion"].Value?.ToString()    ?? "";
                     dr["IPCBase"]       = ParseDecimal(row.Cells["colIPCBase"].Value);
-                    for (int mes = 1; mes <= 12; mes++)
+                    for (int m = 1; m <= 12; m++)
                     {
-                        dr["Promo" + mes.ToString("00")] = ParseDecimal(row.Cells["colPromo" + mes.ToString("00")].Value);
-                        dr["Coef"  + mes.ToString("00")] = ParseDecimal(row.Cells["colCoef"  + mes.ToString("00")].Value);
+                        dr["Promo" + m.ToString("00")] = ParseDecimal(row.Cells["colPromo" + m.ToString("00")].Value);
+                        dr["Coef"  + m.ToString("00")] = ParseDecimal(row.Cells["colCoef"  + m.ToString("00")].Value);
                     }
                     dtGuardar.Rows.Add(dr);
                 }
@@ -481,20 +490,6 @@ namespace CapaPresentacion
             }
 
             lblTotal.Text = "Prestaciones: " + visibles;
-
-            // Filtrar también la pestaña de configuración
-            foreach (DataGridViewRow row in dgvConfig.Rows)
-            {
-                if (string.IsNullOrEmpty(filtro))
-                    row.Visible = true;
-                else
-                {
-                    string desc   = row.Cells["colCfgDescripcion"].Value?.ToString().ToLower() ?? "";
-                    string motivo = row.Cells["colCfgMotivo"].Value?.ToString().ToLower()      ?? "";
-                    string tipo   = row.Cells["colCfgTipo"].Value?.ToString().ToLower()        ?? "";
-                    row.Visible = desc.Contains(filtro) || motivo.Contains(filtro) || tipo.Contains(filtro);
-                }
-            }
         }
 
         private void dgvPrecios_CellParsing(object sender, DataGridViewCellParsingEventArgs e)

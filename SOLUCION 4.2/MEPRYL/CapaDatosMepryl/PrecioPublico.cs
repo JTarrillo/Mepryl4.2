@@ -294,5 +294,50 @@ namespace CapaDatosMepryl
             DataTable dt = SQLConnector.obtenerTablaSegunConsultaString(strSQL);
             return dt != null && dt.Rows.Count > 0 && int.Parse(dt.Rows[0][0].ToString()) > 0;
         }
+
+        /// <summary>
+        /// Lista la configuración de especialidades (campos especiales: Seña, LlevaPlanilla, Observaciones)
+        /// </summary>
+        public DataTable ListarConfigEspecialidades()
+        {
+            string strSQL = "SELECT id AS idEspecialidad, descripcion AS Descripcion, " +
+                            "ISNULL(idMotivoConsulta, 0) AS Motivo, ISNULL(IdPadre, 0) AS TipoPadre, " +
+                            "ISNULL(SeñaPromo, 0) AS SeñaPromo, ISNULL(SeñaLista, 0) AS SeñaLista, " +
+                            "ISNULL(LlevaPlanilla, 0) AS LlevaPlanilla, ISNULL(ObservacionesExtra, '') AS ObservacionesExtra " +
+                            "FROM Especialidad " +
+                            "WHERE Padre = 0 AND estado = 1 AND IdPadre IS NOT NULL " +
+                            "AND id NOT IN (SELECT id FROM dbo.EspecialidadesEliminadas) " +
+                            "ORDER BY descripcion";
+            return SQLConnector.obtenerTablaSegunConsultaString(strSQL);
+        }
+
+        /// <summary>
+        /// Guarda la configuración de especialidades (campos especiales)
+        /// </summary>
+        public void GuardarConfigEspecialidades(DataTable dtDatos)
+        {
+            if (dtDatos == null || dtDatos.Rows.Count == 0) return;
+
+            StringBuilder sb = new StringBuilder();
+
+            for (int i = 0; i < dtDatos.Rows.Count; i++)
+            {
+                string idEsp = dtDatos.Rows[i]["idEspecialidad"].ToString();
+                string señaPromo = dtDatos.Rows[i]["SeñaPromo"].ToString().Replace(",", ".");
+                string señaLista = dtDatos.Rows[i]["SeñaLista"].ToString().Replace(",", ".");
+                string llevaPlanilla = (Convert.ToBoolean(dtDatos.Rows[i]["LlevaPlanilla"]) ? "1" : "0");
+                string obsExtra = dtDatos.Rows[i]["ObservacionesExtra"].ToString().Replace("'", "''");
+
+                sb.Append("UPDATE Especialidad SET ");
+                sb.Append("SeñaPromo = " + señaPromo + ", ");
+                sb.Append("SeñaLista = " + señaLista + ", ");
+                sb.Append("LlevaPlanilla = " + llevaPlanilla + ", ");
+                sb.Append("ObservacionesExtra = '" + obsExtra + "' ");
+                sb.AppendLine("WHERE id = '" + idEsp + "'; ");
+            }
+
+            if (sb.Length > 0)
+                SQLConnector.obtenerTablaSegunConsultaString(sb.ToString());
+        }
     }
 }
