@@ -94,15 +94,14 @@ namespace CapaDatosMepryl
             tep.id as IdTipoExamen,
             t.habilitado as Habilitado,
             t.estadoID as IdEstado,
-            COALESCE(tep.idEspecialidad, h.especialidadID) as IdSubtipo,
-            ISNULL(tePadre.id, te.id) as IdPadre,
-            tep.idConsulta as IdConsulta
+            te.id as IdSubtipo,
+            ISNULL(tePadre.id, te.id) as IdPadre
         FROM dbo.Turno t
         INNER JOIN dbo.TurnoEstado e ON t.estadoID = e.id
         INNER JOIN dbo.Horario h ON t.horarioID = h.id
         INNER JOIN dbo.Profesional p ON h.profesionalID = p.id
         LEFT JOIN dbo.TipoExamenDePaciente tep ON tep.idTurno = t.id
-        LEFT JOIN dbo.Especialidad te ON COALESCE(tep.idEspecialidad, h.especialidadID) = te.id
+        LEFT JOIN dbo.Especialidad te ON h.especialidadID = te.id
         LEFT JOIN dbo.Especialidad tePadre ON te.IdPadre = tePadre.id AND te.Padre = 0
         WHERE convert(date, t.fecha) = convert(date, '" + fecha.ToShortDateString() + "', 105) "
                 + filtroTipoExamen + filtroHora + filtroEstado +
@@ -136,7 +135,6 @@ namespace CapaDatosMepryl
                 retorno.Columns.Add("Estado");
                 retorno.Columns.Add("IdPadre");        // ✅ NUEVO
                 retorno.Columns.Add("IdSubtipo");      // ✅ NUEVO
-                retorno.Columns.Add("IdConsulta");
 
                 foreach (DataRow r in turnos.Rows)
                 {
@@ -194,8 +192,7 @@ namespace CapaDatosMepryl
                         r.ItemArray[14].ToString(),     // IdTipoExamen
                         estado,
                         r.ItemArray[18].ToString(),     // IdPadre ✅
-                        r.ItemArray[17].ToString(),     // IdSubtipo ✅
-                        r.ItemArray[19].ToString()      // IdConsulta
+                        r.ItemArray[17].ToString()      // IdSubtipo ✅
                     );
                 }
                 return retorno;
@@ -285,16 +282,6 @@ namespace CapaDatosMepryl
                 retorno.IdPaciente = new Guid(infoTurno.Rows[0][1].ToString());
                 // GRV - Modificado
                 retorno.TipoExamen = tipoExamen.cargarEstudiosPorExamen(infoTurno.Rows[0][3].ToString());
-                
-                // Cargar la seña desde TipoExamenDePaciente, si existe (IMPORTANTE: después de cargar TipoExamen!)
-                if (infoTurno.Rows[0].ItemArray[8] != DBNull.Value)
-                {
-                    double señaFromTable = Convert.ToDouble(infoTurno.Rows[0].ItemArray[8].ToString());
-                    if (señaFromTable > 0)
-                    {
-                        retorno.TipoExamen.Seña = señaFromTable;
-                    }
-                }
                 DataTable infoPaciente = SQLConnector.obtenerTablaSegunConsultaString(@"select id, 
                 apellido + ' ' + nombres, fechaNacimiento, telefonos, celular, dni, Email from dbo.Paciente
                 where id = '" + infoTurno.Rows[0][1].ToString() + "'");
@@ -337,7 +324,6 @@ namespace CapaDatosMepryl
                 tep.modificado, 
                 tep.factClub, 
                 tep.precioExamen, 
-                tep.seña, 
                 e.descripcion AS descripcionEspecialidad
             FROM dbo.Turno t 
             INNER JOIN dbo.TipoExamenDePaciente tep ON tep.idTurno = t.id
@@ -369,12 +355,6 @@ namespace CapaDatosMepryl
                 entidadTipoExamen.PrecioBase = Convert.ToDouble(row["PrecioPromo"].ToString());
             if (row["PrecioLista"] != DBNull.Value)
                 entidadTipoExamen.PrecioLista = Convert.ToDouble(row["PrecioLista"].ToString());
-            if (row["Seña"] != DBNull.Value)
-                entidadTipoExamen.Seña = Convert.ToDouble(row["Seña"].ToString());
-            if (row["LlevaPlanilla"] != DBNull.Value)
-                entidadTipoExamen.LlevaPlanilla = Convert.ToBoolean(row["LlevaPlanilla"].ToString());
-            if (row["ObservacionesExtra"] != DBNull.Value)
-                entidadTipoExamen.ObservacionesExtra = row["ObservacionesExtra"].ToString();
         }
 
         public Entidades.TurnoLaboral cargarTurnoPacienteLaboral(Guid idTurno)
@@ -396,16 +376,6 @@ namespace CapaDatosMepryl
                 }
                 retorno.IdPaciente = new Guid(infoTurno.Rows[0][1].ToString());
                 retorno.TipoExamen = tipoExamen.cargarEstudiosPorExamen(infoTurno.Rows[0][3].ToString());
-                
-                // Cargar la seña desde TipoExamenDePaciente, si existe
-                if (infoTurno.Rows[0].ItemArray[8] != DBNull.Value)
-                {
-                    double señaFromTable = Convert.ToDouble(infoTurno.Rows[0].ItemArray[8].ToString());
-                    if (señaFromTable > 0)
-                    {
-                        retorno.TipoExamen.Seña = señaFromTable;
-                    }
-                }
                 DataTable infoPaciente = SQLConnector.obtenerTablaSegunConsultaString(@"select id, 
                 apellido + ' ' + nombres, telefonos, celular, dni, cuil, mail, fechaNacimiento from dbo.PacienteLaboral
                 where id = '" + infoTurno.Rows[0][1].ToString() + "'");
@@ -638,10 +608,10 @@ namespace CapaDatosMepryl
             try
             {
                 List<string> listAddTipoExamen = SQLConnector.generarListaParaProcedure("@idConsulta", "@idTurno", "@modificado",
-                "@idEspecialidad", "@importe", "@factClub", "@precioLista", "@seña");
+                "@idEspecialidad", "@importe", "@factClub", "@precioLista");
                 string idTipoExamen = SQLConnector.executeProcedureWithReturnValue("sp_TipoExamenDePaciente_Add", listAddTipoExamen, Guid.Empty, entidad.Id,
                 examenModificado(entidad.TipoExamen.Modificado), entidad.TipoExamen.Id, entidad.TipoExamen.PrecioBase,
-                facturaClubEmpresa(entidad.FacturaEmpresa), entidad.TipoExamen.PrecioLista, entidad.TipoExamen.Seña);
+                facturaClubEmpresa(entidad.FacturaEmpresa), entidad.TipoExamen.PrecioLista);
                 entidad.TipoExamen.IdTipoExamenPaciente = new Guid(idTipoExamen);
                 List<string> listAddEmpresaPorTipoExamen = SQLConnector.generarListaParaProcedure("@idTipoExamen", "@idEmpresa", "@tarea");
                 SQLConnector.executeProcedure("sp_empresaPorTipoDeExamen_Add", listAddEmpresaPorTipoExamen, new Guid(idTipoExamen),
@@ -726,10 +696,10 @@ namespace CapaDatosMepryl
                     //entidad.TipoExamen.Modificado = !PacientePre.DebeRealizarExamenRX(DNIPaciente(entidad.IdPaciente.ToString()));
 
                     List<string> listAddTipoExamen = SQLConnector.generarListaParaProcedure("@idConsulta", "@idTurno", "@modificado",
-                    "@idEspecialidad", "@importe", "@factClub", "@precioLista", "@seña");
+                    "@idEspecialidad", "@importe", "@factClub", "@precioLista");
                     string idTipoExamen = SQLConnector.executeProcedureWithReturnValue("sp_TipoExamenDePaciente_Add", listAddTipoExamen, Guid.Empty, entidad.Id,
                     examenModificado(entidad.TipoExamen.Modificado), entidad.TipoExamen.Id, entidad.TipoExamen.PrecioBase,
-                    facturaClubEmpresa(entidad.FacturaClub), entidad.TipoExamen.PrecioLista, entidad.TipoExamen.Seña);
+                    facturaClubEmpresa(entidad.FacturaClub), entidad.TipoExamen.PrecioLista);
                     entidad.TipoExamen.IdTipoExamenPaciente = new Guid(idTipoExamen);
                     List<string> listAddClubPorTipoExamen = SQLConnector.generarListaParaProcedure("@idTipoExamen", "@idClub");
                     foreach (DataRow r in entidad.LigaClub.Rows)
@@ -774,10 +744,10 @@ namespace CapaDatosMepryl
             {
                 tipoExamen.actualizarEstudiosPorExamen(entidad.TipoExamen);
                 List<string> listUpdateTipoExamen = SQLConnector.generarListaParaProcedure("@idTurno", "@valor",
-                "@importe", "@factClub", "@precioLista", "@seña");
+                "@importe", "@factClub", "@precioLista");
                 SQLConnector.executeProcedure("sp_TipoExamenDePaciente_Update", listUpdateTipoExamen, entidad.Id,
                 examenModificado(entidad.TipoExamen.Modificado), entidad.TipoExamen.PrecioBase,
-                facturaClubEmpresa(entidad.FacturaClub), entidad.TipoExamen.PrecioLista, entidad.TipoExamen.Seña);
+                facturaClubEmpresa(entidad.FacturaClub), entidad.TipoExamen.PrecioLista);
                 List<string> deleteClubesPorTipoExamen = SQLConnector.generarListaParaProcedure("@idTipoExamen");
                 SQLConnector.executeProcedure("sp_clubesPorTipoExamen_Delete", deleteClubesPorTipoExamen,
                     entidad.TipoExamen.IdTipoExamenPaciente);
@@ -812,10 +782,10 @@ namespace CapaDatosMepryl
             {
                 tipoExamen.actualizarEstudiosPorExamen(entidad.TipoExamen);
                 List<string> listUpdateTipoExamen = SQLConnector.generarListaParaProcedure("@idTurno", "@valor",
-                "@importe", "@factClub", "@precioLista", "@seña");
+                "@importe", "@factClub", "@precioLista");
                 SQLConnector.executeProcedure("sp_TipoExamenDePaciente_Update", listUpdateTipoExamen, entidad.Id,
                 examenModificado(entidad.TipoExamen.Modificado), entidad.TipoExamen.PrecioBase,
-                facturaClubEmpresa(entidad.FacturaEmpresa), entidad.TipoExamen.PrecioLista, entidad.TipoExamen.Seña);
+                facturaClubEmpresa(entidad.FacturaEmpresa), entidad.TipoExamen.PrecioLista);
                 List<string> listUpdateEmpresaPorTipoExamen = SQLConnector.generarListaParaProcedure("@idTipoExamen", "@idEmpresa", "@tarea");
                 SQLConnector.executeProcedure("sp_empresaPorTipoDeExamen_Update", listUpdateEmpresaPorTipoExamen,
                 entidad.TipoExamen.IdTipoExamenPaciente, entidad.IdEmpresa, entidad.Tarea);
@@ -1523,7 +1493,6 @@ namespace CapaDatosMepryl
 
         public DataTable buscarTurnosPorDNI(string dni)
         {
-            System.Diagnostics.Debug.WriteLine($"[BUSCAR_TURNO][DATOS] buscarTurnosPorDNI() - DNI: '{dni}'");
             try
             {
                 string strSQL = @"
@@ -1544,15 +1513,14 @@ namespace CapaDatosMepryl
                         tep.id as IdTipoExamen,
                         t.habilitado as Habilitado,
                         t.estadoID as IdEstado,
-                        COALESCE(tep.idEspecialidad, h.especialidadID) as IdSubtipo,
-                        ISNULL(tePadre.id, te.id) as IdPadre,
-                        tep.idConsulta as IdConsulta
+                        te.id as IdSubtipo,
+                        ISNULL(tePadre.id, te.id) as IdPadre
                     FROM dbo.Turno t
                     INNER JOIN dbo.TurnoEstado e ON t.estadoID = e.id
                     INNER JOIN dbo.Horario h ON t.horarioID = h.id
                     INNER JOIN dbo.Profesional p ON h.profesionalID = p.id
                     LEFT JOIN dbo.TipoExamenDePaciente tep ON tep.idTurno = t.id
-                    LEFT JOIN dbo.Especialidad te ON COALESCE(tep.idEspecialidad, h.especialidadID) = te.id
+                    LEFT JOIN dbo.Especialidad te ON h.especialidadID = te.id
                     LEFT JOIN dbo.Especialidad tePadre ON te.IdPadre = tePadre.id AND te.Padre = 0
                     WHERE t.codigo = '" + dni + @"'
                     OR (t.pacienteID IN (
@@ -1562,15 +1530,12 @@ namespace CapaDatosMepryl
                     ))
                     ORDER BY t.fecha DESC, t.horaReferencia DESC";
 
-                System.Diagnostics.Debug.WriteLine($"[BUSCAR_TURNO][DATOS] Ejecutando consulta SQL para DNI");
                 DataTable turnos = SQLConnector.obtenerTablaSegunConsultaString(strSQL);
-                System.Diagnostics.Debug.WriteLine($"[BUSCAR_TURNO][DATOS] Consulta completada - Filas encontradas: {turnos.Rows.Count}");
                 return generarTablaRetornoTurno(turnos);
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[BUSCAR_TURNO][DATOS] ❌ Error en buscarTurnosPorDNI: {ex.Message}");
-                System.Diagnostics.Debug.WriteLine($"[BUSCAR_TURNO][DATOS] StackTrace: {ex.StackTrace}");
+                System.Diagnostics.Debug.WriteLine($"Error en buscarTurnosPorDNI: {ex.Message}");
                 return new DataTable();
             }
         }
@@ -1580,7 +1545,6 @@ namespace CapaDatosMepryl
         /// </summary>
         public DataTable buscarTurnosPorNombre(string nombre)
         {
-            System.Diagnostics.Debug.WriteLine($"[BUSCAR_TURNO][DATOS] buscarTurnosPorNombre() - Nombre: '{nombre}'");
             try
             {
                 string strSQL = @"
@@ -1601,15 +1565,14 @@ namespace CapaDatosMepryl
                         tep.id as IdTipoExamen,
                         t.habilitado as Habilitado,
                         t.estadoID as IdEstado,
-                        COALESCE(tep.idEspecialidad, h.especialidadID) as IdSubtipo,
-                        ISNULL(tePadre.id, te.id) as IdPadre,
-                        tep.idConsulta as IdConsulta
+                        te.id as IdSubtipo,
+                        ISNULL(tePadre.id, te.id) as IdPadre
                     FROM dbo.Turno t
                     INNER JOIN dbo.TurnoEstado e ON t.estadoID = e.id
                     INNER JOIN dbo.Horario h ON t.horarioID = h.id
                     INNER JOIN dbo.Profesional p ON h.profesionalID = p.id
                     LEFT JOIN dbo.TipoExamenDePaciente tep ON tep.idTurno = t.id
-                    LEFT JOIN dbo.Especialidad te ON COALESCE(tep.idEspecialidad, h.especialidadID) = te.id
+                    LEFT JOIN dbo.Especialidad te ON h.especialidadID = te.id
                     LEFT JOIN dbo.Especialidad tePadre ON te.IdPadre = tePadre.id AND te.Padre = 0
                     WHERE t.pacienteID IN (
                         SELECT id FROM dbo.Paciente WHERE (apellido + ' ' + nombres) LIKE '" + nombre + @"%'
@@ -1618,15 +1581,12 @@ namespace CapaDatosMepryl
                     )
                     ORDER BY t.fecha DESC, t.horaReferencia DESC";
 
-                System.Diagnostics.Debug.WriteLine($"[BUSCAR_TURNO][DATOS] Ejecutando consulta SQL para Nombre");
                 DataTable turnos = SQLConnector.obtenerTablaSegunConsultaString(strSQL);
-                System.Diagnostics.Debug.WriteLine($"[BUSCAR_TURNO][DATOS] Consulta completada - Filas encontradas: {turnos.Rows.Count}");
                 return generarTablaRetornoTurno(turnos);
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[BUSCAR_TURNO][DATOS] ❌ Error en buscarTurnosPorNombre: {ex.Message}");
-                System.Diagnostics.Debug.WriteLine($"[BUSCAR_TURNO][DATOS] StackTrace: {ex.StackTrace}");
+                System.Diagnostics.Debug.WriteLine($"Error en buscarTurnosPorNombre: {ex.Message}");
                 return new DataTable();
             }
         }

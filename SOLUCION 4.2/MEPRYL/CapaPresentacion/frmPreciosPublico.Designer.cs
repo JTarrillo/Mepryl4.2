@@ -103,7 +103,7 @@ namespace CapaPresentacion
             this.colCfgMotivo = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colCfgTipo = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colCfgDescripcion = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colCfgSe\u00f1a = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colCfgSeña = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colCfgPlanilla = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.colCfgObservaciones = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.pnlSuperior.SuspendLayout();
@@ -784,7 +784,7 @@ namespace CapaPresentacion
             this.colCfgMotivo,
             this.colCfgTipo,
             this.colCfgDescripcion,
-            this.colCfgSe\u00f1a,
+            this.colCfgSeña,
             this.colCfgPlanilla,
             this.colCfgObservaciones});
             this.dgvConfig.Dock = System.Windows.Forms.DockStyle.Fill;
