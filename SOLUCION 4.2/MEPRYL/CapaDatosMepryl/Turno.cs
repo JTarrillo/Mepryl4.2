@@ -1638,10 +1638,11 @@ namespace CapaDatosMepryl
         {
             return SQLConnector.obtenerTablaSegunConsultaString(
                 "SELECT pp.PrecioPromo, pp.PrecioLista, " +
-                "ISNULL(pp.Seña, 0) AS Seña, " +
-                "ISNULL(pp.LlevaPlanilla, 0) AS LlevaPlanilla, " +
-                "ISNULL(pp.ObservacionesExtra, '') AS ObservacionesExtra " +
+                "ISNULL(cfg.Seña, 0) AS Seña, " +
+                "ISNULL(cfg.LlevaPlanilla, 0) AS LlevaPlanilla, " +
+                "ISNULL(cfg.Observaciones, '') AS ObservacionesExtra " +
                 "FROM dbo.PrecioPublico pp " +
+                "LEFT JOIN dbo.ConfigPrecioEspecialidad cfg ON cfg.idEspecialidad = pp.idEspecialidad " +
                 "WHERE pp.idEspecialidad = '" + idEspecialidad.ToString() +
                 "' AND pp.Mes = " + fecha.Month + " AND pp.Anio = " + fecha.Year + " AND pp.Eliminado = 0");
         }
