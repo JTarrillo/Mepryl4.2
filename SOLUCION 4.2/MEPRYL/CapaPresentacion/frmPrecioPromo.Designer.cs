@@ -1,6 +1,6 @@
 namespace CapaPresentacion
 {
-    partial class frmPreciosPublico
+    partial class frmPrecioPromo
     {
         private System.ComponentModel.IContainer components = null;
 
@@ -103,7 +103,7 @@ namespace CapaPresentacion
             this.colCfgMotivo = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colCfgTipo = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colCfgDescripcion = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colCfgSe\u00f1a = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colCfgSeña = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colCfgPlanilla = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.colCfgObservaciones = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.pnlSuperior.SuspendLayout();
@@ -758,7 +758,7 @@ namespace CapaPresentacion
             this.tabPrecios.Padding = new System.Windows.Forms.Padding(3);
             this.tabPrecios.Size = new System.Drawing.Size(1356, 379);
             this.tabPrecios.TabIndex = 0;
-            this.tabPrecios.Text = "  Precios Públicos";
+            this.tabPrecios.Text = "  Precio Promo";
             this.tabPrecios.UseVisualStyleBackColor = true;
             // 
             // tabConfig
@@ -784,7 +784,7 @@ namespace CapaPresentacion
             this.colCfgMotivo,
             this.colCfgTipo,
             this.colCfgDescripcion,
-            this.colCfgSe\u00f1a,
+            this.colCfgSeña,
             this.colCfgPlanilla,
             this.colCfgObservaciones});
             this.dgvConfig.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -854,7 +854,7 @@ namespace CapaPresentacion
             this.Name = "frmPreciosPublico";
             this.Text = "Precios al Público";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
-            this.Load += new System.EventHandler(this.frmPreciosPublico_Load);
+            this.Load += new System.EventHandler(this.frmPrecioPromo_Load);
             this.pnlSuperior.ResumeLayout(false);
             this.pnlSuperior.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudAnio)).EndInit();

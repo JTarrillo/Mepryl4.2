@@ -541,7 +541,7 @@ namespace CapaPresentacion
 
         protected override void bbiListaPrecios_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
-            Utilidades.abrirFormulario(this, new frmPreciosPublico(this), this.configuracion);
+            Utilidades.abrirFormulario(this, new frmPrecioPromo(this), this.configuracion);
             LimpiarEstadoIcono();
             bbiListaPrecios.Down = true;
         }
@@ -550,7 +550,7 @@ namespace CapaPresentacion
         {
             try
             {
-                Utilidades.abrirFormulario(this, new frmPreciosPublico(this), this.configuracion);
+                Utilidades.abrirFormulario(this, new frmPrecioPromo(this), this.configuracion);
                 LimpiarEstadoIcono();
                 bbiPreciosPublico.Down = true;
             }

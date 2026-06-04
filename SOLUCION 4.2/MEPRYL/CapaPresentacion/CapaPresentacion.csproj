@@ -523,11 +523,11 @@
     <Compile Include="frmListaDePrecios.Designer.cs">
       <DependentUpon>frmListaDePrecios.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmPreciosPublico.cs">
+    <Compile Include="frmPrecioPromo.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmPreciosPublico.Designer.cs">
-      <DependentUpon>frmPreciosPublico.cs</DependentUpon>
+    <Compile Include="frmPrecioPromo.Designer.cs">
+      <DependentUpon>frmPrecioPromo.cs</DependentUpon>
     </Compile>
     <Compile Include="frmListaPrecioTomaBase.cs">
       <SubType>Form</SubType>
@@ -1479,8 +1479,8 @@
     <EmbeddedResource Include="frmMuestraFactPorEmpresa.resx">
       <DependentUpon>frmMuestraFactPorEmpresa.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmPreciosPublico.resx">
-      <DependentUpon>frmPreciosPublico.cs</DependentUpon>
+    <EmbeddedResource Include="frmPrecioPromo.resx">
+      <DependentUpon>frmPrecioPromo.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="frmReplicarHorario.resx">

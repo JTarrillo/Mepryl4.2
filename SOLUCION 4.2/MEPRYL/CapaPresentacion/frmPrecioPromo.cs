@@ -7,7 +7,7 @@ using CapaPresentacionBase;
 
 namespace CapaPresentacion
 {
-    public partial class frmPreciosPublico : DevExpress.XtraEditors.XtraForm
+    public partial class frmPrecioPromo : DevExpress.XtraEditors.XtraForm
     {
         private CapaNegocioMepryl.PrecioPublico precioPublico;
         private bool yaInicializado = false;
@@ -19,14 +19,14 @@ namespace CapaPresentacion
             "Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"
         };
 
-        public frmPreciosPublico(frmBasePrincipal parentForm)
+        public frmPrecioPromo(frmBasePrincipal parentForm)
         {
             InitializeComponent();
             this.MdiParent = parentForm;
             precioPublico = new CapaNegocioMepryl.PrecioPublico();
         }
 
-        private void frmPreciosPublico_Load(object sender, EventArgs e)
+        private void frmPrecioPromo_Load(object sender, EventArgs e)
         {
             foreach (DataGridViewColumn col in dgvPrecios.Columns)
                 col.SortMode = DataGridViewColumnSortMode.NotSortable;
