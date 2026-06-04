@@ -1,4 +1,4 @@
-﻿namespace CapaPresentacion
+namespace CapaPresentacion
 {
     partial class frmTurnos
     {
@@ -74,8 +74,8 @@
             this.label9 = new System.Windows.Forms.Label();
             this.tbImporteLaboral = new System.Windows.Forms.TextBox();
             this.tbImporteListaLaboral = new System.Windows.Forms.TextBox();
-            this.lblSe├▒aLaboral = new System.Windows.Forms.Label();
-            this.tbSe├▒aLaboral = new System.Windows.Forms.TextBox();
+            this.lblSeñaLaboral = new System.Windows.Forms.Label();
+            this.tbSeñaLaboral = new System.Windows.Forms.TextBox();
             this.btnTogglePrecioLaboral = new System.Windows.Forms.Button();
             this.lblImporteListaLaboral = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
@@ -96,8 +96,8 @@
             this.tbDniPreventiva = new System.Windows.Forms.TextBox();
             this.tbImportePreventiva = new System.Windows.Forms.TextBox();
             this.tbImporteListaPreventiva = new System.Windows.Forms.TextBox();
-            this.lblSe├▒aPreventiva = new System.Windows.Forms.Label();
-            this.tbSe├▒aPreventiva = new System.Windows.Forms.TextBox();
+            this.lblSeñaPreventiva = new System.Windows.Forms.Label();
+            this.tbSeñaPreventiva = new System.Windows.Forms.TextBox();
             this.btnTogglePrecioPreventiva = new System.Windows.Forms.Button();
             this.lblImporteListaPreventiva = new System.Windows.Forms.Label();
             this.tbIdTurnoPreventiva = new System.Windows.Forms.TextBox();
@@ -584,8 +584,8 @@
             this.panelLaboral.Controls.Add(this.label9);
             this.panelLaboral.Controls.Add(this.tbImporteLaboral);
             this.panelLaboral.Controls.Add(this.tbImporteListaLaboral);
-            this.panelLaboral.Controls.Add(this.lblSe├▒aLaboral);
-            this.panelLaboral.Controls.Add(this.tbSe├▒aLaboral);
+            this.panelLaboral.Controls.Add(this.lblSeñaLaboral);
+            this.panelLaboral.Controls.Add(this.tbSeñaLaboral);
             this.panelLaboral.Controls.Add(this.btnTogglePrecioLaboral);
             this.panelLaboral.Controls.Add(this.lblImporteListaLaboral);
             this.panelLaboral.Controls.Add(this.label10);
@@ -792,28 +792,28 @@
             this.tbImporteListaLaboral.TabIndex = 61;
             this.tbImporteListaLaboral.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
-            // lblSe├▒aLaboral
+            // lblSeñaLaboral
             // 
-            this.lblSe├▒aLaboral.AutoSize = true;
-            this.lblSe├▒aLaboral.Font = new System.Drawing.Font("Tahoma", 9.75F);
-            this.lblSe├▒aLaboral.Location = new System.Drawing.Point(344, 97);
-            this.lblSe├▒aLaboral.Name = "lblSe├▒aLaboral";
-            this.lblSe├▒aLaboral.Size = new System.Drawing.Size(36, 16);
-            this.lblSe├▒aLaboral.TabIndex = 62;
-            this.lblSe├▒aLaboral.Text = "Se├▒a";
+            this.lblSeñaLaboral.AutoSize = true;
+            this.lblSeñaLaboral.Font = new System.Drawing.Font("Tahoma", 9.75F);
+            this.lblSeñaLaboral.Location = new System.Drawing.Point(344, 97);
+            this.lblSeñaLaboral.Name = "lblSeñaLaboral";
+            this.lblSeñaLaboral.Size = new System.Drawing.Size(36, 16);
+            this.lblSeñaLaboral.TabIndex = 62;
+            this.lblSeñaLaboral.Text = "Seña";
             // 
-            // tbSe├▒aLaboral
+            // tbSeñaLaboral
             // 
-            this.tbSe├▒aLaboral.BackColor = System.Drawing.Color.White;
-            this.tbSe├▒aLaboral.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbSe├▒aLaboral.ForeColor = System.Drawing.Color.Green;
-            this.tbSe├▒aLaboral.Location = new System.Drawing.Point(347, 116);
-            this.tbSe├▒aLaboral.Name = "tbSe├▒aLaboral";
-            this.tbSe├▒aLaboral.ReadOnly = true;
-            this.tbSe├▒aLaboral.Size = new System.Drawing.Size(94, 22);
-            this.tbSe├▒aLaboral.TabIndex = 63;
-            this.tbSe├▒aLaboral.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.tbSe├▒aLaboral.TextChanged += new System.EventHandler(this.tbSe├▒aLaboral_TextChanged);
+            this.tbSeñaLaboral.BackColor = System.Drawing.Color.White;
+            this.tbSeñaLaboral.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tbSeñaLaboral.ForeColor = System.Drawing.Color.Green;
+            this.tbSeñaLaboral.Location = new System.Drawing.Point(347, 116);
+            this.tbSeñaLaboral.Name = "tbSeñaLaboral";
+            this.tbSeñaLaboral.ReadOnly = true;
+            this.tbSeñaLaboral.Size = new System.Drawing.Size(94, 22);
+            this.tbSeñaLaboral.TabIndex = 63;
+            this.tbSeñaLaboral.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tbSeñaLaboral.TextChanged += new System.EventHandler(this.tbSeñaLaboral_TextChanged);
             // 
             // btnTogglePrecioLaboral
             // 
@@ -822,7 +822,7 @@
             this.btnTogglePrecioLaboral.Name = "btnTogglePrecioLaboral";
             this.btnTogglePrecioLaboral.Size = new System.Drawing.Size(30, 26);
             this.btnTogglePrecioLaboral.TabIndex = 201;
-            this.btnTogglePrecioLaboral.Text = "Ôçå";
+            this.btnTogglePrecioLaboral.Text = "⇆";
             this.btnTogglePrecioLaboral.UseVisualStyleBackColor = true;
             this.btnTogglePrecioLaboral.Visible = false;
             this.btnTogglePrecioLaboral.Click += new System.EventHandler(this.btnTogglePrecioLaboral_Click);
@@ -936,8 +936,8 @@
             this.panelPacientePreventiva.Controls.Add(this.tbDniPreventiva);
             this.panelPacientePreventiva.Controls.Add(this.tbImportePreventiva);
             this.panelPacientePreventiva.Controls.Add(this.tbImporteListaPreventiva);
-            this.panelPacientePreventiva.Controls.Add(this.lblSe├▒aPreventiva);
-            this.panelPacientePreventiva.Controls.Add(this.tbSe├▒aPreventiva);
+            this.panelPacientePreventiva.Controls.Add(this.lblSeñaPreventiva);
+            this.panelPacientePreventiva.Controls.Add(this.tbSeñaPreventiva);
             this.panelPacientePreventiva.Controls.Add(this.btnTogglePrecioPreventiva);
             this.panelPacientePreventiva.Controls.Add(this.lblImporteListaPreventiva);
             this.panelPacientePreventiva.Controls.Add(this.tbIdTurnoPreventiva);
@@ -1059,28 +1059,28 @@
             this.tbImporteListaPreventiva.TabIndex = 63;
             this.tbImporteListaPreventiva.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
-            // lblSe├▒aPreventiva
+            // lblSeñaPreventiva
             // 
-            this.lblSe├▒aPreventiva.AutoSize = true;
-            this.lblSe├▒aPreventiva.Font = new System.Drawing.Font("Tahoma", 9.75F);
-            this.lblSe├▒aPreventiva.Location = new System.Drawing.Point(323, 107);
-            this.lblSe├▒aPreventiva.Name = "lblSe├▒aPreventiva";
-            this.lblSe├▒aPreventiva.Size = new System.Drawing.Size(36, 16);
-            this.lblSe├▒aPreventiva.TabIndex = 64;
-            this.lblSe├▒aPreventiva.Text = "Se├▒a";
+            this.lblSeñaPreventiva.AutoSize = true;
+            this.lblSeñaPreventiva.Font = new System.Drawing.Font("Tahoma", 9.75F);
+            this.lblSeñaPreventiva.Location = new System.Drawing.Point(323, 107);
+            this.lblSeñaPreventiva.Name = "lblSeñaPreventiva";
+            this.lblSeñaPreventiva.Size = new System.Drawing.Size(36, 16);
+            this.lblSeñaPreventiva.TabIndex = 64;
+            this.lblSeñaPreventiva.Text = "Seña";
             // 
-            // tbSe├▒aPreventiva
+            // tbSeñaPreventiva
             // 
-            this.tbSe├▒aPreventiva.BackColor = System.Drawing.Color.White;
-            this.tbSe├▒aPreventiva.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbSe├▒aPreventiva.ForeColor = System.Drawing.Color.Green;
-            this.tbSe├▒aPreventiva.Location = new System.Drawing.Point(326, 126);
-            this.tbSe├▒aPreventiva.Name = "tbSe├▒aPreventiva";
-            this.tbSe├▒aPreventiva.ReadOnly = true;
-            this.tbSe├▒aPreventiva.Size = new System.Drawing.Size(94, 22);
-            this.tbSe├▒aPreventiva.TabIndex = 65;
-            this.tbSe├▒aPreventiva.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.tbSe├▒aPreventiva.TextChanged += new System.EventHandler(this.tbSe├▒aPreventiva_TextChanged);
+            this.tbSeñaPreventiva.BackColor = System.Drawing.Color.White;
+            this.tbSeñaPreventiva.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tbSeñaPreventiva.ForeColor = System.Drawing.Color.Green;
+            this.tbSeñaPreventiva.Location = new System.Drawing.Point(326, 126);
+            this.tbSeñaPreventiva.Name = "tbSeñaPreventiva";
+            this.tbSeñaPreventiva.ReadOnly = true;
+            this.tbSeñaPreventiva.Size = new System.Drawing.Size(94, 22);
+            this.tbSeñaPreventiva.TabIndex = 65;
+            this.tbSeñaPreventiva.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tbSeñaPreventiva.TextChanged += new System.EventHandler(this.tbSeñaPreventiva_TextChanged);
             // 
             // btnTogglePrecioPreventiva
             // 
@@ -1089,7 +1089,7 @@
             this.btnTogglePrecioPreventiva.Name = "btnTogglePrecioPreventiva";
             this.btnTogglePrecioPreventiva.Size = new System.Drawing.Size(30, 26);
             this.btnTogglePrecioPreventiva.TabIndex = 200;
-            this.btnTogglePrecioPreventiva.Text = "Ôçå";
+            this.btnTogglePrecioPreventiva.Text = "⇆";
             this.btnTogglePrecioPreventiva.UseVisualStyleBackColor = true;
             this.btnTogglePrecioPreventiva.Visible = false;
             this.btnTogglePrecioPreventiva.Click += new System.EventHandler(this.btnTogglePrecioPreventiva_Click);
@@ -1333,7 +1333,7 @@
             this.label20.Name = "label20";
             this.label20.Size = new System.Drawing.Size(144, 16);
             this.label20.TabIndex = 23;
-            this.label20.Text = "B├║scar Turno / Paciente";
+            this.label20.Text = "Búscar Turno / Paciente";
             // 
             // pictureBox3
             // 
@@ -1659,7 +1659,7 @@
             this.botProxFechaLibre.Name = "botProxFechaLibre";
             this.botProxFechaLibre.Size = new System.Drawing.Size(225, 43);
             this.botProxFechaLibre.TabIndex = 3;
-            this.botProxFechaLibre.Text = "Pr├│xima Fecha Libre";
+            this.botProxFechaLibre.Text = "Próxima Fecha Libre";
             this.botProxFechaLibre.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.botProxFechaLibre.UseVisualStyleBackColor = true;
             this.botProxFechaLibre.Click += new System.EventHandler(this.botProxFechaLibre_Click);
@@ -2005,8 +2005,8 @@
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.TextBox tbImportePreventiva;
         private System.Windows.Forms.TextBox tbImporteListaPreventiva;
-        private System.Windows.Forms.TextBox tbSe├▒aPreventiva;
-        private System.Windows.Forms.Label lblSe├▒aPreventiva;
+        private System.Windows.Forms.TextBox tbSeñaPreventiva;
+        private System.Windows.Forms.Label lblSeñaPreventiva;
         private System.Windows.Forms.Button btnTogglePrecioPreventiva;
         private System.Windows.Forms.Label lblImporteListaPreventiva;
         private System.Windows.Forms.Label label7;
@@ -2033,8 +2033,8 @@
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.TextBox tbImporteLaboral;
         private System.Windows.Forms.TextBox tbImporteListaLaboral;
-        private System.Windows.Forms.TextBox tbSe├▒aLaboral;
-        private System.Windows.Forms.Label lblSe├▒aLaboral;
+        private System.Windows.Forms.TextBox tbSeñaLaboral;
+        private System.Windows.Forms.Label lblSeñaLaboral;
         private System.Windows.Forms.Label lblImporteListaLaboral;
         private System.Windows.Forms.Button btnTogglePrecioLaboral;
         private System.Windows.Forms.Label label9;
