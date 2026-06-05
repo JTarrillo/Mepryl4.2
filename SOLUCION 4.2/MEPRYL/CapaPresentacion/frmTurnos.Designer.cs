@@ -29,7 +29,7 @@ namespace CapaPresentacion
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmTurnos));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.lbTitulo = new System.Windows.Forms.Label();
             this.labelSubTipoExamen = new System.Windows.Forms.Label();
             this.cboSubTipoExamen = new System.Windows.Forms.ComboBox();
@@ -55,37 +55,6 @@ namespace CapaPresentacion
             this.botEditarExamenLaboral = new System.Windows.Forms.Button();
             this.botTurno = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.panelLaboral = new System.Windows.Forms.Panel();
-            this.txtEmailLab = new System.Windows.Forms.TextBox();
-            this.label25 = new System.Windows.Forms.Label();
-            this.label24 = new System.Windows.Forms.Label();
-            this.txtFNacLab = new System.Windows.Forms.TextBox();
-            this.txtEdadLab = new System.Windows.Forms.TextBox();
-            this.tbTelefonoLaboral = new System.Windows.Forms.TextBox();
-            this.label17 = new System.Windows.Forms.Label();
-            this.tbTareaLaboral = new System.Windows.Forms.TextBox();
-            this.label16 = new System.Windows.Forms.Label();
-            this.tbEmpresaLaboral = new System.Windows.Forms.TextBox();
-            this.label13 = new System.Windows.Forms.Label();
-            this.tbCuilLaboral = new System.Windows.Forms.TextBox();
-            this.label12 = new System.Windows.Forms.Label();
-            this.tbIdTipoExamenLaboral = new System.Windows.Forms.TextBox();
-            this.tbObservacionesLaboral = new System.Windows.Forms.TextBox();
-            this.label9 = new System.Windows.Forms.Label();
-            this.tbImporteLaboral = new System.Windows.Forms.TextBox();
-            this.tbImporteListaLaboral = new System.Windows.Forms.TextBox();
-            this.lblSeñaLaboral = new System.Windows.Forms.Label();
-            this.tbSeñaLaboral = new System.Windows.Forms.TextBox();
-            this.btnTogglePrecioLaboral = new System.Windows.Forms.Button();
-            this.lblImporteListaLaboral = new System.Windows.Forms.Label();
-            this.label10 = new System.Windows.Forms.Label();
-            this.tbExamenLaboral = new System.Windows.Forms.TextBox();
-            this.label11 = new System.Windows.Forms.Label();
-            this.tbPacienteLaboral = new System.Windows.Forms.TextBox();
-            this.label14 = new System.Windows.Forms.Label();
-            this.tbDniLaboral = new System.Windows.Forms.TextBox();
-            this.label15 = new System.Windows.Forms.Label();
-            this.pictureBox9 = new System.Windows.Forms.PictureBox();
             this.panelPacientePreventiva = new System.Windows.Forms.Panel();
             this.txtEdad = new System.Windows.Forms.TextBox();
             this.label23 = new System.Windows.Forms.Label();
@@ -145,6 +114,37 @@ namespace CapaPresentacion
             this.panelFechaTipoExamen = new System.Windows.Forms.Panel();
             this.botProxFechaLibre = new System.Windows.Forms.Button();
             this.tpFecha = new System.Windows.Forms.MonthCalendar();
+            this.panelLaboral = new System.Windows.Forms.Panel();
+            this.txtEmailLab = new System.Windows.Forms.TextBox();
+            this.label25 = new System.Windows.Forms.Label();
+            this.label24 = new System.Windows.Forms.Label();
+            this.txtFNacLab = new System.Windows.Forms.TextBox();
+            this.txtEdadLab = new System.Windows.Forms.TextBox();
+            this.tbTelefonoLaboral = new System.Windows.Forms.TextBox();
+            this.label17 = new System.Windows.Forms.Label();
+            this.tbTareaLaboral = new System.Windows.Forms.TextBox();
+            this.label16 = new System.Windows.Forms.Label();
+            this.tbEmpresaLaboral = new System.Windows.Forms.TextBox();
+            this.label13 = new System.Windows.Forms.Label();
+            this.tbCuilLaboral = new System.Windows.Forms.TextBox();
+            this.label12 = new System.Windows.Forms.Label();
+            this.tbIdTipoExamenLaboral = new System.Windows.Forms.TextBox();
+            this.tbObservacionesLaboral = new System.Windows.Forms.TextBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.tbImporteLaboral = new System.Windows.Forms.TextBox();
+            this.tbImporteListaLaboral = new System.Windows.Forms.TextBox();
+            this.lblSeñaLaboral = new System.Windows.Forms.Label();
+            this.tbSeñaLaboral = new System.Windows.Forms.TextBox();
+            this.btnTogglePrecioLaboral = new System.Windows.Forms.Button();
+            this.lblImporteListaLaboral = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
+            this.tbExamenLaboral = new System.Windows.Forms.TextBox();
+            this.label11 = new System.Windows.Forms.Label();
+            this.tbPacienteLaboral = new System.Windows.Forms.TextBox();
+            this.label14 = new System.Windows.Forms.Label();
+            this.tbDniLaboral = new System.Windows.Forms.TextBox();
+            this.label15 = new System.Windows.Forms.Label();
+            this.pictureBox9 = new System.Windows.Forms.PictureBox();
             this.rbcMenu = new DevExpress.XtraBars.Ribbon.RibbonControl();
             this.tbIdEmpresaLaboral = new System.Windows.Forms.TextBox();
             this.tbIdTurnoLaboral = new System.Windows.Forms.TextBox();
@@ -166,8 +166,6 @@ namespace CapaPresentacion
             this.panel3 = new System.Windows.Forms.Panel();
             this.botonLaboratorio.SuspendLayout();
             this.panel1.SuspendLayout();
-            this.panelLaboral.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox9)).BeginInit();
             this.panelPacientePreventiva.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvLigaYClub)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).BeginInit();
@@ -179,6 +177,8 @@ namespace CapaPresentacion
             this.panelHorario.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panelFechaTipoExamen.SuspendLayout();
+            this.panelLaboral.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox9)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.rbcMenu)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgv)).BeginInit();
             this.panel2.SuspendLayout();
@@ -548,6 +548,7 @@ namespace CapaPresentacion
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.panelLaboral);
             this.panel1.Controls.Add(this.panelPacientePreventiva);
             this.panel1.Controls.Add(this.panelFiltro);
             this.panel1.Controls.Add(this.panelEstado);
@@ -559,368 +560,6 @@ namespace CapaPresentacion
             this.panel1.Size = new System.Drawing.Size(1190, 283);
             this.panel1.TabIndex = 130;
             this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
-            // 
-            // panelLaboral
-            // 
-            this.panelLaboral.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.panelLaboral.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
-            this.panelLaboral.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelLaboral.Controls.Add(this.txtEmailLab);
-            this.panelLaboral.Controls.Add(this.label25);
-            this.panelLaboral.Controls.Add(this.label24);
-            this.panelLaboral.Controls.Add(this.txtFNacLab);
-            this.panelLaboral.Controls.Add(this.txtEdadLab);
-            this.panelLaboral.Controls.Add(this.tbTelefonoLaboral);
-            this.panelLaboral.Controls.Add(this.label17);
-            this.panelLaboral.Controls.Add(this.tbTareaLaboral);
-            this.panelLaboral.Controls.Add(this.label16);
-            this.panelLaboral.Controls.Add(this.tbEmpresaLaboral);
-            this.panelLaboral.Controls.Add(this.label13);
-            this.panelLaboral.Controls.Add(this.tbCuilLaboral);
-            this.panelLaboral.Controls.Add(this.label12);
-            this.panelLaboral.Controls.Add(this.tbIdTipoExamenLaboral);
-            this.panelLaboral.Controls.Add(this.tbObservacionesLaboral);
-            this.panelLaboral.Controls.Add(this.label9);
-            this.panelLaboral.Controls.Add(this.tbImporteLaboral);
-            this.panelLaboral.Controls.Add(this.tbImporteListaLaboral);
-            this.panelLaboral.Controls.Add(this.lblSeñaLaboral);
-            this.panelLaboral.Controls.Add(this.tbSeñaLaboral);
-            this.panelLaboral.Controls.Add(this.btnTogglePrecioLaboral);
-            this.panelLaboral.Controls.Add(this.lblImporteListaLaboral);
-            this.panelLaboral.Controls.Add(this.label10);
-            this.panelLaboral.Controls.Add(this.tbExamenLaboral);
-            this.panelLaboral.Controls.Add(this.label11);
-            this.panelLaboral.Controls.Add(this.tbPacienteLaboral);
-            this.panelLaboral.Controls.Add(this.label14);
-            this.panelLaboral.Controls.Add(this.tbDniLaboral);
-            this.panelLaboral.Controls.Add(this.label15);
-            this.panelLaboral.Controls.Add(this.pictureBox9);
-            this.panelLaboral.Location = new System.Drawing.Point(616, 48);
-            this.panelLaboral.Name = "panelLaboral";
-            this.panelLaboral.Size = new System.Drawing.Size(579, 282);
-            this.panelLaboral.TabIndex = 20;
-            this.panelLaboral.Visible = false;
-            // 
-            // txtEmailLab
-            // 
-            this.txtEmailLab.BackColor = System.Drawing.Color.White;
-            this.txtEmailLab.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtEmailLab.Location = new System.Drawing.Point(16, 249);
-            this.txtEmailLab.Name = "txtEmailLab";
-            this.txtEmailLab.ReadOnly = true;
-            this.txtEmailLab.Size = new System.Drawing.Size(305, 22);
-            this.txtEmailLab.TabIndex = 58;
-            // 
-            // label25
-            // 
-            this.label25.AutoSize = true;
-            this.label25.Font = new System.Drawing.Font("Tahoma", 9.75F);
-            this.label25.Location = new System.Drawing.Point(13, 230);
-            this.label25.Name = "label25";
-            this.label25.Size = new System.Drawing.Size(38, 16);
-            this.label25.TabIndex = 57;
-            this.label25.Text = "Email";
-            // 
-            // label24
-            // 
-            this.label24.AutoSize = true;
-            this.label24.Font = new System.Drawing.Font("Tahoma", 9.75F);
-            this.label24.Location = new System.Drawing.Point(233, 2);
-            this.label24.Name = "label24";
-            this.label24.Size = new System.Drawing.Size(35, 16);
-            this.label24.TabIndex = 56;
-            this.label24.Text = "Edad";
-            // 
-            // txtFNacLab
-            // 
-            this.txtFNacLab.BackColor = System.Drawing.Color.White;
-            this.txtFNacLab.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtFNacLab.Location = new System.Drawing.Point(115, 23);
-            this.txtFNacLab.Name = "txtFNacLab";
-            this.txtFNacLab.ReadOnly = true;
-            this.txtFNacLab.Size = new System.Drawing.Size(115, 22);
-            this.txtFNacLab.TabIndex = 55;
-            this.txtFNacLab.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // txtEdadLab
-            // 
-            this.txtEdadLab.BackColor = System.Drawing.Color.White;
-            this.txtEdadLab.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtEdadLab.Location = new System.Drawing.Point(236, 23);
-            this.txtEdadLab.Name = "txtEdadLab";
-            this.txtEdadLab.ReadOnly = true;
-            this.txtEdadLab.Size = new System.Drawing.Size(85, 22);
-            this.txtEdadLab.TabIndex = 54;
-            this.txtEdadLab.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // tbTelefonoLaboral
-            // 
-            this.tbTelefonoLaboral.BackColor = System.Drawing.Color.White;
-            this.tbTelefonoLaboral.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbTelefonoLaboral.Location = new System.Drawing.Point(16, 204);
-            this.tbTelefonoLaboral.Name = "tbTelefonoLaboral";
-            this.tbTelefonoLaboral.ReadOnly = true;
-            this.tbTelefonoLaboral.Size = new System.Drawing.Size(305, 22);
-            this.tbTelefonoLaboral.TabIndex = 51;
-            // 
-            // label17
-            // 
-            this.label17.AutoSize = true;
-            this.label17.Font = new System.Drawing.Font("Tahoma", 9.75F);
-            this.label17.Location = new System.Drawing.Point(13, 185);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(68, 16);
-            this.label17.TabIndex = 50;
-            this.label17.Text = "Telefono/s";
-            // 
-            // tbTareaLaboral
-            // 
-            this.tbTareaLaboral.BackColor = System.Drawing.Color.White;
-            this.tbTareaLaboral.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbTareaLaboral.Location = new System.Drawing.Point(16, 159);
-            this.tbTareaLaboral.Name = "tbTareaLaboral";
-            this.tbTareaLaboral.ReadOnly = true;
-            this.tbTareaLaboral.Size = new System.Drawing.Size(305, 22);
-            this.tbTareaLaboral.TabIndex = 49;
-            // 
-            // label16
-            // 
-            this.label16.AutoSize = true;
-            this.label16.Font = new System.Drawing.Font("Tahoma", 9.75F);
-            this.label16.Location = new System.Drawing.Point(13, 140);
-            this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(41, 16);
-            this.label16.TabIndex = 48;
-            this.label16.Text = "Tarea";
-            // 
-            // tbEmpresaLaboral
-            // 
-            this.tbEmpresaLaboral.BackColor = System.Drawing.Color.White;
-            this.tbEmpresaLaboral.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbEmpresaLaboral.Location = new System.Drawing.Point(16, 69);
-            this.tbEmpresaLaboral.Name = "tbEmpresaLaboral";
-            this.tbEmpresaLaboral.ReadOnly = true;
-            this.tbEmpresaLaboral.Size = new System.Drawing.Size(305, 22);
-            this.tbEmpresaLaboral.TabIndex = 47;
-            // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.Font = new System.Drawing.Font("Tahoma", 9.75F);
-            this.label13.Location = new System.Drawing.Point(13, 50);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(57, 16);
-            this.label13.TabIndex = 46;
-            this.label13.Text = "Empresa";
-            // 
-            // tbCuilLaboral
-            // 
-            this.tbCuilLaboral.BackColor = System.Drawing.Color.White;
-            this.tbCuilLaboral.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbCuilLaboral.Location = new System.Drawing.Point(115, 23);
-            this.tbCuilLaboral.Name = "tbCuilLaboral";
-            this.tbCuilLaboral.ReadOnly = true;
-            this.tbCuilLaboral.Size = new System.Drawing.Size(115, 22);
-            this.tbCuilLaboral.TabIndex = 45;
-            this.tbCuilLaboral.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.tbCuilLaboral.Visible = false;
-            // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Font = new System.Drawing.Font("Tahoma", 9.75F);
-            this.label12.Location = new System.Drawing.Point(112, 4);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(65, 16);
-            this.label12.TabIndex = 44;
-            this.label12.Text = "F. de Nac.";
-            // 
-            // tbIdTipoExamenLaboral
-            // 
-            this.tbIdTipoExamenLaboral.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tbIdTipoExamenLaboral.Enabled = false;
-            this.tbIdTipoExamenLaboral.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbIdTipoExamenLaboral.Location = new System.Drawing.Point(600, 2);
-            this.tbIdTipoExamenLaboral.Name = "tbIdTipoExamenLaboral";
-            this.tbIdTipoExamenLaboral.Size = new System.Drawing.Size(25, 22);
-            this.tbIdTipoExamenLaboral.TabIndex = 41;
-            this.tbIdTipoExamenLaboral.Visible = false;
-            // 
-            // tbObservacionesLaboral
-            // 
-            this.tbObservacionesLaboral.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbObservacionesLaboral.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbObservacionesLaboral.Location = new System.Drawing.Point(345, 166);
-            this.tbObservacionesLaboral.Multiline = true;
-            this.tbObservacionesLaboral.Name = "tbObservacionesLaboral";
-            this.tbObservacionesLaboral.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tbObservacionesLaboral.Size = new System.Drawing.Size(216, 105);
-            this.tbObservacionesLaboral.TabIndex = 39;
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Font = new System.Drawing.Font("Tahoma", 9.75F);
-            this.label9.Location = new System.Drawing.Point(344, 147);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(90, 16);
-            this.label9.TabIndex = 38;
-            this.label9.Text = "Observaciones";
-            // 
-            // tbImporteLaboral
-            // 
-            this.tbImporteLaboral.BackColor = System.Drawing.Color.White;
-            this.tbImporteLaboral.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbImporteLaboral.Location = new System.Drawing.Point(345, 69);
-            this.tbImporteLaboral.Name = "tbImporteLaboral";
-            this.tbImporteLaboral.ReadOnly = true;
-            this.tbImporteLaboral.Size = new System.Drawing.Size(94, 22);
-            this.tbImporteLaboral.TabIndex = 34;
-            this.tbImporteLaboral.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // tbImporteListaLaboral
-            // 
-            this.tbImporteListaLaboral.BackColor = System.Drawing.Color.White;
-            this.tbImporteListaLaboral.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbImporteListaLaboral.ForeColor = System.Drawing.Color.DarkBlue;
-            this.tbImporteListaLaboral.Location = new System.Drawing.Point(445, 69);
-            this.tbImporteListaLaboral.Name = "tbImporteListaLaboral";
-            this.tbImporteListaLaboral.ReadOnly = true;
-            this.tbImporteListaLaboral.Size = new System.Drawing.Size(94, 22);
-            this.tbImporteListaLaboral.TabIndex = 61;
-            this.tbImporteListaLaboral.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // lblSeñaLaboral
-            // 
-            this.lblSeñaLaboral.AutoSize = true;
-            this.lblSeñaLaboral.Font = new System.Drawing.Font("Tahoma", 9.75F);
-            this.lblSeñaLaboral.Location = new System.Drawing.Point(344, 97);
-            this.lblSeñaLaboral.Name = "lblSeñaLaboral";
-            this.lblSeñaLaboral.Size = new System.Drawing.Size(36, 16);
-            this.lblSeñaLaboral.TabIndex = 62;
-            this.lblSeñaLaboral.Text = "Seña";
-            // 
-            // tbSeñaLaboral
-            // 
-            this.tbSeñaLaboral.BackColor = System.Drawing.Color.White;
-            this.tbSeñaLaboral.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbSeñaLaboral.ForeColor = System.Drawing.Color.Green;
-            this.tbSeñaLaboral.Location = new System.Drawing.Point(347, 116);
-            this.tbSeñaLaboral.Name = "tbSeñaLaboral";
-            this.tbSeñaLaboral.ReadOnly = true;
-            this.tbSeñaLaboral.Size = new System.Drawing.Size(94, 22);
-            this.tbSeñaLaboral.TabIndex = 63;
-            this.tbSeñaLaboral.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.tbSeñaLaboral.TextChanged += new System.EventHandler(this.tbSeñaLaboral_TextChanged);
-            // 
-            // btnTogglePrecioLaboral
-            // 
-            this.btnTogglePrecioLaboral.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Bold);
-            this.btnTogglePrecioLaboral.Location = new System.Drawing.Point(545, 66);
-            this.btnTogglePrecioLaboral.Name = "btnTogglePrecioLaboral";
-            this.btnTogglePrecioLaboral.Size = new System.Drawing.Size(30, 26);
-            this.btnTogglePrecioLaboral.TabIndex = 201;
-            this.btnTogglePrecioLaboral.Text = "⇆";
-            this.btnTogglePrecioLaboral.UseVisualStyleBackColor = true;
-            this.btnTogglePrecioLaboral.Visible = false;
-            this.btnTogglePrecioLaboral.Click += new System.EventHandler(this.btnTogglePrecioLaboral_Click);
-            // 
-            // lblImporteListaLaboral
-            // 
-            this.lblImporteListaLaboral.AutoSize = true;
-            this.lblImporteListaLaboral.Font = new System.Drawing.Font("Tahoma", 9.75F);
-            this.lblImporteListaLaboral.Location = new System.Drawing.Point(445, 50);
-            this.lblImporteListaLaboral.Name = "lblImporteListaLaboral";
-            this.lblImporteListaLaboral.Size = new System.Drawing.Size(63, 16);
-            this.lblImporteListaLaboral.TabIndex = 60;
-            this.lblImporteListaLaboral.Text = "Imp. Lista";
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Font = new System.Drawing.Font("Tahoma", 9.75F);
-            this.label10.Location = new System.Drawing.Point(342, 50);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(52, 16);
-            this.label10.TabIndex = 33;
-            this.label10.Text = "Importe";
-            // 
-            // tbExamenLaboral
-            // 
-            this.tbExamenLaboral.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbExamenLaboral.BackColor = System.Drawing.Color.White;
-            this.tbExamenLaboral.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbExamenLaboral.Location = new System.Drawing.Point(345, 23);
-            this.tbExamenLaboral.Name = "tbExamenLaboral";
-            this.tbExamenLaboral.ReadOnly = true;
-            this.tbExamenLaboral.Size = new System.Drawing.Size(216, 22);
-            this.tbExamenLaboral.TabIndex = 32;
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Font = new System.Drawing.Font("Tahoma", 9.75F);
-            this.label11.Location = new System.Drawing.Point(342, 4);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(99, 16);
-            this.label11.TabIndex = 31;
-            this.label11.Text = "Tipo de Examen";
-            // 
-            // tbPacienteLaboral
-            // 
-            this.tbPacienteLaboral.BackColor = System.Drawing.Color.White;
-            this.tbPacienteLaboral.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbPacienteLaboral.Location = new System.Drawing.Point(16, 114);
-            this.tbPacienteLaboral.Name = "tbPacienteLaboral";
-            this.tbPacienteLaboral.ReadOnly = true;
-            this.tbPacienteLaboral.Size = new System.Drawing.Size(305, 22);
-            this.tbPacienteLaboral.TabIndex = 22;
-            this.tbPacienteLaboral.TextChanged += new System.EventHandler(this.tbPacienteLaboral_TextChanged);
-            // 
-            // label14
-            // 
-            this.label14.AutoSize = true;
-            this.label14.Font = new System.Drawing.Font("Tahoma", 9.75F);
-            this.label14.Location = new System.Drawing.Point(13, 95);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(55, 16);
-            this.label14.TabIndex = 21;
-            this.label14.Text = "Paciente";
-            // 
-            // tbDniLaboral
-            // 
-            this.tbDniLaboral.BackColor = System.Drawing.Color.White;
-            this.tbDniLaboral.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbDniLaboral.Location = new System.Drawing.Point(16, 24);
-            this.tbDniLaboral.Name = "tbDniLaboral";
-            this.tbDniLaboral.ReadOnly = true;
-            this.tbDniLaboral.Size = new System.Drawing.Size(93, 22);
-            this.tbDniLaboral.TabIndex = 20;
-            this.tbDniLaboral.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // label15
-            // 
-            this.label15.AutoSize = true;
-            this.label15.Font = new System.Drawing.Font("Tahoma", 9.75F);
-            this.label15.Location = new System.Drawing.Point(13, 5);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(27, 16);
-            this.label15.TabIndex = 19;
-            this.label15.Text = "DNI";
-            // 
-            // pictureBox9
-            // 
-            this.pictureBox9.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("pictureBox9.BackgroundImage")));
-            this.pictureBox9.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.pictureBox9.Location = new System.Drawing.Point(1, 116);
-            this.pictureBox9.Name = "pictureBox9";
-            this.pictureBox9.Size = new System.Drawing.Size(45, 39);
-            this.pictureBox9.TabIndex = 18;
-            this.pictureBox9.TabStop = false;
-            this.pictureBox9.Visible = false;
             // 
             // panelPacientePreventiva
             // 
@@ -1187,9 +826,9 @@ namespace CapaPresentacion
             this.label6.Font = new System.Drawing.Font("Tahoma", 9.75F);
             this.label6.Location = new System.Drawing.Point(321, 5);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(52, 16);
+            this.label6.Size = new System.Drawing.Size(117, 16);
             this.label6.TabIndex = 31;
-            this.label6.Text = "Examen";
+            this.label6.Text = "Subtipo de Examen";
             // 
             // dgvLigaYClub
             // 
@@ -1200,14 +839,14 @@ namespace CapaPresentacion
             this.dgvLigaYClub.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.dgvLigaYClub.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvLigaYClub.ColumnHeadersVisible = false;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Tahoma", 8.25F);
-            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(31)))), ((int)(((byte)(53)))));
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvLigaYClub.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Tahoma", 8.25F);
+            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvLigaYClub.DefaultCellStyle = dataGridViewCellStyle2;
             this.dgvLigaYClub.GridColor = System.Drawing.SystemColors.Control;
             this.dgvLigaYClub.Location = new System.Drawing.Point(15, 209);
             this.dgvLigaYClub.MultiSelect = false;
@@ -1676,6 +1315,368 @@ namespace CapaPresentacion
             this.tpFecha.TrailingForeColor = System.Drawing.Color.Black;
             this.tpFecha.DateSelected += new System.Windows.Forms.DateRangeEventHandler(this.tpFecha_DateSelected);
             // 
+            // panelLaboral
+            // 
+            this.panelLaboral.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelLaboral.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
+            this.panelLaboral.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelLaboral.Controls.Add(this.txtEmailLab);
+            this.panelLaboral.Controls.Add(this.label25);
+            this.panelLaboral.Controls.Add(this.label24);
+            this.panelLaboral.Controls.Add(this.txtFNacLab);
+            this.panelLaboral.Controls.Add(this.txtEdadLab);
+            this.panelLaboral.Controls.Add(this.tbTelefonoLaboral);
+            this.panelLaboral.Controls.Add(this.label17);
+            this.panelLaboral.Controls.Add(this.tbTareaLaboral);
+            this.panelLaboral.Controls.Add(this.label16);
+            this.panelLaboral.Controls.Add(this.tbEmpresaLaboral);
+            this.panelLaboral.Controls.Add(this.label13);
+            this.panelLaboral.Controls.Add(this.tbCuilLaboral);
+            this.panelLaboral.Controls.Add(this.label12);
+            this.panelLaboral.Controls.Add(this.tbIdTipoExamenLaboral);
+            this.panelLaboral.Controls.Add(this.tbObservacionesLaboral);
+            this.panelLaboral.Controls.Add(this.label9);
+            this.panelLaboral.Controls.Add(this.tbImporteLaboral);
+            this.panelLaboral.Controls.Add(this.tbImporteListaLaboral);
+            this.panelLaboral.Controls.Add(this.lblSeñaLaboral);
+            this.panelLaboral.Controls.Add(this.tbSeñaLaboral);
+            this.panelLaboral.Controls.Add(this.btnTogglePrecioLaboral);
+            this.panelLaboral.Controls.Add(this.lblImporteListaLaboral);
+            this.panelLaboral.Controls.Add(this.label10);
+            this.panelLaboral.Controls.Add(this.tbExamenLaboral);
+            this.panelLaboral.Controls.Add(this.label11);
+            this.panelLaboral.Controls.Add(this.tbPacienteLaboral);
+            this.panelLaboral.Controls.Add(this.label14);
+            this.panelLaboral.Controls.Add(this.tbDniLaboral);
+            this.panelLaboral.Controls.Add(this.label15);
+            this.panelLaboral.Controls.Add(this.pictureBox9);
+            this.panelLaboral.Location = new System.Drawing.Point(611, 5);
+            this.panelLaboral.Name = "panelLaboral";
+            this.panelLaboral.Size = new System.Drawing.Size(579, 282);
+            this.panelLaboral.TabIndex = 20;
+            this.panelLaboral.Visible = false;
+            // 
+            // txtEmailLab
+            // 
+            this.txtEmailLab.BackColor = System.Drawing.Color.White;
+            this.txtEmailLab.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtEmailLab.Location = new System.Drawing.Point(16, 249);
+            this.txtEmailLab.Name = "txtEmailLab";
+            this.txtEmailLab.ReadOnly = true;
+            this.txtEmailLab.Size = new System.Drawing.Size(305, 22);
+            this.txtEmailLab.TabIndex = 58;
+            // 
+            // label25
+            // 
+            this.label25.AutoSize = true;
+            this.label25.Font = new System.Drawing.Font("Tahoma", 9.75F);
+            this.label25.Location = new System.Drawing.Point(13, 230);
+            this.label25.Name = "label25";
+            this.label25.Size = new System.Drawing.Size(38, 16);
+            this.label25.TabIndex = 57;
+            this.label25.Text = "Email";
+            // 
+            // label24
+            // 
+            this.label24.AutoSize = true;
+            this.label24.Font = new System.Drawing.Font("Tahoma", 9.75F);
+            this.label24.Location = new System.Drawing.Point(233, 2);
+            this.label24.Name = "label24";
+            this.label24.Size = new System.Drawing.Size(35, 16);
+            this.label24.TabIndex = 56;
+            this.label24.Text = "Edad";
+            // 
+            // txtFNacLab
+            // 
+            this.txtFNacLab.BackColor = System.Drawing.Color.White;
+            this.txtFNacLab.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtFNacLab.Location = new System.Drawing.Point(115, 23);
+            this.txtFNacLab.Name = "txtFNacLab";
+            this.txtFNacLab.ReadOnly = true;
+            this.txtFNacLab.Size = new System.Drawing.Size(115, 22);
+            this.txtFNacLab.TabIndex = 55;
+            this.txtFNacLab.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // txtEdadLab
+            // 
+            this.txtEdadLab.BackColor = System.Drawing.Color.White;
+            this.txtEdadLab.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtEdadLab.Location = new System.Drawing.Point(236, 23);
+            this.txtEdadLab.Name = "txtEdadLab";
+            this.txtEdadLab.ReadOnly = true;
+            this.txtEdadLab.Size = new System.Drawing.Size(85, 22);
+            this.txtEdadLab.TabIndex = 54;
+            this.txtEdadLab.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // tbTelefonoLaboral
+            // 
+            this.tbTelefonoLaboral.BackColor = System.Drawing.Color.White;
+            this.tbTelefonoLaboral.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tbTelefonoLaboral.Location = new System.Drawing.Point(16, 204);
+            this.tbTelefonoLaboral.Name = "tbTelefonoLaboral";
+            this.tbTelefonoLaboral.ReadOnly = true;
+            this.tbTelefonoLaboral.Size = new System.Drawing.Size(305, 22);
+            this.tbTelefonoLaboral.TabIndex = 51;
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Font = new System.Drawing.Font("Tahoma", 9.75F);
+            this.label17.Location = new System.Drawing.Point(13, 185);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(68, 16);
+            this.label17.TabIndex = 50;
+            this.label17.Text = "Telefono/s";
+            // 
+            // tbTareaLaboral
+            // 
+            this.tbTareaLaboral.BackColor = System.Drawing.Color.White;
+            this.tbTareaLaboral.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tbTareaLaboral.Location = new System.Drawing.Point(16, 159);
+            this.tbTareaLaboral.Name = "tbTareaLaboral";
+            this.tbTareaLaboral.ReadOnly = true;
+            this.tbTareaLaboral.Size = new System.Drawing.Size(305, 22);
+            this.tbTareaLaboral.TabIndex = 49;
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Font = new System.Drawing.Font("Tahoma", 9.75F);
+            this.label16.Location = new System.Drawing.Point(13, 140);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(41, 16);
+            this.label16.TabIndex = 48;
+            this.label16.Text = "Tarea";
+            // 
+            // tbEmpresaLaboral
+            // 
+            this.tbEmpresaLaboral.BackColor = System.Drawing.Color.White;
+            this.tbEmpresaLaboral.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tbEmpresaLaboral.Location = new System.Drawing.Point(16, 69);
+            this.tbEmpresaLaboral.Name = "tbEmpresaLaboral";
+            this.tbEmpresaLaboral.ReadOnly = true;
+            this.tbEmpresaLaboral.Size = new System.Drawing.Size(305, 22);
+            this.tbEmpresaLaboral.TabIndex = 47;
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Font = new System.Drawing.Font("Tahoma", 9.75F);
+            this.label13.Location = new System.Drawing.Point(13, 50);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(57, 16);
+            this.label13.TabIndex = 46;
+            this.label13.Text = "Empresa";
+            // 
+            // tbCuilLaboral
+            // 
+            this.tbCuilLaboral.BackColor = System.Drawing.Color.White;
+            this.tbCuilLaboral.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tbCuilLaboral.Location = new System.Drawing.Point(115, 23);
+            this.tbCuilLaboral.Name = "tbCuilLaboral";
+            this.tbCuilLaboral.ReadOnly = true;
+            this.tbCuilLaboral.Size = new System.Drawing.Size(115, 22);
+            this.tbCuilLaboral.TabIndex = 45;
+            this.tbCuilLaboral.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tbCuilLaboral.Visible = false;
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Font = new System.Drawing.Font("Tahoma", 9.75F);
+            this.label12.Location = new System.Drawing.Point(112, 4);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(65, 16);
+            this.label12.TabIndex = 44;
+            this.label12.Text = "F. de Nac.";
+            // 
+            // tbIdTipoExamenLaboral
+            // 
+            this.tbIdTipoExamenLaboral.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.tbIdTipoExamenLaboral.Enabled = false;
+            this.tbIdTipoExamenLaboral.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tbIdTipoExamenLaboral.Location = new System.Drawing.Point(600, 2);
+            this.tbIdTipoExamenLaboral.Name = "tbIdTipoExamenLaboral";
+            this.tbIdTipoExamenLaboral.Size = new System.Drawing.Size(25, 22);
+            this.tbIdTipoExamenLaboral.TabIndex = 41;
+            this.tbIdTipoExamenLaboral.Visible = false;
+            // 
+            // tbObservacionesLaboral
+            // 
+            this.tbObservacionesLaboral.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbObservacionesLaboral.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tbObservacionesLaboral.Location = new System.Drawing.Point(345, 166);
+            this.tbObservacionesLaboral.Multiline = true;
+            this.tbObservacionesLaboral.Name = "tbObservacionesLaboral";
+            this.tbObservacionesLaboral.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.tbObservacionesLaboral.Size = new System.Drawing.Size(216, 105);
+            this.tbObservacionesLaboral.TabIndex = 39;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Font = new System.Drawing.Font("Tahoma", 9.75F);
+            this.label9.Location = new System.Drawing.Point(344, 147);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(90, 16);
+            this.label9.TabIndex = 38;
+            this.label9.Text = "Observaciones";
+            // 
+            // tbImporteLaboral
+            // 
+            this.tbImporteLaboral.BackColor = System.Drawing.Color.White;
+            this.tbImporteLaboral.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tbImporteLaboral.Location = new System.Drawing.Point(345, 69);
+            this.tbImporteLaboral.Name = "tbImporteLaboral";
+            this.tbImporteLaboral.ReadOnly = true;
+            this.tbImporteLaboral.Size = new System.Drawing.Size(94, 22);
+            this.tbImporteLaboral.TabIndex = 34;
+            this.tbImporteLaboral.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // tbImporteListaLaboral
+            // 
+            this.tbImporteListaLaboral.BackColor = System.Drawing.Color.White;
+            this.tbImporteListaLaboral.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tbImporteListaLaboral.ForeColor = System.Drawing.Color.DarkBlue;
+            this.tbImporteListaLaboral.Location = new System.Drawing.Point(445, 69);
+            this.tbImporteListaLaboral.Name = "tbImporteListaLaboral";
+            this.tbImporteListaLaboral.ReadOnly = true;
+            this.tbImporteListaLaboral.Size = new System.Drawing.Size(94, 22);
+            this.tbImporteListaLaboral.TabIndex = 61;
+            this.tbImporteListaLaboral.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // lblSeñaLaboral
+            // 
+            this.lblSeñaLaboral.AutoSize = true;
+            this.lblSeñaLaboral.Font = new System.Drawing.Font("Tahoma", 9.75F);
+            this.lblSeñaLaboral.Location = new System.Drawing.Point(344, 97);
+            this.lblSeñaLaboral.Name = "lblSeñaLaboral";
+            this.lblSeñaLaboral.Size = new System.Drawing.Size(36, 16);
+            this.lblSeñaLaboral.TabIndex = 62;
+            this.lblSeñaLaboral.Text = "Seña";
+            // 
+            // tbSeñaLaboral
+            // 
+            this.tbSeñaLaboral.BackColor = System.Drawing.Color.White;
+            this.tbSeñaLaboral.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tbSeñaLaboral.ForeColor = System.Drawing.Color.Green;
+            this.tbSeñaLaboral.Location = new System.Drawing.Point(347, 116);
+            this.tbSeñaLaboral.Name = "tbSeñaLaboral";
+            this.tbSeñaLaboral.ReadOnly = true;
+            this.tbSeñaLaboral.Size = new System.Drawing.Size(94, 22);
+            this.tbSeñaLaboral.TabIndex = 63;
+            this.tbSeñaLaboral.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tbSeñaLaboral.TextChanged += new System.EventHandler(this.tbSeñaLaboral_TextChanged);
+            // 
+            // btnTogglePrecioLaboral
+            // 
+            this.btnTogglePrecioLaboral.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Bold);
+            this.btnTogglePrecioLaboral.Location = new System.Drawing.Point(545, 66);
+            this.btnTogglePrecioLaboral.Name = "btnTogglePrecioLaboral";
+            this.btnTogglePrecioLaboral.Size = new System.Drawing.Size(30, 26);
+            this.btnTogglePrecioLaboral.TabIndex = 201;
+            this.btnTogglePrecioLaboral.Text = "⇆";
+            this.btnTogglePrecioLaboral.UseVisualStyleBackColor = true;
+            this.btnTogglePrecioLaboral.Visible = false;
+            this.btnTogglePrecioLaboral.Click += new System.EventHandler(this.btnTogglePrecioLaboral_Click);
+            // 
+            // lblImporteListaLaboral
+            // 
+            this.lblImporteListaLaboral.AutoSize = true;
+            this.lblImporteListaLaboral.Font = new System.Drawing.Font("Tahoma", 9.75F);
+            this.lblImporteListaLaboral.Location = new System.Drawing.Point(445, 50);
+            this.lblImporteListaLaboral.Name = "lblImporteListaLaboral";
+            this.lblImporteListaLaboral.Size = new System.Drawing.Size(63, 16);
+            this.lblImporteListaLaboral.TabIndex = 60;
+            this.lblImporteListaLaboral.Text = "Imp. Lista";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Font = new System.Drawing.Font("Tahoma", 9.75F);
+            this.label10.Location = new System.Drawing.Point(342, 50);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(52, 16);
+            this.label10.TabIndex = 33;
+            this.label10.Text = "Importe";
+            // 
+            // tbExamenLaboral
+            // 
+            this.tbExamenLaboral.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbExamenLaboral.BackColor = System.Drawing.Color.White;
+            this.tbExamenLaboral.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tbExamenLaboral.Location = new System.Drawing.Point(345, 23);
+            this.tbExamenLaboral.Name = "tbExamenLaboral";
+            this.tbExamenLaboral.ReadOnly = true;
+            this.tbExamenLaboral.Size = new System.Drawing.Size(216, 22);
+            this.tbExamenLaboral.TabIndex = 32;
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Font = new System.Drawing.Font("Tahoma", 9.75F);
+            this.label11.Location = new System.Drawing.Point(342, 4);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(117, 16);
+            this.label11.TabIndex = 31;
+            this.label11.Text = "Subtipo de Examen";
+            // 
+            // tbPacienteLaboral
+            // 
+            this.tbPacienteLaboral.BackColor = System.Drawing.Color.White;
+            this.tbPacienteLaboral.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tbPacienteLaboral.Location = new System.Drawing.Point(16, 114);
+            this.tbPacienteLaboral.Name = "tbPacienteLaboral";
+            this.tbPacienteLaboral.ReadOnly = true;
+            this.tbPacienteLaboral.Size = new System.Drawing.Size(305, 22);
+            this.tbPacienteLaboral.TabIndex = 22;
+            this.tbPacienteLaboral.TextChanged += new System.EventHandler(this.tbPacienteLaboral_TextChanged);
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Font = new System.Drawing.Font("Tahoma", 9.75F);
+            this.label14.Location = new System.Drawing.Point(13, 95);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(55, 16);
+            this.label14.TabIndex = 21;
+            this.label14.Text = "Paciente";
+            // 
+            // tbDniLaboral
+            // 
+            this.tbDniLaboral.BackColor = System.Drawing.Color.White;
+            this.tbDniLaboral.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tbDniLaboral.Location = new System.Drawing.Point(16, 24);
+            this.tbDniLaboral.Name = "tbDniLaboral";
+            this.tbDniLaboral.ReadOnly = true;
+            this.tbDniLaboral.Size = new System.Drawing.Size(93, 22);
+            this.tbDniLaboral.TabIndex = 20;
+            this.tbDniLaboral.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Font = new System.Drawing.Font("Tahoma", 9.75F);
+            this.label15.Location = new System.Drawing.Point(13, 5);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(27, 16);
+            this.label15.TabIndex = 19;
+            this.label15.Text = "DNI";
+            // 
+            // pictureBox9
+            // 
+            this.pictureBox9.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("pictureBox9.BackgroundImage")));
+            this.pictureBox9.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.pictureBox9.Location = new System.Drawing.Point(1, 116);
+            this.pictureBox9.Name = "pictureBox9";
+            this.pictureBox9.Size = new System.Drawing.Size(45, 39);
+            this.pictureBox9.TabIndex = 18;
+            this.pictureBox9.TabStop = false;
+            this.pictureBox9.Visible = false;
+            // 
             // rbcMenu
             // 
             this.rbcMenu.ColorScheme = DevExpress.XtraBars.Ribbon.RibbonControlColorScheme.Green;
@@ -1906,7 +1907,6 @@ namespace CapaPresentacion
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1324, 732);
-            this.Controls.Add(this.panelLaboral);
             this.Controls.Add(this.labelSubTipoExamen);
             this.Controls.Add(this.rbcMenu);
             this.Controls.Add(this.cboMotivoConsulta);
@@ -1935,9 +1935,6 @@ namespace CapaPresentacion
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.frmTurnos_KeyDown);
             this.botonLaboratorio.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
-            this.panelLaboral.ResumeLayout(false);
-            this.panelLaboral.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox9)).EndInit();
             this.panelPacientePreventiva.ResumeLayout(false);
             this.panelPacientePreventiva.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvLigaYClub)).EndInit();
@@ -1953,6 +1950,9 @@ namespace CapaPresentacion
             this.panelHorario.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.panelFechaTipoExamen.ResumeLayout(false);
+            this.panelLaboral.ResumeLayout(false);
+            this.panelLaboral.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox9)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.rbcMenu)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgv)).EndInit();
             this.panel2.ResumeLayout(false);
