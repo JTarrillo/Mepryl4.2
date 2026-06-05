@@ -47,6 +47,35 @@ namespace CapaPresentacion
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle26 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle27 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle28 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle30 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle31 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle32 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle33 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle34 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle35 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle36 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle37 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle38 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle39 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle40 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle41 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle42 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle43 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle44 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle45 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle46 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle47 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle48 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle49 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle50 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle51 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle52 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle53 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle54 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle55 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle56 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle57 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle58 = new System.Windows.Forms.DataGridViewCellStyle();
             this.lblTitulo = new System.Windows.Forms.Label();
             this.pnlSuperior = new System.Windows.Forms.Panel();
             this.lblAnio = new System.Windows.Forms.Label();
@@ -95,6 +124,37 @@ namespace CapaPresentacion
             this.colCoef11 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colPromo12 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colCoef12 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dgvPrecioPublico = new System.Windows.Forms.DataGridView();
+            this.colPublicoIdEspecialidad = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colPublicoIPCBase = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colPublicoMotivo = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colPublicoTipo = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colPublicoDescripcion = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colPublicoPromo01 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colPublicoCoef01 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colPublicoPromo02 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colPublicoCoef02 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colPublicoPromo03 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colPublicoCoef03 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colPublicoPromo04 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colPublicoCoef04 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colPublicoPromo05 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colPublicoCoef05 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colPublicoPromo06 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colPublicoCoef06 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colPublicoPromo07 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colPublicoCoef07 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colPublicoPromo08 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colPublicoCoef08 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colPublicoPromo09 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colPublicoCoef09 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colPublicoPromo10 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colPublicoCoef10 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colPublicoPromo11 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colPublicoCoef11 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colPublicoPromo12 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colPublicoCoef12 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.tabPrecioPublico = new System.Windows.Forms.TabPage();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabPrecios = new System.Windows.Forms.TabPage();
             this.tabConfig = new System.Windows.Forms.TabPage();
@@ -111,8 +171,10 @@ namespace CapaPresentacion
             this.pnlMenu.SuspendLayout();
             this.mnuAplicar.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPrecios)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvPrecioPublico)).BeginInit();
             this.tabControl.SuspendLayout();
             this.tabPrecios.SuspendLayout();
+            this.tabPrecioPublico.SuspendLayout();
             this.tabConfig.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvConfig)).BeginInit();
             this.SuspendLayout();
@@ -737,10 +799,402 @@ namespace CapaPresentacion
             this.colCoef12.HeaderText = "";
             this.colCoef12.Name = "colCoef12";
             // 
+            // dgvPrecioPublico
+            // 
+            this.dgvPrecioPublico.AllowUserToAddRows = false;
+            this.dgvPrecioPublico.AllowUserToDeleteRows = false;
+            dataGridViewCellStyle30.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(235)))), ((int)(((byte)(247)))), ((int)(((byte)(240)))));
+            dataGridViewCellStyle30.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(235)))), ((int)(((byte)(247)))), ((int)(((byte)(240)))));
+            dataGridViewCellStyle30.SelectionForeColor = System.Drawing.Color.Black;
+            this.dgvPrecioPublico.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle30;
+            this.dgvPrecioPublico.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvPrecioPublico.BackgroundColor = System.Drawing.Color.White;
+            dataGridViewCellStyle31.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle31.BackColor = System.Drawing.Color.SeaGreen;
+            dataGridViewCellStyle31.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle31.ForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle31.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvPrecioPublico.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle31;
+            this.dgvPrecioPublico.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvPrecioPublico.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.colPublicoIdEspecialidad,
+            this.colPublicoMotivo,
+            this.colPublicoTipo,
+            this.colPublicoDescripcion,
+            this.colPublicoIPCBase,
+            this.colPublicoPromo01,
+            this.colPublicoCoef01,
+            this.colPublicoPromo02,
+            this.colPublicoCoef02,
+            this.colPublicoPromo03,
+            this.colPublicoCoef03,
+            this.colPublicoPromo04,
+            this.colPublicoCoef04,
+            this.colPublicoPromo05,
+            this.colPublicoCoef05,
+            this.colPublicoPromo06,
+            this.colPublicoCoef06,
+            this.colPublicoPromo07,
+            this.colPublicoCoef07,
+            this.colPublicoPromo08,
+            this.colPublicoCoef08,
+            this.colPublicoPromo09,
+            this.colPublicoCoef09,
+            this.colPublicoPromo10,
+            this.colPublicoCoef10,
+            this.colPublicoPromo11,
+            this.colPublicoCoef11,
+            this.colPublicoPromo12,
+            this.colPublicoCoef12});
+            dataGridViewCellStyle58.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle58.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle58.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle58.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            dataGridViewCellStyle58.SelectionBackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle58.SelectionForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle58.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvPrecioPublico.DefaultCellStyle = dataGridViewCellStyle58;
+            this.dgvPrecioPublico.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvPrecioPublico.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
+            this.dgvPrecioPublico.EnableHeadersVisualStyles = false;
+            this.dgvPrecioPublico.Location = new System.Drawing.Point(3, 3);
+            this.dgvPrecioPublico.Name = "dgvPrecioPublico";
+            this.dgvPrecioPublico.RowHeadersVisible = false;
+            this.dgvPrecioPublico.RowTemplate.Height = 28;
+            this.dgvPrecioPublico.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
+            this.dgvPrecioPublico.Size = new System.Drawing.Size(1350, 373);
+            this.dgvPrecioPublico.TabIndex = 0;
+            this.dgvPrecioPublico.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.dgvPrecios_CellBeginEdit);
+            this.dgvPrecioPublico.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvPrecios_CellEndEdit);
+            this.dgvPrecioPublico.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dgvPrecios_CellFormatting);
+            this.dgvPrecioPublico.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.dgvPrecios_CellPainting);
+            this.dgvPrecioPublico.ColumnHeaderMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvPrecios_ColumnHeaderMouseDoubleClick);
+            this.dgvPrecioPublico.EditingControlShowing += new System.Windows.Forms.DataGridViewEditingControlShowingEventHandler(this.dgvPrecios_EditingControlShowing);
+            // 
+            // colPublicoIdEspecialidad
+            // 
+            this.colPublicoIdEspecialidad.HeaderText = "Id";
+            this.colPublicoIdEspecialidad.Name = "colPublicoIdEspecialidad";
+            this.colPublicoIdEspecialidad.Visible = false;
+            // 
+            // colPublicoIPCBase
+            // 
+            dataGridViewCellStyle32.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle32.Format = "0.####";
+            this.colPublicoIPCBase.DefaultCellStyle = dataGridViewCellStyle32;
+            this.colPublicoIPCBase.FillWeight = 50F;
+            this.colPublicoIPCBase.HeaderText = "IPC";
+            this.colPublicoIPCBase.Name = "colPublicoIPCBase";
+            // 
+            // colPublicoMotivo
+            // 
+            dataGridViewCellStyle33.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(245)))), ((int)(((byte)(235)))));
+            dataGridViewCellStyle33.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(80)))), ((int)(((byte)(50)))));
+            dataGridViewCellStyle33.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(180)))), ((int)(((byte)(220)))), ((int)(((byte)(195)))));
+            dataGridViewCellStyle33.SelectionForeColor = System.Drawing.Color.Black;
+            this.colPublicoMotivo.DefaultCellStyle = dataGridViewCellStyle33;
+            this.colPublicoMotivo.FillWeight = 70F;
+            this.colPublicoMotivo.HeaderText = "Motivo";
+            this.colPublicoMotivo.Name = "colPublicoMotivo";
+            this.colPublicoMotivo.ReadOnly = true;
+            this.colPublicoMotivo.Visible = false;
+            // 
+            // colPublicoTipo
+            // 
+            this.colPublicoTipo.FillWeight = 90F;
+            this.colPublicoTipo.HeaderText = "Tipo";
+            this.colPublicoTipo.Name = "colPublicoTipo";
+            this.colPublicoTipo.ReadOnly = true;
+            this.colPublicoTipo.Visible = false;
+            // 
+            // colPublicoDescripcion
+            // 
+            this.colPublicoDescripcion.FillWeight = 160F;
+            this.colPublicoDescripcion.HeaderText = "Subtipo";
+            this.colPublicoDescripcion.Name = "colPublicoDescripcion";
+            this.colPublicoDescripcion.ReadOnly = true;
+            // 
+            // colPublicoPromo01
+            // 
+            dataGridViewCellStyle34.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle34.Format = "N0";
+            this.colPublicoPromo01.DefaultCellStyle = dataGridViewCellStyle34;
+            this.colPublicoPromo01.FillWeight = 60F;
+            this.colPublicoPromo01.HeaderText = "ENERO";
+            this.colPublicoPromo01.Name = "colPublicoPromo01";
+            // 
+            // colPublicoCoef01
+            // 
+            dataGridViewCellStyle35.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle35.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(210)))), ((int)(((byte)(210)))));
+            dataGridViewCellStyle35.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle35.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(140)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            dataGridViewCellStyle35.Format = "0.####";
+            dataGridViewCellStyle35.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(210)))), ((int)(((byte)(210)))));
+            dataGridViewCellStyle35.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(140)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.colPublicoCoef01.DefaultCellStyle = dataGridViewCellStyle35;
+            this.colPublicoCoef01.FillWeight = 32F;
+            this.colPublicoCoef01.HeaderText = "";
+            this.colPublicoCoef01.Name = "colPublicoCoef01";
+            // 
+            // colPublicoPromo02
+            // 
+            dataGridViewCellStyle36.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle36.Format = "N0";
+            this.colPublicoPromo02.DefaultCellStyle = dataGridViewCellStyle36;
+            this.colPublicoPromo02.FillWeight = 60F;
+            this.colPublicoPromo02.HeaderText = "FEBRERO";
+            this.colPublicoPromo02.Name = "colPublicoPromo02";
+            // 
+            // colPublicoCoef02
+            // 
+            dataGridViewCellStyle37.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle37.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(210)))), ((int)(((byte)(210)))));
+            dataGridViewCellStyle37.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle37.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(140)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            dataGridViewCellStyle37.Format = "0.####";
+            dataGridViewCellStyle37.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(210)))), ((int)(((byte)(210)))));
+            dataGridViewCellStyle37.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(140)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.colPublicoCoef02.DefaultCellStyle = dataGridViewCellStyle37;
+            this.colPublicoCoef02.FillWeight = 32F;
+            this.colPublicoCoef02.HeaderText = "";
+            this.colPublicoCoef02.Name = "colPublicoCoef02";
+            // 
+            // colPublicoPromo03
+            // 
+            dataGridViewCellStyle38.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle38.Format = "N0";
+            this.colPublicoPromo03.DefaultCellStyle = dataGridViewCellStyle38;
+            this.colPublicoPromo03.FillWeight = 60F;
+            this.colPublicoPromo03.HeaderText = "MARZO";
+            this.colPublicoPromo03.Name = "colPublicoPromo03";
+            // 
+            // colPublicoCoef03
+            // 
+            dataGridViewCellStyle39.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle39.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(210)))), ((int)(((byte)(210)))));
+            dataGridViewCellStyle39.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle39.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(140)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            dataGridViewCellStyle39.Format = "0.####";
+            dataGridViewCellStyle39.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(210)))), ((int)(((byte)(210)))));
+            dataGridViewCellStyle39.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(140)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.colPublicoCoef03.DefaultCellStyle = dataGridViewCellStyle39;
+            this.colPublicoCoef03.FillWeight = 32F;
+            this.colPublicoCoef03.HeaderText = "";
+            this.colPublicoCoef03.Name = "colPublicoCoef03";
+            // 
+            // colPublicoPromo04
+            // 
+            dataGridViewCellStyle40.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle40.Format = "N0";
+            this.colPublicoPromo04.DefaultCellStyle = dataGridViewCellStyle40;
+            this.colPublicoPromo04.FillWeight = 60F;
+            this.colPublicoPromo04.HeaderText = "ABRIL";
+            this.colPublicoPromo04.Name = "colPublicoPromo04";
+            // 
+            // colPublicoCoef04
+            // 
+            dataGridViewCellStyle41.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle41.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(210)))), ((int)(((byte)(210)))));
+            dataGridViewCellStyle41.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle41.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(140)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            dataGridViewCellStyle41.Format = "0.####";
+            dataGridViewCellStyle41.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(210)))), ((int)(((byte)(210)))));
+            dataGridViewCellStyle41.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(140)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.colPublicoCoef04.DefaultCellStyle = dataGridViewCellStyle41;
+            this.colPublicoCoef04.FillWeight = 32F;
+            this.colPublicoCoef04.HeaderText = "";
+            this.colPublicoCoef04.Name = "colPublicoCoef04";
+            // 
+            // colPublicoPromo05
+            // 
+            dataGridViewCellStyle42.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle42.Format = "N0";
+            this.colPublicoPromo05.DefaultCellStyle = dataGridViewCellStyle42;
+            this.colPublicoPromo05.FillWeight = 60F;
+            this.colPublicoPromo05.HeaderText = "MAYO";
+            this.colPublicoPromo05.Name = "colPublicoPromo05";
+            // 
+            // colPublicoCoef05
+            // 
+            dataGridViewCellStyle43.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle43.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(210)))), ((int)(((byte)(210)))));
+            dataGridViewCellStyle43.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle43.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(140)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            dataGridViewCellStyle43.Format = "0.####";
+            dataGridViewCellStyle43.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(210)))), ((int)(((byte)(210)))));
+            dataGridViewCellStyle43.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(140)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.colPublicoCoef05.DefaultCellStyle = dataGridViewCellStyle43;
+            this.colPublicoCoef05.FillWeight = 32F;
+            this.colPublicoCoef05.HeaderText = "";
+            this.colPublicoCoef05.Name = "colPublicoCoef05";
+            // 
+            // colPublicoPromo06
+            // 
+            dataGridViewCellStyle44.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle44.Format = "N0";
+            this.colPublicoPromo06.DefaultCellStyle = dataGridViewCellStyle44;
+            this.colPublicoPromo06.FillWeight = 60F;
+            this.colPublicoPromo06.HeaderText = "JUNIO";
+            this.colPublicoPromo06.Name = "colPublicoPromo06";
+            // 
+            // colPublicoCoef06
+            // 
+            dataGridViewCellStyle45.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle45.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(210)))), ((int)(((byte)(210)))));
+            dataGridViewCellStyle45.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle45.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(140)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            dataGridViewCellStyle45.Format = "0.####";
+            dataGridViewCellStyle45.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(210)))), ((int)(((byte)(210)))));
+            dataGridViewCellStyle45.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(140)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.colPublicoCoef06.DefaultCellStyle = dataGridViewCellStyle45;
+            this.colPublicoCoef06.FillWeight = 32F;
+            this.colPublicoCoef06.HeaderText = "";
+            this.colPublicoCoef06.Name = "colPublicoCoef06";
+            // 
+            // colPublicoPromo07
+            // 
+            dataGridViewCellStyle46.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle46.Format = "N0";
+            this.colPublicoPromo07.DefaultCellStyle = dataGridViewCellStyle46;
+            this.colPublicoPromo07.FillWeight = 60F;
+            this.colPublicoPromo07.HeaderText = "JULIO";
+            this.colPublicoPromo07.Name = "colPublicoPromo07";
+            // 
+            // colPublicoCoef07
+            // 
+            dataGridViewCellStyle47.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle47.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(210)))), ((int)(((byte)(210)))));
+            dataGridViewCellStyle47.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle47.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(140)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            dataGridViewCellStyle47.Format = "0.####";
+            dataGridViewCellStyle47.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(210)))), ((int)(((byte)(210)))));
+            dataGridViewCellStyle47.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(140)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.colPublicoCoef07.DefaultCellStyle = dataGridViewCellStyle47;
+            this.colPublicoCoef07.FillWeight = 32F;
+            this.colPublicoCoef07.HeaderText = "";
+            this.colPublicoCoef07.Name = "colPublicoCoef07";
+            // 
+            // colPublicoPromo08
+            // 
+            dataGridViewCellStyle48.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle48.Format = "N0";
+            this.colPublicoPromo08.DefaultCellStyle = dataGridViewCellStyle48;
+            this.colPublicoPromo08.FillWeight = 60F;
+            this.colPublicoPromo08.HeaderText = "AGOSTO";
+            this.colPublicoPromo08.Name = "colPublicoPromo08";
+            // 
+            // colPublicoCoef08
+            // 
+            dataGridViewCellStyle49.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle49.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(210)))), ((int)(((byte)(210)))));
+            dataGridViewCellStyle49.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle49.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(140)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            dataGridViewCellStyle49.Format = "0.####";
+            dataGridViewCellStyle49.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(210)))), ((int)(((byte)(210)))));
+            dataGridViewCellStyle49.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(140)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.colPublicoCoef08.DefaultCellStyle = dataGridViewCellStyle49;
+            this.colPublicoCoef08.FillWeight = 32F;
+            this.colPublicoCoef08.HeaderText = "";
+            this.colPublicoCoef08.Name = "colPublicoCoef08";
+            // 
+            // colPublicoPromo09
+            // 
+            dataGridViewCellStyle50.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle50.Format = "N0";
+            this.colPublicoPromo09.DefaultCellStyle = dataGridViewCellStyle50;
+            this.colPublicoPromo09.FillWeight = 60F;
+            this.colPublicoPromo09.HeaderText = "SEPTIEMBRE";
+            this.colPublicoPromo09.Name = "colPublicoPromo09";
+            // 
+            // colPublicoCoef09
+            // 
+            dataGridViewCellStyle51.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle51.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(210)))), ((int)(((byte)(210)))));
+            dataGridViewCellStyle51.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle51.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(140)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            dataGridViewCellStyle51.Format = "0.####";
+            dataGridViewCellStyle51.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(210)))), ((int)(((byte)(210)))));
+            dataGridViewCellStyle51.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(140)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.colPublicoCoef09.DefaultCellStyle = dataGridViewCellStyle51;
+            this.colPublicoCoef09.FillWeight = 32F;
+            this.colPublicoCoef09.HeaderText = "";
+            this.colPublicoCoef09.Name = "colPublicoCoef09";
+            // 
+            // colPublicoPromo10
+            // 
+            dataGridViewCellStyle52.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle52.Format = "N0";
+            this.colPublicoPromo10.DefaultCellStyle = dataGridViewCellStyle52;
+            this.colPublicoPromo10.FillWeight = 60F;
+            this.colPublicoPromo10.HeaderText = "OCTUBRE";
+            this.colPublicoPromo10.Name = "colPublicoPromo10";
+            // 
+            // colPublicoCoef10
+            // 
+            dataGridViewCellStyle53.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle53.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(210)))), ((int)(((byte)(210)))));
+            dataGridViewCellStyle53.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle53.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(140)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            dataGridViewCellStyle53.Format = "0.####";
+            dataGridViewCellStyle53.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(210)))), ((int)(((byte)(210)))));
+            dataGridViewCellStyle53.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(140)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.colPublicoCoef10.DefaultCellStyle = dataGridViewCellStyle53;
+            this.colPublicoCoef10.FillWeight = 32F;
+            this.colPublicoCoef10.HeaderText = "";
+            this.colPublicoCoef10.Name = "colPublicoCoef10";
+            // 
+            // colPublicoPromo11
+            // 
+            dataGridViewCellStyle54.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle54.Format = "N0";
+            this.colPublicoPromo11.DefaultCellStyle = dataGridViewCellStyle54;
+            this.colPublicoPromo11.FillWeight = 60F;
+            this.colPublicoPromo11.HeaderText = "NOVIEMBRE";
+            this.colPublicoPromo11.Name = "colPublicoPromo11";
+            // 
+            // colPublicoCoef11
+            // 
+            dataGridViewCellStyle55.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle55.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(210)))), ((int)(((byte)(210)))));
+            dataGridViewCellStyle55.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle55.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(140)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            dataGridViewCellStyle55.Format = "0.####";
+            dataGridViewCellStyle55.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(210)))), ((int)(((byte)(210)))));
+            dataGridViewCellStyle55.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(140)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.colPublicoCoef11.DefaultCellStyle = dataGridViewCellStyle55;
+            this.colPublicoCoef11.FillWeight = 32F;
+            this.colPublicoCoef11.HeaderText = "";
+            this.colPublicoCoef11.Name = "colPublicoCoef11";
+            // 
+            // colPublicoPromo12
+            // 
+            dataGridViewCellStyle56.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle56.Format = "N0";
+            this.colPublicoPromo12.DefaultCellStyle = dataGridViewCellStyle56;
+            this.colPublicoPromo12.FillWeight = 60F;
+            this.colPublicoPromo12.HeaderText = "DICIEMBRE";
+            this.colPublicoPromo12.Name = "colPublicoPromo12";
+            // 
+            // colPublicoCoef12
+            // 
+            dataGridViewCellStyle57.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle57.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(210)))), ((int)(((byte)(210)))));
+            dataGridViewCellStyle57.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle57.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(140)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            dataGridViewCellStyle57.Format = "0.####";
+            dataGridViewCellStyle57.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(210)))), ((int)(((byte)(210)))));
+            dataGridViewCellStyle57.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(140)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.colPublicoCoef12.DefaultCellStyle = dataGridViewCellStyle57;
+            this.colPublicoCoef12.FillWeight = 32F;
+            this.colPublicoCoef12.HeaderText = "";
+            this.colPublicoCoef12.Name = "colPublicoCoef12";
+            // 
             // tabControl
             // 
             this.tabControl.Alignment = System.Windows.Forms.TabAlignment.Bottom;
             this.tabControl.Controls.Add(this.tabPrecios);
+            this.tabControl.Controls.Add(this.tabPrecioPublico);
             this.tabControl.Controls.Add(this.tabConfig);
             this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
@@ -758,8 +1212,19 @@ namespace CapaPresentacion
             this.tabPrecios.Padding = new System.Windows.Forms.Padding(3);
             this.tabPrecios.Size = new System.Drawing.Size(1356, 379);
             this.tabPrecios.TabIndex = 0;
-            this.tabPrecios.Text = "  Precio Promo";
+            this.tabPrecios.Text = "  Precio Promo  ";
             this.tabPrecios.UseVisualStyleBackColor = true;
+            // 
+            // tabPrecioPublico
+            // 
+            this.tabPrecioPublico.Controls.Add(this.dgvPrecioPublico);
+            this.tabPrecioPublico.Location = new System.Drawing.Point(4, 4);
+            this.tabPrecioPublico.Name = "tabPrecioPublico";
+            this.tabPrecioPublico.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPrecioPublico.Size = new System.Drawing.Size(1356, 379);
+            this.tabPrecioPublico.TabIndex = 1;
+            this.tabPrecioPublico.Text = "  Precio Público  ";
+            this.tabPrecioPublico.UseVisualStyleBackColor = true;
             // 
             // tabConfig
             // 
@@ -768,7 +1233,7 @@ namespace CapaPresentacion
             this.tabConfig.Name = "tabConfig";
             this.tabConfig.Padding = new System.Windows.Forms.Padding(3);
             this.tabConfig.Size = new System.Drawing.Size(1356, 379);
-            this.tabConfig.TabIndex = 1;
+            this.tabConfig.TabIndex = 2;
             this.tabConfig.Text = "  Señas / Planilla";
             this.tabConfig.UseVisualStyleBackColor = true;
             // 
@@ -862,8 +1327,10 @@ namespace CapaPresentacion
             this.pnlMenu.PerformLayout();
             this.mnuAplicar.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvPrecios)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvPrecioPublico)).EndInit();
             this.tabControl.ResumeLayout(false);
             this.tabPrecios.ResumeLayout(false);
+            this.tabPrecioPublico.ResumeLayout(false);
             this.tabConfig.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvConfig)).EndInit();
             this.ResumeLayout(false);
@@ -892,6 +1359,7 @@ namespace CapaPresentacion
         private System.Windows.Forms.ToolStripMenuItem mnuVariacion;
         private System.Windows.Forms.TabControl tabControl;
         private System.Windows.Forms.TabPage tabPrecios;
+        private System.Windows.Forms.TabPage tabPrecioPublico;
         private System.Windows.Forms.TabPage tabConfig;
         private System.Windows.Forms.DataGridView dgvConfig;
         private System.Windows.Forms.DataGridViewTextBoxColumn colCfgIdEsp;
@@ -931,5 +1399,35 @@ namespace CapaPresentacion
         private System.Windows.Forms.DataGridViewTextBoxColumn colCoef11;
         private System.Windows.Forms.DataGridViewTextBoxColumn colPromo12;
         private System.Windows.Forms.DataGridViewTextBoxColumn colCoef12;
+        private System.Windows.Forms.DataGridView dgvPrecioPublico;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colPublicoIdEspecialidad;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colPublicoIPCBase;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colPublicoMotivo;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colPublicoTipo;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colPublicoDescripcion;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colPublicoPromo01;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colPublicoCoef01;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colPublicoPromo02;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colPublicoCoef02;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colPublicoPromo03;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colPublicoCoef03;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colPublicoPromo04;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colPublicoCoef04;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colPublicoPromo05;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colPublicoCoef05;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colPublicoPromo06;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colPublicoCoef06;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colPublicoPromo07;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colPublicoCoef07;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colPublicoPromo08;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colPublicoCoef08;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colPublicoPromo09;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colPublicoCoef09;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colPublicoPromo10;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colPublicoCoef10;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colPublicoPromo11;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colPublicoCoef11;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colPublicoPromo12;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colPublicoCoef12;
     }
 }

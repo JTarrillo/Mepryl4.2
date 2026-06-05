@@ -357,7 +357,7 @@ namespace CapaDatosMepryl
             if (entidadTipoExamen == null || idEspecialidad == Guid.Empty)
                 return;
 
-            DataTable precioPublico = ObtenerPrecioPublico(idEspecialidad, fechaTurno);
+            DataTable precioPublico = ObtenerPrecioPromo(idEspecialidad, fechaTurno);
             if (precioPublico.Rows.Count < 1)
                 return;
 
@@ -676,12 +676,12 @@ namespace CapaDatosMepryl
             where t.id = '" + idTurno + "'");
             entidad.TipoExamen.Id = new Guid(infoTipoExamenTurno.Rows[0][0].ToString());
             entidad.TipoExamen.PrecioBase = Convert.ToDouble(infoTipoExamenTurno.Rows[0][1].ToString());
-            // Buscar precios por periodo en PrecioPublico
+            // Buscar precios por periodo en PrecioPromo
             string idEspVent = entidad.TipoExamen.Id.ToString();
             int mesVent = DateTime.Now.Month;
             int anioVent = DateTime.Now.Year;
             DataTable ppVent = SQLConnector.obtenerTablaSegunConsultaString(
-                "SELECT PrecioPromo, PrecioLista FROM dbo.PrecioPublico WHERE idEspecialidad = '" + idEspVent + "' AND Mes = " + mesVent + " AND Anio = " + anioVent + " AND Eliminado = 0");
+                "SELECT PrecioPromo, PrecioLista FROM dbo.PrecioPromo WHERE idEspecialidad = '" + idEspVent + "' AND Mes = " + mesVent + " AND Anio = " + anioVent + " AND Eliminado = 0");
             if (ppVent.Rows.Count > 0)
             {
                 entidad.TipoExamen.PrecioBase = Convert.ToDouble(ppVent.Rows[0]["PrecioPromo"].ToString());
@@ -1634,14 +1634,14 @@ namespace CapaDatosMepryl
             return strIdEspecialidad;
         }
 
-        public DataTable ObtenerPrecioPublico(Guid idEspecialidad, DateTime fecha)
+        public DataTable ObtenerPrecioPromo(Guid idEspecialidad, DateTime fecha)
         {
             return SQLConnector.obtenerTablaSegunConsultaString(
                 "SELECT pp.PrecioPromo, pp.PrecioLista, " +
                 "ISNULL(cfg.Seña, 0) AS Seña, " +
                 "ISNULL(cfg.LlevaPlanilla, 0) AS LlevaPlanilla, " +
                 "ISNULL(cfg.Observaciones, '') AS ObservacionesExtra " +
-                "FROM dbo.PrecioPublico pp " +
+                "FROM dbo.PrecioPromo pp " +
                 "LEFT JOIN dbo.ConfigPrecioEspecialidad cfg ON cfg.idEspecialidad = pp.idEspecialidad " +
                 "WHERE pp.idEspecialidad = '" + idEspecialidad.ToString() +
                 "' AND pp.Mes = " + fecha.Month + " AND pp.Anio = " + fecha.Year + " AND pp.Eliminado = 0");

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -207,9 +207,9 @@ namespace CapaNegocioMepryl
         {
             return turno.buscarTurnosPorNombre(nombre);
         }
-        public DataTable ObtenerPrecioPublico(Guid idEspecialidad, DateTime fecha)
+        public DataTable ObtenerPrecioPromo(Guid idEspecialidad, DateTime fecha)
         {
-            return turno.ObtenerPrecioPublico(idEspecialidad, fecha);
+            return turno.ObtenerPrecioPromo(idEspecialidad, fecha);
         }
 
         public void ActualizarPrecioListaTipoExamenPaciente(Guid idTipoExamenPaciente, double precioLista)

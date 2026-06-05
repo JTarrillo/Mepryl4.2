@@ -683,29 +683,29 @@ namespace CapaPresentacion
             panelLaboral.Visible = false;
             Entidades.TurnoPreventiva pacientePreventiva = turno.cargarTurnoPacientePreventiva(new Guid(dgv.Rows[dgv.CurrentCell.RowIndex].Cells[0].Value.ToString()));
 
-            // Si PrecioLista es 0, buscarlo en PrecioPublico usando el IdSubtipo de la grilla
+            // Si PrecioLista es 0, buscarlo en PrecioPromo usando el IdSubtipo de la grilla
             // (IdSubtipo apunta a la especialidad HIJA como FUTBOL METRO, que sí tiene precio;
-            //  TipoExamenDePaciente.idEspecialidad guarda el PADRE como FUTBOL, sin precio en PrecioPublico)
+            //  TipoExamenDePaciente.idEspecialidad guarda el PADRE como FUTBOL, sin precio en PrecioPromo)
             if (pacientePreventiva.TipoExamen.PrecioLista == 0)
             {
                 string idSubtipoPrev = dgv.Rows[dgv.CurrentCell.RowIndex].Cells["IdSubtipo"].Value?.ToString() ?? "";
                 if (!string.IsNullOrEmpty(idSubtipoPrev) && idSubtipoPrev != Guid.Empty.ToString())
                 {
-                    DataTable ppPrev = turno.ObtenerPrecioPublico(new Guid(idSubtipoPrev), obtenerFecha());
+                    DataTable ppPrev = turno.ObtenerPrecioPromo(new Guid(idSubtipoPrev), obtenerFecha());
                     if (ppPrev.Rows.Count > 0 && Convert.ToDouble(ppPrev.Rows[0]["PrecioLista"].ToString()) > 0)
                         pacientePreventiva.TipoExamen.PrecioLista = Convert.ToDouble(ppPrev.Rows[0]["PrecioLista"].ToString());
                 }
             }
 
-            // Cargar campos de seña y planilla desde PrecioPublico (solo si no hay valor personalizado)
+            // Cargar campos de seña y planilla desde PrecioPromo (solo si no hay valor personalizado)
             {
                 string idSubtipoPrev2 = dgv.Rows[dgv.CurrentCell.RowIndex].Cells["IdSubtipo"].Value?.ToString() ?? "";
                 if (!string.IsNullOrEmpty(idSubtipoPrev2) && idSubtipoPrev2 != Guid.Empty.ToString())
                 {
-                    DataTable ppPrev2 = turno.ObtenerPrecioPublico(new Guid(idSubtipoPrev2), obtenerFecha());
+                    DataTable ppPrev2 = turno.ObtenerPrecioPromo(new Guid(idSubtipoPrev2), obtenerFecha());
                     if (ppPrev2.Rows.Count > 0)
                     {
-                        // Solo cargar Seña desde PrecioPublico si no hay un valor personalizado (> 0)
+                        // Solo cargar Seña desde PrecioPromo si no hay un valor personalizado (> 0)
                         if (pacientePreventiva.TipoExamen.Seña <= 0)
                         {
                             pacientePreventiva.TipoExamen.Seña = Convert.ToDouble(ppPrev2.Rows[0]["Seña"]);
@@ -780,27 +780,27 @@ namespace CapaPresentacion
             test = dgv.Rows[dgv.CurrentCell.RowIndex].Cells[0].Value.ToString();
             Entidades.TurnoLaboral pacienteLaboral = turno.cargarTurnoPacienteLaboral(new Guid(dgv.Rows[dgv.CurrentCell.RowIndex].Cells[0].Value.ToString()));
 
-            // Si PrecioLista es 0, buscarlo en PrecioPublico usando el IdSubtipo de la grilla
+            // Si PrecioLista es 0, buscarlo en PrecioPromo usando el IdSubtipo de la grilla
             if (pacienteLaboral.TipoExamen.PrecioLista == 0)
             {
                 string idSubtipoLab = dgv.Rows[dgv.CurrentCell.RowIndex].Cells["IdSubtipo"].Value?.ToString() ?? "";
                 if (!string.IsNullOrEmpty(idSubtipoLab) && idSubtipoLab != Guid.Empty.ToString())
                 {
-                    DataTable ppLab = turno.ObtenerPrecioPublico(new Guid(idSubtipoLab), obtenerFecha());
+                    DataTable ppLab = turno.ObtenerPrecioPromo(new Guid(idSubtipoLab), obtenerFecha());
                     if (ppLab.Rows.Count > 0 && Convert.ToDouble(ppLab.Rows[0]["PrecioLista"].ToString()) > 0)
                         pacienteLaboral.TipoExamen.PrecioLista = Convert.ToDouble(ppLab.Rows[0]["PrecioLista"].ToString());
                 }
             }
 
-            // Cargar campos de seña y planilla desde PrecioPublico (solo si no hay valor personalizado)
+            // Cargar campos de seña y planilla desde PrecioPromo (solo si no hay valor personalizado)
             {
                 string idSubtipoLab2 = dgv.Rows[dgv.CurrentCell.RowIndex].Cells["IdSubtipo"].Value?.ToString() ?? "";
                 if (!string.IsNullOrEmpty(idSubtipoLab2) && idSubtipoLab2 != Guid.Empty.ToString())
                 {
-                    DataTable ppLab2 = turno.ObtenerPrecioPublico(new Guid(idSubtipoLab2), obtenerFecha());
+                    DataTable ppLab2 = turno.ObtenerPrecioPromo(new Guid(idSubtipoLab2), obtenerFecha());
                     if (ppLab2.Rows.Count > 0)
                     {
-                        // Solo cargar Seña desde PrecioPublico si no hay un valor personalizado (> 0)
+                        // Solo cargar Seña desde PrecioPromo si no hay un valor personalizado (> 0)
                         if (pacienteLaboral.TipoExamen.Seña <= 0)
                         {
                             pacienteLaboral.TipoExamen.Seña = Convert.ToDouble(ppLab2.Rows[0]["Seña"]);
@@ -957,12 +957,12 @@ namespace CapaPresentacion
             panelLaboral.Visible = false;
             Entidades.TurnoPreventiva pacientePreventiva = turno.nuevoTurnoPacientePreventiva(idPaciente, dgv.Rows[dgv.CurrentCell.RowIndex].Cells[0].Value.ToString());
 
-            // Buscar y actualizar precio desde PrecioPublico por periodo
+            // Buscar y actualizar precio desde PrecioPromo por periodo
             DateTime fechaTurno = obtenerFecha();
             string idSubtipoAsigPrev = dgv.Rows[dgv.CurrentCell.RowIndex].Cells["IdSubtipo"].Value?.ToString() ?? "";
             if (!string.IsNullOrEmpty(idSubtipoAsigPrev))
             {
-                DataTable ppAsigPrev = turno.ObtenerPrecioPublico(new Guid(idSubtipoAsigPrev), fechaTurno);
+                DataTable ppAsigPrev = turno.ObtenerPrecioPromo(new Guid(idSubtipoAsigPrev), fechaTurno);
                 if (ppAsigPrev.Rows.Count > 0)
                 {
                     pacientePreventiva.TipoExamen.PrecioBase = Convert.ToDouble(ppAsigPrev.Rows[0]["PrecioPromo"].ToString());
@@ -1020,12 +1020,12 @@ namespace CapaPresentacion
             test = dgv.Rows[dgv.CurrentCell.RowIndex].Cells[0].Value.ToString();
             Entidades.TurnoLaboral pacienteLaboral = turno.nuevoTurnoPacienteLaboral(idPaciente, dgv.Rows[dgv.CurrentCell.RowIndex].Cells[0].Value.ToString(), idEmpresa);
 
-            // Buscar y actualizar precio desde PrecioPublico por periodo
+            // Buscar y actualizar precio desde PrecioPromo por periodo
             DateTime fechaTurno = obtenerFecha();
             string idSubtipoAsigLab = dgv.Rows[dgv.CurrentCell.RowIndex].Cells["IdSubtipo"].Value?.ToString() ?? "";
             if (!string.IsNullOrEmpty(idSubtipoAsigLab))
             {
-                DataTable ppAsigLab = turno.ObtenerPrecioPublico(new Guid(idSubtipoAsigLab), fechaTurno);
+                DataTable ppAsigLab = turno.ObtenerPrecioPromo(new Guid(idSubtipoAsigLab), fechaTurno);
                 if (ppAsigLab.Rows.Count > 0)
                 {
                     pacienteLaboral.TipoExamen.PrecioBase = Convert.ToDouble(ppAsigLab.Rows[0]["PrecioPromo"].ToString());
