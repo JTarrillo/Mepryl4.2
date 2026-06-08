@@ -681,7 +681,10 @@ namespace CapaDatosMepryl
             int mesVent = DateTime.Now.Month;
             int anioVent = DateTime.Now.Year;
             DataTable ppVent = SQLConnector.obtenerTablaSegunConsultaString(
-                "SELECT PrecioPromo, PrecioLista FROM dbo.PrecioPromo WHERE idEspecialidad = '" + idEspVent + "' AND Mes = " + mesVent + " AND Anio = " + anioVent + " AND Eliminado = 0");
+                "SELECT pp.PrecioPromo, ISNULL(pu.PrecioLista, 0) AS PrecioLista " +
+                "FROM dbo.PrecioPromo pp " +
+                "LEFT JOIN dbo.PrecioPublico pu ON pu.idEspecialidad = pp.idEspecialidad AND pu.Mes = pp.Mes AND pu.Anio = pp.Anio " +
+                "WHERE pp.idEspecialidad = '" + idEspVent + "' AND pp.Mes = " + mesVent + " AND pp.Anio = " + anioVent + " AND pp.Eliminado = 0");
             if (ppVent.Rows.Count > 0)
             {
                 entidad.TipoExamen.PrecioBase = Convert.ToDouble(ppVent.Rows[0]["PrecioPromo"].ToString());
@@ -1637,11 +1640,13 @@ namespace CapaDatosMepryl
         public DataTable ObtenerPrecioPromo(Guid idEspecialidad, DateTime fecha)
         {
             return SQLConnector.obtenerTablaSegunConsultaString(
-                "SELECT pp.PrecioPromo, pp.PrecioLista, " +
+                "SELECT pp.PrecioPromo, " +
+                "ISNULL(pu.PrecioLista, 0) AS PrecioLista, " +
                 "ISNULL(cfg.Seña, 0) AS Seña, " +
                 "ISNULL(cfg.LlevaPlanilla, 0) AS LlevaPlanilla, " +
                 "ISNULL(cfg.Observaciones, '') AS ObservacionesExtra " +
                 "FROM dbo.PrecioPromo pp " +
+                "LEFT JOIN dbo.PrecioPublico pu ON pu.idEspecialidad = pp.idEspecialidad AND pu.Mes = pp.Mes AND pu.Anio = pp.Anio " +
                 "LEFT JOIN dbo.ConfigPrecioEspecialidad cfg ON cfg.idEspecialidad = pp.idEspecialidad " +
                 "WHERE pp.idEspecialidad = '" + idEspecialidad.ToString() +
                 "' AND pp.Mes = " + fecha.Month + " AND pp.Anio = " + fecha.Year + " AND pp.Eliminado = 0");

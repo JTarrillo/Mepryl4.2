@@ -310,6 +310,17 @@ namespace CapaDatos
                 turno.profesionalTexto = dr["profesionalTexto"].ToString();
                 turno.especialidadTexto = dr["especialidadTexto"].ToString();
                 turno.observaciones = dr["observaciones"].ToString();
+                
+                for (int i = 0; i < dr.FieldCount; i++)
+                {
+                    if (dr.GetName(i).ToLower() == "preciolista")
+                    {
+                        if (dr[i] != DBNull.Value)
+                            turno.importeLista = double.Parse(dr[i].ToString());
+                        break;
+                    }
+                }
+
                 if (dr["pacienteNacimiento"].ToString() != "")
                 {
                     turno.pacienteNacimiento = ((DateTime)dr["pacienteNacimiento"]).ToShortDateString();

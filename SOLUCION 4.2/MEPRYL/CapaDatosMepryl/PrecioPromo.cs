@@ -29,7 +29,6 @@ namespace CapaDatosMepryl
         public DataTable ListarPreciosPublico(int mes, int anio)
         {
             string strSQL = "SELECT e.id AS idEspecialidad, e.descripcion AS Descripcion, " +
-                "ISNULL(p.PrecioLista, 0) AS PrecioLista, " +
                 "ISNULL(p.PrecioPromo, 0) AS PrecioPromo, " +
                 "ISNULL(e.precioBase, 0) AS precioBase, " +
                 "ISNULL(p.Seña, 0) AS Seña, " +
@@ -60,7 +59,6 @@ namespace CapaDatosMepryl
             {
                 string idEspecialidad = dtDatos.Rows[i]["idEspecialidad"].ToString();
                 string descripcion = dtDatos.Rows[i]["Descripcion"].ToString().Replace("'", "''");
-                string precioLista = dtDatos.Rows[i]["PrecioLista"].ToString().Replace(",", ".");
                 string precioPromo = dtDatos.Rows[i]["PrecioPromo"].ToString().Replace(",", ".");
                 string seña = dtDatos.Rows[i]["Seña"].ToString().Replace(",", ".");
                 string llevaPlanilla = (Convert.ToBoolean(dtDatos.Rows[i]["LlevaPlanilla"]) ? "1" : "0");
@@ -70,7 +68,6 @@ namespace CapaDatosMepryl
                 sb.Append("IF EXISTS (SELECT 1 FROM PrecioPromo WHERE idEspecialidad = '" + idEspecialidad + "' AND Mes = " + mes + " AND Anio = " + anio + ") ");
                 sb.Append("UPDATE PrecioPromo SET ");
                 sb.Append("Descripcion = '" + descripcion + "', ");
-                sb.Append("PrecioLista = " + precioLista + ", ");
                 sb.Append("PrecioPromo = " + precioPromo + ", ");
                 sb.Append("Seña = " + seña + ", ");
                 sb.Append("LlevaPlanilla = " + llevaPlanilla + ", ");
@@ -80,8 +77,8 @@ namespace CapaDatosMepryl
                 sb.Append("Eliminado = 0 ");
                 sb.Append("WHERE idEspecialidad = '" + idEspecialidad + "' AND Mes = " + mes + " AND Anio = " + anio + " ");
                 sb.Append("ELSE ");
-                sb.Append("INSERT INTO PrecioPromo (idEspecialidad, Descripcion, Mes, Anio, PrecioLista, PrecioPromo, Seña, LlevaPlanilla, ObservacionesExtra, CoeficienteIndividual) ");
-                sb.AppendLine("VALUES('" + idEspecialidad + "', '" + descripcion + "', " + mes + ", " + anio + ", " + precioLista + ", " + precioPromo + ", " + seña + ", " + llevaPlanilla + ", '" + obsExtra + "', " + coeficienteIndividual + "); ");
+                sb.Append("INSERT INTO PrecioPromo (idEspecialidad, Descripcion, Mes, Anio, PrecioPromo, Seña, LlevaPlanilla, ObservacionesExtra, CoeficienteIndividual) ");
+                sb.AppendLine("VALUES('" + idEspecialidad + "', '" + descripcion + "', " + mes + ", " + anio + ", " + precioPromo + ", " + seña + ", " + llevaPlanilla + ", '" + obsExtra + "', " + coeficienteIndividual + "); ");
             }
 
             SQLConnector.obtenerTablaSegunConsultaString(sb.ToString());
@@ -91,9 +88,8 @@ namespace CapaDatosMepryl
             for (int i = 0; i < dtDatos.Rows.Count; i++)
             {
                 string idEsp = dtDatos.Rows[i]["idEspecialidad"].ToString();
-                string pLista = dtDatos.Rows[i]["PrecioLista"].ToString().Replace(",", ".");
                 string pPromo = dtDatos.Rows[i]["PrecioPromo"].ToString().Replace(",", ".");
-                sbSync.AppendLine("UPDATE Especialidad SET precioBase = " + pPromo + ", precioLista = " + pLista + " WHERE id = '" + idEsp + "'; ");
+                sbSync.AppendLine("UPDATE Especialidad SET precioBase = " + pPromo + " WHERE id = '" + idEsp + "'; ");
             }
             SQLConnector.obtenerTablaSegunConsultaString(sbSync.ToString());
         }
@@ -103,8 +99,8 @@ namespace CapaDatosMepryl
         /// </summary>
         public void CopiarPrecios(int mesOrigen, int anioOrigen, int mesDestino, int anioDestino)
         {
-            string strSQL = "INSERT INTO PrecioPromo (idEspecialidad, Descripcion, Mes, Anio, PrecioLista, PrecioPromo, Seña, LlevaPlanilla, ObservacionesExtra) " +
-                "SELECT idEspecialidad, Descripcion, " + mesDestino + ", " + anioDestino + ", PrecioLista, PrecioPromo, Seña, LlevaPlanilla, ObservacionesExtra " +
+            string strSQL = "INSERT INTO PrecioPromo (idEspecialidad, Descripcion, Mes, Anio, PrecioPromo, Seña, LlevaPlanilla, ObservacionesExtra) " +
+                "SELECT idEspecialidad, Descripcion, " + mesDestino + ", " + anioDestino + ", PrecioPromo, Seña, LlevaPlanilla, ObservacionesExtra " +
                 "FROM PrecioPromo " +
                 "WHERE Mes = " + mesOrigen + " AND Anio = " + anioOrigen + " AND Eliminado = 0 " +
                 "AND idEspecialidad NOT IN (SELECT idEspecialidad FROM PrecioPromo WHERE Mes = " + mesDestino + " AND Anio = " + anioDestino + ")";
@@ -118,7 +114,6 @@ namespace CapaDatosMepryl
         {
             string factor = (1 + porcentaje / 100).ToString().Replace(",", ".");
             string strSQL = "UPDATE PrecioPromo SET " +
-                            "PrecioLista = ROUND(PrecioLista * " + factor + ", 2), " +
                             "PrecioPromo = ROUND(PrecioPromo * " + factor + ", 2), " +
                             "FechaModificacion = GETDATE() " +
                             "WHERE Mes = " + mes + " AND Anio = " + anio + " AND Eliminado = 0";
@@ -270,15 +265,14 @@ namespace CapaDatosMepryl
             SQLConnector.obtenerTablaSegunConsultaString(sbIPC.ToString());
 
             // 2. Precios: UPDATE set-based (join) + INSERT para faltantes (NOT EXISTS)
-            //    En lugar de 1644 bloques IF EXISTS secuenciales, son 2 operaciones en conjunto.
             var sbUpd = new StringBuilder();
             sbUpd.Append("UPDATE pp SET pp.PrecioPromo=v.Promo,pp.CoeficienteIndividual=v.Coef,pp.FechaModificacion=GETDATE() " +
                          "FROM dbo.PrecioPromo pp INNER JOIN (VALUES ");
 
             var sbIns = new StringBuilder();
-            sbIns.Append("INSERT INTO dbo.PrecioPromo(idEspecialidad,Descripcion,Mes,Anio,PrecioLista,PrecioPromo," +
-                         "Se\u00f1a,LlevaPlanilla,ObservacionesExtra,CoeficienteIndividual) " +
-                         "SELECT v.idEsp,v.Dsc,v.Mes," + anio + ",0,v.Promo,0,0,'',v.Coef FROM (VALUES ");
+            sbIns.Append("INSERT INTO dbo.PrecioPromo(idEspecialidad,Descripcion,Mes,Anio,PrecioPromo," +
+                         "Seña,LlevaPlanilla,ObservacionesExtra,CoeficienteIndividual) " +
+                         "SELECT v.idEsp,v.Dsc,v.Mes," + anio + ",v.Promo,0,0,'',v.Coef FROM (VALUES ");
 
             bool first = true;
             for (int mes = 1; mes <= 12; mes++)

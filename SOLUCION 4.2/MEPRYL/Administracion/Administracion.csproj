@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="14.0">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -22,7 +22,6 @@
     <SignManifests>false</SignManifests>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <TargetFrameworkProfile />
-    <ReferencePath>..\Lib\;$(ReferencePath)</ReferencePath>
     <PublishUrl>C:\Users\carlos\Desktop\xxxxxxx\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -78,15 +77,18 @@
   <ItemGroup>
     <Reference Include="DevExpress.Utils.v17.1, Version=17.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Lib\DevExpress.Utils.v17.1.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 17.1\Components\Bin\Framework\DevExpress.Utils.v17.1.dll</HintPath>
     </Reference>
     <Reference Include="DevExpress.XtraBars.v17.1, Version=17.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Lib\DevExpress.XtraBars.v17.1.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 17.1\Components\Bin\Framework\DevExpress.XtraBars.v17.1.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.XtraEditors.v17.1.resources">
+      <HintPath>..\..\..\..\SOLUCION 3.10\MEPRYL\Administracion\bin\Debug\ru\DevExpress.XtraEditors.v17.1.resources.dll</HintPath>
     </Reference>
     <Reference Include="DevExpress.XtraNavBar.v17.1, Version=17.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Lib\DevExpress.XtraNavBar.v17.1.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 17.1\Components\Bin\Framework\DevExpress.XtraNavBar.v17.1.dll</HintPath>
     </Reference>
     <Reference Include="EPPlus, Version=4.5.3.3, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
       <HintPath>..\packages\EPPlus.4.5.3.3\lib\net40\EPPlus.dll</HintPath>

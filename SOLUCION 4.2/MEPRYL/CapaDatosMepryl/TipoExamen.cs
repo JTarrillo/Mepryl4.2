@@ -750,9 +750,8 @@ namespace CapaDatosMepryl
                 int anioActual = DateTime.Now.Year;
                 string pBase = entidad.PrecioBase.ToString().Replace(",", ".");
                 string pLista = entidad.PrecioLista.ToString().Replace(",", ".");
-                string syncSQL = "UPDATE PrecioPromo SET PrecioPromo = " + pBase + ", PrecioLista = " + pLista +
-                    ", FechaModificacion = GETDATE() WHERE idEspecialidad = '" + entidad.Id + "' AND Mes = " + mesActual +
-                    " AND Anio = " + anioActual + " AND Eliminado = 0";
+                string syncSQL = "UPDATE PrecioPromo SET PrecioPromo = " + pBase + ", FechaModificacion = GETDATE() WHERE idEspecialidad = '" + entidad.Id + "' AND Mes = " + mesActual + " AND Anio = " + anioActual + " AND Eliminado = 0; " +
+                                "UPDATE PrecioPublico SET PrecioLista = " + pLista + ", FechaModificacion = GETDATE() WHERE idEspecialidad = '" + entidad.Id + "' AND Mes = " + mesActual + " AND Anio = " + anioActual + " AND Eliminado = 0; ";
                 SQLConnector.obtenerTablaSegunConsultaString(syncSQL);
 
                 actualizarEstudiosPorTipoExamen(entidad);

@@ -1,4 +1,28 @@
-# Investigación de Base de Datos - Problema Tipo/Subtipo de Examen
+SELECT TOP 50 Mes, Anio, idEspecialidad, Descripcion, PrecioLista, PrecioPromo, CoeficienteIndividual, Eliminado
+FROM dbo.PrecioPromo
+ORDER BY Anio DESC, Mes DESC;
+GO
+
+SELECT TOP 50 Mes, Anio, idEspecialidad, Descripcion, PrecioLista, PrecioPromo, CoeficienteIndividual, Eliminado
+FROM dbo.PrecioPublico
+ORDER BY Anio DESC, Mes DESC;
+GOSELECT TOP 50 Mes, Anio, idEspecialidad, Descripcion, PrecioLista, PrecioPromo, CoeficienteIndividual, Eliminado
+FROM dbo.PrecioPromo
+ORDER BY Anio DESC, Mes DESC;
+GO
+
+SELECT TOP 50 Mes, Anio, idEspecialidad, Descripcion, PrecioLista, PrecioPromo, CoeficienteIndividual, Eliminado
+FROM dbo.PrecioPublico
+ORDER BY Anio DESC, Mes DESC;
+GOSELECT TOP 50 Mes, Anio, idEspecialidad, Descripcion, PrecioLista, PrecioPromo, CoeficienteIndividual, Eliminado
+FROM dbo.PrecioPromo
+ORDER BY Anio DESC, Mes DESC;
+GO
+
+SELECT TOP 50 Mes, Anio, idEspecialidad, Descripcion, PrecioLista, PrecioPromo, CoeficienteIndividual, Eliminado
+FROM dbo.PrecioPublico
+ORDER BY Anio DESC, Mes DESC;
+GO# Investigación de Base de Datos - Problema Tipo/Subtipo de Examen
 
 ## 📋 Resumen del Problema
 - Algunos registros antiguos tienen `idEspecialidad` apuntando a **padres** (`Padre=1`)

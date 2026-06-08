@@ -48,12 +48,6 @@ namespace CapaPresentacion
             string idMotivoConsulta = dtInfo.Rows[0]["idMotivoConsulta"].ToString();
 
             DataTable dtTipos = _mesaEntrada.cargarTiposDeExamen(idMotivoConsulta);
-            cbTipoPadre.DataSource = dtTipos;
-            cbTipoPadre.ValueMember = "id";
-            cbTipoPadre.DisplayMember = "descripcion";
-            cbTipoPadre.SelectedIndex = -1;
-
-            // Asignar DESPUÉS del binding para que el SelectedIndexChanged disparado por DataSource
             // no consuma _idEspecialidadActual prematuramente con el primer item
             _idEspecialidadOriginal = idEspecialidad;
             _idEspecialidadActual = idEspecialidad;
@@ -76,12 +70,6 @@ namespace CapaPresentacion
             cbSubtipo.SelectedIndex = -1;
 
             // Pre-seleccionar subtipo actual (solo en la carga inicial)
-            if (!string.IsNullOrEmpty(_idEspecialidadActual))
-            {
-                if (Guid.TryParse(_idEspecialidadActual, out Guid guidSubtipo))
-                    cbSubtipo.SelectedValue = guidSubtipo;
-                _idEspecialidadActual = null;
-            }
         }
 
         private void botAceptar_Click(object sender, EventArgs e)
