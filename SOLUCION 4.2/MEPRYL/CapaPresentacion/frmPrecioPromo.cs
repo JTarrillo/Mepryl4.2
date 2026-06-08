@@ -40,6 +40,9 @@ namespace CapaPresentacion
             foreach (DataGridViewColumn col in dgvPrecioPublico.Columns)
                 col.SortMode = DataGridViewColumnSortMode.NotSortable;
 
+            ConfigurarOrdenColumnas(dgvPrecios);
+            ConfigurarOrdenColumnas(dgvPrecioPublico);
+
             ConfigurarGrillaConfig();
             nudAnio.Value = DateTime.Now.Year;
             cboMesVariacion.SelectedIndex = DateTime.Now.Month; // 0 = Todos, 1-12 = mes
@@ -134,14 +137,14 @@ namespace CapaPresentacion
             foreach (DataRow row in dt.Rows)
             {
                 int idx = dgv.Rows.Add();
-                dgv.Rows[idx].Cells[0].Value = row["idEspecialidad"].ToString();
-                dgv.Rows[idx].Cells[1].Value = row["Motivo"].ToString();
-                dgv.Rows[idx].Cells[2].Value = row["Tipo"].ToString();
-                dgv.Rows[idx].Cells[3].Value = row["Descripcion"].ToString();
+                dgv.Rows[idx].Cells[ObtenerNombreColumnaIdEspecialidad(dgv)].Value = row["idEspecialidad"].ToString();
+                dgv.Rows[idx].Cells[ObtenerNombreColumnaMotivo(dgv)].Value = row["Motivo"].ToString();
+                dgv.Rows[idx].Cells[ObtenerNombreColumnaTipo(dgv)].Value = row["Tipo"].ToString();
+                dgv.Rows[idx].Cells[ObtenerNombreColumnaDescripcion(dgv)].Value = row["Descripcion"].ToString();
 
                 // Cargar IPC
                 decimal ipcBase = (row["IPCBase"] == DBNull.Value) ? 0m : Convert.ToDecimal(row["IPCBase"]);
-                dgv.Rows[idx].Cells[4].Value = ipcBase;
+                dgv.Rows[idx].Cells[ObtenerNombreColumnaIPCBase(dgv)].Value = ipcBase;
 
                 // Cargar precios y coeficientes
                 for (int mes = 1; mes <= 12; mes++)
@@ -160,7 +163,7 @@ namespace CapaPresentacion
             {
                 dgv.Columns[6 + (mes - 1) * 2].HeaderText = _coefs[mes - 1].ToString("0.##", System.Globalization.CultureInfo.CurrentCulture);
             }
-            dgv.Columns[4].HeaderText = _coefs[0].ToString("0.##", System.Globalization.CultureInfo.CurrentCulture);
+            dgv.Columns[ObtenerNombreColumnaIPCBase(dgv)].HeaderText = _coefs[0].ToString("0.##", System.Globalization.CultureInfo.CurrentCulture);
 
             CargarGrillaConfig();
             txtBuscar_TextChanged(this, EventArgs.Empty);
@@ -326,9 +329,9 @@ namespace CapaPresentacion
                 {
                     if (!row.Visible) continue;
                     DataRow dr = dtGuardar.NewRow();
-                    dr["idEspecialidad"] = row.Cells[0].Value?.ToString() ?? "";
-                    dr["Descripcion"] = row.Cells[3].Value?.ToString() ?? "";
-                    dr["IPCBase"] = ParseDecimal(row.Cells[4].Value);
+                    dr["idEspecialidad"] = row.Cells[ObtenerNombreColumnaIdEspecialidad(dgv)].Value?.ToString() ?? "";
+                    dr["Descripcion"] = row.Cells[ObtenerNombreColumnaDescripcion(dgv)].Value?.ToString() ?? "";
+                    dr["IPCBase"] = ParseDecimal(row.Cells[ObtenerNombreColumnaIPCBase(dgv)].Value);
                     for (int mes = 1; mes <= 12; mes++)
                     {
                         dr["Promo" + mes.ToString("00")] = ParseDecimal(row.Cells[5 + (mes - 1) * 2].Value);
@@ -447,6 +450,9 @@ namespace CapaPresentacion
             string filtro = txtBuscar.Text.Trim().ToLower();
             int visibles = 0;
             DataGridView dgv = ObtenerDGVActual();
+            string colDesc = ObtenerNombreColumnaDescripcion(dgv);
+            string colMotivo = ObtenerNombreColumnaMotivo(dgv);
+            string colTipo = ObtenerNombreColumnaTipo(dgv);
 
             foreach (DataGridViewRow row in dgv.Rows)
             {
@@ -457,9 +463,9 @@ namespace CapaPresentacion
                 }
                 else
                 {
-                    string desc = row.Cells[3].Value?.ToString().ToLower() ?? "";
-                    string motivo = row.Cells[1].Value?.ToString().ToLower() ?? "";
-                    string tipo = row.Cells[2].Value?.ToString().ToLower() ?? "";
+                    string desc = row.Cells[colDesc].Value?.ToString().ToLower() ?? "";
+                    string motivo = row.Cells[colMotivo].Value?.ToString().ToLower() ?? "";
+                    string tipo = row.Cells[colTipo].Value?.ToString().ToLower() ?? "";
                     row.Visible = desc.Contains(filtro) || motivo.Contains(filtro) || tipo.Contains(filtro);
                     if (row.Visible) visibles++;
                 }
@@ -521,7 +527,7 @@ namespace CapaPresentacion
 
             DataGridView dgv = (DataGridView)sender;
             string colName = dgv.Columns[e.ColumnIndex].Name;
-            Color backColor = (colName.StartsWith("colCoef") || colName == "colIPCBase") ? Color.FromArgb(180, 0, 0) : Color.SeaGreen;
+            Color backColor = (colName.Contains("Coef") || colName.Contains("IPCBase")) ? Color.FromArgb(180, 0, 0) : Color.SeaGreen;
 
             using (var brush = new System.Drawing.SolidBrush(backColor))
                 e.Graphics.FillRectangle(brush, e.CellBounds);
@@ -581,13 +587,64 @@ namespace CapaPresentacion
                 e.CellStyle.SelectionBackColor = Color.FromArgb(220, 230, 240);
                 e.CellStyle.SelectionForeColor = Color.FromArgb(0, 100, 200);
             }
-            else if (col.StartsWith("colCoef"))
+            else if (col.Contains("Coef"))
             {
                 e.CellStyle.BackColor = Color.FromArgb(255, 210, 210);
                 e.CellStyle.ForeColor = Color.FromArgb(140, 0, 0);
                 e.CellStyle.SelectionBackColor = Color.FromArgb(255, 210, 210);
                 e.CellStyle.SelectionForeColor = Color.FromArgb(140, 0, 0);
             }
+        }
+
+        private void ConfigurarOrdenColumnas(DataGridView dgv)
+        {
+            string colIpc = ObtenerNombreColumnaIPCBase(dgv);
+            string colDesc = ObtenerNombreColumnaDescripcion(dgv);
+
+            if (dgv.Columns.Contains(colIpc))
+                dgv.Columns[colIpc].DisplayIndex = 0;
+            if (dgv.Columns.Contains(colDesc))
+                dgv.Columns[colDesc].DisplayIndex = 1;
+
+            string prefPromo = dgv.Columns.Contains("colPromo01") ? "colPromo" : "colPublicoPromo";
+            string prefCoef = dgv.Columns.Contains("colCoef01") ? "colCoef" : "colPublicoCoef";
+
+            int displayIndex = 2;
+            for (int mes = 1; mes <= 12; mes++)
+            {
+                string promo = prefPromo + mes.ToString("00");
+                string coef = prefCoef + mes.ToString("00");
+
+                if (dgv.Columns.Contains(promo))
+                    dgv.Columns[promo].DisplayIndex = displayIndex++;
+                if (dgv.Columns.Contains(coef))
+                    dgv.Columns[coef].DisplayIndex = displayIndex++;
+            }
+        }
+
+        private string ObtenerNombreColumnaIdEspecialidad(DataGridView dgv)
+        {
+            return dgv.Columns.Contains("colIdEspecialidad") ? "colIdEspecialidad" : "colPublicoIdEspecialidad";
+        }
+
+        private string ObtenerNombreColumnaIPCBase(DataGridView dgv)
+        {
+            return dgv.Columns.Contains("colIPCBase") ? "colIPCBase" : "colPublicoIPCBase";
+        }
+
+        private string ObtenerNombreColumnaMotivo(DataGridView dgv)
+        {
+            return dgv.Columns.Contains("colMotivo") ? "colMotivo" : "colPublicoMotivo";
+        }
+
+        private string ObtenerNombreColumnaTipo(DataGridView dgv)
+        {
+            return dgv.Columns.Contains("colTipo") ? "colTipo" : "colPublicoTipo";
+        }
+
+        private string ObtenerNombreColumnaDescripcion(DataGridView dgv)
+        {
+            return dgv.Columns.Contains("colDescripcion") ? "colDescripcion" : "colPublicoDescripcion";
         }
 
         private void dgvPrecios_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
