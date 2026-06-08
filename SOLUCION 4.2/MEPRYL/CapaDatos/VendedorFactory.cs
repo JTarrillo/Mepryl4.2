@@ -67,7 +67,7 @@ namespace CapaDatos
             Resultado resultado = new Resultado();
             try
             {
-                //Da el alta del registro vacío para obtener el ID
+                //Da el alta del registro vacï¿½o para obtener el ID
                 resultado = altaID(ent);
 
                 //Modifica el registro nuevo con los datos completos del alta

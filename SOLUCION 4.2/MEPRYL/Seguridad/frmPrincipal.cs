@@ -594,13 +594,13 @@ namespace Seguridad
 			{
 				this.configuracion.usuario = usuario;
 
-				if (usuario==null)
+				if (usuario == null)
 				{
 					this.Close();
-				}
 
-				//Toma el nombre del usuario
-				this.Text = this.Text + " - " + usuario.apellido + ", " + usuario.nombre;
+					//Toma el nombre del usuario
+					this.Text = this.Text + " - " + usuario.apellido + ", " + usuario.nombre;
+				}
 			}
 			catch (Exception ex)
 			{

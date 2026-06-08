@@ -58,7 +58,7 @@ namespace CapaDatos
             Resultado resultado = new Resultado();
             try
             {
-                //Da el alta del registro vacío para obtener el ID
+                //Da el alta del registro vacï¿½o para obtener el ID
                 resultado = altaID(ent);
 
                 //Modifica el registro nuevo con los datos completos del alta
@@ -76,7 +76,7 @@ namespace CapaDatos
             return resultado;
         }
 
-        //Lee el registro obtenido de la base de datos, cada implementación agrega los campos espefícicos.
+        //Lee el registro obtenido de la base de datos, cada implementaciï¿½n agrega los campos espefï¿½cicos.
         protected override EntidadBase leerRegistro(SqlDataReader dr)
         {
             Profesional profesional = new Profesional(base.leerRegistro(dr));
