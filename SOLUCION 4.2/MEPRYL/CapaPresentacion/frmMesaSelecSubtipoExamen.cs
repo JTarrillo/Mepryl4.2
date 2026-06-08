@@ -48,6 +48,12 @@ namespace CapaPresentacion
             string idMotivoConsulta = dtInfo.Rows[0]["idMotivoConsulta"].ToString();
 
             DataTable dtTipos = _mesaEntrada.cargarTiposDeExamen(idMotivoConsulta);
+            if (dtTipos != null)
+            {
+                DataView dvTipos = dtTipos.DefaultView;
+                dvTipos.Sort = "descripcion ASC";
+                dtTipos = dvTipos.ToTable();
+            }
             cbTipoPadre.DataSource = dtTipos;
             cbTipoPadre.ValueMember = "id";
             cbTipoPadre.DisplayMember = "descripcion";
@@ -70,6 +76,12 @@ namespace CapaPresentacion
             if (!Guid.TryParse(idPadre, out _)) return;
 
             DataTable dtSubtipos = _mesaEntrada.cargarSubtiposDeTipoPadre(idPadre);
+            if (dtSubtipos != null)
+            {
+                DataView dvSubtipos = dtSubtipos.DefaultView;
+                dvSubtipos.Sort = "descripcion ASC";
+                dtSubtipos = dvSubtipos.ToTable();
+            }
             cbSubtipo.DataSource = dtSubtipos;
             cbSubtipo.ValueMember = "id";
             cbSubtipo.DisplayMember = "descripcion";
