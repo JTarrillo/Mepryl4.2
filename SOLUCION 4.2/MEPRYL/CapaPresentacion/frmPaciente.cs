@@ -18,7 +18,7 @@ using System.Data.SqlClient;
 using System.IO;
 using CapaNegocioMepryl;
 using CapaPresentacionBase;
-using WindowsInput;
+//using WindowsInput;
 
 namespace CapaPresentacion
 {
