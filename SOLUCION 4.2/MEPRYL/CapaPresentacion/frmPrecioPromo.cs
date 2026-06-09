@@ -809,6 +809,15 @@ namespace CapaPresentacion
             if (yaInicializado)
             {
                 Console.WriteLine($"[DEBUG] Cambio de pestaña detectado: {tabControl.SelectedTab.Text}");
+                
+                // Actualizar el título según la pestaña seleccionada
+                if (EsPrecioPublico())
+                    lblTitulo.Text = "  Precios Públicos";
+                else if (tabControl.SelectedTab.Text.ToLower().Contains("seña") || tabControl.SelectedTab.Text.ToLower().Contains("planilla"))
+                    lblTitulo.Text = "  Configuración de Señas / Planilla";
+                else
+                    lblTitulo.Text = "  Precios Promos";
+
                 CargarGrilla();
                 
                 DataGridView dgv = ObtenerDGVActual();

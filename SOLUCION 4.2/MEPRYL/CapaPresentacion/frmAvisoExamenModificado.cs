@@ -45,7 +45,10 @@ namespace CapaPresentacion
         {
             lblNombre.Text = entidad.Descripcion;
             if (entidad.Modificado) { lblNombre.Text = lblNombre.Text + " MODIFICADO"; }
-            tbImporte.Text = entidad.PrecioBase.ToString();
+            
+            // Mostrar Importe Neto (PrecioBase - Seña)
+            tbImporte.Text = (entidad.PrecioBase - entidad.Seña).ToString();
+            
             cargarTextBoxs(entidad);
         }
 
