@@ -72,9 +72,9 @@ namespace CapaDatosMepryl
                 " UNION ALL " +
                 "select id, dni, apellido + ' ' + nombres as Paciente from dbo.PacienteLaboral where id in (" + pIn + ")");
 
-            // Batch: TipoExamenDePaciente (trae idTurno, id, precioExamen, seña, modificado)
+            // Batch: TipoExamenDePaciente (trae idTurno, id, precioExamen, modificado)
             DataTable tipoExamenBatch = SQLConnector.obtenerTablaSegunConsultaString(
-                @"select tep.idTurno, tep.id, tep.precioExamen, tep.seña, tep.modificado
+                @"select tep.idTurno, tep.id, tep.precioExamen, tep.modificado
                 from dbo.TipoExamenDePaciente tep
                 where tep.idTurno in (" + tIn + ")");
 
@@ -111,13 +111,13 @@ namespace CapaDatosMepryl
                 if (!dictPaciente.ContainsKey(id)) dictPaciente[id] = r;
             }
 
-            // turnoId -> (idTE, precioExamen, seña, modificado)
-            var dictTE = new Dictionary<string, (string idTE, string precio, string seña, string modificado)>(StringComparer.OrdinalIgnoreCase);
+            // turnoId -> (idTE, precioExamen, modificado)
+            var dictTE = new Dictionary<string, (string idTE, string precio, string modificado)>(StringComparer.OrdinalIgnoreCase);
             foreach (DataRow r in tipoExamenBatch.Rows)
             {
                 string idTurno = r["idTurno"].ToString();
                 if (!dictTE.ContainsKey(idTurno))
-                    dictTE[idTurno] = (r["id"].ToString(), r["precioExamen"].ToString(), r["seña"].ToString(), r["modificado"].ToString());
+                    dictTE[idTurno] = (r["id"].ToString(), r["precioExamen"].ToString(), r["modificado"].ToString());
             }
 
             // precioBase por turno tomado directamente de rawTurnos
@@ -161,25 +161,8 @@ namespace CapaDatosMepryl
                 string idTE       = teData.idTE ?? string.Empty;
                 string modificado = teData.modificado ?? string.Empty;
                 string importe    = string.Empty;
-                
-                // Calcular Importe Neto (Precio - Seña)
-                double dblPrecio = 0;
-                double dblSeña = 0;
-                
-                if (!string.IsNullOrEmpty(teData.precio))
-                {
-                    double.TryParse(teData.precio, out dblPrecio);
-                    double.TryParse(teData.seña, out dblSeña);
-                    importe = (dblPrecio - dblSeña).ToString();
-                }
-                else
-                {
-                    if (dictPrecioBase.TryGetValue(idTurno, out string baseP))
-                    {
-                        double.TryParse(baseP, out dblPrecio);
-                        importe = dblPrecio.ToString();
-                    }
-                }
+                if (!string.IsNullOrEmpty(teData.precio)) importe = teData.precio;
+                else dictPrecioBase.TryGetValue(idTurno, out importe);
 
                 string empresaClub = string.Empty, idEmpresa = string.Empty;
                 if (!string.IsNullOrEmpty(idTE))

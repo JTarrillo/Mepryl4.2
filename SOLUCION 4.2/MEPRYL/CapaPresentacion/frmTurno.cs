@@ -297,31 +297,25 @@ namespace CapaPresentacion
                         tipoDeExamen.Rows[37][1] = false;
                         rglEntidad.tipoDeExamen = tipoDeExamen;
                     }
-                        if (!cbFactClub.Checked)
+                    if (!cbFactClub.Checked)
                     {
                         int mesTurno = rglEntidad.fecha.Month;
                         int anioTurno = rglEntidad.fecha.Year;
-                        DataTable importePredefinido = SQLConnector.obtenerTablaSegunConsultaString("select PrecioPromo from dbo.PrecioPromo where idEspecialidad = '" + idEspecialidad + "' AND Mes = " + mesTurno + " AND Anio = " + anioTurno + " AND Eliminado = 0");
-                        DataTable importePublico = SQLConnector.obtenerTablaSegunConsultaString("select PrecioLista from dbo.PrecioPublico where idEspecialidad = '" + idEspecialidad + "' AND Mes = " + mesTurno + " AND Anio = " + anioTurno + " AND Eliminado = 0");
-                        
+                        DataTable importePredefinido = SQLConnector.obtenerTablaSegunConsultaString(
+                            "SELECT pp.PrecioPromo, pu.PrecioLista " +
+                            "FROM dbo.PrecioPromo pp " +
+                            "LEFT JOIN dbo.PrecioPublico pu ON pu.idEspecialidad = pp.idEspecialidad AND pu.Mes = pp.Mes AND pu.Anio = pp.Anio AND pu.Eliminado = 0 " +
+                            "WHERE pp.idEspecialidad = '" + idEspecialidad + "' AND pp.Mes = " + mesTurno + " AND pp.Anio = " + anioTurno + " AND pp.Eliminado = 0");
                         if (importePredefinido.Rows.Count > 0)
                         {
                             importe = Convert.ToDouble(importePredefinido.Rows[0].ItemArray[0].ToString());
+                            importeLista = Convert.ToDouble(importePredefinido.Rows[0].ItemArray[1].ToString());
                         }
                         else
                         {
-                            DataTable fallback = SQLConnector.obtenerTablaSegunConsultaString("select precioBase from dbo.Especialidad where id = '" + idEspecialidad + "'");
+                            DataTable fallback = SQLConnector.obtenerTablaSegunConsultaString("select precioBase, precioLista from dbo.Especialidad where id = '" + idEspecialidad + "'");
                             importe = Convert.ToDouble(fallback.Rows[0].ItemArray[0].ToString());
-                        }
-
-                        if (importePublico.Rows.Count > 0)
-                        {
-                            importeLista = Convert.ToDouble(importePublico.Rows[0].ItemArray[0].ToString());
-                        }
-                        else
-                        {
-                            DataTable fallbackLista = SQLConnector.obtenerTablaSegunConsultaString("select precioLista from dbo.Especialidad where id = '" + idEspecialidad + "'");
-                            importeLista = Convert.ToDouble(fallbackLista.Rows[0].ItemArray[0].ToString());
+                            importeLista = Convert.ToDouble(fallback.Rows[0].ItemArray[1].ToString());
                         }
                     }
                     DataTable clubes = SQLConnector.obtenerTablaSegunConsultaString("select cp.club from dbo.clubesPorPaciente cp where cp.paciente = '" + rglEntidad.pacienteID.ToString() + "'");
@@ -1009,27 +1003,21 @@ namespace CapaPresentacion
                             string idEsp = examen.Rows[0].ItemArray[1].ToString();
                             int mesT = rglEntidad.fecha.Month;
                             int anioT = rglEntidad.fecha.Year;
-                            DataTable preciosPeriodo = SQLConnector.obtenerTablaSegunConsultaString("select PrecioPromo from dbo.PrecioPromo where idEspecialidad = '" + idEsp + "' AND Mes = " + mesT + " AND Anio = " + anioT + " AND Eliminado = 0");
-                            DataTable preciosPublico = SQLConnector.obtenerTablaSegunConsultaString("select PrecioLista from dbo.PrecioPublico where idEspecialidad = '" + idEsp + "' AND Mes = " + mesT + " AND Anio = " + anioT + " AND Eliminado = 0");
-                            
+                            DataTable preciosPeriodo = SQLConnector.obtenerTablaSegunConsultaString(
+                                "SELECT pp.PrecioPromo, pu.PrecioLista " +
+                                "FROM dbo.PrecioPromo pp " +
+                                "LEFT JOIN dbo.PrecioPublico pu ON pu.idEspecialidad = pp.idEspecialidad AND pu.Mes = pp.Mes AND pu.Anio = pp.Anio AND pu.Eliminado = 0 " +
+                                "WHERE pp.idEspecialidad = '" + idEsp + "' AND pp.Mes = " + mesT + " AND pp.Anio = " + anioT + " AND pp.Eliminado = 0");
                             if (preciosPeriodo.Rows.Count > 0)
                             {
                                 importe = Convert.ToDouble(preciosPeriodo.Rows[0].ItemArray[0].ToString());
+                                importeLista = Convert.ToDouble(preciosPeriodo.Rows[0].ItemArray[1].ToString());
                             }
                             else
                             {
-                                DataTable fb = SQLConnector.obtenerTablaSegunConsultaString("select precioBase from dbo.Especialidad where id = '" + idEsp + "'");
+                                DataTable fb = SQLConnector.obtenerTablaSegunConsultaString("select precioBase, precioLista from dbo.Especialidad where id = '" + idEsp + "'");
                                 importe = Convert.ToDouble(fb.Rows[0].ItemArray[0].ToString());
-                            }
-
-                            if (preciosPublico.Rows.Count > 0)
-                            {
-                                importeLista = Convert.ToDouble(preciosPublico.Rows[0].ItemArray[0].ToString());
-                            }
-                            else
-                            {
-                                DataTable fbLista = SQLConnector.obtenerTablaSegunConsultaString("select precioLista from dbo.Especialidad where id = '" + idEsp + "'");
-                                importeLista = Convert.ToDouble(fbLista.Rows[0].ItemArray[0].ToString());
+                                importeLista = Convert.ToDouble(fb.Rows[0].ItemArray[1].ToString());
                             }
                             tbImporte.Text = "$ " + importe.ToString();
                             tbImporteLista.Text = "$ " + importeLista.ToString();
@@ -1481,7 +1469,11 @@ namespace CapaPresentacion
                 string idEspecialidad = dgItems.Rows[dgItems.CurrentCell.RowIndex].Cells["especialidadID"].Value.ToString();
                 int mesFC = rglEntidad.fecha.Month;
                 int anioFC = rglEntidad.fecha.Year;
-                DataTable importePredefinido = SQLConnector.obtenerTablaSegunConsultaString("select PrecioPromo, PrecioLista from dbo.PrecioPromo where idEspecialidad = '" + idEspecialidad + "' AND Mes = " + mesFC + " AND Anio = " + anioFC + " AND Eliminado = 0");
+                DataTable importePredefinido = SQLConnector.obtenerTablaSegunConsultaString(
+                    "SELECT pp.PrecioPromo, pu.PrecioLista " +
+                    "FROM dbo.PrecioPromo pp " +
+                    "LEFT JOIN dbo.PrecioPublico pu ON pu.idEspecialidad = pp.idEspecialidad AND pu.Mes = pp.Mes AND pu.Anio = pp.Anio AND pu.Eliminado = 0 " +
+                    "WHERE pp.idEspecialidad = '" + idEspecialidad + "' AND pp.Mes = " + mesFC + " AND pp.Anio = " + anioFC + " AND pp.Eliminado = 0");
                 if (importePredefinido.Rows.Count > 0)
                 {
                     importe = Convert.ToDouble(importePredefinido.Rows[0].ItemArray[0].ToString());

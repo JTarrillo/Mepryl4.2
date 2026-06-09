@@ -245,7 +245,7 @@ namespace CapaDatosMepryl
 
         /// <summary>
         /// Guarda o actualiza PrecioPublico de los 12 meses del año (vista anual).
-        /// No sobreescribe PrecioLista, SeñaPromo, SeñaLista ni ObservacionesExtra.
+        /// No sobreescribe PrecioPromo, SeñaPromo, SeñaLista ni ObservacionesExtra.
         /// También actualiza el IPCBase en la tabla Especialidad.
         /// </summary>
         public void GuardarPreciosPublicoAnio(int anio, DataTable dtDatos)
@@ -271,13 +271,13 @@ namespace CapaDatosMepryl
 
             var sbIns = new StringBuilder();
             sbIns.Append("INSERT INTO dbo.PrecioPublico(idEspecialidad,Descripcion,Mes,Anio,PrecioLista," +
-                         "Seña,LlevaPlanilla,ObservacionesExtra,CoeficienteIndividual) " +
+                         "Se\u00f1a,LlevaPlanilla,ObservacionesExtra,CoeficienteIndividual) " +
                          "SELECT v.idEsp,v.Dsc,v.Mes," + anio + ",v.Lista,0,0,'',v.Coef FROM (VALUES ");
 
             bool first = true;
             for (int mes = 1; mes <= 12; mes++)
             {
-                string colPromo = "Promo" + mes.ToString("00"); // En el DGV se llama PromoXX pero mapea a Lista
+                string colPromo = "Promo" + mes.ToString("00");
                 string colCoef = "Coef" + mes.ToString("00");
                 for (int i = 0; i < dtDatos.Rows.Count; i++)
                 {

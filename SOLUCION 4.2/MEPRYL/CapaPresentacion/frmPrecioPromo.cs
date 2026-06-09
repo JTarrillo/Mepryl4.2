@@ -31,8 +31,7 @@ namespace CapaPresentacion
             this.MdiParent = parentForm;
             precioPromo = new PrecioPromo();
             precioPublico = new PrecioPublico();
-            
-            // Vincular manualmente el evento de cambio de pestaña para asegurar el refresco
+
             this.tabControl.SelectedIndexChanged += new System.EventHandler(this.tabControl_SelectedIndexChanged);
         }
 
@@ -49,6 +48,12 @@ namespace CapaPresentacion
             ConfigurarGrillaConfig();
             nudAnio.Value = DateTime.Now.Year;
             cboMesVariacion.SelectedIndex = DateTime.Now.Month; // 0 = Todos, 1-12 = mes
+            
+            if (EsPrecioPublico())
+                lblTitulo.Text = "  Precios Públicos";
+            else
+                lblTitulo.Text = "  Precios Promos";
+
             CargarGrilla();
             yaInicializado = true;
         }
@@ -57,22 +62,17 @@ namespace CapaPresentacion
         {
             base.OnActivated(e);
             if (yaInicializado)
-            {
                 CargarGrilla();
-                ObtenerDGVActual().Refresh();
-            }
-        }
-
-        private DataGridView ObtenerDGVActual()
-        {
-            if (tabControl.SelectedTab.Text.ToLower().Contains("público") || tabControl.SelectedTab.Text.ToLower().Contains("publico"))
-                return dgvPrecioPublico;
-            return dgvPrecios;
         }
 
         private bool EsPrecioPublico()
         {
-            return tabControl.SelectedTab.Text.ToLower().Contains("público") || tabControl.SelectedTab.Text.ToLower().Contains("publico");
+            return tabControl.SelectedTab == tabPrecioPublico;
+        }
+
+        private DataGridView ObtenerDGVActual()
+        {
+            return EsPrecioPublico() ? dgvPrecioPublico : dgvPrecios;
         }
 
         private DataTable ObtenerDatosActual(int anio)
@@ -124,81 +124,57 @@ namespace CapaPresentacion
 
         private void CargarGrilla()
         {
-            try
+            int anio = (int)nudAnio.Value;
+            DataGridView dgv = ObtenerDGVActual();
+
+            dgv.Rows.Clear();
+
+            // Cargar coeficientes
+            _coefs = new decimal[12];
+            for (int i = 0; i < 12; i++) _coefs[i] = 1;
+            DataTable dtCoef = ObtenerCoeficientesActual(anio);
+            foreach (DataRow row in dtCoef.Rows)
             {
-                int anio = (int)nudAnio.Value;
-                DataGridView dgv = ObtenerDGVActual();
-                string tipo = EsPrecioPublico() ? "PÚBLICO" : "PROMO";
-                Console.WriteLine($"[DEBUG] Iniciando CargarGrilla para {tipo} - Año: {anio}");
+                int mes = Convert.ToInt32(row["Mes"]);
+                if (mes >= 1 && mes <= 12)
+                    _coefs[mes - 1] = Convert.ToDecimal(row["Coeficiente"]);
+            }
 
-                dgv.Rows.Clear();
+            // Cargar datos
+            DataTable dt = ObtenerDatosActual(anio);
+            foreach (DataRow row in dt.Rows)
+            {
+                int idx = dgv.Rows.Add();
+                dgv.Rows[idx].Cells[ObtenerNombreColumnaIdEspecialidad(dgv)].Value = row["idEspecialidad"].ToString();
+                dgv.Rows[idx].Cells[ObtenerNombreColumnaMotivo(dgv)].Value = row["Motivo"].ToString();
+                dgv.Rows[idx].Cells[ObtenerNombreColumnaTipo(dgv)].Value = row["Tipo"].ToString();
+                dgv.Rows[idx].Cells[ObtenerNombreColumnaDescripcion(dgv)].Value = row["Descripcion"].ToString();
 
-                // Cargar coeficientes
-                _coefs = new decimal[12];
-                for (int i = 0; i < 12; i++) _coefs[i] = 1;
-                DataTable dtCoef = ObtenerCoeficientesActual(anio);
-                if (dtCoef != null)
-                {
-                    Console.WriteLine($"[DEBUG] Coeficientes obtenidos: {dtCoef.Rows.Count} filas");
-                    foreach (DataRow row in dtCoef.Rows)
-                    {
-                        int mes = Convert.ToInt32(row["Mes"]);
-                        if (mes >= 1 && mes <= 12)
-                            _coefs[mes - 1] = Convert.ToDecimal(row["Coeficiente"]);
-                    }
-                }
+                // Cargar IPC
+                decimal ipcBase = (row["IPCBase"] == DBNull.Value) ? 0m : Convert.ToDecimal(row["IPCBase"]);
+                dgv.Rows[idx].Cells[ObtenerNombreColumnaIPCBase(dgv)].Value = ipcBase;
 
-                // Cargar datos
-                DataTable dt = ObtenerDatosActual(anio);
-                if (dt != null)
-                {
-                    Console.WriteLine($"[DEBUG] Datos de precios obtenidos: {dt.Rows.Count} filas");
-                    foreach (DataRow row in dt.Rows)
-                    {
-                        int idx = dgv.Rows.Add();
-                        dgv.Rows[idx].Cells[ObtenerNombreColumnaIdEspecialidad(dgv)].Value = row["idEspecialidad"].ToString();
-                        dgv.Rows[idx].Cells[ObtenerNombreColumnaMotivo(dgv)].Value = row["Motivo"].ToString();
-                        dgv.Rows[idx].Cells[ObtenerNombreColumnaTipo(dgv)].Value = row["Tipo"].ToString();
-                        dgv.Rows[idx].Cells[ObtenerNombreColumnaDescripcion(dgv)].Value = row["Descripcion"].ToString();
-
-                        // Cargar IPC
-                        decimal ipcBase = (row["IPCBase"] == DBNull.Value) ? 0m : Convert.ToDecimal(row["IPCBase"]);
-                        dgv.Rows[idx].Cells[ObtenerNombreColumnaIPCBase(dgv)].Value = ipcBase;
-
-                        // Cargar precios y coeficientes
-                        for (int mes = 1; mes <= 12; mes++)
-                        {
-                            string colPromo = "Promo" + mes.ToString("00");
-                            string colCoef = "Coef" + mes.ToString("00");
-                            decimal valorPromo = (row[colPromo] == DBNull.Value) ? 0 : Convert.ToDecimal(row[colPromo]);
-                            decimal coefInd = (row[colCoef] == DBNull.Value) ? 0m : Convert.ToDecimal(row[colCoef]);
-                            dgv.Rows[idx].Cells[5 + (mes - 1) * 2].Value = valorPromo;
-                            dgv.Rows[idx].Cells[6 + (mes - 1) * 2].Value = coefInd;
-                        }
-                    }
-                    Console.WriteLine($"[DEBUG] Grilla llenada con {dgv.Rows.Count} filas");
-                }
-                else
-                {
-                    Console.WriteLine("[DEBUG] El DataTable de precios vino NULO");
-                }
-
-                // Actualizar encabezados de coeficientes
+                // Cargar precios y coeficientes
                 for (int mes = 1; mes <= 12; mes++)
                 {
-                    dgv.Columns[6 + (mes - 1) * 2].HeaderText = _coefs[mes - 1].ToString("0.##", System.Globalization.CultureInfo.CurrentCulture);
+                    string colPromo = "Promo" + mes.ToString("00");
+                    string colCoef = "Coef" + mes.ToString("00");
+                    decimal valorPromo = (row[colPromo] == DBNull.Value) ? 0 : Convert.ToDecimal(row[colPromo]);
+                    decimal coefInd = (row[colCoef] == DBNull.Value) ? 0m : Convert.ToDecimal(row[colCoef]);
+                    dgv.Rows[idx].Cells[5 + (mes - 1) * 2].Value = valorPromo;
+                    dgv.Rows[idx].Cells[6 + (mes - 1) * 2].Value = coefInd;
                 }
-                dgv.Columns[ObtenerNombreColumnaIPCBase(dgv)].HeaderText = _coefs[0].ToString("0.##", System.Globalization.CultureInfo.CurrentCulture);
+            }
 
-                CargarGrillaConfig();
-                txtBuscar_TextChanged(this, EventArgs.Empty);
-                Console.WriteLine("[DEBUG] CargarGrilla finalizado correctamente");
-            }
-            catch (Exception ex)
+            // Actualizar encabezados de coeficientes
+            for (int mes = 1; mes <= 12; mes++)
             {
-                Console.WriteLine($"[DEBUG] ERROR en CargarGrilla: {ex.Message}");
-                MessageBox.Show("Error al cargar la grilla: " + ex.Message);
+                dgv.Columns[6 + (mes - 1) * 2].HeaderText = _coefs[mes - 1].ToString("0.##", System.Globalization.CultureInfo.CurrentCulture);
             }
+            dgv.Columns[ObtenerNombreColumnaIPCBase(dgv)].HeaderText = _coefs[0].ToString("0.##", System.Globalization.CultureInfo.CurrentCulture);
+
+            CargarGrillaConfig();
+            txtBuscar_TextChanged(this, EventArgs.Empty);
         }
 
         private void dgvPrecios_ColumnHeaderMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
@@ -805,27 +781,14 @@ namespace CapaPresentacion
 
         private void tabControl_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Console.WriteLine($"[DEBUG] EVENTO SelectedIndexChanged disparado. yaInicializado = {yaInicializado}");
             if (yaInicializado)
             {
-                Console.WriteLine($"[DEBUG] Cambio de pestaña detectado: {tabControl.SelectedTab.Text}");
-                
-                // Actualizar el título según la pestaña seleccionada
                 if (EsPrecioPublico())
                     lblTitulo.Text = "  Precios Públicos";
-                else if (tabControl.SelectedTab.Text.ToLower().Contains("seña") || tabControl.SelectedTab.Text.ToLower().Contains("planilla"))
-                    lblTitulo.Text = "  Configuración de Señas / Planilla";
                 else
                     lblTitulo.Text = "  Precios Promos";
 
                 CargarGrilla();
-                
-                DataGridView dgv = ObtenerDGVActual();
-                dgv.Invalidate();
-                dgv.Update();
-                dgv.Refresh();
-                
-                Console.WriteLine($"[DEBUG] Refresco de grilla solicitado para {dgv.Name}");
             }
         }
     }

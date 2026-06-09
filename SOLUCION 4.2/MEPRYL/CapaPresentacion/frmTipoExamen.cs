@@ -57,11 +57,8 @@ namespace CapaPresentacion
         private void inicializarFormulario()
         {
             tbTipoExamen.Text = tipoExamen.Descripcion;
-            
-            // Mostrar importes netos (restando seña)
-            tbImporte.Text = (tipoExamen.PrecioBase - tipoExamen.Seña).ToString("N0");
-            tbImporteLista.Text = (tipoExamen.PrecioLista - tipoExamen.Seña).ToString("N0");
-            
+            tbImporte.Text = tipoExamen.PrecioBase.ToString("N0");
+            tbImporteLista.Text = tipoExamen.PrecioLista.ToString("N0");
             tbId.Text = tipoExamen.Id.ToString();
             if (tipoExamen.Modificado)
             {
@@ -200,14 +197,12 @@ namespace CapaPresentacion
             Double result;
             if (tbImporte.Text != string.Empty && TryParseImporte(tbImporte.Text, out result))
             {
-                // Guardar total bruto (neto + seña)
-                tipoExamen.PrecioBase = result + tipoExamen.Seña;
+                tipoExamen.PrecioBase = result;
             }
             Double resultLista;
             if (tbImporteLista.Text != string.Empty && TryParseImporte(tbImporteLista.Text, out resultLista))
             {
-                // Guardar total bruto (neto + seña)
-                tipoExamen.PrecioLista = resultLista + tipoExamen.Seña;
+                tipoExamen.PrecioLista = resultLista;
             }
             // Guardar cuál precio eligió el usuario
             tipoExamen.UsarPrecioLista = _usarPrecioLista;

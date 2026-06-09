@@ -28,6 +28,7 @@ namespace CapaNegocio
         public string pacienteDni = "";
         public double importe = 0;
         public double importeLista = 0;
+        public double seña = 0;
 
         public bool domingo = false;
         public bool lunes = false;
