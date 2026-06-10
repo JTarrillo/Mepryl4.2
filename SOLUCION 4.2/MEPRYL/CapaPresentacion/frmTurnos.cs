@@ -3318,6 +3318,7 @@ namespace CapaPresentacion
                 var items = new List<string>();
                 items.Add("--- Seleccionar Observación ---");
                 items.Add("PRECIO AUTO (Generar)");
+                items.Add("NINGUNO (Vaciar)");
                 foreach (DataRow row in dt.Rows)
                 {
                     items.Add(row["texto"].ToString());
@@ -3346,6 +3347,10 @@ namespace CapaPresentacion
                 {
                     target.Text = generarObservaciones(tipoExamenActual);
                 }
+            }
+            else if (seleccion == "NINGUNO (Vaciar)")
+            {
+                target.Text = "";
             }
             else
             {

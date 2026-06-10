@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using CapaNegocioMepryl;
 using CapaPresentacionBase;
 using Comunes;
+using FontAwesome.Sharp;
 
 namespace CapaPresentacion
 {
@@ -34,6 +35,7 @@ namespace CapaPresentacion
             precioPublico = new PrecioPublico();
 
             this.tabControl.SelectedIndexChanged += new System.EventHandler(this.tabControl_SelectedIndexChanged);
+            this.dgvObsPre.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvObsPre_CellContentClick);
         }
 
         private void frmPrecioPromo_Load(object sender, EventArgs e)
@@ -194,9 +196,12 @@ namespace CapaPresentacion
             {
                 dgvObsPre.Rows.Clear();
                 DataTable dt = SQLConnector.obtenerTablaSegunConsultaString("SELECT id, texto, activo FROM ObservacionPredefinida ORDER BY texto");
+                
+                Image imgEliminar = IconChar.TrashAlt.ToBitmap(Color.IndianRed, 16);
+
                 foreach (DataRow dr in dt.Rows)
                 {
-                    dgvObsPre.Rows.Add(dr["id"], dr["texto"], dr["activo"]);
+                    dgvObsPre.Rows.Add(dr["id"], dr["texto"], dr["activo"], imgEliminar);
                 }
                 lblTotal.Text = $"Observaciones: {dt.Rows.Count}";
             }
@@ -439,6 +444,37 @@ namespace CapaPresentacion
             catch (Exception ex)
             {
                 MessageBox.Show("Error al guardar observaciones: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void dgvObsPre_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.ColumnIndex == dgvObsPre.Columns["colObsAcciones"].Index && e.RowIndex >= 0)
+            {
+                if (dgvObsPre.Rows[e.RowIndex].IsNewRow) return;
+
+                string id = dgvObsPre.Rows[e.RowIndex].Cells["colObsId"].Value?.ToString();
+                string texto = dgvObsPre.Rows[e.RowIndex].Cells["colObsTexto"].Value?.ToString();
+
+                DialogResult dr = MessageBox.Show($"¿Está seguro que desea eliminar la observación: \"{texto}\"?", 
+                    "Confirmar eliminación", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                if (dr == DialogResult.Yes)
+                {
+                    if (!string.IsNullOrEmpty(id))
+                    {
+                        try
+                        {
+                            SQLConnector.obtenerTablaSegunConsultaString($"DELETE FROM ObservacionPredefinida WHERE id = {id}");
+                            MessageBox.Show("Observación eliminada correctamente.");
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show("Error al eliminar de la base de datos: " + ex.Message);
+                        }
+                    }
+                    CargarGrillaObsPre();
+                }
             }
         }
 

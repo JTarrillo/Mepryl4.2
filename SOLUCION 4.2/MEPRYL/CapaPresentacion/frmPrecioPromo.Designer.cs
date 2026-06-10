@@ -171,6 +171,7 @@ namespace CapaPresentacion
             this.colObsId = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colObsTexto = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colObsActivo = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.colObsAcciones = new System.Windows.Forms.DataGridViewImageColumn();
             this.pnlSuperior.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudAnio)).BeginInit();
             this.pnlMenu.SuspendLayout();
@@ -1262,7 +1263,8 @@ namespace CapaPresentacion
             this.dgvObsPre.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.colObsId,
             this.colObsTexto,
-            this.colObsActivo});
+            this.colObsActivo,
+            this.colObsAcciones});
             this.dgvObsPre.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvObsPre.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
             this.dgvObsPre.EnableHeadersVisualStyles = false;
@@ -1291,6 +1293,14 @@ namespace CapaPresentacion
             this.colObsActivo.FillWeight = 50F;
             this.colObsActivo.HeaderText = "Activo";
             this.colObsActivo.Name = "colObsActivo";
+            // 
+            // colObsAcciones
+            // 
+            this.colObsAcciones.FillWeight = 40F;
+            this.colObsAcciones.HeaderText = "Acciones";
+            this.colObsAcciones.Name = "colObsAcciones";
+            this.colObsAcciones.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.colObsAcciones.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
             // 
             // dgvConfig
             // 
@@ -1489,5 +1499,6 @@ namespace CapaPresentacion
         private System.Windows.Forms.DataGridViewTextBoxColumn colObsId;
         private System.Windows.Forms.DataGridViewTextBoxColumn colObsTexto;
         private System.Windows.Forms.DataGridViewCheckBoxColumn colObsActivo;
+        private System.Windows.Forms.DataGridViewImageColumn colObsAcciones;
     }
 }

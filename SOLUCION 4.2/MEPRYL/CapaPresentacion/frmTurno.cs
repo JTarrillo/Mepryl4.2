@@ -1626,6 +1626,7 @@ namespace CapaPresentacion
 
                 var items = new List<string>();
                 items.Add("--- Seleccionar Observación ---");
+                items.Add("NINGUNO (Vaciar)");
                 foreach (DataRow row in dt.Rows)
                 {
                     items.Add(row["texto"].ToString());
@@ -1645,7 +1646,15 @@ namespace CapaPresentacion
             if (cbo.SelectedIndex <= 0) return;
 
             string seleccion = cbo.SelectedItem.ToString();
-            tbObservaciones.Text = seleccion;
+            
+            if (seleccion == "NINGUNO (Vaciar)")
+            {
+                tbObservaciones.Text = "";
+            }
+            else
+            {
+                tbObservaciones.Text = seleccion;
+            }
         }
 
     }
