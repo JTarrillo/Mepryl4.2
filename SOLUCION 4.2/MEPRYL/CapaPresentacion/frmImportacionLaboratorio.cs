@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -121,40 +121,57 @@ namespace CapaPresentacion
                 string fecha;
                 object rawFecha = row.ItemArray[0];
                 DateTime dtFecha;
+
                 if (rawFecha != null)
                 {
-                    // If OleDb returned a DateTime object directly
-                    if (rawFecha is DateTime)
+                    string rawStr = rawFecha.ToString().Trim();
+
+                    // ✅ CORRECCIÓN: Si el dato tiene 6 u 8 dígitos, es nuestro formato DDMMYY / DDMMYYYY.
+                    // Priorizamos esto antes que el formato numérico de Excel (OADate), 
+                    // ya que '090626' se interpreta erróneamente como el año 2148 en Excel.
+                    if (Regex.IsMatch(rawStr, @"^\d{6}$") || Regex.IsMatch(rawStr, @"^\d{8}$"))
+                    {
+                        fecha = procesarFecha(rawStr);
+                    }
+                    else if (rawFecha is DateTime)
                     {
                         fecha = ((DateTime)rawFecha).ToString("yyyy-MM-dd");
                     }
                     else
                     {
-                        // Try treating as OLE Automation date (numeric)
+                        // Intentar tratar como fecha numérica de Excel (OADate)
                         double oa;
-                        if (double.TryParse(rawFecha.ToString(), out oa))
+                        if (double.TryParse(rawStr, out oa))
                         {
                             try
                             {
-                                DateTime fromOADate = DateTime.FromOADate(oa);
-                                fecha = fromOADate.ToString("yyyy-MM-dd");
+                                // Las fechas actuales en OADate están en el rango 40000-60000.
+                                // Si es un número fuera de este rango, probablemente sea DDMMYY.
+                                if (oa > 30000 && oa < 70000)
+                                {
+                                    DateTime fromOADate = DateTime.FromOADate(oa);
+                                    fecha = fromOADate.ToString("yyyy-MM-dd");
+                                }
+                                else
+                                {
+                                    fecha = procesarFecha(rawStr);
+                                }
                             }
                             catch
                             {
-                                // Not a valid OADate, fallback to parsing as text
-                                if (DateTime.TryParse(rawFecha.ToString(), out dtFecha))
+                                if (DateTime.TryParse(rawStr, out dtFecha))
                                     fecha = dtFecha.ToString("yyyy-MM-dd");
                                 else
-                                    fecha = procesarFecha(rawFecha.ToString());
+                                    fecha = procesarFecha(rawStr);
                             }
                         }
-                        else if (DateTime.TryParse(rawFecha.ToString(), out dtFecha))
+                        else if (DateTime.TryParse(rawStr, out dtFecha))
                         {
                             fecha = dtFecha.ToString("yyyy-MM-dd");
                         }
                         else
                         {
-                            fecha = procesarFecha(rawFecha.ToString());
+                            fecha = procesarFecha(rawStr);
                         }
                     }
                 }
@@ -162,14 +179,15 @@ namespace CapaPresentacion
                 {
                     fecha = string.Empty;
                 }
-                // Debug: imprimir estado de la fila antes de la consulta
-                Debug.WriteLine($"[ImportacionLaboratorio] Puntero={puntero} RawFecha='{rawFecha}' FechaParseada='{fecha}'");
+
                 int examen = Convert.ToInt32(row.ItemArray[1].ToString());
-                Debug.WriteLine($"[ImportacionLaboratorio] Examen='{examen}'");
-                DataTable tipoExamen = SQLConnector.obtenerTablaSegunConsultaString(@"Select tep.id from dbo.TipoExamenDePaciente 
+                
+                string query = @"Select tep.id from dbo.TipoExamenDePaciente 
                 tep inner join dbo.Consulta c on tep.idConsulta = c.id
-                where Convert(date,c.fecha) = '" + fecha + "' and c.identificador = '" + examen.ToString() + "'");
-                Debug.WriteLine($"[ImportacionLaboratorio] Query executed; tipoExamen.Rows.Count={tipoExamen.Rows.Count}");
+                where Convert(date,c.fecha) = '" + fecha + "' and c.identificador = '" + examen.ToString() + "'";
+                
+                DataTable tipoExamen = SQLConnector.obtenerTablaSegunConsultaString(query);
+                
                 if (tipoExamen.Rows.Count > 0)
                 {
                     procesarLaboratorio(tipoExamen.Rows[0].ItemArray[0].ToString(), row);
@@ -178,20 +196,9 @@ namespace CapaPresentacion
             }
             catch (Exception ex)
             {
-                // Log completo y continuar con la siguiente fila
                 Debug.WriteLine("[ImportacionLaboratorio] EXCEPTION while processing row: " + ex.ToString());
-                try
-                {
-                    // Añadir info de fila para ayudar en la diagnosis
-                    StringBuilder sb = new StringBuilder();
-                    for (int i = 0; i < row.ItemArray.Length; i++) sb.Append($"[{i}]='{row.ItemArray[i]}' ");
-                    Debug.WriteLine("[ImportacionLaboratorio] Row content: " + sb.ToString());
-                }
-                catch { }
-                // Marcar fila como inválida para reportarla al final
                 try { valoresInvalidos.Rows.Add(puntero, "EXCEPTION"); } catch { }
             }
-
         }
 
         private string procesarFecha(string fechaSinProcesar)
