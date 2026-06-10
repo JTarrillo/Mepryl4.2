@@ -1,4 +1,4 @@
-using CapaNegocioMepryl;
+﻿using CapaNegocioMepryl;
 using CapaPresentacionBase;
 using Comunes;
 using System;
@@ -630,11 +630,24 @@ namespace CapaPresentacion
                 if (turnoAsignado(dgv.CurrentCell.RowIndex))
                 {
                     botAsignar.Visible = false;
-                    botModificar.Visible = true;
-                    botLiberar.Visible = true;
-                    btnCopiarInfo.Visible = true; //GRV - Visible para todos los tipos de turno
-                    btnWhatsApp.Visible = true; // WhatsApp visible para todos los tipos de turno
-                    btnVerEstudio.Visible = true;
+
+                    if (blnActivoMoverTurno)
+                    {
+                        botModificar.Visible = false;
+                        botLiberar.Visible = false;
+                        btnCopiarInfo.Visible = false;
+                        btnWhatsApp.Visible = false;
+                        btnVerEstudio.Visible = false;
+                    }
+                    else
+                    {
+                        botModificar.Visible = true;
+                        botLiberar.Visible = true;
+                        btnCopiarInfo.Visible = true; //GRV - Visible para todos los tipos de turno
+                        btnWhatsApp.Visible = true; // WhatsApp visible para todos los tipos de turno
+                        btnVerEstudio.Visible = true;
+                    }
+
                     btnMoverTurno.Visible = true; // GRV - Modificado
                 }
                 else
@@ -643,7 +656,16 @@ namespace CapaPresentacion
                     {
                         botAsignar.Visible = true;
                     }
-                    btnMoverTurno.Visible = false; // GRV - Modificado
+
+                    if (blnActivoMoverTurno)
+                    {
+                        btnMoverTurno.Visible = true;
+                    }
+                    else
+                    {
+                        btnMoverTurno.Visible = false; // GRV - Modificado
+                    }
+
                     btnWhatsApp.Visible = false; // WhatsApp oculto si no hay turno asignado
                     botModificar.Visible = false;
                     botLiberar.Visible = false;
