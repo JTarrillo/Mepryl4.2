@@ -166,6 +166,11 @@ namespace CapaPresentacion
             this.colCfgSeña = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colCfgPlanilla = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.colCfgObservaciones = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.tabObsPre = new System.Windows.Forms.TabPage();
+            this.dgvObsPre = new System.Windows.Forms.DataGridView();
+            this.colObsId = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colObsTexto = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colObsActivo = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.pnlSuperior.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudAnio)).BeginInit();
             this.pnlMenu.SuspendLayout();
@@ -1196,6 +1201,7 @@ namespace CapaPresentacion
             this.tabControl.Controls.Add(this.tabPrecios);
             this.tabControl.Controls.Add(this.tabPrecioPublico);
             this.tabControl.Controls.Add(this.tabConfig);
+            this.tabControl.Controls.Add(this.tabObsPre);
             this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.tabControl.Location = new System.Drawing.Point(0, 148);
@@ -1236,6 +1242,55 @@ namespace CapaPresentacion
             this.tabConfig.TabIndex = 2;
             this.tabConfig.Text = "  Señas / Planilla";
             this.tabConfig.UseVisualStyleBackColor = true;
+            // 
+            // tabObsPre
+            // 
+            this.tabObsPre.Controls.Add(this.dgvObsPre);
+            this.tabObsPre.Location = new System.Drawing.Point(4, 4);
+            this.tabObsPre.Name = "tabObsPre";
+            this.tabObsPre.Padding = new System.Windows.Forms.Padding(3);
+            this.tabObsPre.Size = new System.Drawing.Size(1356, 379);
+            this.tabObsPre.TabIndex = 3;
+            this.tabObsPre.Text = "  Observaciones Rápidas";
+            this.tabObsPre.UseVisualStyleBackColor = true;
+            // 
+            // dgvObsPre
+            // 
+            this.dgvObsPre.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvObsPre.BackgroundColor = System.Drawing.Color.White;
+            this.dgvObsPre.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvObsPre.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.colObsId,
+            this.colObsTexto,
+            this.colObsActivo});
+            this.dgvObsPre.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvObsPre.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
+            this.dgvObsPre.EnableHeadersVisualStyles = false;
+            this.dgvObsPre.Location = new System.Drawing.Point(3, 3);
+            this.dgvObsPre.Name = "dgvObsPre";
+            this.dgvObsPre.RowHeadersVisible = false;
+            this.dgvObsPre.RowTemplate.Height = 28;
+            this.dgvObsPre.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
+            this.dgvObsPre.Size = new System.Drawing.Size(1350, 373);
+            this.dgvObsPre.TabIndex = 0;
+            // 
+            // colObsId
+            // 
+            this.colObsId.HeaderText = "Id";
+            this.colObsId.Name = "colObsId";
+            this.colObsId.Visible = false;
+            // 
+            // colObsTexto
+            // 
+            this.colObsTexto.FillWeight = 300F;
+            this.colObsTexto.HeaderText = "Texto de Observación";
+            this.colObsTexto.Name = "colObsTexto";
+            // 
+            // colObsActivo
+            // 
+            this.colObsActivo.FillWeight = 50F;
+            this.colObsActivo.HeaderText = "Activo";
+            this.colObsActivo.Name = "colObsActivo";
             // 
             // dgvConfig
             // 
@@ -1429,5 +1484,10 @@ namespace CapaPresentacion
         private System.Windows.Forms.DataGridViewTextBoxColumn colPublicoCoef11;
         private System.Windows.Forms.DataGridViewTextBoxColumn colPublicoPromo12;
         private System.Windows.Forms.DataGridViewTextBoxColumn colPublicoCoef12;
+        private System.Windows.Forms.TabPage tabObsPre;
+        private System.Windows.Forms.DataGridView dgvObsPre;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colObsId;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colObsTexto;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn colObsActivo;
     }
 }

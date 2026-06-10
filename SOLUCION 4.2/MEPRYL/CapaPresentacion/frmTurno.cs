@@ -22,6 +22,8 @@ namespace CapaPresentacion
         public static double importeLista;
         private bool hacerPlaca;
 
+        private ComboBox cboObsPredefinidas;
+
 
         private string estadoLibreID = Utilidades.ID_VACIO;
         private string estadoAsignadoID = Utilidades.ID_VACIO;
@@ -150,6 +152,7 @@ namespace CapaPresentacion
 
             this.busquedaInstantanea = false;
             inicializarEntidad();
+            inicializarObservacionesPredefinidas();
 
             lsbHoraDesde.SelectedIndex = 0;
 
@@ -680,6 +683,7 @@ namespace CapaPresentacion
 
         public void mostrarDatos()
         {
+            if (cboObsPredefinidas != null) cboObsPredefinidas.SelectedIndex = 0;
             rglEntidad = (Turno)base.rglEntidad;
             /*lbEspecialidadTexto.Text = rglEntidad.especialidadTexto;
             lbProfesionalTexto.Text = rglEntidad.profesionalTexto;
@@ -1593,9 +1597,56 @@ namespace CapaPresentacion
             gbReserva.Visible = false;
         }
 
+        private void inicializarObservacionesPredefinidas()
+        {
+            try
+            {
+                cboObsPredefinidas = new ComboBox();
+                cboObsPredefinidas.Name = "cboObsPredefinidas";
+                cboObsPredefinidas.Location = new Point(203, 93); // Justo arriba de tbObservaciones
+                cboObsPredefinidas.Size = new Size(298, 21);
+                cboObsPredefinidas.DropDownStyle = ComboBoxStyle.DropDownList;
+                cboObsPredefinidas.Font = new Font("Microsoft Sans Serif", 8.25F);
+                cboObsPredefinidas.SelectedIndexChanged += CboObsPredefinidas_SelectedIndexChanged;
+                gbPaciente.Controls.Add(cboObsPredefinidas);
 
+                CargarCombosObservaciones();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error en inicializarObservacionesPredefinidas: {ex.Message}");
+            }
+        }
 
+        private void CargarCombosObservaciones()
+        {
+            try
+            {
+                DataTable dt = SQLConnector.obtenerTablaSegunConsultaString("SELECT texto FROM ObservacionPredefinida WHERE activo = 1 ORDER BY texto");
 
+                var items = new List<string>();
+                items.Add("--- Seleccionar Observación ---");
+                foreach (DataRow row in dt.Rows)
+                {
+                    items.Add(row["texto"].ToString());
+                }
+
+                cboObsPredefinidas.DataSource = new List<string>(items);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error en CargarCombosObservaciones: {ex.Message}");
+            }
+        }
+
+        private void CboObsPredefinidas_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ComboBox cbo = (ComboBox)sender;
+            if (cbo.SelectedIndex <= 0) return;
+
+            string seleccion = cbo.SelectedItem.ToString();
+            tbObservaciones.Text = seleccion;
+        }
 
     }
 }

@@ -41,6 +41,9 @@ namespace CapaPresentacion
         private string strTipoExamenMover = "";
         private bool blnActivoMoverTurno = false;
 
+        private ComboBox cboObsPredefinidasPrev;
+        private ComboBox cboObsPredefinidasLab;
+
         public frmTurnos()
         {
             InitializeComponent();
@@ -68,6 +71,7 @@ namespace CapaPresentacion
             cambiarEnabledBotonProximaFecha();
             blnConsultaExterna = false;
             LimpiarUltimoRegistroIngresado(); // GRV - Modificado
+            inicializarObservacionesPredefinidas();
             BotonesRibbon('*');
         }
 
@@ -730,6 +734,7 @@ namespace CapaPresentacion
 
         private void llenarPanelPacientePreventiva(Entidades.TurnoPreventiva turnoPrev)
         {
+            if (cboObsPredefinidasPrev != null) cboObsPredefinidasPrev.SelectedIndex = 0;
             CapaNegocioMepryl.PacientePreventiva PacientePre = new PacientePreventiva();
 
             tbIdTurnoPreventiva.Text = turnoPrev.Id.ToString();
@@ -825,6 +830,7 @@ namespace CapaPresentacion
 
         private void llenarPanelPacienteLaboral(Entidades.TurnoLaboral turnoLab)
         {
+            if (cboObsPredefinidasLab != null) cboObsPredefinidasLab.SelectedIndex = 0;
             string strFecha = "";
             tbIdTurnoLaboral.Text = turnoLab.Id.ToString();
             tbIdPacienteLaboral.Text = turnoLab.IdPaciente.ToString();
@@ -3267,6 +3273,84 @@ namespace CapaPresentacion
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Error en cboSubTipoExamen_SelectionChangeCommitted: {ex.Message}");
+            }
+        }
+
+        private void inicializarObservacionesPredefinidas()
+        {
+            try
+            {
+                // Configurar ComboBox para Preventiva
+                cboObsPredefinidasPrev = new ComboBox();
+                cboObsPredefinidasPrev.Name = "cboObsPredefinidasPrev";
+                cboObsPredefinidasPrev.Location = new Point(324, 155); // Justo arriba de tbObservPreventiva
+                cboObsPredefinidasPrev.Size = new Size(233, 21);
+                cboObsPredefinidasPrev.DropDownStyle = ComboBoxStyle.DropDownList;
+                cboObsPredefinidasPrev.Font = new Font("Microsoft Sans Serif", 8.25F);
+                cboObsPredefinidasPrev.SelectedIndexChanged += CboObsPredefinidas_SelectedIndexChanged;
+                panelPacientePreventiva.Controls.Add(cboObsPredefinidasPrev);
+
+                // Configurar ComboBox para Laboral
+                cboObsPredefinidasLab = new ComboBox();
+                cboObsPredefinidasLab.Name = "cboObsPredefinidasLab";
+                cboObsPredefinidasLab.Location = new Point(345, 140); // Justo arriba de tbObservacionesLaboral
+                cboObsPredefinidasLab.Size = new Size(216, 21);
+                cboObsPredefinidasLab.DropDownStyle = ComboBoxStyle.DropDownList;
+                cboObsPredefinidasLab.Font = new Font("Microsoft Sans Serif", 8.25F);
+                cboObsPredefinidasLab.SelectedIndexChanged += CboObsPredefinidas_SelectedIndexChanged;
+                panelLaboral.Controls.Add(cboObsPredefinidasLab);
+
+                CargarCombosObservaciones();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error en inicializarObservacionesPredefinidas: {ex.Message}");
+            }
+        }
+
+        private void CargarCombosObservaciones()
+        {
+            try
+            {
+                DataTable dt = SQLConnector.obtenerTablaSegunConsultaString("SELECT texto FROM ObservacionPredefinida WHERE activo = 1 ORDER BY texto");
+
+                // Preparar items
+                var items = new List<string>();
+                items.Add("--- Seleccionar Observación ---");
+                items.Add("PRECIO AUTO (Generar)");
+                foreach (DataRow row in dt.Rows)
+                {
+                    items.Add(row["texto"].ToString());
+                }
+
+                cboObsPredefinidasPrev.DataSource = new List<string>(items);
+                cboObsPredefinidasLab.DataSource = new List<string>(items);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error en CargarCombosObservaciones: {ex.Message}");
+            }
+        }
+
+        private void CboObsPredefinidas_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ComboBox cbo = (ComboBox)sender;
+            if (cbo.SelectedIndex <= 0) return;
+
+            string seleccion = cbo.SelectedItem.ToString();
+            TextBox target = (cbo.Name == "cboObsPredefinidasPrev") ? tbObservPreventiva : tbObservacionesLaboral;
+
+            if (seleccion == "PRECIO AUTO (Generar)")
+            {
+                if (tipoExamenActual != null)
+                {
+                    target.Text = generarObservaciones(tipoExamenActual);
+                }
+            }
+            else
+            {
+                // El usuario dijo "no podemos juntar 2 observaciones", así que reemplazamos
+                target.Text = seleccion;
             }
         }
 

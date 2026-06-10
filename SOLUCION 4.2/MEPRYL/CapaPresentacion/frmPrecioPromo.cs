@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using CapaNegocioMepryl;
 using CapaPresentacionBase;
+using Comunes;
 
 namespace CapaPresentacion
 {
@@ -124,57 +125,85 @@ namespace CapaPresentacion
 
         private void CargarGrilla()
         {
-            int anio = (int)nudAnio.Value;
-            DataGridView dgv = ObtenerDGVActual();
-
-            dgv.Rows.Clear();
-
-            // Cargar coeficientes
-            _coefs = new decimal[12];
-            for (int i = 0; i < 12; i++) _coefs[i] = 1;
-            DataTable dtCoef = ObtenerCoeficientesActual(anio);
-            foreach (DataRow row in dtCoef.Rows)
+            if (tabControl.SelectedTab == tabPrecioPublico || tabControl.SelectedTab == tabPrecios)
             {
-                int mes = Convert.ToInt32(row["Mes"]);
-                if (mes >= 1 && mes <= 12)
-                    _coefs[mes - 1] = Convert.ToDecimal(row["Coeficiente"]);
-            }
+                int anio = (int)nudAnio.Value;
+                DataGridView dgv = ObtenerDGVActual();
 
-            // Cargar datos
-            DataTable dt = ObtenerDatosActual(anio);
-            foreach (DataRow row in dt.Rows)
-            {
-                int idx = dgv.Rows.Add();
-                dgv.Rows[idx].Cells[ObtenerNombreColumnaIdEspecialidad(dgv)].Value = row["idEspecialidad"].ToString();
-                dgv.Rows[idx].Cells[ObtenerNombreColumnaMotivo(dgv)].Value = row["Motivo"].ToString();
-                dgv.Rows[idx].Cells[ObtenerNombreColumnaTipo(dgv)].Value = row["Tipo"].ToString();
-                dgv.Rows[idx].Cells[ObtenerNombreColumnaDescripcion(dgv)].Value = row["Descripcion"].ToString();
+                dgv.Rows.Clear();
 
-                // Cargar IPC
-                decimal ipcBase = (row["IPCBase"] == DBNull.Value) ? 0m : Convert.ToDecimal(row["IPCBase"]);
-                dgv.Rows[idx].Cells[ObtenerNombreColumnaIPCBase(dgv)].Value = ipcBase;
+                // Cargar coeficientes
+                _coefs = new decimal[12];
+                for (int i = 0; i < 12; i++) _coefs[i] = 1;
+                DataTable dtCoef = ObtenerCoeficientesActual(anio);
+                foreach (DataRow row in dtCoef.Rows)
+                {
+                    int mes = Convert.ToInt32(row["Mes"]);
+                    if (mes >= 1 && mes <= 12)
+                        _coefs[mes - 1] = Convert.ToDecimal(row["Coeficiente"]);
+                }
 
-                // Cargar precios y coeficientes
+                // Cargar datos
+                DataTable dt = ObtenerDatosActual(anio);
+                foreach (DataRow row in dt.Rows)
+                {
+                    int idx = dgv.Rows.Add();
+                    dgv.Rows[idx].Cells[ObtenerNombreColumnaIdEspecialidad(dgv)].Value = row["idEspecialidad"].ToString();
+                    dgv.Rows[idx].Cells[ObtenerNombreColumnaMotivo(dgv)].Value = row["Motivo"].ToString();
+                    dgv.Rows[idx].Cells[ObtenerNombreColumnaTipo(dgv)].Value = row["Tipo"].ToString();
+                    dgv.Rows[idx].Cells[ObtenerNombreColumnaDescripcion(dgv)].Value = row["Descripcion"].ToString();
+
+                    // Cargar IPC
+                    decimal ipcBase = (row["IPCBase"] == DBNull.Value) ? 0m : Convert.ToDecimal(row["IPCBase"]);
+                    dgv.Rows[idx].Cells[ObtenerNombreColumnaIPCBase(dgv)].Value = ipcBase;
+
+                    // Cargar precios y coeficientes
+                    for (int mes = 1; mes <= 12; mes++)
+                    {
+                        string colPromo = "Promo" + mes.ToString("00");
+                        string colCoef = "Coef" + mes.ToString("00");
+                        decimal valorPromo = (row[colPromo] == DBNull.Value) ? 0 : Convert.ToDecimal(row[colPromo]);
+                        decimal coefInd = (row[colCoef] == DBNull.Value) ? 0m : Convert.ToDecimal(row[colCoef]);
+                        dgv.Rows[idx].Cells[5 + (mes - 1) * 2].Value = valorPromo;
+                        dgv.Rows[idx].Cells[6 + (mes - 1) * 2].Value = coefInd;
+                    }
+                }
+
+                // Actualizar encabezados de coeficientes
                 for (int mes = 1; mes <= 12; mes++)
                 {
-                    string colPromo = "Promo" + mes.ToString("00");
-                    string colCoef = "Coef" + mes.ToString("00");
-                    decimal valorPromo = (row[colPromo] == DBNull.Value) ? 0 : Convert.ToDecimal(row[colPromo]);
-                    decimal coefInd = (row[colCoef] == DBNull.Value) ? 0m : Convert.ToDecimal(row[colCoef]);
-                    dgv.Rows[idx].Cells[5 + (mes - 1) * 2].Value = valorPromo;
-                    dgv.Rows[idx].Cells[6 + (mes - 1) * 2].Value = coefInd;
+                    dgv.Columns[6 + (mes - 1) * 2].HeaderText = _coefs[mes - 1].ToString("0.##", System.Globalization.CultureInfo.CurrentCulture);
                 }
-            }
+                dgv.Columns[ObtenerNombreColumnaIPCBase(dgv)].HeaderText = _coefs[0].ToString("0.##", System.Globalization.CultureInfo.CurrentCulture);
 
-            // Actualizar encabezados de coeficientes
-            for (int mes = 1; mes <= 12; mes++)
+                txtBuscar_TextChanged(this, EventArgs.Empty);
+            }
+            else if (tabControl.SelectedTab == tabConfig)
             {
-                dgv.Columns[6 + (mes - 1) * 2].HeaderText = _coefs[mes - 1].ToString("0.##", System.Globalization.CultureInfo.CurrentCulture);
+                CargarGrillaConfig();
             }
-            dgv.Columns[ObtenerNombreColumnaIPCBase(dgv)].HeaderText = _coefs[0].ToString("0.##", System.Globalization.CultureInfo.CurrentCulture);
+            else if (tabControl.SelectedTab == tabObsPre)
+            {
+                CargarGrillaObsPre();
+            }
+        }
 
-            CargarGrillaConfig();
-            txtBuscar_TextChanged(this, EventArgs.Empty);
+        private void CargarGrillaObsPre()
+        {
+            try
+            {
+                dgvObsPre.Rows.Clear();
+                DataTable dt = SQLConnector.obtenerTablaSegunConsultaString("SELECT id, texto, activo FROM ObservacionPredefinida ORDER BY texto");
+                foreach (DataRow dr in dt.Rows)
+                {
+                    dgvObsPre.Rows.Add(dr["id"], dr["texto"], dr["activo"]);
+                }
+                lblTotal.Text = $"Observaciones: {dt.Rows.Count}";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al cargar observaciones: " + ex.Message);
+            }
         }
 
         private void dgvPrecios_ColumnHeaderMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
@@ -316,6 +345,23 @@ namespace CapaPresentacion
 
         private void btnGuardar_Click(object sender, EventArgs e)
         {
+            if (tabControl.SelectedTab == tabPrecioPublico || tabControl.SelectedTab == tabPrecios)
+            {
+                GuardarPrecios();
+            }
+            else if (tabControl.SelectedTab == tabConfig)
+            {
+                GuardarConfig();
+                MessageBox.Show("Configuración guardada correctamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else if (tabControl.SelectedTab == tabObsPre)
+            {
+                GuardarObsPre();
+            }
+        }
+
+        private void GuardarPrecios()
+        {
             try
             {
                 int anio = (int)nudAnio.Value;
@@ -349,12 +395,50 @@ namespace CapaPresentacion
                 }
 
                 GuardarDatosActual(anio, dtGuardar);
-                GuardarConfig();
                 MessageBox.Show("Precios guardados correctamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error al guardar: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Error al guardar precios: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void GuardarObsPre()
+        {
+            try
+            {
+                StringBuilder sb = new StringBuilder();
+                foreach (DataGridViewRow row in dgvObsPre.Rows)
+                {
+                    if (row.IsNewRow) continue;
+
+                    string id = row.Cells["colObsId"].Value?.ToString();
+                    string texto = row.Cells["colObsTexto"].Value?.ToString()?.Replace("'", "''") ?? "";
+                    bool activoVal = row.Cells["colObsActivo"].Value != null && Convert.ToBoolean(row.Cells["colObsActivo"].Value);
+                    string activo = activoVal ? "1" : "0";
+
+                    if (string.IsNullOrWhiteSpace(texto)) continue;
+
+                    if (string.IsNullOrEmpty(id))
+                    {
+                        sb.AppendLine($"INSERT INTO ObservacionPredefinida (texto, activo) VALUES ('{texto}', {activo});");
+                    }
+                    else
+                    {
+                        sb.AppendLine($"UPDATE ObservacionPredefinida SET texto = '{texto}', activo = {activo} WHERE id = {id};");
+                    }
+                }
+
+                if (sb.Length > 0)
+                {
+                    SQLConnector.obtenerTablaSegunConsultaString(sb.ToString());
+                    MessageBox.Show("Observaciones guardadas correctamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    CargarGrillaObsPre();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al guardar observaciones: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -783,10 +867,14 @@ namespace CapaPresentacion
         {
             if (yaInicializado)
             {
-                if (EsPrecioPublico())
-                    lblTitulo.Text = "  Precios Públicos";
-                else
+                if (tabControl.SelectedTab == tabPrecios)
                     lblTitulo.Text = "  Precios Promos";
+                else if (tabControl.SelectedTab == tabPrecioPublico)
+                    lblTitulo.Text = "  Precios Públicos";
+                else if (tabControl.SelectedTab == tabConfig)
+                    lblTitulo.Text = "  Configuración de Señas y Planilla";
+                else if (tabControl.SelectedTab == tabObsPre)
+                    lblTitulo.Text = "  Gestión de Observaciones Rápidas";
 
                 CargarGrilla();
             }
