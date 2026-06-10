@@ -16,6 +16,16 @@ namespace CapaNegocioMepryl
             mesaEntrada = new CapaDatosMepryl.MesaEntrada();
         }
 
+        public DataTable obtenerEspecialidadPorIdTipoExamen(string idTipoExamenPaciente)
+        {
+            return mesaEntrada.obtenerEspecialidadPorIdTipoExamen(idTipoExamenPaciente);
+        }
+
+        public Guid obtenerIdEspecialidadTurnoHoy(Guid idPaciente, string idMotivo)
+        {
+            return mesaEntrada.obtenerIdEspecialidadTurnoHoy(idPaciente, idMotivo);
+        }
+
         public DataTable cargarTiposDeExamen(string idMotivoConsulta)
         {
             return mesaEntrada.cargarTiposDeExamen(idMotivoConsulta);
@@ -29,11 +39,6 @@ namespace CapaNegocioMepryl
         public DataTable cargarTodosTiposYSubtipos(string idMotivoConsulta)
         {
             return mesaEntrada.cargarTodosTiposYSubtipos(idMotivoConsulta);
-        }
-
-        public DataTable obtenerEspecialidadPorIdTipoExamen(string idTipoExamen)
-        {
-            return mesaEntrada.obtenerEspecialidadPorIdTipoExamen(idTipoExamen);
         }
 
         public DataTable obtenerInfoEspecialidad(string idTipoExamen)
@@ -84,6 +89,11 @@ namespace CapaNegocioMepryl
         public DataTable cargarTurnosSegunMotivoDeConsulta(string idMotivo)
         {
             return mesaEntrada.cargarTunosSegunMotivoDeConsulta(idMotivo);
+        }
+
+        public void RegresarPacienteAVentanilla(string idConsulta, string idTurno)
+        {
+            mesaEntrada.RegresarPacienteAVentanilla(new Guid(idConsulta), new Guid(idTurno));
         }
 
         public Entidades.MesaEntrada cargarInformacionConsulta(Guid idConsulta)

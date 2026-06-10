@@ -118,6 +118,7 @@ namespace CapaPresentacion
             this.cboTipoBusqueda = new System.Windows.Forms.ComboBox();
             this.dgvTurno = new System.Windows.Forms.DataGridView();
             this.lblTotal = new System.Windows.Forms.Label();
+            this.btnRegresarPaciente = new System.Windows.Forms.Button();
             this.panel4 = new System.Windows.Forms.Panel();
             this.panel5 = new System.Windows.Forms.Panel();
             this.btnReporteLaboral = new System.Windows.Forms.Button();
@@ -1192,6 +1193,7 @@ namespace CapaPresentacion
             // 
             // panel5
             // 
+            this.panel5.Controls.Add(this.btnRegresarPaciente);
             this.panel5.Controls.Add(this.btnReporteLaboral);
             this.panel5.Controls.Add(this.btnHistorico);
             this.panel5.Controls.Add(this.botEliminar);
@@ -1202,6 +1204,20 @@ namespace CapaPresentacion
             this.panel5.Name = "panel5";
             this.panel5.Size = new System.Drawing.Size(135, 265);
             this.panel5.TabIndex = 277;
+            // 
+            // btnRegresarPaciente
+            // 
+            this.btnRegresarPaciente.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold);
+            this.btnRegresarPaciente.Image = ((System.Drawing.Image)(resources.GetObject("btnRecepcion.Image")));
+            this.btnRegresarPaciente.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnRegresarPaciente.Location = new System.Drawing.Point(6, 10);
+            this.btnRegresarPaciente.Name = "btnRegresarPaciente";
+            this.btnRegresarPaciente.Size = new System.Drawing.Size(120, 60);
+            this.btnRegresarPaciente.TabIndex = 278;
+            this.btnRegresarPaciente.Text = "Regresar a\r\nVentanilla";
+            this.btnRegresarPaciente.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btnRegresarPaciente.UseVisualStyleBackColor = true;
+            this.btnRegresarPaciente.Click += new System.EventHandler(this.btnRegresarPaciente_Click);
             // 
             // btnReporteLaboral
             // 
@@ -1237,7 +1253,7 @@ namespace CapaPresentacion
             this.botEliminar.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.botEliminar.Image = ((System.Drawing.Image)(resources.GetObject("botEliminar.Image")));
             this.botEliminar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.botEliminar.Location = new System.Drawing.Point(6, 18);
+            this.botEliminar.Location = new System.Drawing.Point(6, 140);
             this.botEliminar.Name = "botEliminar";
             this.botEliminar.Size = new System.Drawing.Size(120, 45);
             this.botEliminar.TabIndex = 273;
@@ -1251,7 +1267,7 @@ namespace CapaPresentacion
             this.botCambiarTipoExamen.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.botCambiarTipoExamen.Image = ((System.Drawing.Image)(resources.GetObject("botCambiarTipoExamen.Image")));
             this.botCambiarTipoExamen.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.botCambiarTipoExamen.Location = new System.Drawing.Point(6, 78);
+            this.botCambiarTipoExamen.Location = new System.Drawing.Point(6, 75);
             this.botCambiarTipoExamen.Name = "botCambiarTipoExamen";
             this.botCambiarTipoExamen.Size = new System.Drawing.Size(120, 60);
             this.botCambiarTipoExamen.TabIndex = 274;
@@ -1485,6 +1501,7 @@ namespace CapaPresentacion
         private System.Windows.Forms.DataGridView dgvTurno;
         private System.Windows.Forms.Button botonRegresarRecepcion;
         protected System.Windows.Forms.Label lblTotal;
+        private System.Windows.Forms.Button btnRegresarPaciente;
         private System.Windows.Forms.Button botEliminar;
         private System.Windows.Forms.Button botCambiarTipoExamen;
         private System.Windows.Forms.Button btnSalir;

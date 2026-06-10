@@ -48,28 +48,60 @@ namespace CapaPresentacion
             string idMotivoConsulta = dtInfo.Rows[0]["idMotivoConsulta"].ToString();
 
             DataTable dtTipos = _mesaEntrada.cargarTiposDeExamen(idMotivoConsulta);
-            // no consuma _idEspecialidadActual prematuramente con el primer item
+            
+            // SIEMPRE establecer ValueMember y DisplayMember ANTES del DataSource
+            cbTipoPadre.ValueMember = "id";
+            cbTipoPadre.DisplayMember = "descripcion";
+            cbTipoPadre.DataSource = dtTipos;
+            
             _idEspecialidadOriginal = idEspecialidad;
             _idEspecialidadActual = idEspecialidad;
 
             // Pre-seleccionar el padre actual (dispara SelectedIndexChanged que carga cbSubtipo)
             if (Guid.TryParse(idPadre, out Guid guidPadre))
-                cbTipoPadre.SelectedValue = guidPadre;
+            {
+                cbTipoPadre.SelectedValue = guidPadre; // Usar el Guid, no el string
+                
+                // Forzar la pre-selección del subtipo si ya se cargó
+                if (cbSubtipo.DataSource != null)
+                {
+                    if (Guid.TryParse(_idEspecialidadOriginal, out Guid guidSub))
+                        cbSubtipo.SelectedValue = guidSub;
+                }
+            }
         }
 
         private void cbTipoPadre_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (cbTipoPadre.SelectedIndex == -1 || cbTipoPadre.SelectedValue == null) return;
-            string idPadre = cbTipoPadre.SelectedValue.ToString();
+            
+            string idPadre = "";
+            if (cbTipoPadre.SelectedValue is Guid guid)
+                idPadre = guid.ToString();
+            else if (cbTipoPadre.SelectedValue is DataRowView drv)
+                idPadre = drv["id"].ToString();
+            else
+                idPadre = cbTipoPadre.SelectedValue.ToString();
+
             if (!Guid.TryParse(idPadre, out _)) return;
 
             DataTable dtSubtipos = _mesaEntrada.cargarSubtiposDeTipoPadre(idPadre);
-            cbSubtipo.DataSource = dtSubtipos;
+            
             cbSubtipo.ValueMember = "id";
             cbSubtipo.DisplayMember = "descripcion";
-            cbSubtipo.SelectedIndex = -1;
+            cbSubtipo.DataSource = dtSubtipos;
 
-            // Pre-seleccionar subtipo actual (solo en la carga inicial)
+            // Si es la carga inicial, pre-seleccionar el subtipo original
+            if (_idEspecialidadActual != null)
+            {
+                if (Guid.TryParse(_idEspecialidadActual, out Guid guidActual))
+                    cbSubtipo.SelectedValue = guidActual;
+                _idEspecialidadActual = null; // Solo la primera vez
+            }
+            else
+            {
+                cbSubtipo.SelectedIndex = -1;
+            }
         }
 
         private void botAceptar_Click(object sender, EventArgs e)

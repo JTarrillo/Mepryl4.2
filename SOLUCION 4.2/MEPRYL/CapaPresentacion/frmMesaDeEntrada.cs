@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -1799,6 +1799,13 @@ namespace CapaPresentacion
             else
                 blnInfantilInicial = false;
 
+            // Intentar auto-seleccionar la especialidad si el paciente tiene un turno hoy
+            Guid idEspTurno = mesaEntrada.obtenerIdEspecialidadTurnoHoy(new Guid(idPaciente), "1");
+            if (idEspTurno != Guid.Empty)
+            {
+                cbTipoDeExamen.SelectedValue = idEspTurno;
+            }
+
             CapaNegocioMepryl.PacientePreventiva PacientePre = new PacientePreventiva();
             
             if (estaHabilitado(idPaciente))
@@ -1908,6 +1915,14 @@ namespace CapaPresentacion
                 MessageBox.Show("el paciente ya ha sido ingresado en mesa de entrada","Mesa de entrada",MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
+
+            // Intentar auto-seleccionar la especialidad si el paciente tiene un turno hoy
+            Guid idEspTurno = mesaEntrada.obtenerIdEspecialidadTurnoHoy(new Guid(idPaciente), "2");
+            if (idEspTurno != Guid.Empty)
+            {
+                cbTipoDeExamen.SelectedValue = idEspTurno;
+            }
+
             string motivo = cargarMotivoSeleccionado();
 
             //dgvGrilla.Rows[dgvGrilla.SelectedCells[0].RowIndex].Cells[10].Value.ToString();
@@ -2027,6 +2042,49 @@ namespace CapaPresentacion
             {
                 MessageBox.Show("¡No existe paciente para ser eliminado!", "Eliminar Consulta",
                     MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
+        }
+
+        private void btnRegresarPaciente_Click(object sender, EventArgs e)
+        {
+            if (dgvGrilla.Rows.Count > 0 && dgvGrilla.SelectedCells.Count > 0)
+            {
+                int index = dgvGrilla.SelectedCells[0].RowIndex;
+                DialogResult dr = MessageBox.Show("¿Está seguro que desea regresar este paciente a Ventanilla?\nEsto permitirá volver a ingresarlo desde la lista de turnos.", 
+                    "Regresar a Ventanilla", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                if (dr == DialogResult.Yes)
+                {
+                    try
+                    {
+                        string idConsulta = dgvGrilla.Rows[index].Cells[0].Value.ToString();
+                        string idTurno = dgvGrilla.Rows[index].Cells[3].Value.ToString();
+
+                        if (string.IsNullOrEmpty(idTurno) || idTurno == Guid.Empty.ToString())
+                        {
+                            MessageBox.Show("Este ingreso no tiene un turno vinculado. Use 'Eliminar Ingreso' en su lugar.", 
+                                "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            return;
+                        }
+
+                        mesaEntrada.RegresarPacienteAVentanilla(idConsulta, idTurno);
+                        
+                        MessageBox.Show("Paciente regresado a Ventanilla correctamente.", "Éxito", 
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        
+                        cargarGrilla();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Error al regresar paciente: " + ex.Message, "Error", 
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("Seleccione un paciente de la grilla inferior para regresarlo a Ventanilla.", 
+                    "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
@@ -2482,7 +2540,40 @@ namespace CapaPresentacion
 
         private void dgvTurno_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            intFilaSelecc = dgvTurno.CurrentCell.RowIndex;
+            try
+            {
+                intFilaSelecc = dgvTurno.CurrentCell.RowIndex;
+
+                if (dgvTurno.SelectedRows.Count > 0)
+                {
+                    // Intentamos usar IdEspecialidadReal (columna 13) que viene del Horario, 
+                    // es más confiable que el TEP que podría tener el padre por error.
+                    var cellIdEspReal = dgvTurno.SelectedRows[0].Cells[13].Value;
+                    if (cellIdEspReal != null && !string.IsNullOrEmpty(cellIdEspReal.ToString()))
+                    {
+                        cbTipoDeExamen.SelectedValue = cellIdEspReal.ToString();
+                    }
+                    else
+                    {
+                        // Fallback al comportamiento anterior si por alguna razón no hay IdEspReal
+                        var cellIdTipoExamen = dgvTurno.SelectedRows[0].Cells[11].Value;
+                        if (cellIdTipoExamen != null)
+                        {
+                            string idTipoExamenPaciente = cellIdTipoExamen.ToString();
+                            DataTable dtEsp = mesaEntrada.obtenerEspecialidadPorIdTipoExamen(idTipoExamenPaciente);
+                            if (dtEsp != null && dtEsp.Rows.Count > 0)
+                            {
+                                string idEspecialidad = dtEsp.Rows[0]["idEspecialidad"].ToString();
+                                cbTipoDeExamen.SelectedValue = idEspecialidad;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error en dgvTurno_CellClick: {ex.Message}");
+            }
         }
 
         private void SeleccinarFilaTurno()

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -478,20 +478,25 @@ namespace CapaDatosMepryl
         public DataTable cargarTunosSegunMotivoDeConsulta(string idMotivo)
         {
             DataTable retorno = crearTablaRetornoTurnos();
+            // Agregamos h.especialidadID para asegurar que traemos el subtipo real programado
+            // Utilizamos CASE para mostrar el Subtipo solo si NO es un Padre (Padre=0)
             DataTable turnosPendientesIngreso = SQLConnector.obtenerTablaSegunConsultaString(@"select t.id as Id, 
-            convert(date,t.fecha) as Fecha, t.hora as Hora, CASE WHEN e.Padre = 1 THEN '' ELSE e.descripcion END as 'Tipo de Exámen', 
+            convert(date,t.fecha) as Fecha, t.hora as Hora, 
+            CASE WHEN e.Padre = 0 THEN e.descripcion ELSE '' END as 'Tipo de Exámen', 
             mc.nombre as 'Motivo de Consulta', t.codigo as Código, 
             t.observaciones as Observaciones, t.pacienteID as IdPaciente, te.id,
             te.modificado,
             COALESCE(p.dni, pl.dni) as Dni,
             COALESCE(p.apellido, pl.apellido) as Apellido,
             COALESCE(p.nombres, pl.nombres) as Nombres,
-            CASE WHEN e.Padre = 1 THEN e.descripcion ELSE ePadre.descripcion END as TipoPadre
-            from dbo.Turno t inner join dbo.Horario h on t.horarioID = h.id
+            CASE WHEN e.Padre = 1 THEN e.descripcion ELSE ePadre.descripcion END as TipoPadre,
+            h.especialidadID as IdEspecialidadReal
+            from dbo.Turno t 
+            inner join dbo.Horario h on t.horarioID = h.id
+            inner join dbo.TipoExamenDePaciente te on te.idTurno = t.id
             inner join dbo.Especialidad e on h.especialidadID = e.id
             left join dbo.Especialidad ePadre on e.IdPadre = ePadre.id
             inner join dbo.MotivoDeConsulta mc on e.idMotivoConsulta = mc.id
-            inner join dbo.TipoExamenDePaciente te on te.idTurno = t.id
             left join dbo.Paciente p on p.id = t.pacienteID
             left join dbo.PacienteLaboral pl on pl.id = t.pacienteID
             where t.recepcion = '1' and mc.id = " + idMotivo + " and (t.mesaDeEntrada = '0' or t.mesaDeEntrada = '')");
@@ -518,6 +523,7 @@ namespace CapaDatosMepryl
             retorno.Columns.Add("IdPaciente");
             retorno.Columns.Add("IdTipoExamen");
             retorno.Columns.Add("Dni");
+            retorno.Columns.Add("IdEspecialidadReal");
             return retorno;
         }
 
@@ -530,7 +536,24 @@ namespace CapaDatosMepryl
             fila[11] == DBNull.Value ? string.Empty : fila[11].ToString(),
             fila[12] == DBNull.Value ? string.Empty : fila[12].ToString(),
             fila.ItemArray[4], fila.ItemArray[5], fila.ItemArray[6], fila.ItemArray[7],
-            fila.ItemArray[8], fila[10] == DBNull.Value ? string.Empty : fila[10].ToString());
+            fila.ItemArray[8], fila[10] == DBNull.Value ? string.Empty : fila[10].ToString(),
+            fila["IdEspecialidadReal"].ToString());
+        }
+
+        public void RegresarPacienteAVentanilla(Guid idConsulta, Guid idTurno)
+        {
+            // 1. Resetear el estado del turno para que vuelva a Ventanilla como 'Pendiente'
+            // Ponemos recepcion='0', asistio='0' y mesaDeEntrada='0'
+            SQLConnector.obtenerTablaSegunConsultaString(
+                $"UPDATE dbo.Turno SET recepcion = '0', asistio = '0', mesaDeEntrada = '0' WHERE id = '{idTurno}'");
+
+            // 2. Desvincular la consulta del TipoExamenDePaciente para que el turno quede libre
+            SQLConnector.obtenerTablaSegunConsultaString(
+                $"UPDATE dbo.TipoExamenDePaciente SET idConsulta = NULL WHERE idTurno = '{idTurno}' AND idConsulta = '{idConsulta}'");
+
+            // 3. Eliminar la consulta de Mesa de Entrada
+            List<string> listaConsulta = SQLConnector.generarListaParaProcedure("@id");
+            SQLConnector.executeProcedure("sp_Consulta_Delete", listaConsulta, idConsulta);
         }
 
         public Entidades.MesaEntrada cargarInformacionConsulta(Guid idConsulta)
@@ -614,9 +637,9 @@ namespace CapaDatosMepryl
             return retorno;
         }
 
-        public DataTable obtenerEspecialidadPorIdTipoExamen(string idTipoExamen)
+        public DataTable obtenerEspecialidadPorIdTipoExamen(string idTipoExamenPaciente)
         {
-            string idSeguro = idTipoExamen.Replace("'", "''");
+            string idSeguro = idTipoExamenPaciente.Replace("'", "''");
             return SQLConnector.obtenerTablaSegunConsultaString($@"
                 SELECT e.id as idEspecialidad, e.descripcion, e.idMotivoConsulta
                 FROM dbo.TipoExamenDePaciente tep
@@ -634,6 +657,28 @@ namespace CapaDatosMepryl
                 FROM dbo.TipoExamenDePaciente tep
                 INNER JOIN dbo.Especialidad esp ON esp.id = tep.idEspecialidad
                 WHERE tep.id = '{idSeguro}'");
+        }
+
+        public Guid obtenerIdEspecialidadTurnoHoy(Guid idPaciente, string idMotivo)
+        {
+            // Buscamos la especialidad directamente del Horario del Turno de hoy, 
+            // ya que es lo que se programó originalmente y es más confiable que el TEP previo.
+            DataTable dt = SQLConnector.obtenerTablaSegunConsultaString($@"
+                SELECT TOP 1 h.especialidadID
+                FROM dbo.Turno t
+                INNER JOIN dbo.Horario h ON t.horarioID = h.id
+                INNER JOIN dbo.Especialidad e ON h.especialidadID = e.id
+                WHERE t.pacienteID = '{idPaciente}' 
+                AND CONVERT(DATE, t.fecha) = CONVERT(DATE, GETDATE())
+                AND e.idMotivoConsulta = {idMotivo}
+                AND (t.mesaDeEntrada = '0' OR t.mesaDeEntrada = '')
+                ORDER BY t.hora ASC");
+
+            if (dt.Rows.Count > 0)
+            {
+                return new Guid(dt.Rows[0][0].ToString());
+            }
+            return Guid.Empty;
         }
 
         public Entidades.Resultado ingresarTurno(Guid idTurno)
@@ -1406,10 +1451,15 @@ namespace CapaDatosMepryl
             DataTable consulta = SQLConnector.obtenerTablaSegunConsultaString(
                 @"select c.id as IdConsulta, c.pacienteID as IdPaciente,
         te.id as IdTipoExamen, te.idTurno as IdTurno, c.fecha as Fecha, c.nroOrden as NroOrden, c.tipo as Tipo, c.identificador as Identificador,
-        c.observaciones as Observaciones, e.descripcion as SubtipoExamen, te.rm, te.modificado, c.revisado
+        c.observaciones as Observaciones, 
+        CASE WHEN e.Padre = 0 THEN e.descripcion ELSE eReal.descripcion END as SubtipoExamen, 
+        te.rm, te.modificado, c.revisado
         from Consulta c
         inner join dbo.TipoExamenDePaciente te on te.idConsulta = c.id
         inner join dbo.Especialidad e on te.idEspecialidad = e.id
+        left join dbo.Turno t on te.idTurno = t.id
+        left join dbo.Horario h on t.horarioID = h.id
+        left join dbo.Especialidad eReal on h.especialidadID = eReal.id
         where c.fecha >= '" + fechaDesde + @"' and c.fecha < '" + fechaHasta + "' and c.valido = '1' and c.nroOrden != '0' and c.tipo != 'V' order by c.nroOrden"
             );
             sw.Stop();
