@@ -631,20 +631,24 @@ namespace CapaPresentacion
                 if (turnoAsignado(dgv.CurrentCell.RowIndex))
                 {
                     botAsignar.Visible = false;
-                    botModificar.Visible = true;
-                    botLiberar.Visible = true;
-                    btnCopiarInfo.Visible = true; //GRV - Visible para todos los tipos de turno
-                    btnWhatsApp.Visible = true; // WhatsApp visible para todos los tipos de turno
-                    btnVerEstudio.Visible = true;
-                    btnMoverTurno.Visible = true; // GRV - Modificado
+
                     if (blnActivoMoverTurno)
                     {
-                        botLiberar.Visible = false;
-                        btnCopiarInfo.Visible = false; //GRV - Modificado
-                        btnWhatsApp.Visible = false; // WhatsApp oculto en modo mover turno
-                        btnVerEstudio.Visible = false;
-                        btnMoverTurno.Visible = false; // GRV - Modificado
                         botModificar.Visible = false;
+                        botLiberar.Visible = false;
+                        btnCopiarInfo.Visible = false;
+                        btnWhatsApp.Visible = false;
+                        btnVerEstudio.Visible = false;
+                        btnMoverTurno.Visible = true;
+                    }
+                    else
+                    {
+                        botModificar.Visible = true;
+                        botLiberar.Visible = true;
+                        btnCopiarInfo.Visible = true; //GRV - Visible para todos los tipos de turno
+                        btnWhatsApp.Visible = true; // WhatsApp visible para todos los tipos de turno
+                        btnVerEstudio.Visible = true;
+                        btnMoverTurno.Visible = true; // GRV - Modificado
                     }
                 }
                 else
@@ -653,13 +657,18 @@ namespace CapaPresentacion
                     {
                         botAsignar.Visible = true;
                     }
-                    btnMoverTurno.Visible = false; // GRV - Modificado
-                    btnWhatsApp.Visible = false; // WhatsApp oculto si no hay turno asignado
+
                     if (blnActivoMoverTurno)
                     {
                         botAsignar.Visible = false;
                         btnMoverTurno.Visible = true; // GRV - Modificado
                     }
+                    else
+                    {
+                        btnMoverTurno.Visible = false; // GRV - Modificado
+                    }
+
+                    btnWhatsApp.Visible = false; // WhatsApp oculto si no hay turno asignado
                     botModificar.Visible = false;
                     botLiberar.Visible = false;
                     btnCopiarInfo.Visible = false; //GRV - Modificado
