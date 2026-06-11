@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -209,10 +209,19 @@ namespace CapaDatosMepryl
             DataTable retorno = crearTablaRetornoGrillaPlanilla();
             DataTable consulta = SQLConnector.obtenerTablaSegunConsultaString(@"select c.id as IdConsulta, c.pacienteID as IdPaciente, 
             te.id as IdTipoExamen, te.idTurno as IdTurno, Format(c.fecha, 'dd-MM-yyyy hh:mm', 'en-US') as Fecha, c.nroOrden as 'Nº Ingreso', c.tipo as Tipo, c.identificador as 'Nº Orden',
-            c.observaciones as Observaciones, e.descripcion as 'Tipo de Exámen', te.rm, te.modificado, c.revisado
+            c.observaciones as Observaciones, 
+            COALESCE(
+                CASE WHEN e.Padre = 0 THEN e.descripcion ELSE NULL END,
+                eReal.descripcion,
+                e.descripcion
+            ) as 'Tipo de Exámen', 
+            te.rm, te.modificado, c.revisado
             from Consulta c
             inner join dbo.TipoExamenDePaciente te on te.idConsulta = c.id
             inner join dbo.Especialidad e on te.idEspecialidad = e.id
+            left join dbo.Turno t on te.idTurno = t.id
+            left join dbo.Horario h on t.horarioID = h.id
+            left join dbo.Especialidad eReal on h.especialidadID = eReal.id
             where convert(Date,c.fecha) = '" + DateTime.Today.ToShortDateString() + "' and c.valido = '1' and c.nroOrden != '0' and c.tipo != 'V' order by c.nroOrden");
             foreach (DataRow row in consulta.Rows)
             {
@@ -271,7 +280,13 @@ namespace CapaDatosMepryl
             DataTable consulta = SQLConnector.obtenerTablaSegunConsultaString(
              @"select c.id as IdConsulta, c.pacienteID as IdPaciente, 
             te.id as IdTipoExamen, te.idTurno as IdTurno, c.fecha as Fecha, c.nroOrden as NroIngreso, c.tipo as Tipo, c.identificador as NroOrden,
-            c.observaciones as Observaciones, CASE WHEN e.Padre = 1 THEN '' ELSE e.descripcion END as TipoExamen, te.rm, te.modificado,
+            c.observaciones as Observaciones, 
+            COALESCE(
+                CASE WHEN e.Padre = 0 THEN e.descripcion ELSE NULL END,
+                eReal.descripcion,
+                e.descripcion
+            ) as TipoExamen, 
+            te.rm, te.modificado,
             COALESCE(p.dni, pl.dni) as Dni,
             COALESCE(p.apellido, pl.apellido) as Apellido,
             COALESCE(p.nombres, pl.nombres) as Nombres,
@@ -285,6 +300,8 @@ namespace CapaDatosMepryl
             left join dbo.Paciente p on p.id = c.pacienteID
             left join dbo.PacienteLaboral pl on pl.id = c.pacienteID
             left join dbo.Turno t on t.id = te.idTurno and te.idTurno <> '00000000-0000-0000-0000-000000000000'
+            left join dbo.Horario h on t.horarioID = h.id
+            left join dbo.Especialidad eReal on h.especialidadID = eReal.id
             where convert(Date,c.fecha) = '" + DateTime.Today.ToString("yyyy-MM-dd") + "' and c.valido = '1' and c.nroOrden != '0' and c.tipo != 'V' order by c.nroOrden"
           );
             foreach (DataRow row in consulta.Rows)
@@ -300,7 +317,13 @@ namespace CapaDatosMepryl
             DataTable consulta = SQLConnector.obtenerTablaSegunConsultaString(
              @"select c.id as IdConsulta, c.pacienteID as IdPaciente, 
             te.id as IdTipoExamen, te.idTurno as IdTurno, c.fecha as Fecha, c.nroOrden as NroIngreso, c.tipo as Tipo, c.identificador as NroOrden,
-            c.observaciones as Observaciones, CASE WHEN e.Padre = 1 THEN '' ELSE e.descripcion END as TipoExamen, te.rm, te.modificado,
+            c.observaciones as Observaciones, 
+            COALESCE(
+                CASE WHEN e.Padre = 0 THEN e.descripcion ELSE NULL END,
+                eReal.descripcion,
+                e.descripcion
+            ) as TipoExamen, 
+            te.rm, te.modificado,
             COALESCE(p.dni, pl.dni) as Dni,
             COALESCE(p.apellido, pl.apellido) as Apellido,
             COALESCE(p.nombres, pl.nombres) as Nombres,
@@ -314,6 +337,8 @@ namespace CapaDatosMepryl
             left join dbo.Paciente p on p.id = c.pacienteID
             left join dbo.PacienteLaboral pl on pl.id = c.pacienteID
             left join dbo.Turno t on t.id = te.idTurno and te.idTurno <> '00000000-0000-0000-0000-000000000000'
+            left join dbo.Horario h on t.horarioID = h.id
+            left join dbo.Especialidad eReal on h.especialidadID = eReal.id
             where convert(Date,c.fecha) = '" + DateTime.Today.ToString("yyyy-MM-dd") + "' and c.valido = '1' and c.nroOrden != '0' and c.tipo != 'V' order by c.nroOrden"
           );
             foreach (DataRow row in consulta.Rows)
@@ -543,9 +568,9 @@ namespace CapaDatosMepryl
         public void RegresarPacienteAVentanilla(Guid idConsulta, Guid idTurno)
         {
             // 1. Resetear el estado del turno para que vuelva a Ventanilla como 'Pendiente'
-            // Ponemos recepcion='0', asistio='0' y mesaDeEntrada='0'
+            // Ponemos recepcion='0', asistio='1' (como pidió el usuario para que se vea visualmente) y mesaDeEntrada='0'
             SQLConnector.obtenerTablaSegunConsultaString(
-                $"UPDATE dbo.Turno SET recepcion = '0', asistio = '0', mesaDeEntrada = '0' WHERE id = '{idTurno}'");
+                $"UPDATE dbo.Turno SET recepcion = '0', asistio = '1', mesaDeEntrada = '0' WHERE id = '{idTurno}'");
 
             // 2. Desvincular la consulta del TipoExamenDePaciente para que el turno quede libre
             SQLConnector.obtenerTablaSegunConsultaString(
@@ -1452,7 +1477,11 @@ namespace CapaDatosMepryl
                 @"select c.id as IdConsulta, c.pacienteID as IdPaciente,
         te.id as IdTipoExamen, te.idTurno as IdTurno, c.fecha as Fecha, c.nroOrden as NroOrden, c.tipo as Tipo, c.identificador as Identificador,
         c.observaciones as Observaciones, 
-        CASE WHEN e.Padre = 0 THEN e.descripcion ELSE eReal.descripcion END as SubtipoExamen, 
+        COALESCE(
+            CASE WHEN e.Padre = 0 THEN e.descripcion ELSE NULL END,
+            eReal.descripcion,
+            e.descripcion
+        ) as SubtipoExamen, 
         te.rm, te.modificado, c.revisado
         from Consulta c
         inner join dbo.TipoExamenDePaciente te on te.idConsulta = c.id

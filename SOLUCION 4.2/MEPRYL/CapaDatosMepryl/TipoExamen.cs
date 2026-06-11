@@ -1187,7 +1187,7 @@ namespace CapaDatosMepryl
         {
             Entidades.TipoExamen retorno = new Entidades.TipoExamen();
 
-            // ✅ Usar alias explícitos en SELECT en lugar de índices
+            // ✅ Usar alias explícitos en SELECT y lógica de COALESCE para rescatar el nombre del subtipo
             DataTable estudiosPorExamen = SQLConnector.obtenerTablaSegunConsultaString(@"
         SELECT 
             epe.id AS IdEstudios,
@@ -1220,7 +1220,11 @@ namespace CapaDatosMepryl
             epe.item201, epe.item202, epe.item203, epe.item204, epe.item205, epe.item206, epe.item207,
             tep.id AS IdTipoExamenPaciente,
             e.id AS IdEspecialidad,
-            e.descripcion,
+            COALESCE(
+                CASE WHEN e.Padre = 0 THEN e.descripcion ELSE NULL END,
+                eReal.descripcion,
+                e.descripcion
+            ) AS descripcion,
             tep.precioExamen,
             tep.modificado,
             tep.precioLista,
@@ -1228,6 +1232,9 @@ namespace CapaDatosMepryl
         FROM dbo.TipoExamenDePaciente tep 
         INNER JOIN dbo.EstudiosPorExamen epe ON tep.id = epe.idTipoExamen
         INNER JOIN dbo.Especialidad e ON tep.idEspecialidad = e.id 
+        LEFT JOIN dbo.Turno t ON tep.idTurno = t.id
+        LEFT JOIN dbo.Horario h ON t.horarioID = h.id
+        LEFT JOIN dbo.Especialidad eReal ON h.especialidadID = eReal.id
         WHERE tep.id = '" + idTipoExamen + "'");
 
             if (estudiosPorExamen.Rows.Count > 0)

@@ -38,7 +38,7 @@ namespace CapaPresentacion
             DataTable dtInfo = _mesaEntrada.obtenerInfoEspecialidad(_strIdTipoExamen);
             if (dtInfo == null || dtInfo.Rows.Count == 0)
             {
-                MessageBox.Show("No se pudo obtener la información del tipo de examen.", "Error",
+                MessageBox.Show("No se pudo obtener la información del tipo de examen para el ID: " + _strIdTipoExamen, "Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
@@ -58,16 +58,45 @@ namespace CapaPresentacion
             _idEspecialidadActual = idEspecialidad;
 
             // Pre-seleccionar el padre actual (dispara SelectedIndexChanged que carga cbSubtipo)
-            if (Guid.TryParse(idPadre, out Guid guidPadre))
+            if (!string.IsNullOrEmpty(idPadre))
             {
-                cbTipoPadre.SelectedValue = guidPadre; // Usar el Guid, no el string
+                if (Guid.TryParse(idPadre, out Guid guidPadre))
+                {
+                    cbTipoPadre.SelectedValue = guidPadre;
+                    // Fallback si no seleccionó por Guid (a veces el DataSource tiene strings)
+                    if (cbTipoPadre.SelectedValue == null || (Guid)cbTipoPadre.SelectedValue != guidPadre)
+                    {
+                        cbTipoPadre.SelectedValue = idPadre;
+                    }
+                }
+                else
+                {
+                    cbTipoPadre.SelectedValue = idPadre;
+                }
                 
-                // Forzar la pre-selección del subtipo si ya se cargó
+                // Forzar la pre-selección del subtipo si ya se cargó en el SelectedIndexChanged
                 if (cbSubtipo.DataSource != null)
                 {
-                    if (Guid.TryParse(_idEspecialidadOriginal, out Guid guidSub))
-                        cbSubtipo.SelectedValue = guidSub;
+                    PreseleccionarSubtipo(_idEspecialidadOriginal);
                 }
+            }
+        }
+
+        private void PreseleccionarSubtipo(string idSubtipo)
+        {
+            if (string.IsNullOrEmpty(idSubtipo)) return;
+
+            if (Guid.TryParse(idSubtipo, out Guid guidSub))
+            {
+                cbSubtipo.SelectedValue = guidSub;
+                if (cbSubtipo.SelectedValue == null || (Guid)cbSubtipo.SelectedValue != guidSub)
+                {
+                    cbSubtipo.SelectedValue = idSubtipo;
+                }
+            }
+            else
+            {
+                cbSubtipo.SelectedValue = idSubtipo;
             }
         }
 
@@ -94,8 +123,7 @@ namespace CapaPresentacion
             // Si es la carga inicial, pre-seleccionar el subtipo original
             if (_idEspecialidadActual != null)
             {
-                if (Guid.TryParse(_idEspecialidadActual, out Guid guidActual))
-                    cbSubtipo.SelectedValue = guidActual;
+                PreseleccionarSubtipo(_idEspecialidadActual);
                 _idEspecialidadActual = null; // Solo la primera vez
             }
             else

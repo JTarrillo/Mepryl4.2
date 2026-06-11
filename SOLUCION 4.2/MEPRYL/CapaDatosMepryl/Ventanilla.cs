@@ -29,14 +29,22 @@ namespace CapaDatosMepryl
             var sw = System.Diagnostics.Stopwatch.StartNew();
             DataTable rawTurnos = SQLConnector.obtenerTablaSegunConsultaString(
                 @"select t.id as Id, t.fecha as Fecha, t.horaReferencia as Hora, t.nroOrden as Orden,
-                e.descripcion as SubtipoExamen, e.precioBase as PrecioBase,
-                ISNULL(ePadre.descripcion, CASE WHEN e.Padre = 0 THEN e.descripcion ELSE NULL END) as TipoPadre,
+                COALESCE(
+                    CASE WHEN teReal.Padre = 0 THEN teReal.descripcion ELSE NULL END,
+                    CASE WHEN e.Padre = 0 THEN e.descripcion ELSE NULL END,
+                    e.descripcion
+                ) as SubtipoExamen, 
+                e.precioBase as PrecioBase,
+                COALESCE(ePadre.descripcion, e.descripcion) as TipoPadre,
                 t.observaciones as Observaciones, t.codigo as Codigo,
-                t.asistio, t.reserva, t.pacienteID, t.abono, t.reservado, t.ocultar
+                t.asistio, t.reserva, t.pacienteID, t.abono, t.reservado, t.ocultar,
+                e.Padre as EsPadreHorario
                 from dbo.Turno t
                 inner join dbo.Horario h on t.horarioID = h.id
                 inner join dbo.Especialidad e on h.especialidadID = e.id
                 left join dbo.Especialidad ePadre on e.IdPadre = ePadre.id
+                left join dbo.TipoExamenDePaciente tep ON tep.idTurno = t.id
+                left join dbo.Especialidad teReal ON tep.idEspecialidad = teReal.id
                 where t.fecha >= '" + fechaDesde + "' and t.fecha < '" + fechaHasta +
                 "' and (t.recepcion = '0' or t.recepcion is NULL) and t.habilitado = '1' " +
                 strFiltro + " order by t.fecha asc, t.hora asc, t.nroOrden asc");
@@ -72,10 +80,11 @@ namespace CapaDatosMepryl
                 " UNION ALL " +
                 "select id, dni, apellido + ' ' + nombres as Paciente from dbo.PacienteLaboral where id in (" + pIn + ")");
 
-            // Batch: TipoExamenDePaciente (trae idTurno, id, precioExamen, modificado)
+            // Batch: TipoExamenDePaciente (trae idTurno, id, precioExamen, modificado, idEspecialidad)
             DataTable tipoExamenBatch = SQLConnector.obtenerTablaSegunConsultaString(
-                @"select tep.idTurno, tep.id, tep.precioExamen, tep.modificado
+                @"select tep.idTurno, tep.id, tep.precioExamen, tep.modificado, e.descripcion as SubtipoReal, e.Padre
                 from dbo.TipoExamenDePaciente tep
+                inner join dbo.Especialidad e on tep.idEspecialidad = e.id
                 where tep.idTurno in (" + tIn + ")");
 
             sw.Stop();
@@ -111,13 +120,19 @@ namespace CapaDatosMepryl
                 if (!dictPaciente.ContainsKey(id)) dictPaciente[id] = r;
             }
 
-            // turnoId -> (idTE, precioExamen, modificado)
-            var dictTE = new Dictionary<string, (string idTE, string precio, string modificado)>(StringComparer.OrdinalIgnoreCase);
+            // turnoId -> (idTE, precioExamen, modificado, subtipoReal, esPadre)
+            var dictTE = new Dictionary<string, (string idTE, string precio, string modificado, string subtipoReal, bool esPadre)>(StringComparer.OrdinalIgnoreCase);
             foreach (DataRow r in tipoExamenBatch.Rows)
             {
                 string idTurno = r["idTurno"].ToString();
                 if (!dictTE.ContainsKey(idTurno))
-                    dictTE[idTurno] = (r["id"].ToString(), r["precioExamen"].ToString(), r["modificado"].ToString());
+                    dictTE[idTurno] = (
+                        r["id"].ToString(), 
+                        r["precioExamen"].ToString(), 
+                        r["modificado"].ToString(),
+                        r["SubtipoReal"].ToString(),
+                        r["Padre"].ToString() == "1"
+                    );
             }
 
             // precioBase por turno tomado directamente de rawTurnos
@@ -164,6 +179,15 @@ namespace CapaDatosMepryl
                 if (!string.IsNullOrEmpty(teData.precio)) importe = teData.precio;
                 else dictPrecioBase.TryGetValue(idTurno, out importe);
 
+                // El nombre del subtipo ya viene rescatado desde el SQL mediante COALESCE
+                string subtipoExamen = r["SubtipoExamen"].ToString();
+
+                // Si por alguna razón el subtipo sigue siendo igual al padre y tenemos un subtipo real en TEP, lo usamos
+                if (subtipoExamen == tipoPadre && !string.IsNullOrEmpty(teData.subtipoReal) && !teData.esPadre)
+                {
+                    subtipoExamen = teData.subtipoReal;
+                }
+
                 string empresaClub = string.Empty, idEmpresa = string.Empty;
                 if (!string.IsNullOrEmpty(idTE))
                 {
@@ -181,7 +205,7 @@ namespace CapaDatosMepryl
 
                     retorno.Rows.Add(asistio, abono, idTurno, fecha, r["Hora"],
                         r["Orden"], tipoPadre,
-                        r["SubtipoExamen"].ToString() + " " + modificado,
+                        subtipoExamen + " " + modificado,
                         dni, paciente, importe, empresaClub,
                         r["Observaciones"], r["Codigo"], idPaciente,
                         reservado, idEmpresa, ocultar);
@@ -191,7 +215,7 @@ namespace CapaDatosMepryl
                     string paciente = "RESERVA " + r["reserva"].ToString().ToUpper();
                     retorno.Rows.Add(asistio, abono, idTurno, fecha, r["Hora"],
                         r["Orden"], tipoPadre,
-                        r["SubtipoExamen"],
+                        subtipoExamen,
                         string.Empty, paciente, importe, string.Empty,
                         string.Empty, r["Codigo"], Guid.Empty,
                         reservado, string.Empty, ocultar);
@@ -349,8 +373,19 @@ namespace CapaDatosMepryl
                     DataRow dr = cargarDatoPaciente(r.ItemArray[9].ToString());
                     dni = dr.ItemArray[0].ToString();
                     paciente = dr.ItemArray[1].ToString();
+                    
+                    // Rescate de subtipo manual para la versión vieja
+                    string subEx = r.ItemArray[4].ToString();
+                    string idT = r.ItemArray[0].ToString();
+                    DataTable dtSub = SQLConnector.obtenerTablaSegunConsultaString($@"
+                        SELECT e.descripcion 
+                        FROM dbo.TipoExamenDePaciente tep 
+                        INNER JOIN dbo.Especialidad e ON tep.idEspecialidad = e.id 
+                        WHERE tep.idTurno = '{idT}' AND e.Padre = 0");
+                    if (dtSub.Rows.Count > 0) subEx = dtSub.Rows[0][0].ToString();
+
                     retorno.Rows.Add(asistio, abono, r.ItemArray[0], Convert.ToDateTime(r.ItemArray[1].ToString()).ToShortDateString(), r.ItemArray[2],
-                    r.ItemArray[3], r.ItemArray[4] + " " + Modificado, dni, paciente, cargarImporte(new Guid(r.ItemArray[0].ToString())),
+                    r.ItemArray[3], subEx + " " + Modificado, dni, paciente, cargarImporte(new Guid(r.ItemArray[0].ToString())),
                     //r.ItemArray[3], r.ItemArray[4], dni, paciente, cargarImporte(new Guid(r.ItemArray[0].ToString())),
                     cargarEmpresaClub(new Guid(r.ItemArray[0].ToString()))[0], r.ItemArray[5],
                     r.ItemArray[6], r.ItemArray[9], reservado, cargarEmpresaClub(new Guid(r.ItemArray[0].ToString()))[1], ocultar);

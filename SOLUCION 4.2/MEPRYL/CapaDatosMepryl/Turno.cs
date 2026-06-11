@@ -78,8 +78,12 @@ namespace CapaDatosMepryl
             DataTable turnos = SQLConnector.obtenerTablaSegunConsultaString(@"
         SELECT 
             t.id as Id,
-            ISNULL(tePadre.descripcion, te.descripcion) as TipoPadre,
-            te.descripcion as SubTipo,
+            COALESCE(tePadre.descripcion, te.descripcion) as TipoPadre,
+            COALESCE(
+                CASE WHEN teReal.Padre = 0 THEN teReal.descripcion ELSE NULL END,
+                CASE WHEN te.Padre = 0 THEN te.descripcion ELSE NULL END,
+                te.descripcion
+            ) as SubTipo,
             p.apellido + ' ' + p.nombres as Profesional,
             t.fecha as Fecha,
             t.horaReferencia as Hora,
@@ -94,13 +98,14 @@ namespace CapaDatosMepryl
             tep.id as IdTipoExamen,
             t.habilitado as Habilitado,
             t.estadoID as IdEstado,
-            te.id as IdSubtipo,
+            COALESCE(teReal.id, te.id) as IdSubtipo,
             ISNULL(tePadre.id, te.id) as IdPadre
         FROM dbo.Turno t
         INNER JOIN dbo.TurnoEstado e ON t.estadoID = e.id
         INNER JOIN dbo.Horario h ON t.horarioID = h.id
         INNER JOIN dbo.Profesional p ON h.profesionalID = p.id
         LEFT JOIN dbo.TipoExamenDePaciente tep ON tep.idTurno = t.id
+        LEFT JOIN dbo.Especialidad teReal ON tep.idEspecialidad = teReal.id
         LEFT JOIN dbo.Especialidad te ON h.especialidadID = te.id
         LEFT JOIN dbo.Especialidad tePadre ON te.IdPadre = tePadre.id AND te.Padre = 0
         WHERE convert(date, t.fecha) = convert(date, '" + fecha.ToShortDateString() + "', 105) "
