@@ -19,7 +19,14 @@ namespace CapaPresentacion
         private PrecioPromo precioPromo;
         private PrecioPublico precioPublico;
         private bool yaInicializado = false;
-        private decimal[] _coefs = new decimal[12];
+        private decimal[] _coefsPromo = new decimal[12];
+        private decimal[] _coefsPublico = new decimal[12];
+
+        private decimal[] _coefs 
+        { 
+            get { return EsPrecioPublico() ? _coefsPublico : _coefsPromo; }
+            set { if (EsPrecioPublico()) _coefsPublico = value; else _coefsPromo = value; }
+        }
 
         private static readonly string[] NombresMeses =
         {
@@ -34,12 +41,31 @@ namespace CapaPresentacion
             precioPromo = new PrecioPromo();
             precioPublico = new PrecioPublico();
 
+            for (int i = 0; i < 12; i++)
+            {
+                _coefsPromo[i] = 1;
+                _coefsPublico[i] = 1;
+            }
+
             this.tabControl.SelectedIndexChanged += new System.EventHandler(this.tabControl_SelectedIndexChanged);
             this.dgvObsPre.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvObsPre_CellContentClick);
         }
 
         private void frmPrecioPromo_Load(object sender, EventArgs e)
         {
+            // Asegurar que la tabla CoeficientePrecio tenga la columna Tipo
+            try
+            {
+                string checkSql = "IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('CoeficientePrecio') AND name = 'Tipo') " +
+                                  "BEGIN " +
+                                  "  ALTER TABLE CoeficientePrecio ADD Tipo VARCHAR(10) NOT NULL DEFAULT 'PROMO'; " +
+                                  "  ALTER TABLE CoeficientePrecio DROP CONSTRAINT UQ_CoeficientePrecio_MesAnio; " +
+                                  "  ALTER TABLE CoeficientePrecio ADD CONSTRAINT UQ_CoeficientePrecio_MesAnioTipo UNIQUE (Mes, Anio, Tipo); " +
+                                  "END";
+                SQLConnector.obtenerTablaSegunConsultaString(checkSql);
+            }
+            catch { /* Silencioso si falla, probablemente por permisos o ya existe */ }
+
             foreach (DataGridViewColumn col in dgvPrecios.Columns)
                 col.SortMode = DataGridViewColumnSortMode.NotSortable;
             foreach (DataGridViewColumn col in dgvPrecioPublico.Columns)
@@ -214,25 +240,39 @@ namespace CapaPresentacion
         private void dgvPrecios_ColumnHeaderMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
         {
             if (e.ColumnIndex < 0) return;
-            string colName = ObtenerDGVActual().Columns[e.ColumnIndex].Name;
+            DataGridView dgv = ObtenerDGVActual();
+            string colName = dgv.Columns[e.ColumnIndex].Name;
             
-            if (colName.StartsWith("colCoef"))
+            // Detectar si es una columna de coeficiente (colCoefXX o colPublicoCoefXX)
+            if (colName.Contains("Coef") && !colName.Contains("IPC"))
             {
-                int mes = int.Parse(colName.Substring(7)); // "colCoef01" -> 7
+                // Extraer el número de mes del final del nombre (siempre son los últimos 2 caracteres: 01, 02...)
+                string strMes = colName.Substring(colName.Length - 2);
+                if (!int.TryParse(strMes, out int mes)) return;
+
                 string actual = _coefs[mes - 1].ToString("0.##", System.Globalization.CultureInfo.CurrentCulture);
                 string input = Microsoft.VisualBasic.Interaction.InputBox(
                     "Coeficiente para " + NombresMeses[mes - 1] + ":", "Editar coeficiente", actual);
+                
                 if (string.IsNullOrWhiteSpace(input)) return;
+                
                 decimal v;
                 if (!decimal.TryParse(input.Replace(',', '.'),
                     System.Globalization.NumberStyles.Any,
                     System.Globalization.CultureInfo.InvariantCulture, out v)) return;
+                
                 _coefs[mes - 1] = v;
-                ObtenerDGVActual().Columns[e.ColumnIndex].HeaderText = v.ToString("0.##", System.Globalization.CultureInfo.CurrentCulture);
+                dgv.Columns[e.ColumnIndex].HeaderText = v.ToString("0.##", System.Globalization.CultureInfo.CurrentCulture);
 
                 int anio = (int)nudAnio.Value;
                 GuardarCoeficientesActual(anio, _coefs);
                 AplicarCalculoCoeficientesSucesivos(mes);
+
+                // Si estamos en la pestaña Promo, actualizar también la grilla de Público automáticamente
+                if (!EsPrecioPublico())
+                {
+                    RecalcularPrecioPublicoRelativoAPromo(mes);
+                }
             }
         }
 
@@ -243,29 +283,57 @@ namespace CapaPresentacion
                 DataGridView dgv = ObtenerDGVActual();
                 dgv.CellEndEdit -= dgvPrecios_CellEndEdit;
 
-                int mesInicio = mesModificado + 1;
-                if (mesInicio > 12) return;
-
-                foreach (DataGridViewRow row in dgv.Rows)
+                // Si estamos en Precio Público, el cálculo es RELATIVO a la grilla de Promos
+                if (EsPrecioPublico())
                 {
-                    if (!row.Visible) continue;
+                    RecalcularPrecioPublicoRelativoAPromo(mesModificado);
+                }
+                else
+                {
+                    // Lógica original para Precio Promo (Sucesiva)
+                    int mesInicio = mesModificado + 1;
+                    if (mesInicio > 12) return;
 
-                    decimal[] originalValues = new decimal[13]; // índice 1..12
-                    for (int m = mesInicio; m <= 12; m++)
-                        originalValues[m] = ParseDecimal(row.Cells[5 + (m - 1) * 2].Value);
+                    foreach (DataGridViewRow row in dgv.Rows)
+                    {
+                        // Procesamos todas las filas, incluso las ocultas por el filtro, 
+                        // para mantener la consistencia total de la grilla.
+                        if (row.IsNewRow) continue;
 
-                    for (int mes = mesInicio; mes <= 12; mes++)
+                        decimal[] originalValues = new decimal[13]; // índice 1..12
+                        for (int m = mesInicio; m <= 12; m++)
+                            originalValues[m] = ParseDecimal(row.Cells[5 + (m - 1) * 2].Value);
+
+                        for (int mes = mesInicio; mes <= 12; mes++)
                     {
                         if (mes > mesInicio && originalValues[mes - 1] == 0m) continue;
 
                         decimal valorMesAnterior = ParseDecimal(row.Cells[5 + (mes - 2) * 2].Value);
-                        decimal coeficiente = _coefs[mes - 2];
-                        decimal nuevoValor = valorMesAnterior * coeficiente;
+                        decimal aumentoFijoFila = ParseDecimal(row.Cells[6 + (mes - 2) * 2].Value); // El valor "del medio" en pesos
+                        decimal coefGlobal = _coefsPromo[mes - 2]; // El rojo de arriba del mes anterior
+                        
+                        // ✅ LÓGICA DE PRECIO FORZADO: Si el usuario pone un valor en el medio (ej. 1000), 
+                        // el precio del mes siguiente ES ese valor (fuerza de precio).
+                        // Si pone 0, se aplica el coeficiente global al precio anterior.
+                        decimal nuevoValor;
+                        if (aumentoFijoFila > 0)
+                        {
+                            nuevoValor = aumentoFijoFila;
+                        }
+                        else
+                        {
+                            nuevoValor = valorMesAnterior * coefGlobal;
+                        }
+                        
                         row.Cells[5 + (mes - 1) * 2].Value = nuevoValor;
+                    }
                     }
                 }
 
-                string mensaje = $"Se han recalculado los precios desde {NombresMeses[mesInicio - 1]} hasta Diciembre aplicando los coeficientes sucesivos.";
+                string mensaje = EsPrecioPublico() 
+                    ? $"Se han recalculado los precios públicos desde {NombresMeses[mesModificado - 1]} basándose en los precios Promo y el factor de relación."
+                    : $"Se han recalculado los precios desde {NombresMeses[mesModificado]} hasta Diciembre aplicando los coeficientes y precios forzados.";
+                
                 MessageBox.Show(mensaje, "Cálculo aplicado", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
@@ -279,6 +347,80 @@ namespace CapaPresentacion
             }
         }
 
+        private void RecalcularPrecioPublicoRelativoAPromo(int mesModificado)
+        {
+            // ✅ LÓGICA SENIOR: Sincronizamos la grilla de Público usando los valores de la grilla Promo.
+            // Esto asegura que tanto el Coeficiente Global como los Precios Forzados se trasladen correctamente.
+            DataGridView dgvPromo = dgvPrecios;
+            DataGridView dgvPublico = dgvPrecioPublico;
+
+            foreach (DataGridViewRow rowPublico in dgvPublico.Rows)
+            {
+                if (rowPublico.IsNewRow) continue;
+
+                string idEsp = rowPublico.Cells[ObtenerNombreColumnaIdEspecialidad(dgvPublico)].Value?.ToString();
+                
+                // Buscar la fila correspondiente en la grilla Promo por ID
+                DataGridViewRow rowPromo = null;
+                foreach (DataGridViewRow rP in dgvPromo.Rows)
+                {
+                    if (rP.Cells[ObtenerNombreColumnaIdEspecialidad(dgvPromo)].Value?.ToString() == idEsp)
+                    {
+                        rowPromo = rP;
+                        break;
+                    }
+                }
+                
+                if (rowPromo == null) continue;
+
+                // El bucle empieza en el mes siguiente al modificado (o desde enero si mesModificado es 0 o 1)
+                int mesInicio = mesModificado + 1;
+                if (mesInicio > 12) return;
+
+                // ✅ LÓGICA SENIOR: Detectar si ya existe un precio forzado previo en esta fila 
+                // para decidir si seguimos la cadena o la relación con Promo.
+                bool usoCadenaForzada = false;
+                for (int m = 1; m < mesInicio; m++)
+                {
+                    if (ParseDecimal(rowPublico.Cells[6 + (m - 1) * 2].Value) > 0)
+                    {
+                        usoCadenaForzada = true;
+                        break;
+                    }
+                }
+
+                for (int mes = mesInicio; mes <= 12; mes++)
+                {
+                    // ✅ LÓGICA DE PRECIO FORZADO EN PÚBLICO:
+                    // Si el usuario pone un valor en la columna del medio de la grilla Pública, ese valor manda.
+                    decimal aumentoFijoFilaPublico = ParseDecimal(rowPublico.Cells[6 + (mes - 2) * 2].Value);
+                    
+                    if (aumentoFijoFilaPublico > 0)
+                    {
+                        rowPublico.Cells[5 + (mes - 1) * 2].Value = aumentoFijoFilaPublico;
+                        usoCadenaForzada = true;
+                    }
+                    else if (usoCadenaForzada)
+                    {
+                        // Si estamos en una cadena forzada y el importe actual es 0,
+                        // multiplicamos el PRECIO PÚBLICO ANTERIOR por el COEFICIENTE GLOBAL PÚBLICO.
+                        decimal valorAnteriorPublico = ParseDecimal(rowPublico.Cells[5 + (mes - 2) * 2].Value);
+                        decimal factorRelacion = _coefsPublico[mes - 2]; 
+                        rowPublico.Cells[5 + (mes - 1) * 2].Value = valorAnteriorPublico * factorRelacion;
+                    }
+                    else
+                    {
+                        // Si no hay fuerza de precio previa, seguimos la relación normal: Público(Mes) = Promo(Mes) * FactorRelación(Mes-1)
+                        decimal valorPromo = ParseDecimal(rowPromo.Cells[5 + (mes - 1) * 2].Value);
+                        if (valorPromo == 0) continue;
+
+                        decimal factorRelacion = _coefsPublico[mes - 2]; 
+                        rowPublico.Cells[5 + (mes - 1) * 2].Value = valorPromo * factorRelacion;
+                    }
+                }
+            }
+        }
+
         private void AplicarCalculoCoeficientesSucesivosFila(int mesModificado, int rowIndex, bool cascadeSoloConValores = false)
         {
             try
@@ -286,31 +428,103 @@ namespace CapaPresentacion
                 DataGridView dgv = ObtenerDGVActual();
                 dgv.CellEndEdit -= dgvPrecios_CellEndEdit;
 
-                int mesInicio = mesModificado + 1;
-                DataGridViewRow filaActual = dgv.Rows[rowIndex];
-
-                decimal[] originalValues = new decimal[13]; // índice 1..12
-                for (int m = mesInicio; m <= 12; m++)
-                    originalValues[m] = ParseDecimal(filaActual.Cells[5 + (m - 1) * 2].Value);
-
-                for (int mes = mesInicio; mes <= 12; mes++)
+                if (EsPrecioPublico())
                 {
-                    if (!filaActual.Visible) continue;
-
-                    if (cascadeSoloConValores)
+                    // ✅ LÓGICA SENIOR: Sincronizamos esta fila de Público usando los valores de la fila Promo correspondiente.
+                    DataGridViewRow filaPublico = dgv.Rows[rowIndex];
+                    string idEsp = filaPublico.Cells[ObtenerNombreColumnaIdEspecialidad(dgv)].Value?.ToString();
+                    
+                    // Buscar la fila Promo en la otra grilla
+                    DataGridViewRow filaPromo = null;
+                    foreach (DataGridViewRow rP in dgvPrecios.Rows)
                     {
-                        if (originalValues[mes] == 0m) continue;
-                    }
-                    else
-                    {
-                        if (mes > mesInicio && originalValues[mes - 1] == 0m) continue;
+                        if (rP.Cells[ObtenerNombreColumnaIdEspecialidad(dgvPrecios)].Value?.ToString() == idEsp)
+                        {
+                            filaPromo = rP;
+                            break;
+                        }
                     }
 
-                    decimal valorBase = ParseDecimal(filaActual.Cells[5 + (mes - 2) * 2].Value);
-                    decimal coeficiente = ParseDecimal(filaActual.Cells[6 + (mes - 2) * 2].Value);
-                    if (coeficiente == 0) coeficiente = _coefs[mes - 2];
-                    decimal nuevoValor = valorBase * coeficiente;
-                    filaActual.Cells[5 + (mes - 1) * 2].Value = nuevoValor;
+                    if (filaPromo != null)
+                    {
+                        // ✅ LÓGICA DE CADENA FORZADA: Detectar si hay fuerza de precio previa en esta fila
+                        bool usoCadenaForzada = false;
+                        for (int m = 1; m <= mesModificado; m++)
+                        {
+                            if (ParseDecimal(filaPublico.Cells[6 + (m - 1) * 2].Value) > 0)
+                            {
+                                usoCadenaForzada = true;
+                                break;
+                            }
+                        }
+
+                        // Empezamos desde el mes siguiente al coeficiente o precio modificado
+                        for (int mes = mesModificado + 1; mes <= 12; mes++)
+                        {
+                            decimal aumentoFijoFilaPublico = ParseDecimal(filaPublico.Cells[6 + (mes - 2) * 2].Value);
+                            
+                            if (aumentoFijoFilaPublico > 0)
+                            {
+                                filaPublico.Cells[5 + (mes - 1) * 2].Value = aumentoFijoFilaPublico;
+                                usoCadenaForzada = true;
+                            }
+                            else if (usoCadenaForzada)
+                            {
+                                decimal valorAnteriorPublico = ParseDecimal(filaPublico.Cells[5 + (mes - 2) * 2].Value);
+                                decimal factorRelacion = _coefsPublico[mes - 2]; 
+                                filaPublico.Cells[5 + (mes - 1) * 2].Value = valorAnteriorPublico * factorRelacion;
+                            }
+                            else
+                            {
+                                decimal valorPromo = ParseDecimal(filaPromo.Cells[5 + (mes - 1) * 2].Value);
+                                if (valorPromo == 0) continue;
+
+                                decimal factorRelacion = _coefsPublico[mes - 2];
+                                filaPublico.Cells[5 + (mes - 1) * 2].Value = valorPromo * factorRelacion;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    // Lógica original de cascada para Promo
+                    int mesInicio = mesModificado + 1;
+                    DataGridViewRow filaActual = dgv.Rows[rowIndex];
+
+                    decimal[] originalValues = new decimal[13]; // índice 1..12
+                    for (int m = mesInicio; m <= 12; m++)
+                        originalValues[m] = ParseDecimal(filaActual.Cells[5 + (m - 1) * 2].Value);
+
+                    for (int mes = mesInicio; mes <= 12; mes++)
+                    {
+                        if (!filaActual.Visible) continue;
+
+                        if (cascadeSoloConValores)
+                        {
+                            if (originalValues[mes] == 0m) continue;
+                        }
+                        else
+                        {
+                            if (mes > mesInicio && originalValues[mes - 1] == 0m) continue;
+                        }
+
+                        decimal valorBase = ParseDecimal(filaActual.Cells[5 + (mes - 2) * 2].Value);
+                        decimal aumentoFijoFila = ParseDecimal(filaActual.Cells[6 + (mes - 2) * 2].Value);
+                        decimal coefGlobal = _coefsPromo[mes - 2];
+                        
+                        // ✅ LÓGICA DE PRECIO FORZADO: Consistente con el cálculo masivo
+                        decimal nuevoValor;
+                        if (aumentoFijoFila > 0)
+                        {
+                            nuevoValor = aumentoFijoFila;
+                        }
+                        else
+                        {
+                            nuevoValor = valorBase * coefGlobal;
+                        }
+                        
+                        filaActual.Cells[5 + (mes - 1) * 2].Value = nuevoValor;
+                    }
                 }
             }
             catch (Exception ex)
@@ -400,7 +614,36 @@ namespace CapaPresentacion
                 }
 
                 GuardarDatosActual(anio, dtGuardar);
-                MessageBox.Show("Precios guardados correctamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                // ✅ NUEVA LÓGICA SENIOR: Si guardamos Promos, sincronizamos y guardamos Públicos automáticamente
+                if (!EsPrecioPublico())
+                {
+                    // 1. Forzar el recálculo de la grilla pública basándose en los nuevos valores de Promo
+                    RecalcularPrecioPublicoRelativoAPromo(1);
+
+                    // 2. Generar el DataTable para guardar los Precios Públicos actualizados
+                    DataTable dtPublicoGuardar = dtGuardar.Clone();
+                    foreach (DataGridViewRow rowPub in dgvPrecioPublico.Rows)
+                    {
+                        if (!rowPub.Visible) continue;
+                        DataRow drPub = dtPublicoGuardar.NewRow();
+                        drPub["idEspecialidad"] = rowPub.Cells[ObtenerNombreColumnaIdEspecialidad(dgvPrecioPublico)].Value?.ToString() ?? "";
+                        drPub["Descripcion"] = rowPub.Cells[ObtenerNombreColumnaDescripcion(dgvPrecioPublico)].Value?.ToString() ?? "";
+                        drPub["IPCBase"] = ParseDecimal(rowPub.Cells[ObtenerNombreColumnaIPCBase(dgvPrecioPublico)].Value);
+                        for (int mes = 1; mes <= 12; mes++)
+                        {
+                            drPub["Promo" + mes.ToString("00")] = ParseDecimal(rowPub.Cells[5 + (mes - 1) * 2].Value);
+                            drPub["Coef" + mes.ToString("00")] = ParseDecimal(rowPub.Cells[6 + (mes - 1) * 2].Value);
+                        }
+                        dtPublicoGuardar.Rows.Add(drPub);
+                    }
+
+                    // 3. Guardar en la tabla de Precios Públicos
+                    precioPublico.GuardarPreciosPublicoAnio(anio, dtPublicoGuardar);
+                    precioPublico.GuardarCoeficientesAnio(anio, _coefsPublico);
+                }
+
+                MessageBox.Show("Precios guardados y sincronizados correctamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {

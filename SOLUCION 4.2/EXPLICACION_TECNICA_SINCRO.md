@@ -42,5 +42,24 @@ Se optimizó el proceso de corrección de errores mediante la función "Regresar
 - Se resetean los estados `recepcion` y `mesaDeEntrada`.
 - Se mantiene `asistio = '1'` para que el paciente no desaparezca de la vista del recepcionista y sea fácil volver a ingresarlo tras la corrección.
 
+## 5. Gestión de Precios: Independencia y Relación
+Se ha rediseñado la lógica de actualización de precios para permitir una gestión más flexible:
+
+### Independencia de Coeficientes
+- La tabla `CoeficientePrecio` ahora incluye una columna `Tipo` ('PROMO' o 'PUBLICO').
+- Esto permite que el coeficiente de incremento de las Promociones sea independiente del factor de relación de los Precios Públicos.
+
+### Lógica de Cálculo de Precio Público
+A diferencia del Precio Promo (que es un incremento sucesivo sobre el mes anterior), el **Precio Público** ahora se calcula como una relación directa sobre la Promo:
+**`Precio Público (Mes) = Precio Promo (Mes) * Factor de Relación (Mes Anterior)`**
+
+*Ejemplo:*
+1.  **Precio Promo Junio**: $70.000
+2.  **Coeficiente Promo Junio**: 1.35 → **Precio Promo Julio**: $94.500
+3.  **Factor Público Junio**: 1.2
+4.  **Precio Público Julio**: $94.500 * 1.2 = **$113.400**
+
+Se eliminó el redondeo automático al millar en los Precios Públicos para garantizar que el resultado coincida exactamente con los cálculos manuales del usuario.
+
 ---
-**Resultado Final:** Un sistema consistente que "deduce" la información faltante basándose en el historial del turno, garantizando que el personal médico y administrativo siempre vea el estudio específico que corresponde al paciente.
+**Resultado Final:** Un sistema consistente que "deduce" la información faltante basándose en el historial del turno, garantizando que el personal médico y administrativo siempre vea el estudio específico que corresponde al paciente, y un módulo de precios preciso y flexible.

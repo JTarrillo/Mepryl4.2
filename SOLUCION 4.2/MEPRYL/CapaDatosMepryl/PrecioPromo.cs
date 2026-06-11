@@ -144,7 +144,7 @@ namespace CapaDatosMepryl
         /// </summary>
         public decimal ObtenerCoeficiente(int mes, int anio)
         {
-            string strSQL = "SELECT Coeficiente FROM CoeficientePrecio WHERE Mes = " + mes + " AND Anio = " + anio;
+            string strSQL = "SELECT Coeficiente FROM CoeficientePrecio WHERE Mes = " + mes + " AND Anio = " + anio + " AND Tipo = 'PROMO'";
             DataTable dt = SQLConnector.obtenerTablaSegunConsultaString(strSQL);
             if (dt != null && dt.Rows.Count > 0 && dt.Rows[0][0] != DBNull.Value)
                 return Convert.ToDecimal(dt.Rows[0][0]);
@@ -157,11 +157,11 @@ namespace CapaDatosMepryl
         public void GuardarCoeficiente(int mes, int anio, decimal coeficiente)
         {
             string coef = coeficiente.ToString().Replace(",", ".");
-            string strSQL = "IF EXISTS (SELECT 1 FROM CoeficientePrecio WHERE Mes = " + mes + " AND Anio = " + anio + ") " +
+            string strSQL = "IF EXISTS (SELECT 1 FROM CoeficientePrecio WHERE Mes = " + mes + " AND Anio = " + anio + " AND Tipo = 'PROMO') " +
                             "UPDATE CoeficientePrecio SET Coeficiente = " + coef + ", FechaModificacion = GETDATE() " +
-                            "WHERE Mes = " + mes + " AND Anio = " + anio + " " +
+                            "WHERE Mes = " + mes + " AND Anio = " + anio + " AND Tipo = 'PROMO' " +
                             "ELSE " +
-                            "INSERT INTO CoeficientePrecio (Mes, Anio, Coeficiente) VALUES(" + mes + ", " + anio + ", " + coef + ")";
+                            "INSERT INTO CoeficientePrecio (Mes, Anio, Coeficiente, Tipo) VALUES(" + mes + ", " + anio + ", " + coef + ", 'PROMO')";
             SQLConnector.obtenerTablaSegunConsultaString(strSQL);
         }
 
@@ -170,7 +170,7 @@ namespace CapaDatosMepryl
         /// </summary>
         public DataTable ListarCoeficientesAnio(int anio)
         {
-            string strSQL = "SELECT Mes, ISNULL(Coeficiente, 1) AS Coeficiente FROM CoeficientePrecio WHERE Anio = " + anio + " ORDER BY Mes";
+            string strSQL = "SELECT Mes, ISNULL(Coeficiente, 1) AS Coeficiente FROM CoeficientePrecio WHERE Anio = " + anio + " AND Tipo = 'PROMO' ORDER BY Mes";
             return SQLConnector.obtenerTablaSegunConsultaString(strSQL);
         }
 
@@ -185,9 +185,9 @@ namespace CapaDatosMepryl
                 for (int mes = 1; mes <= 12; mes++)
                 {
                     string coef = coeficientes[mes - 1].ToString().Replace(",", ".");
-                    sb.Append("IF EXISTS (SELECT 1 FROM CoeficientePrecio WHERE Mes = " + mes + " AND Anio = " + anio + ") ");
-                    sb.Append("UPDATE CoeficientePrecio SET Coeficiente = " + coef + ", FechaModificacion = GETDATE() WHERE Mes = " + mes + " AND Anio = " + anio + " ");
-                    sb.AppendLine("ELSE INSERT INTO CoeficientePrecio (Mes, Anio, Coeficiente) VALUES(" + mes + ", " + anio + ", " + coef + ");");
+                    sb.Append("IF EXISTS (SELECT 1 FROM CoeficientePrecio WHERE Mes = " + mes + " AND Anio = " + anio + " AND Tipo = 'PROMO') ");
+                    sb.Append("UPDATE CoeficientePrecio SET Coeficiente = " + coef + ", FechaModificacion = GETDATE() WHERE Mes = " + mes + " AND Anio = " + anio + " AND Tipo = 'PROMO' ");
+                    sb.AppendLine("ELSE INSERT INTO CoeficientePrecio (Mes, Anio, Coeficiente, Tipo) VALUES(" + mes + ", " + anio + ", " + coef + ", 'PROMO');");
                 }
                 SQLConnector.obtenerTablaSegunConsultaString(sb.ToString());
             }

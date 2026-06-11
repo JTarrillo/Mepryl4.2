@@ -767,6 +767,10 @@ namespace CapaPresentacion
             tbImportePreventiva.Text = tipoExamenActual.PrecioBase.ToString("N0");
             tbImporteListaPreventiva.Text = tipoExamenActual.PrecioLista.ToString("N0");
             tbSeñaPreventiva.Text = tipoExamenActual.Seña.ToString("N0");
+            
+            // ✅ Recalcular balance
+            ActualizarPreciosPanelPreventiva();
+            
             tbExamenPreventiva.Text = tipoExamenActual.Descripcion;
             if (tipoExamenActual.Modificado)
             {
@@ -864,6 +868,10 @@ namespace CapaPresentacion
             tbImporteLaboral.Text = tipoExamenActual.PrecioBase.ToString("N0");
             tbImporteListaLaboral.Text = tipoExamenActual.PrecioLista.ToString("N0");
             tbSeñaLaboral.Text = tipoExamenActual.Seña.ToString("N0");
+            
+            // ✅ Recalcular balance
+            ActualizarPreciosPanelLaboral();
+            
             tbExamenLaboral.Text = dgv.Rows[dgv.CurrentCell.RowIndex].Cells["SubTipoExamen"].Value?.ToString();
             if (tipoExamenActual.Modificado)
             {
@@ -1123,6 +1131,11 @@ namespace CapaPresentacion
             tbIdTipoExamenLaboral.Text = tipoEx.IdTipoExamenPaciente.ToString();
             tbImporteLaboral.Text = tipoEx.PrecioBase.ToString("N0");
             tbImporteListaLaboral.Text = tipoEx.PrecioLista.ToString("N0");
+            tbSeñaLaboral.Text = tipoEx.Seña.ToString("N0");
+
+            // ✅ Recalcular balance
+            ActualizarPreciosPanelLaboral();
+
             tbExamenLaboral.Text = tipoEx.Descripcion;
             if (tipoEx.Modificado)
             {
@@ -1413,6 +1426,17 @@ namespace CapaPresentacion
             if (tipoExamenActual == null) return;
             tipoExamenActual.Seña = obtenerDoubleDesdeTextBox(tbSeñaPreventiva.Text, tipoExamenActual.Seña);
             tbObservPreventiva.Text = generarObservaciones(tipoExamenActual);
+            
+            // ✅ Actualizar textboxes de importe restando la seña
+            ActualizarPreciosPanelPreventiva();
+        }
+
+        private void ActualizarPreciosPanelPreventiva()
+        {
+            if (tipoExamenActual == null) return;
+            double seña = tipoExamenActual.Seña;
+            tbImportePreventiva.Text = (tipoExamenActual.PrecioBase - seña).ToString("N0");
+            tbImporteListaPreventiva.Text = (tipoExamenActual.PrecioLista - seña).ToString("N0");
         }
 
         private void tbSeñaLaboral_TextChanged(object sender, EventArgs e)
@@ -1420,6 +1444,17 @@ namespace CapaPresentacion
             if (tipoExamenActual == null) return;
             tipoExamenActual.Seña = obtenerDoubleDesdeTextBox(tbSeñaLaboral.Text, tipoExamenActual.Seña);
             tbObservacionesLaboral.Text = generarObservaciones(tipoExamenActual);
+
+            // ✅ Actualizar textboxes de importe restando la seña
+            ActualizarPreciosPanelLaboral();
+        }
+
+        private void ActualizarPreciosPanelLaboral()
+        {
+            if (tipoExamenActual == null) return;
+            double seña = tipoExamenActual.Seña;
+            tbImporteLaboral.Text = (tipoExamenActual.PrecioBase - seña).ToString("N0");
+            tbImporteListaLaboral.Text = (tipoExamenActual.PrecioLista - seña).ToString("N0");
         }
 
         private string generarObservaciones(Entidades.TipoExamen te)
@@ -1495,6 +1530,10 @@ namespace CapaPresentacion
             tbImportePreventiva.Text = tipoEx.PrecioBase.ToString("N0");
             tbImporteListaPreventiva.Text = tipoEx.PrecioLista.ToString("N0");
             tbSeñaPreventiva.Text = tipoEx.Seña.ToString("N0");
+            
+            // ✅ Recalcular balance
+            ActualizarPreciosPanelPreventiva();
+
             tbExamenPreventiva.Text = tipoEx.Descripcion;
             if (tipoEx.Modificado)
             {
