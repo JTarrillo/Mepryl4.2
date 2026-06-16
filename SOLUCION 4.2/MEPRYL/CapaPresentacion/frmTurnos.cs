@@ -165,7 +165,7 @@ namespace CapaPresentacion
         {
             try
             {
-                // Si no hay selección, limpiar todo
+                // Si el  indice del motivo es menor a 0 o  el indice del motivo es vacio, limpiar todo
                 if (cboMotivoConsulta.SelectedIndex < 0 || cboMotivoConsulta.SelectedValue == null)
                 {
                     cboTipoExamen.DataSource = null;
@@ -174,6 +174,7 @@ namespace CapaPresentacion
                     return;
                 }
 
+                //Tomá el valor seleccionado del ComboBox y ponelo en la variable idMotivoConsulta
                 string idMotivoConsulta = cboMotivoConsulta.SelectedValue.ToString();
 
                 if (!string.IsNullOrEmpty(idMotivoConsulta))
@@ -228,7 +229,7 @@ namespace CapaPresentacion
         {
             try
             {
-                // Si no hay selección, limpiar
+                // Si el indice del tipo  es menor a 0 o el valor es vacio ,limpiar todo
                 if (cboTipoExamen.SelectedIndex < 0 || cboTipoExamen.SelectedValue == null)
                 {
                     cboSubTipoExamen.DataSource = null;
