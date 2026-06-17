@@ -1165,7 +1165,7 @@ namespace CapaPresentacion
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
             dataGridViewCellStyle2.Font = new System.Drawing.Font("Tahoma", 8.25F);
-            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(31)))), ((int)(((byte)(53)))));
             dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Control;
             dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.ControlText;
             dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
@@ -1306,13 +1306,12 @@ namespace CapaPresentacion
             this.pictureBox3.Size = new System.Drawing.Size(45, 39);
             this.pictureBox3.TabIndex = 17;
             this.pictureBox3.TabStop = false;
-            this.pictureBox3.Visible = false;
             // 
             // botLimpiar
             // 
             this.botLimpiar.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.botLimpiar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.botLimpiar.Location = new System.Drawing.Point(148, 53);
+            this.botLimpiar.Location = new System.Drawing.Point(140, 54);
             this.botLimpiar.Name = "botLimpiar";
             this.botLimpiar.Size = new System.Drawing.Size(86, 30);
             this.botLimpiar.TabIndex = 22;
