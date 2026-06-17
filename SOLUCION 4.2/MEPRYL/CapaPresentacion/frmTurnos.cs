@@ -3323,21 +3323,27 @@ namespace CapaPresentacion
                 // Configurar ComboBox para Preventiva
                 cboObsPredefinidasPrev = new ComboBox();
                 cboObsPredefinidasPrev.Name = "cboObsPredefinidasPrev";
-                cboObsPredefinidasPrev.Location = new Point(324, 155); // Justo arriba de tbObservPreventiva
+                cboObsPredefinidasPrev.Location = new Point(324, 148); // Subido un poco para dar aire
                 cboObsPredefinidasPrev.Size = new Size(233, 21);
                 cboObsPredefinidasPrev.DropDownStyle = ComboBoxStyle.DropDownList;
-                cboObsPredefinidasPrev.Font = new Font("Microsoft Sans Serif", 8.25F);
+                cboObsPredefinidasPrev.DrawMode = DrawMode.OwnerDrawFixed;
+                cboObsPredefinidasPrev.ItemHeight = 25;
+                cboObsPredefinidasPrev.Font = new Font("Segoe UI", 9F);
                 cboObsPredefinidasPrev.SelectedIndexChanged += CboObsPredefinidas_SelectedIndexChanged;
+                cboObsPredefinidasPrev.DrawItem += CboObsPredefinidas_DrawItem;
                 panelPacientePreventiva.Controls.Add(cboObsPredefinidasPrev);
 
                 // Configurar ComboBox para Laboral
                 cboObsPredefinidasLab = new ComboBox();
                 cboObsPredefinidasLab.Name = "cboObsPredefinidasLab";
-                cboObsPredefinidasLab.Location = new Point(345, 140); // Justo arriba de tbObservacionesLaboral
+                cboObsPredefinidasLab.Location = new Point(345, 133); // Subido un poco para dar aire
                 cboObsPredefinidasLab.Size = new Size(216, 21);
                 cboObsPredefinidasLab.DropDownStyle = ComboBoxStyle.DropDownList;
-                cboObsPredefinidasLab.Font = new Font("Microsoft Sans Serif", 8.25F);
+                cboObsPredefinidasLab.DrawMode = DrawMode.OwnerDrawFixed;
+                cboObsPredefinidasLab.ItemHeight = 25;
+                cboObsPredefinidasLab.Font = new Font("Segoe UI", 9F);
                 cboObsPredefinidasLab.SelectedIndexChanged += CboObsPredefinidas_SelectedIndexChanged;
+                cboObsPredefinidasLab.DrawItem += CboObsPredefinidas_DrawItem;
                 panelLaboral.Controls.Add(cboObsPredefinidasLab);
 
                 CargarCombosObservaciones();
@@ -3354,14 +3360,14 @@ namespace CapaPresentacion
             {
                 DataTable dt = SQLConnector.obtenerTablaSegunConsultaString("SELECT texto FROM ObservacionPredefinida WHERE activo = 1 ORDER BY texto");
 
-                // Preparar items
+                // Preparar items con iconos (UX AI)
                 var items = new List<string>();
                 items.Add("--- Seleccionar Observación ---");
-                items.Add("PRECIO AUTO (Generar)");
-                items.Add("NINGUNO (Vaciar)");
+                items.Add("✨ PRECIO AUTO (Generar)");
+                items.Add("🗑️ NINGUNO (Vaciar)");
                 foreach (DataRow row in dt.Rows)
                 {
-                    items.Add(row["texto"].ToString());
+                    items.Add("📝 " + row["texto"].ToString());
                 }
 
                 cboObsPredefinidasPrev.DataSource = new List<string>(items);
@@ -3381,22 +3387,73 @@ namespace CapaPresentacion
             string seleccion = cbo.SelectedItem.ToString();
             TextBox target = (cbo.Name == "cboObsPredefinidasPrev") ? tbObservPreventiva : tbObservacionesLaboral;
 
-            if (seleccion == "PRECIO AUTO (Generar)")
+            if (seleccion.Contains("PRECIO AUTO"))
             {
                 if (tipoExamenActual != null)
                 {
                     target.Text = generarObservaciones(tipoExamenActual);
                 }
             }
-            else if (seleccion == "NINGUNO (Vaciar)")
+            else if (seleccion.Contains("NINGUNO"))
             {
                 target.Text = "";
             }
             else
             {
-                // El usuario dijo "no podemos juntar 2 observaciones", así que reemplazamos
-                target.Text = seleccion;
+                // Quitar el icono 📝 (primeros 2 caracteres: emoji + espacio)
+                string limpio = seleccion.Length > 3 ? seleccion.Substring(3) : seleccion;
+                target.Text = limpio;
             }
+        }
+
+        private void CboObsPredefinidas_DrawItem(object sender, DrawItemEventArgs e)
+        {
+            if (e.Index < 0) return;
+
+            ComboBox combo = (ComboBox)sender;
+            string text = combo.Items[e.Index].ToString();
+
+            // Configurar colores modernos
+            Color backColor = e.BackColor;
+            Color textColor = e.ForeColor;
+
+            if ((e.State & DrawItemState.Selected) == DrawItemState.Selected)
+            {
+                backColor = Color.FromArgb(0, 120, 215); // Azul moderno (Windows Style)
+                textColor = Color.White;
+            }
+            else
+            {
+                backColor = Color.White;
+                textColor = Color.FromArgb(64, 64, 64); // Gris oscuro profesional
+            }
+
+            // Dibujar fondo
+            using (SolidBrush brush = new SolidBrush(backColor))
+            {
+                e.Graphics.FillRectangle(brush, e.Bounds);
+            }
+
+            // Dibujar texto con padding y mejor renderizado
+            Rectangle textRect = new Rectangle(e.Bounds.X + 5, e.Bounds.Y, e.Bounds.Width - 5, e.Bounds.Height);
+            TextFormatFlags flags = TextFormatFlags.VerticalCenter | TextFormatFlags.Left | TextFormatFlags.NoPrefix;
+
+            // Resaltar ítems especiales
+            Font itemFont = e.Font;
+            if (text.Contains("✨") || text.Contains("🗑️"))
+            {
+                itemFont = new Font(e.Font, FontStyle.Bold);
+                if ((e.State & DrawItemState.Selected) != DrawItemState.Selected)
+                {
+                    if (text.Contains("✨")) textColor = Color.DarkBlue;
+                    if (text.Contains("🗑️")) textColor = Color.DarkRed;
+                }
+            }
+
+            TextRenderer.DrawText(e.Graphics, text, itemFont, textRect, textColor, flags);
+
+            // Dibujar borde de foco si es necesario
+            e.DrawFocusRectangle();
         }
 
     }

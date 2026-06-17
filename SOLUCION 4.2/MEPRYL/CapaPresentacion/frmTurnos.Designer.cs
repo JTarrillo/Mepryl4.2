@@ -29,7 +29,7 @@ namespace CapaPresentacion
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmTurnos));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.lbTitulo = new System.Windows.Forms.Label();
             this.labelSubTipoExamen = new System.Windows.Forms.Label();
             this.cboSubTipoExamen = new System.Windows.Forms.ComboBox();
@@ -84,7 +84,6 @@ namespace CapaPresentacion
             this.label14 = new System.Windows.Forms.Label();
             this.tbDniLaboral = new System.Windows.Forms.TextBox();
             this.label15 = new System.Windows.Forms.Label();
-            this.pictureBox9 = new System.Windows.Forms.PictureBox();
             this.panelPacientePreventiva = new System.Windows.Forms.Panel();
             this.txtEdad = new System.Windows.Forms.TextBox();
             this.label23 = new System.Windows.Forms.Label();
@@ -107,7 +106,6 @@ namespace CapaPresentacion
             this.tbExamenPreventiva = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.dgvLigaYClub = new System.Windows.Forms.DataGridView();
-            this.pictureBox5 = new System.Windows.Forms.PictureBox();
             this.tbTelefonoPreventiva = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.tbCategoriaPreventiva = new System.Windows.Forms.TextBox();
@@ -162,13 +160,12 @@ namespace CapaPresentacion
             this.botHabilitar = new System.Windows.Forms.Button();
             this.LblTurnos = new System.Windows.Forms.Label();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.pictureBox5 = new System.Windows.Forms.PictureBox();
             this.botonLaboratorio.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panelLaboral.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox9)).BeginInit();
             this.panelPacientePreventiva.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvLigaYClub)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
             this.panelFiltro.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
@@ -181,6 +178,7 @@ namespace CapaPresentacion
             ((System.ComponentModel.ISupportInitialize)(this.dgv)).BeginInit();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).BeginInit();
             this.SuspendLayout();
             // 
             // lbTitulo
@@ -521,17 +519,15 @@ namespace CapaPresentacion
             this.botEditarExamenLaboral.TabIndex = 43;
             this.botEditarExamenLaboral.Text = "Modificar\r\nEstudios";
             this.botEditarExamenLaboral.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.botEditarExamenLaboral.UseVisualStyleBackColor = true;
+            this.botEditarExamenLaboral.UseVisualStyleBackColor = false;
             this.botEditarExamenLaboral.Visible = false;
             this.botEditarExamenLaboral.Click += new System.EventHandler(this.botEditarExamenLaboral_Click);
             // 
             // botTurno
             // 
-            this.botTurno.BackColor = System.Drawing.Color.SeaGreen;
-            this.botTurno.FlatAppearance.BorderColor = System.Drawing.Color.Gainsboro;
-            this.botTurno.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.botTurno.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.botTurno.ForeColor = System.Drawing.Color.White;
+            this.botTurno.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.botTurno.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.botTurno.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.botTurno.Image = ((System.Drawing.Image)(resources.GetObject("botTurno.Image")));
             this.botTurno.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.botTurno.Location = new System.Drawing.Point(405, 65);
@@ -541,7 +537,7 @@ namespace CapaPresentacion
             this.botTurno.Text = "Abrir Horario";
             this.botTurno.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.botTurno.UseCompatibleTextRendering = true;
-            this.botTurno.UseVisualStyleBackColor = false;
+            this.botTurno.UseVisualStyleBackColor = true;
             this.botTurno.Click += new System.EventHandler(this.btnNuevo_Click);
             // 
             // panel1
@@ -593,8 +589,7 @@ namespace CapaPresentacion
             this.panelLaboral.Controls.Add(this.label14);
             this.panelLaboral.Controls.Add(this.tbDniLaboral);
             this.panelLaboral.Controls.Add(this.label15);
-            this.panelLaboral.Controls.Add(this.pictureBox9);
-            this.panelLaboral.Location = new System.Drawing.Point(611, 0);
+            this.panelLaboral.Location = new System.Drawing.Point(611, 1);
             this.panelLaboral.Name = "panelLaboral";
             this.panelLaboral.Size = new System.Drawing.Size(579, 282);
             this.panelLaboral.TabIndex = 20;
@@ -624,7 +619,7 @@ namespace CapaPresentacion
             // 
             this.label24.AutoSize = true;
             this.label24.Font = new System.Drawing.Font("Tahoma", 9.75F);
-            this.label24.Location = new System.Drawing.Point(233, 2);
+            this.label24.Location = new System.Drawing.Point(261, 2);
             this.label24.Name = "label24";
             this.label24.Size = new System.Drawing.Size(35, 16);
             this.label24.TabIndex = 56;
@@ -750,11 +745,11 @@ namespace CapaPresentacion
             this.tbObservacionesLaboral.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tbObservacionesLaboral.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbObservacionesLaboral.Location = new System.Drawing.Point(345, 166);
+            this.tbObservacionesLaboral.Location = new System.Drawing.Point(345, 175);
             this.tbObservacionesLaboral.Multiline = true;
             this.tbObservacionesLaboral.Name = "tbObservacionesLaboral";
             this.tbObservacionesLaboral.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tbObservacionesLaboral.Size = new System.Drawing.Size(216, 105);
+            this.tbObservacionesLaboral.Size = new System.Drawing.Size(216, 96);
             this.tbObservacionesLaboral.TabIndex = 39;
             // 
             // tbImporteLaboral
@@ -784,7 +779,7 @@ namespace CapaPresentacion
             // 
             this.lblSeñaLaboral.AutoSize = true;
             this.lblSeñaLaboral.Font = new System.Drawing.Font("Tahoma", 9.75F);
-            this.lblSeñaLaboral.Location = new System.Drawing.Point(344, 97);
+            this.lblSeñaLaboral.Location = new System.Drawing.Point(358, 107);
             this.lblSeñaLaboral.Name = "lblSeñaLaboral";
             this.lblSeñaLaboral.Size = new System.Drawing.Size(36, 16);
             this.lblSeñaLaboral.TabIndex = 62;
@@ -795,7 +790,7 @@ namespace CapaPresentacion
             this.tbSeñaLaboral.BackColor = System.Drawing.Color.White;
             this.tbSeñaLaboral.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tbSeñaLaboral.ForeColor = System.Drawing.Color.Green;
-            this.tbSeñaLaboral.Location = new System.Drawing.Point(347, 116);
+            this.tbSeñaLaboral.Location = new System.Drawing.Point(415, 104);
             this.tbSeñaLaboral.Name = "tbSeñaLaboral";
             this.tbSeñaLaboral.ReadOnly = true;
             this.tbSeñaLaboral.Size = new System.Drawing.Size(94, 22);
@@ -899,17 +894,6 @@ namespace CapaPresentacion
             this.label15.TabIndex = 19;
             this.label15.Text = "DNI";
             // 
-            // pictureBox9
-            // 
-            this.pictureBox9.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("pictureBox9.BackgroundImage")));
-            this.pictureBox9.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.pictureBox9.Location = new System.Drawing.Point(1, 116);
-            this.pictureBox9.Name = "pictureBox9";
-            this.pictureBox9.Size = new System.Drawing.Size(45, 39);
-            this.pictureBox9.TabIndex = 18;
-            this.pictureBox9.TabStop = false;
-            this.pictureBox9.Visible = false;
-            // 
             // panelPacientePreventiva
             // 
             this.panelPacientePreventiva.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -965,7 +949,7 @@ namespace CapaPresentacion
             // 
             this.label23.AutoSize = true;
             this.label23.Font = new System.Drawing.Font("Tahoma", 9.75F);
-            this.label23.Location = new System.Drawing.Point(212, 5);
+            this.label23.Location = new System.Drawing.Point(236, 4);
             this.label23.Name = "label23";
             this.label23.Size = new System.Drawing.Size(35, 16);
             this.label23.TabIndex = 48;
@@ -1050,7 +1034,7 @@ namespace CapaPresentacion
             // 
             this.lblSeñaPreventiva.AutoSize = true;
             this.lblSeñaPreventiva.Font = new System.Drawing.Font("Tahoma", 9.75F);
-            this.lblSeñaPreventiva.Location = new System.Drawing.Point(323, 107);
+            this.lblSeñaPreventiva.Location = new System.Drawing.Point(323, 111);
             this.lblSeñaPreventiva.Name = "lblSeñaPreventiva";
             this.lblSeñaPreventiva.Size = new System.Drawing.Size(36, 16);
             this.lblSeñaPreventiva.TabIndex = 64;
@@ -1061,7 +1045,7 @@ namespace CapaPresentacion
             this.tbSeñaPreventiva.BackColor = System.Drawing.Color.White;
             this.tbSeñaPreventiva.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tbSeñaPreventiva.ForeColor = System.Drawing.Color.Green;
-            this.tbSeñaPreventiva.Location = new System.Drawing.Point(326, 126);
+            this.tbSeñaPreventiva.Location = new System.Drawing.Point(378, 105);
             this.tbSeñaPreventiva.Name = "tbSeñaPreventiva";
             this.tbSeñaPreventiva.ReadOnly = true;
             this.tbSeñaPreventiva.Size = new System.Drawing.Size(94, 22);
@@ -1129,11 +1113,11 @@ namespace CapaPresentacion
             this.tbObservPreventiva.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tbObservPreventiva.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbObservPreventiva.Location = new System.Drawing.Point(324, 180);
+            this.tbObservPreventiva.Location = new System.Drawing.Point(324, 190);
             this.tbObservPreventiva.Multiline = true;
             this.tbObservPreventiva.Name = "tbObservPreventiva";
             this.tbObservPreventiva.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tbObservPreventiva.Size = new System.Drawing.Size(233, 91);
+            this.tbObservPreventiva.Size = new System.Drawing.Size(233, 81);
             this.tbObservPreventiva.TabIndex = 39;
             // 
             // label7
@@ -1177,14 +1161,14 @@ namespace CapaPresentacion
             this.dgvLigaYClub.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.dgvLigaYClub.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvLigaYClub.ColumnHeadersVisible = false;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Tahoma", 8.25F);
-            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvLigaYClub.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Tahoma", 8.25F);
+            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvLigaYClub.DefaultCellStyle = dataGridViewCellStyle1;
             this.dgvLigaYClub.GridColor = System.Drawing.SystemColors.Control;
             this.dgvLigaYClub.Location = new System.Drawing.Point(15, 209);
             this.dgvLigaYClub.MultiSelect = false;
@@ -1194,17 +1178,6 @@ namespace CapaPresentacion
             this.dgvLigaYClub.ScrollBars = System.Windows.Forms.ScrollBars.None;
             this.dgvLigaYClub.Size = new System.Drawing.Size(277, 62);
             this.dgvLigaYClub.TabIndex = 28;
-            // 
-            // pictureBox5
-            // 
-            this.pictureBox5.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("pictureBox5.BackgroundImage")));
-            this.pictureBox5.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.pictureBox5.Location = new System.Drawing.Point(7, 191);
-            this.pictureBox5.Name = "pictureBox5";
-            this.pictureBox5.Size = new System.Drawing.Size(45, 39);
-            this.pictureBox5.TabIndex = 27;
-            this.pictureBox5.TabStop = false;
-            this.pictureBox5.Visible = false;
             // 
             // tbTelefonoPreventiva
             // 
@@ -1878,6 +1851,17 @@ namespace CapaPresentacion
             this.panel3.Size = new System.Drawing.Size(1190, 25);
             this.panel3.TabIndex = 137;
             // 
+            // pictureBox5
+            // 
+            this.pictureBox5.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("pictureBox5.BackgroundImage")));
+            this.pictureBox5.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.pictureBox5.Location = new System.Drawing.Point(7, 191);
+            this.pictureBox5.Name = "pictureBox5";
+            this.pictureBox5.Size = new System.Drawing.Size(45, 39);
+            this.pictureBox5.TabIndex = 27;
+            this.pictureBox5.TabStop = false;
+            this.pictureBox5.Visible = false;
+            // 
             // frmTurnos
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1913,11 +1897,9 @@ namespace CapaPresentacion
             this.panel1.ResumeLayout(false);
             this.panelLaboral.ResumeLayout(false);
             this.panelLaboral.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox9)).EndInit();
             this.panelPacientePreventiva.ResumeLayout(false);
             this.panelPacientePreventiva.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvLigaYClub)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
             this.panelFiltro.ResumeLayout(false);
             this.panelFiltro.PerformLayout();
@@ -1934,6 +1916,7 @@ namespace CapaPresentacion
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             this.panel3.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1988,7 +1971,6 @@ namespace CapaPresentacion
         private System.Windows.Forms.TextBox tbExamenPreventiva;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.DataGridView dgvLigaYClub;
-        private System.Windows.Forms.PictureBox pictureBox5;
         private System.Windows.Forms.TextBox tbTelefonoPreventiva;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox tbCategoriaPreventiva;
@@ -1998,7 +1980,6 @@ namespace CapaPresentacion
         private System.Windows.Forms.TextBox tbDniPreventiva;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.PictureBox pictureBox4;
-        private System.Windows.Forms.PictureBox pictureBox9;
         private System.Windows.Forms.Label label15;
         private System.Windows.Forms.TextBox tbDniLaboral;
         private System.Windows.Forms.Label label14;
@@ -2082,9 +2063,10 @@ namespace CapaPresentacion
         private DevExpress.XtraBars.Ribbon.RibbonPage ribbonPage2;
         private DevExpress.LookAndFeel.DefaultLookAndFeel defaultLookAndFeel1;
         private System.Windows.Forms.ComboBox cboMotivoConsulta;
-        private System.Windows.Forms.Button botTurno;
         private System.Windows.Forms.Label labelTipoExamen;
         private System.Windows.Forms.Label labelSubTipoExamen;
         private System.Windows.Forms.Button btnWhatsApp;
+        private System.Windows.Forms.PictureBox pictureBox5;
+        private System.Windows.Forms.Button botTurno;
     }
 }
