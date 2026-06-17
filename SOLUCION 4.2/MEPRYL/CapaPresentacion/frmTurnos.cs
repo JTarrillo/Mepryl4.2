@@ -2886,6 +2886,16 @@ namespace CapaPresentacion
 
         private void btnNuevo_Click(object sender, EventArgs e)
         {
+            AbrirAgendaCompleta();
+        }
+
+        private void pictureBox2_Click(object sender, EventArgs e)
+        {
+            AbrirAgendaCompleta();
+        }
+
+        private void AbrirAgendaCompleta()
+        {
             try
             {
                 var frm = new frmHorario(((frmBasePrincipal)this.MdiParent).configuracion, CapaPresentacionBase.frmBaseGrillaABM.ModoApertura.CONSULTA_FICHA, false);
