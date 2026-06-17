@@ -512,7 +512,7 @@ namespace CapaPresentacion
 
         private DateTime obtenerFecha()
         {
-            return tpFecha.SelectionRange.Start;
+            return tpFecha.DateTime;
         }
 
         private string obtenerHora()
@@ -1801,6 +1801,12 @@ namespace CapaPresentacion
             txtEdad.Text = (DateTime.Today.AddTicks(-entidad.Nacimiento.Ticks).Year - 1).ToString();
         }
 
+        private void tpFecha_DateTimeChanged(object sender, EventArgs e)
+        {
+            cargarGrillaTurnosSinFiltro();
+            cambiarEnabledBotonProximaFecha();
+        }
+
         private void tpFecha_DateSelected(object sender, DateRangeEventArgs e)
         {
             rbHoraTodas.Checked = true;
@@ -2086,7 +2092,7 @@ namespace CapaPresentacion
 
         private void obtenerProximaFechaLibre()
         {
-            DateTime diaSiguiente = tpFecha.SelectionStart.AddDays(1);
+            DateTime diaSiguiente = tpFecha.DateTime.AddDays(1);
             rbEstadoLibres.Checked = true;
             rbHoraTodas.Checked = true;
         inicio:
@@ -2108,7 +2114,7 @@ namespace CapaPresentacion
             {
                 if (diaSiguiente <= DateTime.Today.AddDays(60))
                 {
-                    tpFecha.SelectionStart = diaSiguiente;
+                    tpFecha.DateTime = diaSiguiente;
                 }
                 else
                 {
@@ -2142,7 +2148,7 @@ namespace CapaPresentacion
             strIDPaciente = idPaciente;
             strIDEmpresa = idEmpresa;
             blnConsultaExterna = true;
-            tpFecha.SetDate(fechaTurno);
+            tpFecha.DateTime = fechaTurno;
             cboTipoExamen.SelectedIndex = 7;   // Propiedad .Text = CONSULTORIO
             obtenerTipoExamen();
             rbEstadoLibres.Checked = true;
@@ -2162,7 +2168,7 @@ namespace CapaPresentacion
             strIDPaciente = idPaciente;
             strIDEmpresa = idEmpresa;
             blnConsultaExterna = true;
-            tpFecha.SetDate(fechaTurno);
+            tpFecha.DateTime = fechaTurno;
             cboTipoExamen.SelectedIndex = 7;   // Propiedad .Text = CONSULTORIO
             obtenerTipoExamen();
             rbEstadoAsignados.Checked = true;

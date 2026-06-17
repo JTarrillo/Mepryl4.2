@@ -29,7 +29,7 @@ namespace CapaPresentacion
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmTurnos));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             this.lbTitulo = new System.Windows.Forms.Label();
             this.labelSubTipoExamen = new System.Windows.Forms.Label();
             this.cboSubTipoExamen = new System.Windows.Forms.ComboBox();
@@ -122,7 +122,6 @@ namespace CapaPresentacion
             this.botBuscar = new System.Windows.Forms.Button();
             this.panelEstado = new System.Windows.Forms.Panel();
             this.label19 = new System.Windows.Forms.Label();
-            this.rbEstadoAsignados = new System.Windows.Forms.RadioButton();
             this.rbEstadoLibres = new System.Windows.Forms.RadioButton();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.rbEstadoTodos = new System.Windows.Forms.RadioButton();
@@ -141,7 +140,7 @@ namespace CapaPresentacion
             this.rbHora11 = new System.Windows.Forms.RadioButton();
             this.panelFechaTipoExamen = new System.Windows.Forms.Panel();
             this.botProxFechaLibre = new System.Windows.Forms.Button();
-            this.tpFecha = new System.Windows.Forms.MonthCalendar();
+            this.tpFecha = new DevExpress.XtraEditors.Controls.CalendarControl();
             this.rbcMenu = new DevExpress.XtraBars.Ribbon.RibbonControl();
             this.tbIdEmpresaLaboral = new System.Windows.Forms.TextBox();
             this.tbIdTurnoLaboral = new System.Windows.Forms.TextBox();
@@ -161,6 +160,7 @@ namespace CapaPresentacion
             this.botHabilitar = new System.Windows.Forms.Button();
             this.LblTurnos = new System.Windows.Forms.Label();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.rbEstadoAsignados = new System.Windows.Forms.RadioButton();
             this.botonLaboratorio.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panelLaboral.SuspendLayout();
@@ -175,6 +175,7 @@ namespace CapaPresentacion
             this.panelHorario.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panelFechaTipoExamen.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.tpFecha.CalendarTimeProperties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.rbcMenu)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgv)).BeginInit();
             this.panel2.SuspendLayout();
@@ -547,7 +548,6 @@ namespace CapaPresentacion
             this.panel1.Controls.Add(this.panelPacientePreventiva);
             this.panel1.Controls.Add(this.panelFiltro);
             this.panel1.Controls.Add(this.panelEstado);
-            this.panel1.Controls.Add(this.panelHorario);
             this.panel1.Controls.Add(this.panelFechaTipoExamen);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 50);
@@ -1162,14 +1162,14 @@ namespace CapaPresentacion
             this.dgvLigaYClub.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.dgvLigaYClub.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvLigaYClub.ColumnHeadersVisible = false;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Tahoma", 8.25F);
-            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(31)))), ((int)(((byte)(53)))));
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvLigaYClub.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Tahoma", 8.25F);
+            dataGridViewCellStyle4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(31)))), ((int)(((byte)(53)))));
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvLigaYClub.DefaultCellStyle = dataGridViewCellStyle4;
             this.dgvLigaYClub.GridColor = System.Drawing.SystemColors.Control;
             this.dgvLigaYClub.Location = new System.Drawing.Point(15, 209);
             this.dgvLigaYClub.MultiSelect = false;
@@ -1356,21 +1356,6 @@ namespace CapaPresentacion
             this.label19.TabIndex = 20;
             this.label19.Text = "Estado";
             // 
-            // rbEstadoAsignados
-            // 
-            this.rbEstadoAsignados.Appearance = System.Windows.Forms.Appearance.Button;
-            this.rbEstadoAsignados.BackColor = System.Drawing.SystemColors.Control;
-            this.rbEstadoAsignados.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rbEstadoAsignados.Location = new System.Drawing.Point(122, 48);
-            this.rbEstadoAsignados.Name = "rbEstadoAsignados";
-            this.rbEstadoAsignados.Size = new System.Drawing.Size(141, 30);
-            this.rbEstadoAsignados.TabIndex = 19;
-            this.rbEstadoAsignados.TabStop = true;
-            this.rbEstadoAsignados.Text = "ASIGNADOS";
-            this.rbEstadoAsignados.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.rbEstadoAsignados.UseVisualStyleBackColor = false;
-            this.rbEstadoAsignados.CheckedChanged += new System.EventHandler(this.rbEstadoAsignados_CheckedChanged);
-            // 
             // rbEstadoLibres
             // 
             this.rbEstadoLibres.Appearance = System.Windows.Forms.Appearance.Button;
@@ -1428,9 +1413,9 @@ namespace CapaPresentacion
             this.panelHorario.Controls.Add(this.rbHora9);
             this.panelHorario.Controls.Add(this.rbHora10);
             this.panelHorario.Controls.Add(this.rbHora11);
-            this.panelHorario.Location = new System.Drawing.Point(309, 0);
+            this.panelHorario.Location = new System.Drawing.Point(83, 255);
             this.panelHorario.Name = "panelHorario";
-            this.panelHorario.Size = new System.Drawing.Size(297, 90);
+            this.panelHorario.Size = new System.Drawing.Size(130, 25);
             this.panelHorario.TabIndex = 16;
             // 
             // label18
@@ -1608,9 +1593,10 @@ namespace CapaPresentacion
             this.panelFechaTipoExamen.Controls.Add(this.botProxFechaLibre);
             this.panelFechaTipoExamen.Controls.Add(this.tpFecha);
             this.panelFechaTipoExamen.Controls.Add(this.botTurno);
+            this.panelFechaTipoExamen.Controls.Add(this.panelHorario);
             this.panelFechaTipoExamen.Location = new System.Drawing.Point(-1, 0);
             this.panelFechaTipoExamen.Name = "panelFechaTipoExamen";
-            this.panelFechaTipoExamen.Size = new System.Drawing.Size(460, 283);
+            this.panelFechaTipoExamen.Size = new System.Drawing.Size(615, 283);
             this.panelFechaTipoExamen.TabIndex = 0;
             // 
             // botProxFechaLibre
@@ -1618,9 +1604,9 @@ namespace CapaPresentacion
             this.botProxFechaLibre.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.botProxFechaLibre.Image = ((System.Drawing.Image)(resources.GetObject("botProxFechaLibre.Image")));
             this.botProxFechaLibre.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.botProxFechaLibre.Location = new System.Drawing.Point(39, 210);
+            this.botProxFechaLibre.Location = new System.Drawing.Point(362, 24);
             this.botProxFechaLibre.Name = "botProxFechaLibre";
-            this.botProxFechaLibre.Size = new System.Drawing.Size(225, 43);
+            this.botProxFechaLibre.Size = new System.Drawing.Size(212, 46);
             this.botProxFechaLibre.TabIndex = 3;
             this.botProxFechaLibre.Text = "Próxima Fecha Libre";
             this.botProxFechaLibre.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -1629,15 +1615,16 @@ namespace CapaPresentacion
             // 
             // tpFecha
             // 
-            this.tpFecha.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
-            this.tpFecha.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tpFecha.Location = new System.Drawing.Point(61, 37);
+            // 
+            // 
+            // 
+            this.tpFecha.CalendarTimeProperties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.tpFecha.Location = new System.Drawing.Point(31, 18);
             this.tpFecha.Name = "tpFecha";
+            this.tpFecha.Size = new System.Drawing.Size(257, 227);
             this.tpFecha.TabIndex = 0;
-            this.tpFecha.TitleBackColor = System.Drawing.Color.White;
-            this.tpFecha.TitleForeColor = System.Drawing.Color.Black;
-            this.tpFecha.TrailingForeColor = System.Drawing.Color.Black;
-            this.tpFecha.DateSelected += new System.Windows.Forms.DateRangeEventHandler(this.tpFecha_DateSelected);
+            this.tpFecha.DateTimeChanged += new System.EventHandler(this.tpFecha_DateTimeChanged);
             // 
             // rbcMenu
             // 
@@ -1864,6 +1851,21 @@ namespace CapaPresentacion
             this.panel3.Size = new System.Drawing.Size(1190, 25);
             this.panel3.TabIndex = 137;
             // 
+            // rbEstadoAsignados
+            // 
+            this.rbEstadoAsignados.Appearance = System.Windows.Forms.Appearance.Button;
+            this.rbEstadoAsignados.BackColor = System.Drawing.SystemColors.Control;
+            this.rbEstadoAsignados.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.rbEstadoAsignados.Location = new System.Drawing.Point(140, 48);
+            this.rbEstadoAsignados.Name = "rbEstadoAsignados";
+            this.rbEstadoAsignados.Size = new System.Drawing.Size(141, 30);
+            this.rbEstadoAsignados.TabIndex = 19;
+            this.rbEstadoAsignados.TabStop = true;
+            this.rbEstadoAsignados.Text = "ASIGNADOS";
+            this.rbEstadoAsignados.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.rbEstadoAsignados.UseVisualStyleBackColor = false;
+            this.rbEstadoAsignados.CheckedChanged += new System.EventHandler(this.rbEstadoAsignados_CheckedChanged);
+            // 
             // frmTurnos
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1913,6 +1915,8 @@ namespace CapaPresentacion
             this.panelHorario.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.panelFechaTipoExamen.ResumeLayout(false);
+            this.panelFechaTipoExamen.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.tpFecha.CalendarTimeProperties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.rbcMenu)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgv)).EndInit();
             this.panel2.ResumeLayout(false);
@@ -1930,7 +1934,7 @@ namespace CapaPresentacion
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Panel panelFechaTipoExamen;
         protected System.Windows.Forms.Label lblInformacion;
-        private System.Windows.Forms.MonthCalendar tpFecha;
+        private DevExpress.XtraEditors.Controls.CalendarControl tpFecha;
         private System.Windows.Forms.DataGridView dgv;
         private System.Windows.Forms.Button botProxFechaLibre;
         private System.Windows.Forms.ComboBox cboTipoExamen;
@@ -1950,7 +1954,6 @@ namespace CapaPresentacion
         private System.Windows.Forms.Panel panelFiltro;
         private System.Windows.Forms.PictureBox pictureBox3;
         private System.Windows.Forms.Panel panelEstado;
-        private System.Windows.Forms.RadioButton rbEstadoAsignados;
         private System.Windows.Forms.RadioButton rbEstadoLibres;
         private System.Windows.Forms.PictureBox pictureBox2;
         private System.Windows.Forms.RadioButton rbEstadoTodos;
@@ -2069,5 +2072,6 @@ namespace CapaPresentacion
         private System.Windows.Forms.Button btnWhatsApp;
         private System.Windows.Forms.PictureBox pictureBox5;
         private System.Windows.Forms.Button botTurno;
+        private System.Windows.Forms.RadioButton rbEstadoAsignados;
     }
 }
