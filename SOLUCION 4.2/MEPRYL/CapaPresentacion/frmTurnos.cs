@@ -1807,6 +1807,22 @@ namespace CapaPresentacion
             cambiarEnabledBotonProximaFecha();
         }
 
+        private void tpFecha_CustomDrawDayNumberCell(object sender, DevExpress.XtraEditors.Calendar.CustomDrawDayNumberCellEventArgs e)
+        {
+            // Resaltar el día seleccionado
+            if (e.Selected)
+            {
+                e.Graphics.FillRectangle(Brushes.DodgerBlue, e.Bounds);
+                e.Graphics.DrawString(e.Date.Day.ToString(), e.Style.Font, Brushes.White, e.Bounds, new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
+                e.Handled = true;
+            }
+            // Resaltar el día de hoy con un círculo o borde ForestGreen
+            else if (e.Date == DateTime.Today)
+            {
+                e.Graphics.DrawRectangle(Pens.ForestGreen, e.Bounds.X, e.Bounds.Y, e.Bounds.Width - 1, e.Bounds.Height - 1);
+            }
+        }
+
         private void tpFecha_DateSelected(object sender, DateRangeEventArgs e)
         {
             rbHoraTodas.Checked = true;
