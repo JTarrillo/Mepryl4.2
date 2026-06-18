@@ -155,7 +155,11 @@ namespace CapaPresentacion
         private void cambiarEnabledBotonProximaFecha()
         {
             botProxFechaLibre.Enabled = false;
+            // Habilitar si hay un tipo de examen seleccionado (no TODOS)
             if (cboTipoExamen.SelectedIndex > 0) { botProxFechaLibre.Enabled = true; }
+            
+            // GRV - Forzar habilitación si hay algo en el combo para que el usuario pueda buscar
+            if (cboTipoExamen.Items.Count > 0 && cboTipoExamen.SelectedIndex >= 0) { botProxFechaLibre.Enabled = true; }
         }
 
         /// <summary>
