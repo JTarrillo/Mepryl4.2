@@ -928,7 +928,7 @@ namespace CapaPresentacion
             this.lblSeñaLaboral.Appearance.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.lblSeñaLaboral.Appearance.Options.UseFont = true;
             this.lblSeñaLaboral.Appearance.Options.UseForeColor = true;
-            this.lblSeñaLaboral.Location = new System.Drawing.Point(380, 107);
+            this.lblSeñaLaboral.Location = new System.Drawing.Point(550, 53);
             this.lblSeñaLaboral.Name = "lblSeñaLaboral";
             this.lblSeñaLaboral.Size = new System.Drawing.Size(24, 13);
             this.lblSeñaLaboral.TabIndex = 62;
@@ -936,7 +936,7 @@ namespace CapaPresentacion
             // 
             // tbSeñaLaboral
             // 
-            this.tbSeñaLaboral.Location = new System.Drawing.Point(415, 104);
+            this.tbSeñaLaboral.Location = new System.Drawing.Point(550, 69);
             this.tbSeñaLaboral.Name = "tbSeñaLaboral";
             // 
             // 
@@ -1249,7 +1249,7 @@ namespace CapaPresentacion
             // 
             this.lblSeñaPreventiva.Appearance.Font = new System.Drawing.Font("Segoe UI", 9.75F);
             this.lblSeñaPreventiva.Appearance.Options.UseFont = true;
-            this.lblSeñaPreventiva.Location = new System.Drawing.Point(323, 111);
+            this.lblSeñaPreventiva.Location = new System.Drawing.Point(560, 51);
             this.lblSeñaPreventiva.Name = "lblSeñaPreventiva";
             this.lblSeñaPreventiva.Size = new System.Drawing.Size(28, 17);
             this.lblSeñaPreventiva.TabIndex = 64;
@@ -1257,7 +1257,7 @@ namespace CapaPresentacion
             // 
             // tbSeñaPreventiva
             // 
-            this.tbSeñaPreventiva.Location = new System.Drawing.Point(373, 107);
+            this.tbSeñaPreventiva.Location = new System.Drawing.Point(560, 71);
             this.tbSeñaPreventiva.Name = "tbSeñaPreventiva";
             // 
             // 
