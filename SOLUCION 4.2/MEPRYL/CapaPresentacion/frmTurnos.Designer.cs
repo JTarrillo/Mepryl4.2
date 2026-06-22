@@ -29,14 +29,15 @@ namespace CapaPresentacion
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmTurnos));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
-            this.lbTitulo = new System.Windows.Forms.Label();
-            this.labelSubTipoExamen = new System.Windows.Forms.Label();
-            this.cboSubTipoExamen = new System.Windows.Forms.ComboBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.labelTipoExamen = new System.Windows.Forms.Label();
-            this.cboMotivoConsulta = new System.Windows.Forms.ComboBox();
-            this.cboTipoExamen = new System.Windows.Forms.ComboBox();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            this.lbTitulo = new DevExpress.XtraEditors.LabelControl();
+            this.labelSubTipoExamen = new DevExpress.XtraEditors.LabelControl();
+            this.cboSubTipoExamen = new DevExpress.XtraEditors.LookUpEdit();
+            this.label2 = new DevExpress.XtraEditors.LabelControl();
+            this.labelTipoExamen = new DevExpress.XtraEditors.LabelControl();
+            this.cboMotivoConsulta = new DevExpress.XtraEditors.LookUpEdit();
+            this.cboTipoExamen = new DevExpress.XtraEditors.LookUpEdit();
+            this.pnlFiltrosTop = new System.Windows.Forms.Panel();
             this.botonLaboratorio = new System.Windows.Forms.Panel();
             this.btnWhatsApp = new System.Windows.Forms.Button();
             this.btnCancelarMover = new System.Windows.Forms.Button();
@@ -56,81 +57,81 @@ namespace CapaPresentacion
             this.botTurno = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
             this.panelLaboral = new System.Windows.Forms.Panel();
-            this.txtEmailLab = new System.Windows.Forms.TextBox();
-            this.label25 = new System.Windows.Forms.Label();
-            this.label24 = new System.Windows.Forms.Label();
-            this.txtFNacLab = new System.Windows.Forms.TextBox();
-            this.txtEdadLab = new System.Windows.Forms.TextBox();
-            this.tbTelefonoLaboral = new System.Windows.Forms.TextBox();
-            this.label17 = new System.Windows.Forms.Label();
-            this.tbTareaLaboral = new System.Windows.Forms.TextBox();
-            this.label16 = new System.Windows.Forms.Label();
-            this.tbEmpresaLaboral = new System.Windows.Forms.TextBox();
-            this.label13 = new System.Windows.Forms.Label();
-            this.tbCuilLaboral = new System.Windows.Forms.TextBox();
-            this.label12 = new System.Windows.Forms.Label();
+            this.txtEmailLab = new DevExpress.XtraEditors.TextEdit();
+            this.label25 = new DevExpress.XtraEditors.LabelControl();
+            this.label24 = new DevExpress.XtraEditors.LabelControl();
+            this.txtFNacLab = new DevExpress.XtraEditors.DateEdit();
+            this.txtEdadLab = new DevExpress.XtraEditors.TextEdit();
+            this.tbTelefonoLaboral = new DevExpress.XtraEditors.TextEdit();
+            this.label17 = new DevExpress.XtraEditors.LabelControl();
+            this.tbTareaLaboral = new DevExpress.XtraEditors.TextEdit();
+            this.label16 = new DevExpress.XtraEditors.LabelControl();
+            this.tbEmpresaLaboral = new DevExpress.XtraEditors.TextEdit();
+            this.label13 = new DevExpress.XtraEditors.LabelControl();
+            this.tbCuilLaboral = new DevExpress.XtraEditors.TextEdit();
+            this.label12 = new DevExpress.XtraEditors.LabelControl();
             this.tbIdTipoExamenLaboral = new System.Windows.Forms.TextBox();
-            this.tbObservacionesLaboral = new System.Windows.Forms.TextBox();
-            this.tbImporteLaboral = new System.Windows.Forms.TextBox();
-            this.tbImporteListaLaboral = new System.Windows.Forms.TextBox();
-            this.lblSeñaLaboral = new System.Windows.Forms.Label();
-            this.tbSeñaLaboral = new System.Windows.Forms.TextBox();
+            this.tbObservacionesLaboral = new DevExpress.XtraEditors.MemoEdit();
+            this.tbImporteLaboral = new DevExpress.XtraEditors.TextEdit();
+            this.tbImporteListaLaboral = new DevExpress.XtraEditors.TextEdit();
+            this.lblSeñaLaboral = new DevExpress.XtraEditors.LabelControl();
+            this.tbSeñaLaboral = new DevExpress.XtraEditors.TextEdit();
             this.btnTogglePrecioLaboral = new System.Windows.Forms.Button();
-            this.lblImporteListaLaboral = new System.Windows.Forms.Label();
-            this.label10 = new System.Windows.Forms.Label();
-            this.tbExamenLaboral = new System.Windows.Forms.TextBox();
-            this.label11 = new System.Windows.Forms.Label();
-            this.tbPacienteLaboral = new System.Windows.Forms.TextBox();
-            this.label14 = new System.Windows.Forms.Label();
-            this.tbDniLaboral = new System.Windows.Forms.TextBox();
-            this.label15 = new System.Windows.Forms.Label();
+            this.lblImporteListaLaboral = new DevExpress.XtraEditors.LabelControl();
+            this.label10 = new DevExpress.XtraEditors.LabelControl();
+            this.tbExamenLaboral = new DevExpress.XtraEditors.TextEdit();
+            this.label11 = new DevExpress.XtraEditors.LabelControl();
+            this.tbPacienteLaboral = new DevExpress.XtraEditors.TextEdit();
+            this.label14 = new DevExpress.XtraEditors.LabelControl();
+            this.tbDniLaboral = new DevExpress.XtraEditors.TextEdit();
+            this.label15 = new DevExpress.XtraEditors.LabelControl();
             this.panelPacientePreventiva = new System.Windows.Forms.Panel();
-            this.txtEdad = new System.Windows.Forms.TextBox();
-            this.label23 = new System.Windows.Forms.Label();
-            this.txtEmail = new System.Windows.Forms.TextBox();
-            this.label22 = new System.Windows.Forms.Label();
-            this.label21 = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
-            this.tbDniPreventiva = new System.Windows.Forms.TextBox();
-            this.tbImportePreventiva = new System.Windows.Forms.TextBox();
-            this.tbImporteListaPreventiva = new System.Windows.Forms.TextBox();
-            this.lblSeñaPreventiva = new System.Windows.Forms.Label();
-            this.tbSeñaPreventiva = new System.Windows.Forms.TextBox();
+            this.txtEdad = new DevExpress.XtraEditors.TextEdit();
+            this.label23 = new DevExpress.XtraEditors.LabelControl();
+            this.txtEmail = new DevExpress.XtraEditors.TextEdit();
+            this.label22 = new DevExpress.XtraEditors.LabelControl();
+            this.label21 = new DevExpress.XtraEditors.LabelControl();
+            this.label1 = new DevExpress.XtraEditors.LabelControl();
+            this.tbDniPreventiva = new DevExpress.XtraEditors.TextEdit();
+            this.tbImportePreventiva = new DevExpress.XtraEditors.TextEdit();
+            this.tbImporteListaPreventiva = new DevExpress.XtraEditors.TextEdit();
+            this.lblSeñaPreventiva = new DevExpress.XtraEditors.LabelControl();
+            this.tbSeñaPreventiva = new DevExpress.XtraEditors.TextEdit();
             this.btnTogglePrecioPreventiva = new System.Windows.Forms.Button();
-            this.lblImporteListaPreventiva = new System.Windows.Forms.Label();
+            this.lblImporteListaPreventiva = new DevExpress.XtraEditors.LabelControl();
             this.tbIdTurnoPreventiva = new System.Windows.Forms.TextBox();
             this.tbIdTipoExamenPreventiva = new System.Windows.Forms.TextBox();
             this.tbIdPacientePreventiva = new System.Windows.Forms.TextBox();
-            this.tbObservPreventiva = new System.Windows.Forms.TextBox();
-            this.label7 = new System.Windows.Forms.Label();
-            this.tbExamenPreventiva = new System.Windows.Forms.TextBox();
-            this.label6 = new System.Windows.Forms.Label();
+            this.tbObservPreventiva = new DevExpress.XtraEditors.MemoEdit();
+            this.label7 = new DevExpress.XtraEditors.LabelControl();
+            this.tbExamenPreventiva = new DevExpress.XtraEditors.TextEdit();
+            this.label6 = new DevExpress.XtraEditors.LabelControl();
             this.dgvLigaYClub = new System.Windows.Forms.DataGridView();
             this.pictureBox5 = new System.Windows.Forms.PictureBox();
-            this.tbTelefonoPreventiva = new System.Windows.Forms.TextBox();
-            this.label5 = new System.Windows.Forms.Label();
-            this.tbCategoriaPreventiva = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.tbPacientePreventiva = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
+            this.tbTelefonoPreventiva = new DevExpress.XtraEditors.TextEdit();
+            this.label5 = new DevExpress.XtraEditors.LabelControl();
+            this.tbCategoriaPreventiva = new DevExpress.XtraEditors.DateEdit();
+            this.label4 = new DevExpress.XtraEditors.LabelControl();
+            this.tbPacientePreventiva = new DevExpress.XtraEditors.TextEdit();
+            this.label3 = new DevExpress.XtraEditors.LabelControl();
             this.pictureBox4 = new System.Windows.Forms.PictureBox();
-            this.panelFiltro = new System.Windows.Forms.Panel();
-            this.tbFiltro = new System.Windows.Forms.TextBox();
-            this.label20 = new System.Windows.Forms.Label();
-            this.pictureBox3 = new System.Windows.Forms.PictureBox();
-            this.botLimpiar = new System.Windows.Forms.Button();
-            this.botBuscar = new System.Windows.Forms.Button();
+            this.panelFechaTipoExamen = new System.Windows.Forms.Panel();
+            this.botProxFechaLibre = new System.Windows.Forms.Button();
+            this.tpFecha = new DevExpress.XtraEditors.Controls.CalendarControl();
             this.panelEstado = new System.Windows.Forms.Panel();
-            this.label19 = new System.Windows.Forms.Label();
+            this.label19 = new DevExpress.XtraEditors.LabelControl();
             this.rbEstadoAsignados = new System.Windows.Forms.RadioButton();
             this.rbEstadoLibres = new System.Windows.Forms.RadioButton();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.rbEstadoTodos = new System.Windows.Forms.RadioButton();
-            this.panelFechaTipoExamen = new System.Windows.Forms.Panel();
-            this.botProxFechaLibre = new System.Windows.Forms.Button();
-            this.tpFecha = new DevExpress.XtraEditors.Controls.CalendarControl();
+            this.panelFiltro = new System.Windows.Forms.Panel();
+            this.tbFiltro = new DevExpress.XtraEditors.TextEdit();
+            this.label20 = new DevExpress.XtraEditors.LabelControl();
+            this.pictureBox3 = new System.Windows.Forms.PictureBox();
+            this.botLimpiar = new System.Windows.Forms.Button();
+            this.botBuscar = new System.Windows.Forms.Button();
             this.panelHorario = new System.Windows.Forms.Panel();
-            this.label18 = new System.Windows.Forms.Label();
+            this.label18 = new DevExpress.XtraEditors.LabelControl();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.rbHoraTodas = new System.Windows.Forms.RadioButton();
             this.rbHora15 = new System.Windows.Forms.RadioButton();
@@ -146,34 +147,66 @@ namespace CapaPresentacion
             this.tbIdEmpresaLaboral = new System.Windows.Forms.TextBox();
             this.tbIdTurnoLaboral = new System.Windows.Forms.TextBox();
             this.tbIdPacienteLaboral = new System.Windows.Forms.TextBox();
-            this.lblInformacion = new System.Windows.Forms.Label();
+            this.lblInformacion = new DevExpress.XtraEditors.LabelControl();
             this.dgv = new System.Windows.Forms.DataGridView();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.lblCodigo = new System.Windows.Forms.Label();
-            this.lblNombre = new System.Windows.Forms.Label();
-            this.lblDNI = new System.Windows.Forms.Label();
-            this.lblHora = new System.Windows.Forms.Label();
-            this.lblFecha = new System.Windows.Forms.Label();
-            this.lblTipoExamen = new System.Windows.Forms.Label();
+            this.lblCodigo = new DevExpress.XtraEditors.LabelControl();
+            this.lblNombre = new DevExpress.XtraEditors.LabelControl();
+            this.lblDNI = new DevExpress.XtraEditors.LabelControl();
+            this.lblHora = new DevExpress.XtraEditors.LabelControl();
+            this.lblFecha = new DevExpress.XtraEditors.LabelControl();
+            this.lblTipoExamen = new DevExpress.XtraEditors.LabelControl();
             this.botLiberarReserva = new System.Windows.Forms.Button();
             this.botReservar = new System.Windows.Forms.Button();
             this.botInhabilitar = new System.Windows.Forms.Button();
             this.botHabilitar = new System.Windows.Forms.Button();
-            this.LblTurnos = new System.Windows.Forms.Label();
+            this.LblTurnos = new DevExpress.XtraEditors.LabelControl();
             this.panel3 = new System.Windows.Forms.Panel();
+            ((System.ComponentModel.ISupportInitialize)(this.cboSubTipoExamen.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cboMotivoConsulta.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cboTipoExamen.Properties)).BeginInit();
+            this.pnlFiltrosTop.SuspendLayout();
             this.botonLaboratorio.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panelLaboral.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.txtEmailLab.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.txtFNacLab.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.txtFNacLab.Properties.CalendarTimeProperties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.txtEdadLab.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbTelefonoLaboral.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbTareaLaboral.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbEmpresaLaboral.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbCuilLaboral.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbObservacionesLaboral.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbImporteLaboral.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbImporteListaLaboral.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbSeñaLaboral.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbExamenLaboral.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbPacienteLaboral.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbDniLaboral.Properties)).BeginInit();
             this.panelPacientePreventiva.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.txtEdad.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.txtEmail.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbDniPreventiva.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbImportePreventiva.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbImporteListaPreventiva.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbSeñaPreventiva.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbObservPreventiva.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbExamenPreventiva.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvLigaYClub)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbTelefonoPreventiva.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbCategoriaPreventiva.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbCategoriaPreventiva.Properties.CalendarTimeProperties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbPacientePreventiva.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
-            this.panelFiltro.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
-            this.panelEstado.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.panelFechaTipoExamen.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tpFecha.CalendarTimeProperties)).BeginInit();
+            this.panelEstado.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
+            this.panelFiltro.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.tbFiltro.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             this.panelHorario.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.rbcMenu)).BeginInit();
@@ -184,87 +217,121 @@ namespace CapaPresentacion
             // 
             // lbTitulo
             // 
-            this.lbTitulo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
-            this.lbTitulo.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lbTitulo.Appearance.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
+            this.lbTitulo.Appearance.Options.UseBackColor = true;
+            this.lbTitulo.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple;
             this.lbTitulo.Dock = System.Windows.Forms.DockStyle.Top;
-            this.lbTitulo.Location = new System.Drawing.Point(0, 0);
+            this.lbTitulo.Location = new System.Drawing.Point(0, 368);
             this.lbTitulo.Name = "lbTitulo";
-            this.lbTitulo.Size = new System.Drawing.Size(1324, 50);
+            this.lbTitulo.Size = new System.Drawing.Size(2, 15);
             this.lbTitulo.TabIndex = 128;
             // 
             // labelSubTipoExamen
             // 
-            this.labelSubTipoExamen.AutoSize = true;
-            this.labelSubTipoExamen.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
-            this.labelSubTipoExamen.CausesValidation = false;
-            this.labelSubTipoExamen.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelSubTipoExamen.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.labelSubTipoExamen.Location = new System.Drawing.Point(904, 3);
+            this.labelSubTipoExamen.Appearance.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold);
+            this.labelSubTipoExamen.Appearance.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.labelSubTipoExamen.Appearance.Options.UseFont = true;
+            this.labelSubTipoExamen.Appearance.Options.UseForeColor = true;
+            this.labelSubTipoExamen.Location = new System.Drawing.Point(640, 10);
             this.labelSubTipoExamen.Name = "labelSubTipoExamen";
-            this.labelSubTipoExamen.Size = new System.Drawing.Size(103, 16);
+            this.labelSubTipoExamen.Size = new System.Drawing.Size(90, 15);
             this.labelSubTipoExamen.TabIndex = 202;
             this.labelSubTipoExamen.Text = "SubTipo Examen";
             // 
             // cboSubTipoExamen
             // 
-            this.cboSubTipoExamen.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboSubTipoExamen.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.cboSubTipoExamen.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F);
-            this.cboSubTipoExamen.FormattingEnabled = true;
-            this.cboSubTipoExamen.Location = new System.Drawing.Point(673, 20);
+            this.cboSubTipoExamen.Location = new System.Drawing.Point(550, 27);
             this.cboSubTipoExamen.Name = "cboSubTipoExamen";
-            this.cboSubTipoExamen.Size = new System.Drawing.Size(647, 24);
+            // 
+            // 
+            // 
+            this.cboSubTipoExamen.Properties.BestFitMode = DevExpress.XtraEditors.Controls.BestFitMode.BestFitResizePopup;
+            this.cboSubTipoExamen.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.cboSubTipoExamen.Properties.Columns.AddRange(new DevExpress.XtraEditors.Controls.LookUpColumnInfo[] {
+            new DevExpress.XtraEditors.Controls.LookUpColumnInfo("descripcion", "Descripción")});
+            this.cboSubTipoExamen.Properties.NullText = "";
+            this.cboSubTipoExamen.Properties.ShowHeader = false;
+            this.cboSubTipoExamen.Size = new System.Drawing.Size(700, 20);
             this.cboSubTipoExamen.TabIndex = 2;
-            this.cboSubTipoExamen.SelectedIndexChanged += new System.EventHandler(this.cboSubTipoExamen_SelectedIndexChanged);
-            this.cboSubTipoExamen.SelectionChangeCommitted += new System.EventHandler(this.cboSubTipoExamen_SelectionChangeCommitted);
+            this.cboSubTipoExamen.EditValueChanged += new System.EventHandler(this.cboSubTipoExamen_EditValueChanged);
             // 
             // label2
             // 
-            this.label2.AutoSize = true;
-            this.label2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
-            this.label2.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.label2.Location = new System.Drawing.Point(79, 3);
+            this.label2.Appearance.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold);
+            this.label2.Appearance.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.label2.Appearance.Options.UseFont = true;
+            this.label2.Appearance.Options.UseForeColor = true;
+            this.label2.Location = new System.Drawing.Point(10, 10);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(97, 16);
+            this.label2.Size = new System.Drawing.Size(87, 15);
             this.label2.TabIndex = 4;
             this.label2.Text = "Motivo Consulta";
             // 
             // labelTipoExamen
             // 
-            this.labelTipoExamen.AutoSize = true;
-            this.labelTipoExamen.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
-            this.labelTipoExamen.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelTipoExamen.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.labelTipoExamen.Location = new System.Drawing.Point(402, 1);
+            this.labelTipoExamen.Appearance.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold);
+            this.labelTipoExamen.Appearance.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.labelTipoExamen.Appearance.Options.UseFont = true;
+            this.labelTipoExamen.Appearance.Options.UseForeColor = true;
+            this.labelTipoExamen.Location = new System.Drawing.Point(300, 10);
             this.labelTipoExamen.Name = "labelTipoExamen";
-            this.labelTipoExamen.Size = new System.Drawing.Size(99, 16);
+            this.labelTipoExamen.Size = new System.Drawing.Size(85, 15);
             this.labelTipoExamen.TabIndex = 201;
             this.labelTipoExamen.Text = "Tipo de Examen";
             // 
             // cboMotivoConsulta
             // 
-            this.cboMotivoConsulta.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboMotivoConsulta.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.cboMotivoConsulta.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F);
-            this.cboMotivoConsulta.FormattingEnabled = true;
-            this.cboMotivoConsulta.Location = new System.Drawing.Point(18, 22);
+            this.cboMotivoConsulta.Location = new System.Drawing.Point(10, 27);
             this.cboMotivoConsulta.Name = "cboMotivoConsulta";
-            this.cboMotivoConsulta.Size = new System.Drawing.Size(271, 24);
+            // 
+            // 
+            // 
+            this.cboMotivoConsulta.Properties.BestFitMode = DevExpress.XtraEditors.Controls.BestFitMode.BestFitResizePopup;
+            this.cboMotivoConsulta.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.cboMotivoConsulta.Properties.Columns.AddRange(new DevExpress.XtraEditors.Controls.LookUpColumnInfo[] {
+            new DevExpress.XtraEditors.Controls.LookUpColumnInfo("nombre", "Descripción")});
+            this.cboMotivoConsulta.Properties.NullText = "";
+            this.cboMotivoConsulta.Properties.ShowHeader = false;
+            this.cboMotivoConsulta.Size = new System.Drawing.Size(200, 20);
             this.cboMotivoConsulta.TabIndex = 3;
+            this.cboMotivoConsulta.EditValueChanged += new System.EventHandler(this.cboMotivoConsulta_EditValueChanged);
             // 
             // cboTipoExamen
             // 
-            this.cboTipoExamen.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboTipoExamen.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.cboTipoExamen.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F);
-            this.cboTipoExamen.FormattingEnabled = true;
-            this.cboTipoExamen.Location = new System.Drawing.Point(328, 20);
+            this.cboTipoExamen.Location = new System.Drawing.Point(300, 27);
             this.cboTipoExamen.Name = "cboTipoExamen";
-            this.cboTipoExamen.Size = new System.Drawing.Size(331, 24);
+            // 
+            // 
+            // 
+            this.cboTipoExamen.Properties.BestFitMode = DevExpress.XtraEditors.Controls.BestFitMode.BestFitResizePopup;
+            this.cboTipoExamen.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.cboTipoExamen.Properties.Columns.AddRange(new DevExpress.XtraEditors.Controls.LookUpColumnInfo[] {
+            new DevExpress.XtraEditors.Controls.LookUpColumnInfo("descripcion", "Descripción")});
+            this.cboTipoExamen.Properties.NullText = "";
+            this.cboTipoExamen.Properties.ShowHeader = false;
+            this.cboTipoExamen.Size = new System.Drawing.Size(200, 20);
             this.cboTipoExamen.TabIndex = 1;
-            this.cboTipoExamen.SelectedIndexChanged += new System.EventHandler(this.cboTipoExamen_SelectedIndexChanged);
-            this.cboTipoExamen.SelectionChangeCommitted += new System.EventHandler(this.cboTipoExamen_SelectionChangeCommitted);
+            this.cboTipoExamen.EditValueChanged += new System.EventHandler(this.cboTipoExamen_EditValueChanged);
+            // 
+            // pnlFiltrosTop
+            // 
+            this.pnlFiltrosTop.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(235)))), ((int)(((byte)(236)))), ((int)(((byte)(239)))));
+            this.pnlFiltrosTop.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pnlFiltrosTop.Controls.Add(this.labelSubTipoExamen);
+            this.pnlFiltrosTop.Controls.Add(this.cboSubTipoExamen);
+            this.pnlFiltrosTop.Controls.Add(this.label2);
+            this.pnlFiltrosTop.Controls.Add(this.labelTipoExamen);
+            this.pnlFiltrosTop.Controls.Add(this.cboMotivoConsulta);
+            this.pnlFiltrosTop.Controls.Add(this.cboTipoExamen);
+            this.pnlFiltrosTop.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pnlFiltrosTop.Location = new System.Drawing.Point(0, 0);
+            this.pnlFiltrosTop.Name = "pnlFiltrosTop";
+            this.pnlFiltrosTop.Size = new System.Drawing.Size(1324, 60);
+            this.pnlFiltrosTop.TabIndex = 0;
+            this.pnlFiltrosTop.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlFiltrosTop_Paint);
             // 
             // botonLaboratorio
             // 
@@ -286,9 +353,9 @@ namespace CapaPresentacion
             this.botonLaboratorio.Controls.Add(this.botEditarPacienteLaboral);
             this.botonLaboratorio.Controls.Add(this.botEditarExamenLaboral);
             this.botonLaboratorio.Dock = System.Windows.Forms.DockStyle.Right;
-            this.botonLaboratorio.Location = new System.Drawing.Point(1190, 50);
+            this.botonLaboratorio.Location = new System.Drawing.Point(1190, 60);
             this.botonLaboratorio.Name = "botonLaboratorio";
-            this.botonLaboratorio.Size = new System.Drawing.Size(134, 682);
+            this.botonLaboratorio.Size = new System.Drawing.Size(134, 672);
             this.botonLaboratorio.TabIndex = 129;
             // 
             // btnWhatsApp
@@ -544,12 +611,11 @@ namespace CapaPresentacion
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.panelLaboral);
             this.panel1.Controls.Add(this.panelPacientePreventiva);
-            this.panel1.Controls.Add(this.panelFiltro);
-            this.panel1.Controls.Add(this.panelEstado);
             this.panel1.Controls.Add(this.panelFechaTipoExamen);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel1.Location = new System.Drawing.Point(0, 50);
+            this.panel1.Location = new System.Drawing.Point(0, 60);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(1190, 283);
             this.panel1.TabIndex = 130;
@@ -559,8 +625,7 @@ namespace CapaPresentacion
             // 
             this.panelLaboral.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.panelLaboral.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
-            this.panelLaboral.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelLaboral.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(235)))), ((int)(((byte)(236)))), ((int)(((byte)(239)))));
             this.panelLaboral.Controls.Add(this.txtEmailLab);
             this.panelLaboral.Controls.Add(this.label25);
             this.panelLaboral.Controls.Add(this.label24);
@@ -589,143 +654,207 @@ namespace CapaPresentacion
             this.panelLaboral.Controls.Add(this.label14);
             this.panelLaboral.Controls.Add(this.tbDniLaboral);
             this.panelLaboral.Controls.Add(this.label15);
-            this.panelLaboral.Location = new System.Drawing.Point(611, 48);
+            this.panelLaboral.Location = new System.Drawing.Point(537, 0);
             this.panelLaboral.Name = "panelLaboral";
-            this.panelLaboral.Size = new System.Drawing.Size(579, 282);
+            this.panelLaboral.Size = new System.Drawing.Size(653, 283);
             this.panelLaboral.TabIndex = 20;
             this.panelLaboral.Visible = false;
             // 
             // txtEmailLab
             // 
-            this.txtEmailLab.BackColor = System.Drawing.Color.White;
-            this.txtEmailLab.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtEmailLab.Location = new System.Drawing.Point(16, 249);
             this.txtEmailLab.Name = "txtEmailLab";
-            this.txtEmailLab.ReadOnly = true;
+            // 
+            // 
+            // 
+            this.txtEmailLab.Properties.Appearance.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(252)))), ((int)(((byte)(252)))), ((int)(((byte)(252)))));
+            this.txtEmailLab.Properties.Appearance.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.txtEmailLab.Properties.Appearance.Options.UseBackColor = true;
+            this.txtEmailLab.Properties.Appearance.Options.UseFont = true;
+            this.txtEmailLab.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple;
+            this.txtEmailLab.Properties.ReadOnly = true;
             this.txtEmailLab.Size = new System.Drawing.Size(305, 22);
             this.txtEmailLab.TabIndex = 58;
             // 
             // label25
             // 
-            this.label25.AutoSize = true;
-            this.label25.Font = new System.Drawing.Font("Tahoma", 9.75F);
-            this.label25.Location = new System.Drawing.Point(13, 230);
+            this.label25.Appearance.Font = new System.Drawing.Font("Segoe UI Semibold", 8.25F, System.Drawing.FontStyle.Bold);
+            this.label25.Appearance.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.label25.Appearance.Options.UseFont = true;
+            this.label25.Appearance.Options.UseForeColor = true;
+            this.label25.Location = new System.Drawing.Point(16, 233);
             this.label25.Name = "label25";
-            this.label25.Size = new System.Drawing.Size(38, 16);
+            this.label25.Size = new System.Drawing.Size(28, 13);
             this.label25.TabIndex = 57;
             this.label25.Text = "Email";
             // 
             // label24
             // 
-            this.label24.AutoSize = true;
-            this.label24.Font = new System.Drawing.Font("Tahoma", 9.75F);
-            this.label24.Location = new System.Drawing.Point(261, 2);
+            this.label24.Appearance.Font = new System.Drawing.Font("Segoe UI Semibold", 8.25F, System.Drawing.FontStyle.Bold);
+            this.label24.Appearance.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.label24.Appearance.Options.UseFont = true;
+            this.label24.Appearance.Options.UseForeColor = true;
+            this.label24.Location = new System.Drawing.Point(236, 7);
             this.label24.Name = "label24";
-            this.label24.Size = new System.Drawing.Size(35, 16);
+            this.label24.Size = new System.Drawing.Size(26, 13);
             this.label24.TabIndex = 56;
             this.label24.Text = "Edad";
             // 
             // txtFNacLab
             // 
-            this.txtFNacLab.BackColor = System.Drawing.Color.White;
-            this.txtFNacLab.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtFNacLab.EditValue = new System.DateTime(2026, 6, 18, 0, 0, 0, 0);
             this.txtFNacLab.Location = new System.Drawing.Point(115, 23);
             this.txtFNacLab.Name = "txtFNacLab";
-            this.txtFNacLab.ReadOnly = true;
+            // 
+            // 
+            // 
+            this.txtFNacLab.Properties.Appearance.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(252)))), ((int)(((byte)(252)))), ((int)(((byte)(252)))));
+            this.txtFNacLab.Properties.Appearance.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.txtFNacLab.Properties.Appearance.Options.UseBackColor = true;
+            this.txtFNacLab.Properties.Appearance.Options.UseFont = true;
+            this.txtFNacLab.Properties.Appearance.Options.UseTextOptions = true;
+            this.txtFNacLab.Properties.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.txtFNacLab.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple;
+            this.txtFNacLab.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            // 
+            // 
+            // 
+            this.txtFNacLab.Properties.CalendarTimeProperties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.txtFNacLab.Size = new System.Drawing.Size(115, 22);
             this.txtFNacLab.TabIndex = 55;
-            this.txtFNacLab.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // txtEdadLab
             // 
-            this.txtEdadLab.BackColor = System.Drawing.Color.White;
-            this.txtEdadLab.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtEdadLab.Location = new System.Drawing.Point(236, 23);
             this.txtEdadLab.Name = "txtEdadLab";
-            this.txtEdadLab.ReadOnly = true;
+            // 
+            // 
+            // 
+            this.txtEdadLab.Properties.Appearance.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(252)))), ((int)(((byte)(252)))), ((int)(((byte)(252)))));
+            this.txtEdadLab.Properties.Appearance.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.txtEdadLab.Properties.Appearance.Options.UseBackColor = true;
+            this.txtEdadLab.Properties.Appearance.Options.UseFont = true;
+            this.txtEdadLab.Properties.Appearance.Options.UseTextOptions = true;
+            this.txtEdadLab.Properties.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.txtEdadLab.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple;
+            this.txtEdadLab.Properties.ReadOnly = true;
             this.txtEdadLab.Size = new System.Drawing.Size(85, 22);
             this.txtEdadLab.TabIndex = 54;
-            this.txtEdadLab.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // tbTelefonoLaboral
             // 
-            this.tbTelefonoLaboral.BackColor = System.Drawing.Color.White;
-            this.tbTelefonoLaboral.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tbTelefonoLaboral.Location = new System.Drawing.Point(16, 204);
             this.tbTelefonoLaboral.Name = "tbTelefonoLaboral";
-            this.tbTelefonoLaboral.ReadOnly = true;
+            // 
+            // 
+            // 
+            this.tbTelefonoLaboral.Properties.Appearance.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(252)))), ((int)(((byte)(252)))), ((int)(((byte)(252)))));
+            this.tbTelefonoLaboral.Properties.Appearance.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.tbTelefonoLaboral.Properties.Appearance.Options.UseBackColor = true;
+            this.tbTelefonoLaboral.Properties.Appearance.Options.UseFont = true;
+            this.tbTelefonoLaboral.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple;
+            this.tbTelefonoLaboral.Properties.ReadOnly = true;
             this.tbTelefonoLaboral.Size = new System.Drawing.Size(305, 22);
             this.tbTelefonoLaboral.TabIndex = 51;
             // 
             // label17
             // 
-            this.label17.AutoSize = true;
-            this.label17.Font = new System.Drawing.Font("Tahoma", 9.75F);
-            this.label17.Location = new System.Drawing.Point(13, 185);
+            this.label17.Appearance.Font = new System.Drawing.Font("Segoe UI Semibold", 8.25F, System.Drawing.FontStyle.Bold);
+            this.label17.Appearance.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.label17.Appearance.Options.UseFont = true;
+            this.label17.Appearance.Options.UseForeColor = true;
+            this.label17.Location = new System.Drawing.Point(16, 188);
             this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(68, 16);
+            this.label17.Size = new System.Drawing.Size(55, 13);
             this.label17.TabIndex = 50;
             this.label17.Text = "Telefono/s";
             // 
             // tbTareaLaboral
             // 
-            this.tbTareaLaboral.BackColor = System.Drawing.Color.White;
-            this.tbTareaLaboral.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tbTareaLaboral.Location = new System.Drawing.Point(16, 159);
             this.tbTareaLaboral.Name = "tbTareaLaboral";
-            this.tbTareaLaboral.ReadOnly = true;
+            // 
+            // 
+            // 
+            this.tbTareaLaboral.Properties.Appearance.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(252)))), ((int)(((byte)(252)))), ((int)(((byte)(252)))));
+            this.tbTareaLaboral.Properties.Appearance.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.tbTareaLaboral.Properties.Appearance.Options.UseBackColor = true;
+            this.tbTareaLaboral.Properties.Appearance.Options.UseFont = true;
+            this.tbTareaLaboral.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple;
+            this.tbTareaLaboral.Properties.ReadOnly = true;
             this.tbTareaLaboral.Size = new System.Drawing.Size(305, 22);
             this.tbTareaLaboral.TabIndex = 49;
             // 
             // label16
             // 
-            this.label16.AutoSize = true;
-            this.label16.Font = new System.Drawing.Font("Tahoma", 9.75F);
-            this.label16.Location = new System.Drawing.Point(13, 140);
+            this.label16.Appearance.Font = new System.Drawing.Font("Segoe UI Semibold", 8.25F, System.Drawing.FontStyle.Bold);
+            this.label16.Appearance.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.label16.Appearance.Options.UseFont = true;
+            this.label16.Appearance.Options.UseForeColor = true;
+            this.label16.Location = new System.Drawing.Point(16, 143);
             this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(41, 16);
+            this.label16.Size = new System.Drawing.Size(28, 13);
             this.label16.TabIndex = 48;
             this.label16.Text = "Tarea";
             // 
             // tbEmpresaLaboral
             // 
-            this.tbEmpresaLaboral.BackColor = System.Drawing.Color.White;
-            this.tbEmpresaLaboral.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tbEmpresaLaboral.Location = new System.Drawing.Point(16, 69);
             this.tbEmpresaLaboral.Name = "tbEmpresaLaboral";
-            this.tbEmpresaLaboral.ReadOnly = true;
+            // 
+            // 
+            // 
+            this.tbEmpresaLaboral.Properties.Appearance.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(252)))), ((int)(((byte)(252)))), ((int)(((byte)(252)))));
+            this.tbEmpresaLaboral.Properties.Appearance.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.tbEmpresaLaboral.Properties.Appearance.Options.UseBackColor = true;
+            this.tbEmpresaLaboral.Properties.Appearance.Options.UseFont = true;
+            this.tbEmpresaLaboral.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple;
+            this.tbEmpresaLaboral.Properties.ReadOnly = true;
             this.tbEmpresaLaboral.Size = new System.Drawing.Size(305, 22);
             this.tbEmpresaLaboral.TabIndex = 47;
             // 
             // label13
             // 
-            this.label13.AutoSize = true;
-            this.label13.Font = new System.Drawing.Font("Tahoma", 9.75F);
-            this.label13.Location = new System.Drawing.Point(13, 50);
+            this.label13.Appearance.Font = new System.Drawing.Font("Segoe UI Semibold", 8.25F, System.Drawing.FontStyle.Bold);
+            this.label13.Appearance.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.label13.Appearance.Options.UseFont = true;
+            this.label13.Appearance.Options.UseForeColor = true;
+            this.label13.Location = new System.Drawing.Point(16, 53);
             this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(57, 16);
+            this.label13.Size = new System.Drawing.Size(44, 13);
             this.label13.TabIndex = 46;
             this.label13.Text = "Empresa";
             // 
             // tbCuilLaboral
             // 
-            this.tbCuilLaboral.BackColor = System.Drawing.Color.White;
-            this.tbCuilLaboral.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tbCuilLaboral.Location = new System.Drawing.Point(115, 23);
             this.tbCuilLaboral.Name = "tbCuilLaboral";
-            this.tbCuilLaboral.ReadOnly = true;
+            // 
+            // 
+            // 
+            this.tbCuilLaboral.Properties.Appearance.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(252)))), ((int)(((byte)(252)))), ((int)(((byte)(252)))));
+            this.tbCuilLaboral.Properties.Appearance.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.tbCuilLaboral.Properties.Appearance.Options.UseBackColor = true;
+            this.tbCuilLaboral.Properties.Appearance.Options.UseFont = true;
+            this.tbCuilLaboral.Properties.Appearance.Options.UseTextOptions = true;
+            this.tbCuilLaboral.Properties.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.tbCuilLaboral.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple;
+            this.tbCuilLaboral.Properties.ReadOnly = true;
             this.tbCuilLaboral.Size = new System.Drawing.Size(115, 22);
             this.tbCuilLaboral.TabIndex = 45;
-            this.tbCuilLaboral.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.tbCuilLaboral.Visible = false;
             // 
             // label12
             // 
-            this.label12.AutoSize = true;
-            this.label12.Font = new System.Drawing.Font("Tahoma", 9.75F);
-            this.label12.Location = new System.Drawing.Point(112, 4);
+            this.label12.Appearance.Font = new System.Drawing.Font("Segoe UI Semibold", 8.25F, System.Drawing.FontStyle.Bold);
+            this.label12.Appearance.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.label12.Appearance.Options.UseFont = true;
+            this.label12.Appearance.Options.UseForeColor = true;
+            this.label12.Location = new System.Drawing.Point(115, 7);
             this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(65, 16);
+            this.label12.Size = new System.Drawing.Size(50, 13);
             this.label12.TabIndex = 44;
             this.label12.Text = "F. de Nac.";
             // 
@@ -744,64 +873,92 @@ namespace CapaPresentacion
             // 
             this.tbObservacionesLaboral.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbObservacionesLaboral.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tbObservacionesLaboral.Location = new System.Drawing.Point(345, 175);
-            this.tbObservacionesLaboral.Multiline = true;
             this.tbObservacionesLaboral.Name = "tbObservacionesLaboral";
-            this.tbObservacionesLaboral.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tbObservacionesLaboral.Size = new System.Drawing.Size(216, 96);
+            // 
+            // 
+            // 
+            this.tbObservacionesLaboral.Properties.Appearance.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.tbObservacionesLaboral.Properties.Appearance.Options.UseFont = true;
+            this.tbObservacionesLaboral.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple;
+            this.tbObservacionesLaboral.Size = new System.Drawing.Size(290, 96);
             this.tbObservacionesLaboral.TabIndex = 39;
             // 
             // tbImporteLaboral
             // 
-            this.tbImporteLaboral.BackColor = System.Drawing.Color.White;
-            this.tbImporteLaboral.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tbImporteLaboral.Location = new System.Drawing.Point(345, 69);
             this.tbImporteLaboral.Name = "tbImporteLaboral";
-            this.tbImporteLaboral.ReadOnly = true;
+            // 
+            // 
+            // 
+            this.tbImporteLaboral.Properties.Appearance.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(252)))), ((int)(((byte)(252)))), ((int)(((byte)(252)))));
+            this.tbImporteLaboral.Properties.Appearance.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.tbImporteLaboral.Properties.Appearance.Options.UseBackColor = true;
+            this.tbImporteLaboral.Properties.Appearance.Options.UseFont = true;
+            this.tbImporteLaboral.Properties.Appearance.Options.UseTextOptions = true;
+            this.tbImporteLaboral.Properties.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.tbImporteLaboral.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple;
+            this.tbImporteLaboral.Properties.ReadOnly = true;
             this.tbImporteLaboral.Size = new System.Drawing.Size(94, 22);
             this.tbImporteLaboral.TabIndex = 34;
-            this.tbImporteLaboral.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // tbImporteListaLaboral
             // 
-            this.tbImporteListaLaboral.BackColor = System.Drawing.Color.White;
-            this.tbImporteListaLaboral.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbImporteListaLaboral.ForeColor = System.Drawing.Color.DarkBlue;
             this.tbImporteListaLaboral.Location = new System.Drawing.Point(445, 69);
             this.tbImporteListaLaboral.Name = "tbImporteListaLaboral";
-            this.tbImporteListaLaboral.ReadOnly = true;
+            // 
+            // 
+            // 
+            this.tbImporteListaLaboral.Properties.Appearance.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(252)))), ((int)(((byte)(252)))), ((int)(((byte)(252)))));
+            this.tbImporteListaLaboral.Properties.Appearance.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.tbImporteListaLaboral.Properties.Appearance.ForeColor = System.Drawing.Color.DarkBlue;
+            this.tbImporteListaLaboral.Properties.Appearance.Options.UseBackColor = true;
+            this.tbImporteListaLaboral.Properties.Appearance.Options.UseFont = true;
+            this.tbImporteListaLaboral.Properties.Appearance.Options.UseForeColor = true;
+            this.tbImporteListaLaboral.Properties.Appearance.Options.UseTextOptions = true;
+            this.tbImporteListaLaboral.Properties.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.tbImporteListaLaboral.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple;
+            this.tbImporteListaLaboral.Properties.ReadOnly = true;
             this.tbImporteListaLaboral.Size = new System.Drawing.Size(94, 22);
             this.tbImporteListaLaboral.TabIndex = 61;
-            this.tbImporteListaLaboral.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // lblSeñaLaboral
             // 
-            this.lblSeñaLaboral.AutoSize = true;
-            this.lblSeñaLaboral.Font = new System.Drawing.Font("Tahoma", 9.75F);
-            this.lblSeñaLaboral.Location = new System.Drawing.Point(358, 107);
+            this.lblSeñaLaboral.Appearance.Font = new System.Drawing.Font("Segoe UI Semibold", 8.25F, System.Drawing.FontStyle.Bold);
+            this.lblSeñaLaboral.Appearance.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.lblSeñaLaboral.Appearance.Options.UseFont = true;
+            this.lblSeñaLaboral.Appearance.Options.UseForeColor = true;
+            this.lblSeñaLaboral.Location = new System.Drawing.Point(380, 107);
             this.lblSeñaLaboral.Name = "lblSeñaLaboral";
-            this.lblSeñaLaboral.Size = new System.Drawing.Size(36, 16);
+            this.lblSeñaLaboral.Size = new System.Drawing.Size(24, 13);
             this.lblSeñaLaboral.TabIndex = 62;
             this.lblSeñaLaboral.Text = "Seña";
             // 
             // tbSeñaLaboral
             // 
-            this.tbSeñaLaboral.BackColor = System.Drawing.Color.White;
-            this.tbSeñaLaboral.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbSeñaLaboral.ForeColor = System.Drawing.Color.Green;
             this.tbSeñaLaboral.Location = new System.Drawing.Point(415, 104);
             this.tbSeñaLaboral.Name = "tbSeñaLaboral";
-            this.tbSeñaLaboral.ReadOnly = true;
+            // 
+            // 
+            // 
+            this.tbSeñaLaboral.Properties.Appearance.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(252)))), ((int)(((byte)(252)))), ((int)(((byte)(252)))));
+            this.tbSeñaLaboral.Properties.Appearance.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.tbSeñaLaboral.Properties.Appearance.ForeColor = System.Drawing.Color.Green;
+            this.tbSeñaLaboral.Properties.Appearance.Options.UseBackColor = true;
+            this.tbSeñaLaboral.Properties.Appearance.Options.UseFont = true;
+            this.tbSeñaLaboral.Properties.Appearance.Options.UseForeColor = true;
+            this.tbSeñaLaboral.Properties.Appearance.Options.UseTextOptions = true;
+            this.tbSeñaLaboral.Properties.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.tbSeñaLaboral.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple;
+            this.tbSeñaLaboral.Properties.ReadOnly = true;
             this.tbSeñaLaboral.Size = new System.Drawing.Size(94, 22);
             this.tbSeñaLaboral.TabIndex = 63;
-            this.tbSeñaLaboral.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.tbSeñaLaboral.TextChanged += new System.EventHandler(this.tbSeñaLaboral_TextChanged);
             // 
             // btnTogglePrecioLaboral
             // 
             this.btnTogglePrecioLaboral.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Bold);
-            this.btnTogglePrecioLaboral.Location = new System.Drawing.Point(545, 66);
+            this.btnTogglePrecioLaboral.Location = new System.Drawing.Point(617, 121);
             this.btnTogglePrecioLaboral.Name = "btnTogglePrecioLaboral";
             this.btnTogglePrecioLaboral.Size = new System.Drawing.Size(30, 26);
             this.btnTogglePrecioLaboral.TabIndex = 201;
@@ -812,21 +969,25 @@ namespace CapaPresentacion
             // 
             // lblImporteListaLaboral
             // 
-            this.lblImporteListaLaboral.AutoSize = true;
-            this.lblImporteListaLaboral.Font = new System.Drawing.Font("Tahoma", 9.75F);
-            this.lblImporteListaLaboral.Location = new System.Drawing.Point(445, 50);
+            this.lblImporteListaLaboral.Appearance.Font = new System.Drawing.Font("Segoe UI Semibold", 8.25F, System.Drawing.FontStyle.Bold);
+            this.lblImporteListaLaboral.Appearance.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.lblImporteListaLaboral.Appearance.Options.UseFont = true;
+            this.lblImporteListaLaboral.Appearance.Options.UseForeColor = true;
+            this.lblImporteListaLaboral.Location = new System.Drawing.Point(445, 53);
             this.lblImporteListaLaboral.Name = "lblImporteListaLaboral";
-            this.lblImporteListaLaboral.Size = new System.Drawing.Size(63, 16);
+            this.lblImporteListaLaboral.Size = new System.Drawing.Size(49, 13);
             this.lblImporteListaLaboral.TabIndex = 60;
             this.lblImporteListaLaboral.Text = "Imp. Lista";
             // 
             // label10
             // 
-            this.label10.AutoSize = true;
-            this.label10.Font = new System.Drawing.Font("Tahoma", 9.75F);
-            this.label10.Location = new System.Drawing.Point(342, 50);
+            this.label10.Appearance.Font = new System.Drawing.Font("Segoe UI Semibold", 8.25F, System.Drawing.FontStyle.Bold);
+            this.label10.Appearance.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.label10.Appearance.Options.UseFont = true;
+            this.label10.Appearance.Options.UseForeColor = true;
+            this.label10.Location = new System.Drawing.Point(345, 53);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(52, 16);
+            this.label10.Size = new System.Drawing.Size(41, 13);
             this.label10.TabIndex = 33;
             this.label10.Text = "Importe";
             // 
@@ -834,63 +995,88 @@ namespace CapaPresentacion
             // 
             this.tbExamenLaboral.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbExamenLaboral.BackColor = System.Drawing.Color.White;
-            this.tbExamenLaboral.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tbExamenLaboral.Location = new System.Drawing.Point(345, 23);
             this.tbExamenLaboral.Name = "tbExamenLaboral";
-            this.tbExamenLaboral.ReadOnly = true;
-            this.tbExamenLaboral.Size = new System.Drawing.Size(216, 22);
+            // 
+            // 
+            // 
+            this.tbExamenLaboral.Properties.Appearance.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(252)))), ((int)(((byte)(252)))), ((int)(((byte)(252)))));
+            this.tbExamenLaboral.Properties.Appearance.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.tbExamenLaboral.Properties.Appearance.Options.UseBackColor = true;
+            this.tbExamenLaboral.Properties.Appearance.Options.UseFont = true;
+            this.tbExamenLaboral.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple;
+            this.tbExamenLaboral.Properties.ReadOnly = true;
+            this.tbExamenLaboral.Size = new System.Drawing.Size(290, 22);
             this.tbExamenLaboral.TabIndex = 32;
             // 
             // label11
             // 
-            this.label11.AutoSize = true;
-            this.label11.Font = new System.Drawing.Font("Tahoma", 9.75F);
-            this.label11.Location = new System.Drawing.Point(342, 4);
+            this.label11.Appearance.Font = new System.Drawing.Font("Segoe UI Semibold", 8.25F, System.Drawing.FontStyle.Bold);
+            this.label11.Appearance.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.label11.Appearance.Options.UseFont = true;
+            this.label11.Appearance.Options.UseForeColor = true;
+            this.label11.Location = new System.Drawing.Point(345, 7);
             this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(117, 16);
+            this.label11.Size = new System.Drawing.Size(99, 13);
             this.label11.TabIndex = 31;
             this.label11.Text = "Subtipo de Examen";
             // 
             // tbPacienteLaboral
             // 
-            this.tbPacienteLaboral.BackColor = System.Drawing.Color.White;
-            this.tbPacienteLaboral.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tbPacienteLaboral.Location = new System.Drawing.Point(16, 114);
             this.tbPacienteLaboral.Name = "tbPacienteLaboral";
-            this.tbPacienteLaboral.ReadOnly = true;
+            // 
+            // 
+            // 
+            this.tbPacienteLaboral.Properties.Appearance.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(252)))), ((int)(((byte)(252)))), ((int)(((byte)(252)))));
+            this.tbPacienteLaboral.Properties.Appearance.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.tbPacienteLaboral.Properties.Appearance.Options.UseBackColor = true;
+            this.tbPacienteLaboral.Properties.Appearance.Options.UseFont = true;
+            this.tbPacienteLaboral.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple;
+            this.tbPacienteLaboral.Properties.ReadOnly = true;
             this.tbPacienteLaboral.Size = new System.Drawing.Size(305, 22);
             this.tbPacienteLaboral.TabIndex = 22;
             this.tbPacienteLaboral.TextChanged += new System.EventHandler(this.tbPacienteLaboral_TextChanged);
             // 
             // label14
             // 
-            this.label14.AutoSize = true;
-            this.label14.Font = new System.Drawing.Font("Tahoma", 9.75F);
-            this.label14.Location = new System.Drawing.Point(13, 95);
+            this.label14.Appearance.Font = new System.Drawing.Font("Segoe UI Semibold", 8.25F, System.Drawing.FontStyle.Bold);
+            this.label14.Appearance.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.label14.Appearance.Options.UseFont = true;
+            this.label14.Appearance.Options.UseForeColor = true;
+            this.label14.Location = new System.Drawing.Point(16, 98);
             this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(55, 16);
+            this.label14.Size = new System.Drawing.Size(42, 13);
             this.label14.TabIndex = 21;
             this.label14.Text = "Paciente";
             // 
             // tbDniLaboral
             // 
-            this.tbDniLaboral.BackColor = System.Drawing.Color.White;
-            this.tbDniLaboral.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tbDniLaboral.Location = new System.Drawing.Point(16, 24);
             this.tbDniLaboral.Name = "tbDniLaboral";
-            this.tbDniLaboral.ReadOnly = true;
+            // 
+            // 
+            // 
+            this.tbDniLaboral.Properties.Appearance.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(252)))), ((int)(((byte)(252)))), ((int)(((byte)(252)))));
+            this.tbDniLaboral.Properties.Appearance.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.tbDniLaboral.Properties.Appearance.Options.UseBackColor = true;
+            this.tbDniLaboral.Properties.Appearance.Options.UseFont = true;
+            this.tbDniLaboral.Properties.Appearance.Options.UseTextOptions = true;
+            this.tbDniLaboral.Properties.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.tbDniLaboral.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple;
+            this.tbDniLaboral.Properties.ReadOnly = true;
             this.tbDniLaboral.Size = new System.Drawing.Size(93, 22);
             this.tbDniLaboral.TabIndex = 20;
-            this.tbDniLaboral.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label15
             // 
-            this.label15.AutoSize = true;
-            this.label15.Font = new System.Drawing.Font("Tahoma", 9.75F);
-            this.label15.Location = new System.Drawing.Point(13, 5);
+            this.label15.Appearance.Font = new System.Drawing.Font("Segoe UI Semibold", 8.25F, System.Drawing.FontStyle.Bold);
+            this.label15.Appearance.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.label15.Appearance.Options.UseFont = true;
+            this.label15.Appearance.Options.UseForeColor = true;
+            this.label15.Location = new System.Drawing.Point(16, 8);
             this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(27, 16);
+            this.label15.Size = new System.Drawing.Size(19, 13);
             this.label15.TabIndex = 19;
             this.label15.Text = "DNI";
             // 
@@ -898,7 +1084,6 @@ namespace CapaPresentacion
             // 
             this.panelPacientePreventiva.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.panelPacientePreventiva.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelPacientePreventiva.Controls.Add(this.txtEdad);
             this.panelPacientePreventiva.Controls.Add(this.label23);
             this.panelPacientePreventiva.Controls.Add(this.txtEmail);
@@ -928,129 +1113,166 @@ namespace CapaPresentacion
             this.panelPacientePreventiva.Controls.Add(this.tbPacientePreventiva);
             this.panelPacientePreventiva.Controls.Add(this.label3);
             this.panelPacientePreventiva.Controls.Add(this.pictureBox4);
-            this.panelPacientePreventiva.Location = new System.Drawing.Point(612, 0);
+            this.panelPacientePreventiva.Location = new System.Drawing.Point(542, 0);
             this.panelPacientePreventiva.Name = "panelPacientePreventiva";
-            this.panelPacientePreventiva.Size = new System.Drawing.Size(579, 282);
+            this.panelPacientePreventiva.Size = new System.Drawing.Size(648, 282);
             this.panelPacientePreventiva.TabIndex = 19;
             this.panelPacientePreventiva.Visible = false;
             // 
             // txtEdad
             // 
-            this.txtEdad.BackColor = System.Drawing.Color.White;
-            this.txtEdad.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtEdad.Location = new System.Drawing.Point(215, 25);
             this.txtEdad.Name = "txtEdad";
-            this.txtEdad.ReadOnly = true;
-            this.txtEdad.Size = new System.Drawing.Size(75, 22);
+            // 
+            // 
+            // 
+            this.txtEdad.Properties.Appearance.BackColor = System.Drawing.Color.White;
+            this.txtEdad.Properties.Appearance.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.txtEdad.Properties.Appearance.Options.UseBackColor = true;
+            this.txtEdad.Properties.Appearance.Options.UseFont = true;
+            this.txtEdad.Properties.Appearance.Options.UseTextOptions = true;
+            this.txtEdad.Properties.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.txtEdad.Properties.ReadOnly = true;
+            this.txtEdad.Size = new System.Drawing.Size(75, 24);
             this.txtEdad.TabIndex = 49;
-            this.txtEdad.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label23
             // 
-            this.label23.AutoSize = true;
-            this.label23.Font = new System.Drawing.Font("Tahoma", 9.75F);
+            this.label23.Appearance.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.label23.Appearance.Options.UseFont = true;
             this.label23.Location = new System.Drawing.Point(236, 4);
             this.label23.Name = "label23";
-            this.label23.Size = new System.Drawing.Size(35, 16);
+            this.label23.Size = new System.Drawing.Size(30, 17);
             this.label23.TabIndex = 48;
             this.label23.Text = "Edad";
             this.label23.Click += new System.EventHandler(this.label23_Click);
             // 
             // txtEmail
             // 
-            this.txtEmail.BackColor = System.Drawing.Color.White;
-            this.txtEmail.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtEmail.Location = new System.Drawing.Point(15, 163);
             this.txtEmail.Name = "txtEmail";
-            this.txtEmail.ReadOnly = true;
-            this.txtEmail.Size = new System.Drawing.Size(274, 22);
+            // 
+            // 
+            // 
+            this.txtEmail.Properties.Appearance.BackColor = System.Drawing.Color.White;
+            this.txtEmail.Properties.Appearance.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.txtEmail.Properties.Appearance.Options.UseBackColor = true;
+            this.txtEmail.Properties.Appearance.Options.UseFont = true;
+            this.txtEmail.Properties.ReadOnly = true;
+            this.txtEmail.Size = new System.Drawing.Size(274, 24);
             this.txtEmail.TabIndex = 47;
             // 
             // label22
             // 
-            this.label22.AutoSize = true;
-            this.label22.Font = new System.Drawing.Font("Tahoma", 9.75F);
+            this.label22.Appearance.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.label22.Appearance.Options.UseFont = true;
             this.label22.Location = new System.Drawing.Point(12, 143);
             this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(42, 16);
+            this.label22.Size = new System.Drawing.Size(37, 17);
             this.label22.TabIndex = 46;
             this.label22.Text = "E-Mail";
             // 
             // label21
             // 
-            this.label21.AutoSize = true;
-            this.label21.Font = new System.Drawing.Font("Tahoma", 9.75F);
+            this.label21.Appearance.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.label21.Appearance.Options.UseFont = true;
             this.label21.Location = new System.Drawing.Point(13, 189);
             this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(32, 16);
+            this.label21.Size = new System.Drawing.Size(26, 17);
             this.label21.TabIndex = 45;
             this.label21.Text = "Club";
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Tahoma", 9.75F);
+            this.label1.Appearance.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.label1.Appearance.Options.UseFont = true;
             this.label1.Location = new System.Drawing.Point(13, 4);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(27, 16);
+            this.label1.Size = new System.Drawing.Size(22, 17);
             this.label1.TabIndex = 19;
             this.label1.Text = "DNI";
             // 
             // tbDniPreventiva
             // 
-            this.tbDniPreventiva.BackColor = System.Drawing.Color.White;
-            this.tbDniPreventiva.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tbDniPreventiva.Location = new System.Drawing.Point(14, 25);
             this.tbDniPreventiva.Name = "tbDniPreventiva";
-            this.tbDniPreventiva.ReadOnly = true;
-            this.tbDniPreventiva.Size = new System.Drawing.Size(99, 22);
+            // 
+            // 
+            // 
+            this.tbDniPreventiva.Properties.Appearance.BackColor = System.Drawing.Color.White;
+            this.tbDniPreventiva.Properties.Appearance.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.tbDniPreventiva.Properties.Appearance.Options.UseBackColor = true;
+            this.tbDniPreventiva.Properties.Appearance.Options.UseFont = true;
+            this.tbDniPreventiva.Properties.Appearance.Options.UseTextOptions = true;
+            this.tbDniPreventiva.Properties.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.tbDniPreventiva.Properties.ReadOnly = true;
+            this.tbDniPreventiva.Size = new System.Drawing.Size(99, 24);
             this.tbDniPreventiva.TabIndex = 20;
-            this.tbDniPreventiva.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // tbImportePreventiva
             // 
-            this.tbImportePreventiva.BackColor = System.Drawing.Color.White;
-            this.tbImportePreventiva.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tbImportePreventiva.Location = new System.Drawing.Point(324, 71);
             this.tbImportePreventiva.Name = "tbImportePreventiva";
-            this.tbImportePreventiva.ReadOnly = true;
-            this.tbImportePreventiva.Size = new System.Drawing.Size(115, 22);
+            // 
+            // 
+            // 
+            this.tbImportePreventiva.Properties.Appearance.BackColor = System.Drawing.Color.White;
+            this.tbImportePreventiva.Properties.Appearance.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold);
+            this.tbImportePreventiva.Properties.Appearance.Options.UseBackColor = true;
+            this.tbImportePreventiva.Properties.Appearance.Options.UseFont = true;
+            this.tbImportePreventiva.Properties.Appearance.Options.UseTextOptions = true;
+            this.tbImportePreventiva.Properties.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.tbImportePreventiva.Properties.ReadOnly = true;
+            this.tbImportePreventiva.Size = new System.Drawing.Size(115, 24);
             this.tbImportePreventiva.TabIndex = 34;
-            this.tbImportePreventiva.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // tbImporteListaPreventiva
             // 
-            this.tbImporteListaPreventiva.BackColor = System.Drawing.Color.White;
-            this.tbImporteListaPreventiva.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbImporteListaPreventiva.ForeColor = System.Drawing.Color.DarkBlue;
             this.tbImporteListaPreventiva.Location = new System.Drawing.Point(445, 71);
             this.tbImporteListaPreventiva.Name = "tbImporteListaPreventiva";
-            this.tbImporteListaPreventiva.ReadOnly = true;
-            this.tbImporteListaPreventiva.Size = new System.Drawing.Size(105, 22);
+            // 
+            // 
+            // 
+            this.tbImporteListaPreventiva.Properties.Appearance.BackColor = System.Drawing.Color.White;
+            this.tbImporteListaPreventiva.Properties.Appearance.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold);
+            this.tbImporteListaPreventiva.Properties.Appearance.ForeColor = System.Drawing.Color.DarkBlue;
+            this.tbImporteListaPreventiva.Properties.Appearance.Options.UseBackColor = true;
+            this.tbImporteListaPreventiva.Properties.Appearance.Options.UseFont = true;
+            this.tbImporteListaPreventiva.Properties.Appearance.Options.UseForeColor = true;
+            this.tbImporteListaPreventiva.Properties.Appearance.Options.UseTextOptions = true;
+            this.tbImporteListaPreventiva.Properties.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.tbImporteListaPreventiva.Properties.ReadOnly = true;
+            this.tbImporteListaPreventiva.Size = new System.Drawing.Size(105, 24);
             this.tbImporteListaPreventiva.TabIndex = 63;
-            this.tbImporteListaPreventiva.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // lblSeñaPreventiva
             // 
-            this.lblSeñaPreventiva.AutoSize = true;
-            this.lblSeñaPreventiva.Font = new System.Drawing.Font("Tahoma", 9.75F);
+            this.lblSeñaPreventiva.Appearance.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.lblSeñaPreventiva.Appearance.Options.UseFont = true;
             this.lblSeñaPreventiva.Location = new System.Drawing.Point(323, 111);
             this.lblSeñaPreventiva.Name = "lblSeñaPreventiva";
-            this.lblSeñaPreventiva.Size = new System.Drawing.Size(36, 16);
+            this.lblSeñaPreventiva.Size = new System.Drawing.Size(28, 17);
             this.lblSeñaPreventiva.TabIndex = 64;
             this.lblSeñaPreventiva.Text = "Seña";
             // 
             // tbSeñaPreventiva
             // 
-            this.tbSeñaPreventiva.BackColor = System.Drawing.Color.White;
-            this.tbSeñaPreventiva.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbSeñaPreventiva.ForeColor = System.Drawing.Color.Green;
             this.tbSeñaPreventiva.Location = new System.Drawing.Point(373, 107);
             this.tbSeñaPreventiva.Name = "tbSeñaPreventiva";
-            this.tbSeñaPreventiva.ReadOnly = true;
-            this.tbSeñaPreventiva.Size = new System.Drawing.Size(94, 22);
+            // 
+            // 
+            // 
+            this.tbSeñaPreventiva.Properties.Appearance.BackColor = System.Drawing.Color.White;
+            this.tbSeñaPreventiva.Properties.Appearance.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold);
+            this.tbSeñaPreventiva.Properties.Appearance.ForeColor = System.Drawing.Color.Green;
+            this.tbSeñaPreventiva.Properties.Appearance.Options.UseBackColor = true;
+            this.tbSeñaPreventiva.Properties.Appearance.Options.UseFont = true;
+            this.tbSeñaPreventiva.Properties.Appearance.Options.UseForeColor = true;
+            this.tbSeñaPreventiva.Properties.Appearance.Options.UseTextOptions = true;
+            this.tbSeñaPreventiva.Properties.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.tbSeñaPreventiva.Properties.ReadOnly = true;
+            this.tbSeñaPreventiva.Size = new System.Drawing.Size(94, 24);
             this.tbSeñaPreventiva.TabIndex = 65;
-            this.tbSeñaPreventiva.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.tbSeñaPreventiva.TextChanged += new System.EventHandler(this.tbSeñaPreventiva_TextChanged);
             // 
             // btnTogglePrecioPreventiva
@@ -1067,11 +1289,11 @@ namespace CapaPresentacion
             // 
             // lblImporteListaPreventiva
             // 
-            this.lblImporteListaPreventiva.AutoSize = true;
-            this.lblImporteListaPreventiva.Font = new System.Drawing.Font("Tahoma", 9.75F);
+            this.lblImporteListaPreventiva.Appearance.Font = new System.Drawing.Font("Tahoma", 9.75F);
+            this.lblImporteListaPreventiva.Appearance.Options.UseFont = true;
             this.lblImporteListaPreventiva.Location = new System.Drawing.Point(445, 51);
             this.lblImporteListaPreventiva.Name = "lblImporteListaPreventiva";
-            this.lblImporteListaPreventiva.Size = new System.Drawing.Size(63, 16);
+            this.lblImporteListaPreventiva.Size = new System.Drawing.Size(56, 16);
             this.lblImporteListaPreventiva.TabIndex = 62;
             this.lblImporteListaPreventiva.Text = "Imp. Lista";
             // 
@@ -1110,45 +1332,48 @@ namespace CapaPresentacion
             // 
             // tbObservPreventiva
             // 
-            this.tbObservPreventiva.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbObservPreventiva.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tbObservPreventiva.Location = new System.Drawing.Point(324, 190);
-            this.tbObservPreventiva.Multiline = true;
             this.tbObservPreventiva.Name = "tbObservPreventiva";
-            this.tbObservPreventiva.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            // 
+            // 
+            // 
+            this.tbObservPreventiva.Properties.Appearance.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.tbObservPreventiva.Properties.Appearance.Options.UseFont = true;
             this.tbObservPreventiva.Size = new System.Drawing.Size(233, 81);
             this.tbObservPreventiva.TabIndex = 39;
             // 
             // label7
             // 
-            this.label7.AutoSize = true;
-            this.label7.Font = new System.Drawing.Font("Tahoma", 9.75F);
+            this.label7.Appearance.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.label7.Appearance.Options.UseFont = true;
             this.label7.Location = new System.Drawing.Point(323, 51);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(52, 16);
+            this.label7.Size = new System.Drawing.Size(46, 17);
             this.label7.TabIndex = 33;
             this.label7.Text = "Importe";
             // 
             // tbExamenPreventiva
             // 
-            this.tbExamenPreventiva.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbExamenPreventiva.BackColor = System.Drawing.Color.White;
-            this.tbExamenPreventiva.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tbExamenPreventiva.Location = new System.Drawing.Point(324, 25);
             this.tbExamenPreventiva.Name = "tbExamenPreventiva";
-            this.tbExamenPreventiva.ReadOnly = true;
-            this.tbExamenPreventiva.Size = new System.Drawing.Size(233, 22);
+            // 
+            // 
+            // 
+            this.tbExamenPreventiva.Properties.Appearance.BackColor = System.Drawing.Color.White;
+            this.tbExamenPreventiva.Properties.Appearance.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.tbExamenPreventiva.Properties.Appearance.Options.UseBackColor = true;
+            this.tbExamenPreventiva.Properties.Appearance.Options.UseFont = true;
+            this.tbExamenPreventiva.Properties.ReadOnly = true;
+            this.tbExamenPreventiva.Size = new System.Drawing.Size(233, 24);
             this.tbExamenPreventiva.TabIndex = 32;
             // 
             // label6
             // 
-            this.label6.AutoSize = true;
-            this.label6.Font = new System.Drawing.Font("Tahoma", 9.75F);
+            this.label6.Appearance.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.label6.Appearance.Options.UseFont = true;
             this.label6.Location = new System.Drawing.Point(321, 5);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(117, 16);
+            this.label6.Size = new System.Drawing.Size(113, 17);
             this.label6.TabIndex = 31;
             this.label6.Text = "Subtipo de Examen";
             // 
@@ -1161,14 +1386,14 @@ namespace CapaPresentacion
             this.dgvLigaYClub.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.dgvLigaYClub.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvLigaYClub.ColumnHeadersVisible = false;
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle6.Font = new System.Drawing.Font("Tahoma", 8.25F);
-            dataGridViewCellStyle6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(31)))), ((int)(((byte)(53)))));
-            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvLigaYClub.DefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Tahoma", 8.25F);
+            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(31)))), ((int)(((byte)(53)))));
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvLigaYClub.DefaultCellStyle = dataGridViewCellStyle1;
             this.dgvLigaYClub.GridColor = System.Drawing.SystemColors.Control;
             this.dgvLigaYClub.Location = new System.Drawing.Point(15, 209);
             this.dgvLigaYClub.MultiSelect = false;
@@ -1192,62 +1417,85 @@ namespace CapaPresentacion
             // 
             // tbTelefonoPreventiva
             // 
-            this.tbTelefonoPreventiva.BackColor = System.Drawing.Color.White;
-            this.tbTelefonoPreventiva.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tbTelefonoPreventiva.Location = new System.Drawing.Point(13, 117);
             this.tbTelefonoPreventiva.Name = "tbTelefonoPreventiva";
-            this.tbTelefonoPreventiva.ReadOnly = true;
-            this.tbTelefonoPreventiva.Size = new System.Drawing.Size(277, 22);
+            // 
+            // 
+            // 
+            this.tbTelefonoPreventiva.Properties.Appearance.BackColor = System.Drawing.Color.White;
+            this.tbTelefonoPreventiva.Properties.Appearance.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.tbTelefonoPreventiva.Properties.Appearance.Options.UseBackColor = true;
+            this.tbTelefonoPreventiva.Properties.Appearance.Options.UseFont = true;
+            this.tbTelefonoPreventiva.Properties.ReadOnly = true;
+            this.tbTelefonoPreventiva.Size = new System.Drawing.Size(277, 24);
             this.tbTelefonoPreventiva.TabIndex = 26;
             // 
             // label5
             // 
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Tahoma", 9.75F);
+            this.label5.Appearance.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.label5.Appearance.Options.UseFont = true;
             this.label5.Location = new System.Drawing.Point(12, 97);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(68, 16);
+            this.label5.Size = new System.Drawing.Size(62, 17);
             this.label5.TabIndex = 25;
             this.label5.Text = "Telefono/s";
             // 
             // tbCategoriaPreventiva
             // 
-            this.tbCategoriaPreventiva.BackColor = System.Drawing.Color.White;
-            this.tbCategoriaPreventiva.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tbCategoriaPreventiva.EditValue = new System.DateTime(2026, 6, 18, 0, 0, 0, 0);
             this.tbCategoriaPreventiva.Location = new System.Drawing.Point(119, 25);
             this.tbCategoriaPreventiva.Name = "tbCategoriaPreventiva";
-            this.tbCategoriaPreventiva.ReadOnly = true;
-            this.tbCategoriaPreventiva.Size = new System.Drawing.Size(90, 22);
+            // 
+            // 
+            // 
+            this.tbCategoriaPreventiva.Properties.Appearance.BackColor = System.Drawing.Color.White;
+            this.tbCategoriaPreventiva.Properties.Appearance.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.tbCategoriaPreventiva.Properties.Appearance.Options.UseBackColor = true;
+            this.tbCategoriaPreventiva.Properties.Appearance.Options.UseFont = true;
+            this.tbCategoriaPreventiva.Properties.Appearance.Options.UseTextOptions = true;
+            this.tbCategoriaPreventiva.Properties.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.tbCategoriaPreventiva.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            // 
+            // 
+            // 
+            this.tbCategoriaPreventiva.Properties.CalendarTimeProperties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.tbCategoriaPreventiva.Size = new System.Drawing.Size(90, 24);
             this.tbCategoriaPreventiva.TabIndex = 24;
-            this.tbCategoriaPreventiva.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label4
             // 
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Tahoma", 9.75F);
+            this.label4.Appearance.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.label4.Appearance.Options.UseFont = true;
             this.label4.Location = new System.Drawing.Point(118, 5);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(65, 16);
+            this.label4.Size = new System.Drawing.Size(58, 17);
             this.label4.TabIndex = 23;
             this.label4.Text = "F. de Nac.";
             // 
             // tbPacientePreventiva
             // 
-            this.tbPacientePreventiva.BackColor = System.Drawing.Color.White;
-            this.tbPacientePreventiva.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tbPacientePreventiva.Location = new System.Drawing.Point(13, 71);
             this.tbPacientePreventiva.Name = "tbPacientePreventiva";
-            this.tbPacientePreventiva.ReadOnly = true;
-            this.tbPacientePreventiva.Size = new System.Drawing.Size(277, 22);
+            // 
+            // 
+            // 
+            this.tbPacientePreventiva.Properties.Appearance.BackColor = System.Drawing.Color.White;
+            this.tbPacientePreventiva.Properties.Appearance.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.tbPacientePreventiva.Properties.Appearance.Options.UseBackColor = true;
+            this.tbPacientePreventiva.Properties.Appearance.Options.UseFont = true;
+            this.tbPacientePreventiva.Properties.ReadOnly = true;
+            this.tbPacientePreventiva.Size = new System.Drawing.Size(277, 24);
             this.tbPacientePreventiva.TabIndex = 22;
             // 
             // label3
             // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Tahoma", 9.75F);
+            this.label3.Appearance.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.label3.Appearance.Options.UseFont = true;
             this.label3.Location = new System.Drawing.Point(12, 51);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(55, 16);
+            this.label3.Size = new System.Drawing.Size(48, 17);
             this.label3.TabIndex = 21;
             this.label3.Text = "Paciente";
             // 
@@ -1262,6 +1510,131 @@ namespace CapaPresentacion
             this.pictureBox4.TabStop = false;
             this.pictureBox4.Visible = false;
             // 
+            // panelFechaTipoExamen
+            // 
+            this.panelFechaTipoExamen.Controls.Add(this.botProxFechaLibre);
+            this.panelFechaTipoExamen.Controls.Add(this.tpFecha);
+            this.panelFechaTipoExamen.Controls.Add(this.panelEstado);
+            this.panelFechaTipoExamen.Controls.Add(this.panelFiltro);
+            this.panelFechaTipoExamen.Controls.Add(this.botTurno);
+            this.panelFechaTipoExamen.Controls.Add(this.panelHorario);
+            this.panelFechaTipoExamen.Location = new System.Drawing.Point(-1, 0);
+            this.panelFechaTipoExamen.Name = "panelFechaTipoExamen";
+            this.panelFechaTipoExamen.Size = new System.Drawing.Size(537, 283);
+            this.panelFechaTipoExamen.TabIndex = 0;
+            // 
+            // botProxFechaLibre
+            // 
+            this.botProxFechaLibre.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.botProxFechaLibre.Image = ((System.Drawing.Image)(resources.GetObject("botProxFechaLibre.Image")));
+            this.botProxFechaLibre.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.botProxFechaLibre.Location = new System.Drawing.Point(53, 3);
+            this.botProxFechaLibre.Name = "botProxFechaLibre";
+            this.botProxFechaLibre.Size = new System.Drawing.Size(212, 46);
+            this.botProxFechaLibre.TabIndex = 3;
+            this.botProxFechaLibre.Text = "Próxima Fecha Libre";
+            this.botProxFechaLibre.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.botProxFechaLibre.UseVisualStyleBackColor = true;
+            this.botProxFechaLibre.Click += new System.EventHandler(this.botProxFechaLibre_Click);
+            // 
+            // tpFecha
+            // 
+            this.tpFecha.Appearance.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tpFecha.Appearance.Options.UseFont = true;
+            // 
+            // 
+            // 
+            this.tpFecha.CalendarTimeProperties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.tpFecha.DateTime = new System.DateTime(2026, 6, 18, 0, 0, 0, 0);
+            this.tpFecha.EditValue = new System.DateTime(2026, 6, 18, 0, 0, 0, 0);
+            this.tpFecha.Location = new System.Drawing.Point(33, 50);
+            this.tpFecha.Name = "tpFecha";
+            this.tpFecha.Size = new System.Drawing.Size(238, 227);
+            this.tpFecha.TabIndex = 0;
+            this.tpFecha.CustomDrawDayNumberCell += new DevExpress.XtraEditors.Calendar.CustomDrawDayNumberCellEventHandler(this.tpFecha_CustomDrawDayNumberCell);
+            this.tpFecha.DateTimeChanged += new System.EventHandler(this.tpFecha_DateTimeChanged);
+            // 
+            // panelEstado
+            // 
+            this.panelEstado.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelEstado.Controls.Add(this.label19);
+            this.panelEstado.Controls.Add(this.rbEstadoAsignados);
+            this.panelEstado.Controls.Add(this.rbEstadoLibres);
+            this.panelEstado.Controls.Add(this.pictureBox2);
+            this.panelEstado.Controls.Add(this.rbEstadoTodos);
+            this.panelEstado.Location = new System.Drawing.Point(296, 28);
+            this.panelEstado.Name = "panelEstado";
+            this.panelEstado.Size = new System.Drawing.Size(227, 119);
+            this.panelEstado.TabIndex = 17;
+            // 
+            // label19
+            // 
+            this.label19.Appearance.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label19.Appearance.Options.UseFont = true;
+            this.label19.Location = new System.Drawing.Point(3, 1);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(38, 16);
+            this.label19.TabIndex = 20;
+            this.label19.Text = "Estado";
+            // 
+            // rbEstadoAsignados
+            // 
+            this.rbEstadoAsignados.Appearance = System.Windows.Forms.Appearance.Button;
+            this.rbEstadoAsignados.BackColor = System.Drawing.SystemColors.Control;
+            this.rbEstadoAsignados.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.rbEstadoAsignados.Location = new System.Drawing.Point(80, 46);
+            this.rbEstadoAsignados.Name = "rbEstadoAsignados";
+            this.rbEstadoAsignados.Size = new System.Drawing.Size(141, 30);
+            this.rbEstadoAsignados.TabIndex = 19;
+            this.rbEstadoAsignados.TabStop = true;
+            this.rbEstadoAsignados.Text = "ASIGNADOS";
+            this.rbEstadoAsignados.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.rbEstadoAsignados.UseVisualStyleBackColor = false;
+            this.rbEstadoAsignados.CheckedChanged += new System.EventHandler(this.rbEstadoAsignados_CheckedChanged);
+            // 
+            // rbEstadoLibres
+            // 
+            this.rbEstadoLibres.Appearance = System.Windows.Forms.Appearance.Button;
+            this.rbEstadoLibres.BackColor = System.Drawing.SystemColors.Control;
+            this.rbEstadoLibres.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.rbEstadoLibres.Location = new System.Drawing.Point(80, 82);
+            this.rbEstadoLibres.Name = "rbEstadoLibres";
+            this.rbEstadoLibres.Size = new System.Drawing.Size(141, 29);
+            this.rbEstadoLibres.TabIndex = 18;
+            this.rbEstadoLibres.TabStop = true;
+            this.rbEstadoLibres.Text = "LIBRES";
+            this.rbEstadoLibres.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.rbEstadoLibres.UseVisualStyleBackColor = false;
+            this.rbEstadoLibres.CheckedChanged += new System.EventHandler(this.rbEstadoLibres_CheckedChanged);
+            // 
+            // pictureBox2
+            // 
+            this.pictureBox2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.pictureBox2.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.pictureBox2.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox2.Image")));
+            this.pictureBox2.Location = new System.Drawing.Point(13, 38);
+            this.pictureBox2.Name = "pictureBox2";
+            this.pictureBox2.Size = new System.Drawing.Size(45, 39);
+            this.pictureBox2.TabIndex = 17;
+            this.pictureBox2.TabStop = false;
+            this.pictureBox2.Click += new System.EventHandler(this.pictureBox2_Click);
+            // 
+            // rbEstadoTodos
+            // 
+            this.rbEstadoTodos.Appearance = System.Windows.Forms.Appearance.Button;
+            this.rbEstadoTodos.BackColor = System.Drawing.SystemColors.Control;
+            this.rbEstadoTodos.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.rbEstadoTodos.Location = new System.Drawing.Point(93, 11);
+            this.rbEstadoTodos.Name = "rbEstadoTodos";
+            this.rbEstadoTodos.Size = new System.Drawing.Size(108, 33);
+            this.rbEstadoTodos.TabIndex = 5;
+            this.rbEstadoTodos.TabStop = true;
+            this.rbEstadoTodos.Text = "TODOS";
+            this.rbEstadoTodos.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.rbEstadoTodos.UseVisualStyleBackColor = false;
+            this.rbEstadoTodos.CheckedChanged += new System.EventHandler(this.rbEstadoTodos_CheckedChanged);
+            // 
             // panelFiltro
             // 
             this.panelFiltro.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -1270,17 +1643,21 @@ namespace CapaPresentacion
             this.panelFiltro.Controls.Add(this.pictureBox3);
             this.panelFiltro.Controls.Add(this.botLimpiar);
             this.panelFiltro.Controls.Add(this.botBuscar);
-            this.panelFiltro.Location = new System.Drawing.Point(309, 177);
+            this.panelFiltro.Location = new System.Drawing.Point(296, 166);
             this.panelFiltro.Name = "panelFiltro";
-            this.panelFiltro.Size = new System.Drawing.Size(297, 105);
+            this.panelFiltro.Size = new System.Drawing.Size(236, 105);
             this.panelFiltro.TabIndex = 18;
             // 
             // tbFiltro
             // 
-            this.tbFiltro.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-            this.tbFiltro.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tbFiltro.Location = new System.Drawing.Point(13, 24);
             this.tbFiltro.Name = "tbFiltro";
+            // 
+            // 
+            // 
+            this.tbFiltro.Properties.Appearance.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tbFiltro.Properties.Appearance.Options.UseFont = true;
+            this.tbFiltro.Properties.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
             this.tbFiltro.Size = new System.Drawing.Size(213, 22);
             this.tbFiltro.TabIndex = 20;
             this.tbFiltro.TextChanged += new System.EventHandler(this.tbFiltro_TextChanged);
@@ -1288,11 +1665,11 @@ namespace CapaPresentacion
             // 
             // label20
             // 
-            this.label20.AutoSize = true;
-            this.label20.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label20.Appearance.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label20.Appearance.Options.UseFont = true;
             this.label20.Location = new System.Drawing.Point(3, 1);
             this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(144, 16);
+            this.label20.Size = new System.Drawing.Size(137, 16);
             this.label20.TabIndex = 23;
             this.label20.Text = "Búscar Turno / Paciente";
             // 
@@ -1332,125 +1709,6 @@ namespace CapaPresentacion
             this.botBuscar.UseVisualStyleBackColor = true;
             this.botBuscar.Click += new System.EventHandler(this.botBuscar_Click);
             // 
-            // panelEstado
-            // 
-            this.panelEstado.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelEstado.Controls.Add(this.label19);
-            this.panelEstado.Controls.Add(this.rbEstadoAsignados);
-            this.panelEstado.Controls.Add(this.rbEstadoLibres);
-            this.panelEstado.Controls.Add(this.pictureBox2);
-            this.panelEstado.Controls.Add(this.rbEstadoTodos);
-            this.panelEstado.Location = new System.Drawing.Point(309, 87);
-            this.panelEstado.Name = "panelEstado";
-            this.panelEstado.Size = new System.Drawing.Size(297, 90);
-            this.panelEstado.TabIndex = 17;
-            // 
-            // label19
-            // 
-            this.label19.AutoSize = true;
-            this.label19.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label19.Location = new System.Drawing.Point(3, 1);
-            this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(45, 16);
-            this.label19.TabIndex = 20;
-            this.label19.Text = "Estado";
-            // 
-            // rbEstadoAsignados
-            // 
-            this.rbEstadoAsignados.Appearance = System.Windows.Forms.Appearance.Button;
-            this.rbEstadoAsignados.BackColor = System.Drawing.SystemColors.Control;
-            this.rbEstadoAsignados.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rbEstadoAsignados.Location = new System.Drawing.Point(140, 48);
-            this.rbEstadoAsignados.Name = "rbEstadoAsignados";
-            this.rbEstadoAsignados.Size = new System.Drawing.Size(141, 30);
-            this.rbEstadoAsignados.TabIndex = 19;
-            this.rbEstadoAsignados.TabStop = true;
-            this.rbEstadoAsignados.Text = "ASIGNADOS";
-            this.rbEstadoAsignados.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.rbEstadoAsignados.UseVisualStyleBackColor = false;
-            this.rbEstadoAsignados.CheckedChanged += new System.EventHandler(this.rbEstadoAsignados_CheckedChanged);
-            // 
-            // rbEstadoLibres
-            // 
-            this.rbEstadoLibres.Appearance = System.Windows.Forms.Appearance.Button;
-            this.rbEstadoLibres.BackColor = System.Drawing.SystemColors.Control;
-            this.rbEstadoLibres.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rbEstadoLibres.Location = new System.Drawing.Point(140, 17);
-            this.rbEstadoLibres.Name = "rbEstadoLibres";
-            this.rbEstadoLibres.Size = new System.Drawing.Size(141, 29);
-            this.rbEstadoLibres.TabIndex = 18;
-            this.rbEstadoLibres.TabStop = true;
-            this.rbEstadoLibres.Text = "LIBRES";
-            this.rbEstadoLibres.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.rbEstadoLibres.UseVisualStyleBackColor = false;
-            this.rbEstadoLibres.CheckedChanged += new System.EventHandler(this.rbEstadoLibres_CheckedChanged);
-            // 
-            // pictureBox2
-            // 
-            this.pictureBox2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.pictureBox2.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.pictureBox2.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox2.Image")));
-            this.pictureBox2.Location = new System.Drawing.Point(12, 30);
-            this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(45, 39);
-            this.pictureBox2.TabIndex = 17;
-            this.pictureBox2.TabStop = false;
-            this.pictureBox2.Click += new System.EventHandler(this.pictureBox2_Click);
-            // 
-            // rbEstadoTodos
-            // 
-            this.rbEstadoTodos.Appearance = System.Windows.Forms.Appearance.Button;
-            this.rbEstadoTodos.BackColor = System.Drawing.SystemColors.Control;
-            this.rbEstadoTodos.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rbEstadoTodos.Location = new System.Drawing.Point(61, 20);
-            this.rbEstadoTodos.Name = "rbEstadoTodos";
-            this.rbEstadoTodos.Size = new System.Drawing.Size(62, 58);
-            this.rbEstadoTodos.TabIndex = 5;
-            this.rbEstadoTodos.TabStop = true;
-            this.rbEstadoTodos.Text = "TODOS";
-            this.rbEstadoTodos.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.rbEstadoTodos.UseVisualStyleBackColor = false;
-            this.rbEstadoTodos.CheckedChanged += new System.EventHandler(this.rbEstadoTodos_CheckedChanged);
-            // 
-            // panelFechaTipoExamen
-            // 
-            this.panelFechaTipoExamen.Controls.Add(this.botProxFechaLibre);
-            this.panelFechaTipoExamen.Controls.Add(this.tpFecha);
-            this.panelFechaTipoExamen.Controls.Add(this.botTurno);
-            this.panelFechaTipoExamen.Controls.Add(this.panelHorario);
-            this.panelFechaTipoExamen.Location = new System.Drawing.Point(-1, 0);
-            this.panelFechaTipoExamen.Name = "panelFechaTipoExamen";
-            this.panelFechaTipoExamen.Size = new System.Drawing.Size(615, 283);
-            this.panelFechaTipoExamen.TabIndex = 0;
-            // 
-            // botProxFechaLibre
-            // 
-            this.botProxFechaLibre.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.botProxFechaLibre.Image = ((System.Drawing.Image)(resources.GetObject("botProxFechaLibre.Image")));
-            this.botProxFechaLibre.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.botProxFechaLibre.Location = new System.Drawing.Point(362, 24);
-            this.botProxFechaLibre.Name = "botProxFechaLibre";
-            this.botProxFechaLibre.Size = new System.Drawing.Size(212, 46);
-            this.botProxFechaLibre.TabIndex = 3;
-            this.botProxFechaLibre.Text = "Próxima Fecha Libre";
-            this.botProxFechaLibre.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.botProxFechaLibre.UseVisualStyleBackColor = true;
-            this.botProxFechaLibre.Click += new System.EventHandler(this.botProxFechaLibre_Click);
-            // 
-            // tpFecha
-            // 
-            // 
-            // 
-            // 
-            this.tpFecha.CalendarTimeProperties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.tpFecha.Location = new System.Drawing.Point(19, 23);
-            this.tpFecha.Name = "tpFecha";
-            this.tpFecha.Size = new System.Drawing.Size(257, 227);
-            this.tpFecha.TabIndex = 0;
-            this.tpFecha.CustomDrawDayNumberCell += new DevExpress.XtraEditors.Calendar.CustomDrawDayNumberCellEventHandler(this.tpFecha_CustomDrawDayNumberCell);
-            this.tpFecha.DateTimeChanged += new System.EventHandler(this.tpFecha_DateTimeChanged);
-            // 
             // panelHorario
             // 
             this.panelHorario.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -1474,11 +1732,11 @@ namespace CapaPresentacion
             // 
             // label18
             // 
-            this.label18.AutoSize = true;
-            this.label18.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label18.Appearance.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label18.Appearance.Options.UseFont = true;
             this.label18.Location = new System.Drawing.Point(2, 1);
             this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(34, 16);
+            this.label18.Size = new System.Drawing.Size(27, 16);
             this.label18.TabIndex = 18;
             this.label18.Text = "Hora";
             // 
@@ -1651,7 +1909,7 @@ namespace CapaPresentacion
             this.rbcMenu.ExpandCollapseItem.Id = 0;
             this.rbcMenu.Items.AddRange(new DevExpress.XtraBars.BarItem[] {
             this.rbcMenu.ExpandCollapseItem});
-            this.rbcMenu.Location = new System.Drawing.Point(0, 358);
+            this.rbcMenu.Location = new System.Drawing.Point(0, 383);
             this.rbcMenu.MaxItemId = 1;
             this.rbcMenu.Name = "rbcMenu";
             this.rbcMenu.Size = new System.Drawing.Size(1190, 47);
@@ -1691,15 +1949,20 @@ namespace CapaPresentacion
             // 
             // lblInformacion
             // 
-            this.lblInformacion.BackColor = System.Drawing.Color.SeaGreen;
+            this.lblInformacion.Appearance.BackColor = System.Drawing.Color.SeaGreen;
+            this.lblInformacion.Appearance.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblInformacion.Appearance.ForeColor = System.Drawing.Color.White;
+            this.lblInformacion.Appearance.Options.UseBackColor = true;
+            this.lblInformacion.Appearance.Options.UseFont = true;
+            this.lblInformacion.Appearance.Options.UseForeColor = true;
+            this.lblInformacion.Appearance.Options.UseTextOptions = true;
+            this.lblInformacion.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.lblInformacion.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
             this.lblInformacion.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblInformacion.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblInformacion.ForeColor = System.Drawing.Color.White;
             this.lblInformacion.Location = new System.Drawing.Point(0, 0);
             this.lblInformacion.Name = "lblInformacion";
             this.lblInformacion.Size = new System.Drawing.Size(1190, 25);
             this.lblInformacion.TabIndex = 131;
-            this.lblInformacion.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // dgv
             // 
@@ -1709,10 +1972,10 @@ namespace CapaPresentacion
             this.dgv.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.dgv.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgv.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgv.Location = new System.Drawing.Point(0, 358);
+            this.dgv.Location = new System.Drawing.Point(0, 368);
             this.dgv.Name = "dgv";
             this.dgv.ReadOnly = true;
-            this.dgv.Size = new System.Drawing.Size(1190, 349);
+            this.dgv.Size = new System.Drawing.Size(1190, 339);
             this.dgv.TabIndex = 132;
             this.dgv.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgv_CellClick);
             this.dgv.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgv_CellDoubleClick);
@@ -1740,65 +2003,73 @@ namespace CapaPresentacion
             // 
             // lblCodigo
             // 
-            this.lblCodigo.AutoSize = true;
-            this.lblCodigo.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblCodigo.ForeColor = System.Drawing.Color.Maroon;
+            this.lblCodigo.Appearance.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblCodigo.Appearance.ForeColor = System.Drawing.Color.Maroon;
+            this.lblCodigo.Appearance.Options.UseFont = true;
+            this.lblCodigo.Appearance.Options.UseForeColor = true;
             this.lblCodigo.Location = new System.Drawing.Point(825, 7);
             this.lblCodigo.Name = "lblCodigo";
-            this.lblCodigo.Size = new System.Drawing.Size(49, 13);
+            this.lblCodigo.Size = new System.Drawing.Size(42, 13);
             this.lblCodigo.TabIndex = 9;
             this.lblCodigo.Text = "157012";
             // 
             // lblNombre
             // 
-            this.lblNombre.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblNombre.ForeColor = System.Drawing.Color.Maroon;
+            this.lblNombre.Appearance.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblNombre.Appearance.ForeColor = System.Drawing.Color.Maroon;
+            this.lblNombre.Appearance.Options.UseFont = true;
+            this.lblNombre.Appearance.Options.UseForeColor = true;
             this.lblNombre.Location = new System.Drawing.Point(629, 7);
             this.lblNombre.Name = "lblNombre";
-            this.lblNombre.Size = new System.Drawing.Size(176, 13);
+            this.lblNombre.Size = new System.Drawing.Size(170, 13);
             this.lblNombre.TabIndex = 8;
             this.lblNombre.Text = "BLAIOTTA PABLO EZEQUIEL";
             // 
             // lblDNI
             // 
-            this.lblDNI.AutoSize = true;
-            this.lblDNI.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblDNI.ForeColor = System.Drawing.Color.Maroon;
+            this.lblDNI.Appearance.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblDNI.Appearance.ForeColor = System.Drawing.Color.Maroon;
+            this.lblDNI.Appearance.Options.UseFont = true;
+            this.lblDNI.Appearance.Options.UseForeColor = true;
             this.lblDNI.Location = new System.Drawing.Point(551, 7);
             this.lblDNI.Name = "lblDNI";
-            this.lblDNI.Size = new System.Drawing.Size(63, 13);
+            this.lblDNI.Size = new System.Drawing.Size(57, 13);
             this.lblDNI.TabIndex = 7;
             this.lblDNI.Text = "32471508";
             // 
             // lblHora
             // 
-            this.lblHora.AutoSize = true;
-            this.lblHora.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblHora.ForeColor = System.Drawing.Color.Maroon;
+            this.lblHora.Appearance.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblHora.Appearance.ForeColor = System.Drawing.Color.Maroon;
+            this.lblHora.Appearance.Options.UseFont = true;
+            this.lblHora.Appearance.Options.UseForeColor = true;
             this.lblHora.Location = new System.Drawing.Point(497, 7);
             this.lblHora.Name = "lblHora";
-            this.lblHora.Size = new System.Drawing.Size(39, 13);
+            this.lblHora.Size = new System.Drawing.Size(33, 13);
             this.lblHora.TabIndex = 6;
             this.lblHora.Text = "08:10";
             // 
             // lblFecha
             // 
-            this.lblFecha.AutoSize = true;
-            this.lblFecha.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblFecha.ForeColor = System.Drawing.Color.Maroon;
+            this.lblFecha.Appearance.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblFecha.Appearance.ForeColor = System.Drawing.Color.Maroon;
+            this.lblFecha.Appearance.Options.UseFont = true;
+            this.lblFecha.Appearance.Options.UseForeColor = true;
             this.lblFecha.Location = new System.Drawing.Point(412, 7);
             this.lblFecha.Name = "lblFecha";
-            this.lblFecha.Size = new System.Drawing.Size(75, 13);
+            this.lblFecha.Size = new System.Drawing.Size(69, 13);
             this.lblFecha.TabIndex = 5;
             this.lblFecha.Text = "31/01/2017";
             // 
             // lblTipoExamen
             // 
-            this.lblTipoExamen.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTipoExamen.ForeColor = System.Drawing.Color.Maroon;
+            this.lblTipoExamen.Appearance.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTipoExamen.Appearance.ForeColor = System.Drawing.Color.Maroon;
+            this.lblTipoExamen.Appearance.Options.UseFont = true;
+            this.lblTipoExamen.Appearance.Options.UseForeColor = true;
             this.lblTipoExamen.Location = new System.Drawing.Point(278, 7);
             this.lblTipoExamen.Name = "lblTipoExamen";
-            this.lblTipoExamen.Size = new System.Drawing.Size(123, 13);
+            this.lblTipoExamen.Size = new System.Drawing.Size(117, 13);
             this.lblTipoExamen.TabIndex = 4;
             this.lblTipoExamen.Text = "PRE-OCUPACIONAL";
             // 
@@ -1846,15 +2117,20 @@ namespace CapaPresentacion
             // 
             this.LblTurnos.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.LblTurnos.BackColor = System.Drawing.Color.SeaGreen;
-            this.LblTurnos.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.LblTurnos.ForeColor = System.Drawing.Color.White;
+            this.LblTurnos.Appearance.BackColor = System.Drawing.Color.SeaGreen;
+            this.LblTurnos.Appearance.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.LblTurnos.Appearance.ForeColor = System.Drawing.Color.White;
+            this.LblTurnos.Appearance.Options.UseBackColor = true;
+            this.LblTurnos.Appearance.Options.UseFont = true;
+            this.LblTurnos.Appearance.Options.UseForeColor = true;
+            this.LblTurnos.Appearance.Options.UseTextOptions = true;
+            this.LblTurnos.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
+            this.LblTurnos.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
             this.LblTurnos.Location = new System.Drawing.Point(662, 4);
             this.LblTurnos.Name = "LblTurnos";
-            this.LblTurnos.Size = new System.Drawing.Size(488, 18);
+            this.LblTurnos.Size = new System.Drawing.Size(491, 18);
             this.LblTurnos.TabIndex = 135;
             this.LblTurnos.Text = "label21";
-            this.LblTurnos.TextAlign = System.Drawing.ContentAlignment.TopRight;
             this.LblTurnos.Click += new System.EventHandler(this.LblTurnos_Click);
             // 
             // panel3
@@ -1862,7 +2138,7 @@ namespace CapaPresentacion
             this.panel3.Controls.Add(this.LblTurnos);
             this.panel3.Controls.Add(this.lblInformacion);
             this.panel3.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel3.Location = new System.Drawing.Point(0, 333);
+            this.panel3.Location = new System.Drawing.Point(0, 343);
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(1190, 25);
             this.panel3.TabIndex = 137;
@@ -1872,14 +2148,8 @@ namespace CapaPresentacion
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1324, 732);
-            this.Controls.Add(this.panelLaboral);
-            this.Controls.Add(this.labelSubTipoExamen);
             this.Controls.Add(this.rbcMenu);
-            this.Controls.Add(this.cboMotivoConsulta);
-            this.Controls.Add(this.cboSubTipoExamen);
-            this.Controls.Add(this.labelTipoExamen);
-            this.Controls.Add(this.cboTipoExamen);
-            this.Controls.Add(this.label2);
+            this.Controls.Add(this.lbTitulo);
             this.Controls.Add(this.dgv);
             this.Controls.Add(this.panel3);
             this.Controls.Add(this.panel2);
@@ -1887,8 +2157,8 @@ namespace CapaPresentacion
             this.Controls.Add(this.tbIdEmpresaLaboral);
             this.Controls.Add(this.botonLaboratorio);
             this.Controls.Add(this.tbIdTurnoLaboral);
-            this.Controls.Add(this.lbTitulo);
             this.Controls.Add(this.tbIdPacienteLaboral);
+            this.Controls.Add(this.pnlFiltrosTop);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.KeyPreview = true;
             this.LookAndFeel.SkinName = "Office 2016 Colorful";
@@ -1898,24 +2168,57 @@ namespace CapaPresentacion
             this.Text = "Turnos";
             this.Load += new System.EventHandler(this.frmTurnos_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.frmTurnos_KeyDown);
+            ((System.ComponentModel.ISupportInitialize)(this.cboSubTipoExamen.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cboMotivoConsulta.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cboTipoExamen.Properties)).EndInit();
+            this.pnlFiltrosTop.ResumeLayout(false);
+            this.pnlFiltrosTop.PerformLayout();
             this.botonLaboratorio.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.panelLaboral.ResumeLayout(false);
             this.panelLaboral.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.txtEmailLab.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.txtFNacLab.Properties.CalendarTimeProperties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.txtFNacLab.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.txtEdadLab.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbTelefonoLaboral.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbTareaLaboral.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbEmpresaLaboral.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbCuilLaboral.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbObservacionesLaboral.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbImporteLaboral.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbImporteListaLaboral.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbSeñaLaboral.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbExamenLaboral.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbPacienteLaboral.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbDniLaboral.Properties)).EndInit();
             this.panelPacientePreventiva.ResumeLayout(false);
             this.panelPacientePreventiva.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.txtEdad.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.txtEmail.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbDniPreventiva.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbImportePreventiva.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbImporteListaPreventiva.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbSeñaPreventiva.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbObservPreventiva.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbExamenPreventiva.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvLigaYClub)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbTelefonoPreventiva.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbCategoriaPreventiva.Properties.CalendarTimeProperties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbCategoriaPreventiva.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbPacientePreventiva.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
-            this.panelFiltro.ResumeLayout(false);
-            this.panelFiltro.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
-            this.panelEstado.ResumeLayout(false);
-            this.panelEstado.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.panelFechaTipoExamen.ResumeLayout(false);
             this.panelFechaTipoExamen.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tpFecha.CalendarTimeProperties)).EndInit();
+            this.panelEstado.ResumeLayout(false);
+            this.panelEstado.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
+            this.panelFiltro.ResumeLayout(false);
+            this.panelFiltro.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.tbFiltro.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
             this.panelHorario.ResumeLayout(false);
             this.panelHorario.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
@@ -1931,16 +2234,17 @@ namespace CapaPresentacion
 
         #endregion
 
-        protected System.Windows.Forms.Label lbTitulo;
+        protected DevExpress.XtraEditors.LabelControl lbTitulo;
         protected System.Windows.Forms.Panel botonLaboratorio;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Panel panelFechaTipoExamen;
-        protected System.Windows.Forms.Label lblInformacion;
+        protected DevExpress.XtraEditors.LabelControl lblInformacion;
         private DevExpress.XtraEditors.Controls.CalendarControl tpFecha;
         private System.Windows.Forms.DataGridView dgv;
         private System.Windows.Forms.Button botProxFechaLibre;
-        private System.Windows.Forms.ComboBox cboTipoExamen;
-        private System.Windows.Forms.ComboBox cboSubTipoExamen;
+        private DevExpress.XtraEditors.LookUpEdit cboTipoExamen;
+        private DevExpress.XtraEditors.LookUpEdit cboSubTipoExamen;
+        private System.Windows.Forms.Panel pnlFiltrosTop;
         private System.Windows.Forms.RadioButton rbHora10;
         private System.Windows.Forms.RadioButton rbHora9;
         private System.Windows.Forms.RadioButton rbHora8;
@@ -1959,59 +2263,59 @@ namespace CapaPresentacion
         private System.Windows.Forms.RadioButton rbEstadoLibres;
         private System.Windows.Forms.PictureBox pictureBox2;
         private System.Windows.Forms.RadioButton rbEstadoTodos;
-        private System.Windows.Forms.TextBox tbFiltro;
-        private System.Windows.Forms.Label label2;
+        private DevExpress.XtraEditors.TextEdit tbFiltro;
+        private DevExpress.XtraEditors.LabelControl label2;
         private System.Windows.Forms.Panel panelPacientePreventiva;
         private System.Windows.Forms.Button botEditarExamenPreventiva;
         private System.Windows.Forms.Button botEditarPacientePreventiva;
         private System.Windows.Forms.TextBox tbIdTipoExamenPreventiva;
         private System.Windows.Forms.TextBox tbIdPacientePreventiva;
-        private System.Windows.Forms.TextBox tbObservPreventiva;
-        private System.Windows.Forms.TextBox tbImportePreventiva;
-        private System.Windows.Forms.TextBox tbImporteListaPreventiva;
-        private System.Windows.Forms.TextBox tbSeñaPreventiva;
-        private System.Windows.Forms.Label lblSeñaPreventiva;
+        private DevExpress.XtraEditors.MemoEdit tbObservPreventiva;
+        private DevExpress.XtraEditors.TextEdit tbImportePreventiva;
+        private DevExpress.XtraEditors.TextEdit tbImporteListaPreventiva;
+        private DevExpress.XtraEditors.TextEdit tbSeñaPreventiva;
+        private DevExpress.XtraEditors.LabelControl lblSeñaPreventiva;
         private System.Windows.Forms.Button btnTogglePrecioPreventiva;
-        private System.Windows.Forms.Label lblImporteListaPreventiva;
-        private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.TextBox tbExamenPreventiva;
-        private System.Windows.Forms.Label label6;
+        private DevExpress.XtraEditors.LabelControl lblImporteListaPreventiva;
+        private DevExpress.XtraEditors.LabelControl label7;
+        private DevExpress.XtraEditors.TextEdit tbExamenPreventiva;
+        private DevExpress.XtraEditors.LabelControl label6;
         private System.Windows.Forms.DataGridView dgvLigaYClub;
-        private System.Windows.Forms.TextBox tbTelefonoPreventiva;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.TextBox tbCategoriaPreventiva;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.TextBox tbPacientePreventiva;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TextBox tbDniPreventiva;
-        private System.Windows.Forms.Label label1;
+        private DevExpress.XtraEditors.TextEdit tbTelefonoPreventiva;
+        private DevExpress.XtraEditors.LabelControl label5;
+        private DevExpress.XtraEditors.DateEdit tbCategoriaPreventiva;
+        private DevExpress.XtraEditors.LabelControl label4;
+        private DevExpress.XtraEditors.TextEdit tbPacientePreventiva;
+        private DevExpress.XtraEditors.LabelControl label3;
+        private DevExpress.XtraEditors.TextEdit tbDniPreventiva;
+        private DevExpress.XtraEditors.LabelControl label1;
         private System.Windows.Forms.PictureBox pictureBox4;
-        private System.Windows.Forms.Label label15;
-        private System.Windows.Forms.TextBox tbDniLaboral;
-        private System.Windows.Forms.Label label14;
-        private System.Windows.Forms.TextBox tbPacienteLaboral;
-        private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.TextBox tbExamenLaboral;
-        private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.TextBox tbImporteLaboral;
-        private System.Windows.Forms.TextBox tbImporteListaLaboral;
-        private System.Windows.Forms.TextBox tbSeñaLaboral;
-        private System.Windows.Forms.Label lblSeñaLaboral;
-        private System.Windows.Forms.Label lblImporteListaLaboral;
+        private DevExpress.XtraEditors.LabelControl label15;
+        private DevExpress.XtraEditors.TextEdit tbDniLaboral;
+        private DevExpress.XtraEditors.LabelControl label14;
+        private DevExpress.XtraEditors.TextEdit tbPacienteLaboral;
+        private DevExpress.XtraEditors.LabelControl label11;
+        private DevExpress.XtraEditors.TextEdit tbExamenLaboral;
+        private DevExpress.XtraEditors.LabelControl label10;
+        private DevExpress.XtraEditors.TextEdit tbImporteLaboral;
+        private DevExpress.XtraEditors.TextEdit tbImporteListaLaboral;
+        private DevExpress.XtraEditors.TextEdit tbSeñaLaboral;
+        private DevExpress.XtraEditors.LabelControl lblSeñaLaboral;
+        private DevExpress.XtraEditors.LabelControl lblImporteListaLaboral;
         private System.Windows.Forms.Button btnTogglePrecioLaboral;
-        private System.Windows.Forms.TextBox tbObservacionesLaboral;
+        private DevExpress.XtraEditors.MemoEdit tbObservacionesLaboral;
         private System.Windows.Forms.TextBox tbIdPacienteLaboral;
         private System.Windows.Forms.TextBox tbIdTipoExamenLaboral;
         private System.Windows.Forms.Button botEditarPacienteLaboral;
         private System.Windows.Forms.Button botEditarExamenLaboral;
-        private System.Windows.Forms.Label label12;
-        private System.Windows.Forms.TextBox tbCuilLaboral;
-        private System.Windows.Forms.Label label13;
-        private System.Windows.Forms.TextBox tbEmpresaLaboral;
-        private System.Windows.Forms.Label label16;
-        private System.Windows.Forms.TextBox tbTareaLaboral;
-        private System.Windows.Forms.Label label17;
-        private System.Windows.Forms.TextBox tbTelefonoLaboral;
+        private DevExpress.XtraEditors.LabelControl label12;
+        private DevExpress.XtraEditors.TextEdit tbCuilLaboral;
+        private DevExpress.XtraEditors.LabelControl label13;
+        private DevExpress.XtraEditors.TextEdit tbEmpresaLaboral;
+        private DevExpress.XtraEditors.LabelControl label16;
+        private DevExpress.XtraEditors.TextEdit tbTareaLaboral;
+        private DevExpress.XtraEditors.LabelControl label17;
+        private DevExpress.XtraEditors.TextEdit tbTelefonoLaboral;
         private System.Windows.Forms.Panel panelLaboral;
         private System.Windows.Forms.TextBox tbIdTurnoLaboral;
         private System.Windows.Forms.TextBox tbIdTurnoPreventiva;
@@ -2027,17 +2331,17 @@ namespace CapaPresentacion
         private System.Windows.Forms.Button botHabilitar;
         private System.Windows.Forms.Button botBuscar;
         private System.Windows.Forms.Button botLimpiar;
-        private System.Windows.Forms.Label label20;
-        private System.Windows.Forms.Label label19;
-        private System.Windows.Forms.Label label18;
+        private DevExpress.XtraEditors.LabelControl label20;
+        private DevExpress.XtraEditors.LabelControl label19;
+        private DevExpress.XtraEditors.LabelControl label18;
         private System.Windows.Forms.Button btnSalir;
-        private System.Windows.Forms.Label lblTipoExamen;
-        private System.Windows.Forms.Label lblCodigo;
-        private System.Windows.Forms.Label lblNombre;
-        private System.Windows.Forms.Label lblDNI;
-        private System.Windows.Forms.Label lblHora;
-        private System.Windows.Forms.Label lblFecha;
-        private System.Windows.Forms.Label LblTurnos;
+        private DevExpress.XtraEditors.LabelControl lblTipoExamen;
+        private DevExpress.XtraEditors.LabelControl lblCodigo;
+        private DevExpress.XtraEditors.LabelControl lblNombre;
+        private DevExpress.XtraEditors.LabelControl lblDNI;
+        private DevExpress.XtraEditors.LabelControl lblHora;
+        private DevExpress.XtraEditors.LabelControl lblFecha;
+        private DevExpress.XtraEditors.LabelControl LblTurnos;
         private DevExpress.XtraBars.Ribbon.RibbonControl rbcMenu;
         private DevExpress.XtraBars.Ribbon.RibbonPage ribbonPage1;
         private DevExpress.XtraBars.Ribbon.RibbonPageGroup ribbonPageGroup1;
@@ -2052,25 +2356,25 @@ namespace CapaPresentacion
         private DevExpress.XtraBars.BarButtonItem bbiInhabilitar;
         private System.Windows.Forms.Panel panel3;
         protected System.Windows.Forms.Button botAsignar;
-        private System.Windows.Forms.Label label21;
-        private System.Windows.Forms.TextBox txtEdad;
-        private System.Windows.Forms.Label label23;
-        private System.Windows.Forms.TextBox txtEmail;
-        private System.Windows.Forms.Label label22;
-        private System.Windows.Forms.Label label24;
-        private System.Windows.Forms.TextBox txtFNacLab;
-        private System.Windows.Forms.TextBox txtEdadLab;
-        private System.Windows.Forms.TextBox txtEmailLab;
-        private System.Windows.Forms.Label label25;
+        private DevExpress.XtraEditors.LabelControl label21;
+        private DevExpress.XtraEditors.TextEdit txtEdad;
+        private DevExpress.XtraEditors.LabelControl label23;
+        private DevExpress.XtraEditors.TextEdit txtEmail;
+        private DevExpress.XtraEditors.LabelControl label22;
+        private DevExpress.XtraEditors.LabelControl label24;
+        private DevExpress.XtraEditors.DateEdit txtFNacLab;
+        private DevExpress.XtraEditors.TextEdit txtEdadLab;
+        private DevExpress.XtraEditors.TextEdit txtEmailLab;
+        private DevExpress.XtraEditors.LabelControl label25;
         private System.Windows.Forms.Button btnCopiarInfo;
         private System.Windows.Forms.Button btnVerEstudio;
         protected System.Windows.Forms.Button btnMoverTurno;
         protected System.Windows.Forms.Button btnCancelarMover;
         private DevExpress.XtraBars.Ribbon.RibbonPage ribbonPage2;
         private DevExpress.LookAndFeel.DefaultLookAndFeel defaultLookAndFeel1;
-        private System.Windows.Forms.ComboBox cboMotivoConsulta;
-        private System.Windows.Forms.Label labelTipoExamen;
-        private System.Windows.Forms.Label labelSubTipoExamen;
+        private DevExpress.XtraEditors.LookUpEdit cboMotivoConsulta;
+        private DevExpress.XtraEditors.LabelControl labelTipoExamen;
+        private DevExpress.XtraEditors.LabelControl labelSubTipoExamen;
         private System.Windows.Forms.Button btnWhatsApp;
         private System.Windows.Forms.PictureBox pictureBox5;
         private System.Windows.Forms.Button botTurno;

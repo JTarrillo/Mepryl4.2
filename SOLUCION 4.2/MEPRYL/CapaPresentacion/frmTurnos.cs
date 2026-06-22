@@ -27,6 +27,7 @@ namespace CapaPresentacion
         private bool blnConsultaExterna = false;
         private string strIDEmpresa = "", strIDPaciente = "";
         private string[] strUltRegistro = new string[18];
+        private bool blnCargandoDgv = false;
         private bool blnRecargaGrilla = false; //GRV
         private int intFilaSeleccionada = 0;
         //GRV - Modificado Variables globales
@@ -156,133 +157,124 @@ namespace CapaPresentacion
         {
             botProxFechaLibre.Enabled = false;
             // Habilitar si hay un tipo de examen seleccionado (no TODOS)
-            if (cboTipoExamen.SelectedIndex > 0) { botProxFechaLibre.Enabled = true; }
-            
-            // GRV - Forzar habilitación si hay algo en el combo para que el usuario pueda buscar
-            if (cboTipoExamen.Items.Count > 0 && cboTipoExamen.SelectedIndex >= 0) { botProxFechaLibre.Enabled = true; }
+            if (cboTipoExamen.EditValue != null && cboTipoExamen.EditValue != DBNull.Value && (Guid)cboTipoExamen.EditValue != Guid.Empty) 
+            { 
+                botProxFechaLibre.Enabled = true; 
+            }
         }
 
         /// <summary>
         /// CASCADA NIVEL 1: Cuando cambia el MotivoConsulta, carga los tipos de examen padre (Padre=1)
         /// </summary>
-        private void cboMotivoConsulta_SelectionChangeCommitted(object sender, EventArgs e)
+        private void cboMotivoConsulta_EditValueChanged(object sender, EventArgs e)
         {
             try
             {
-                // Si el  indice del motivo es menor a 0 o  el indice del motivo es vacio, limpiar todo
-                if (cboMotivoConsulta.SelectedIndex < 0 || cboMotivoConsulta.SelectedValue == null)
+                // Si el valor es nulo o DBNull, limpiar todo
+                if (cboMotivoConsulta.EditValue == null || cboMotivoConsulta.EditValue == DBNull.Value)
                 {
-                    cboTipoExamen.DataSource = null;
-                    cboSubTipoExamen.DataSource = null;
+                    cboTipoExamen.Properties.DataSource = null;
+                    cboSubTipoExamen.Properties.DataSource = null;
                     cargarGrillaTurnosSinFiltro();
                     return;
                 }
 
-                //Tomá el valor seleccionado del ComboBox y ponelo en la variable idMotivoConsulta
-                string idMotivoConsulta = cboMotivoConsulta.SelectedValue.ToString();
+                string idMotivoConsulta = cboMotivoConsulta.EditValue.ToString();
 
-                if (!string.IsNullOrEmpty(idMotivoConsulta))
+                if (!string.IsNullOrEmpty(idMotivoConsulta) && idMotivoConsulta != "0")
                 {
-                    // Cargar SOLO especialidades PADRE (Padre=1) para este motivo
                     DataTable dtPadres = tipoEx.cargarNivel1Especialidad(idMotivoConsulta);
 
                     if (dtPadres != null && dtPadres.Rows.Count > 0)
                     {
-                        // Filtrar solo Padre = 1
                         DataView dv = new DataView(dtPadres);
                         dv.RowFilter = "Padre = 1";
                         DataTable dtFiltrados = dv.ToTable();
 
                         if (dtFiltrados.Rows.Count > 0)
                         {
-                            // Agregar opción "TODOS" al principio
                             DataRow rowTodos = dtFiltrados.NewRow();
                             rowTodos["id"] = Guid.Empty;
                             rowTodos["descripcion"] = "TODOS";
                             dtFiltrados.Rows.InsertAt(rowTodos, 0);
 
-                            cboTipoExamen.DataSource = dtFiltrados;
-                            cboTipoExamen.ValueMember = "id";
-                            cboTipoExamen.DisplayMember = "descripcion";
-                            cboTipoExamen.SelectedIndex = 0;
+                            cboTipoExamen.Properties.DataSource = dtFiltrados;
+                            cboTipoExamen.Properties.ValueMember = "id";
+                            cboTipoExamen.Properties.DisplayMember = "descripcion";
+                            cboTipoExamen.EditValue = Guid.Empty;
 
-                            cboSubTipoExamen.DataSource = null;
+                            cboSubTipoExamen.Properties.DataSource = null;
                             cargarGrillaTurnosSinFiltro();
                         }
                         else
                         {
-                            cboTipoExamen.DataSource = null;
-                            cboSubTipoExamen.DataSource = null;
+                            cboTipoExamen.Properties.DataSource = null;
+                            cboSubTipoExamen.Properties.DataSource = null;
                             cargarGrillaTurnosSinFiltro();
                         }
                     }
                     else
                     {
-                        cboTipoExamen.DataSource = null;
-                        cboSubTipoExamen.DataSource = null;
+                        cboTipoExamen.Properties.DataSource = null;
+                        cboSubTipoExamen.Properties.DataSource = null;
                         cargarGrillaTurnosSinFiltro();
                     }
+                }
+                else
+                {
+                    // Si selecciona TODOS (0)
+                    cboTipoExamen.Properties.DataSource = null;
+                    cboSubTipoExamen.Properties.DataSource = null;
+                    cargarGrillaTurnosSinFiltro();
                 }
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error en cboMotivoConsulta_SelectionChangeCommitted: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Error en cboMotivoConsulta_EditValueChanged: {ex.Message}");
             }
         }
-        private void cboTipoExamen_SelectionChangeCommitted(object sender, EventArgs e)
+        private void cboTipoExamen_EditValueChanged(object sender, EventArgs e)
         {
             try
             {
-                // Si el indice del tipo  es menor a 0 o el valor es vacio ,limpiar todo
-                if (cboTipoExamen.SelectedIndex < 0 || cboTipoExamen.SelectedValue == null)
+                if (cboTipoExamen.EditValue == null || cboTipoExamen.EditValue == DBNull.Value)
                 {
-                    cboSubTipoExamen.DataSource = null;
+                    cboSubTipoExamen.Properties.DataSource = null;
                     cargarGrillaTurnosSinFiltro();
                     cambiarEnabledBotonProximaFecha();
                     return;
                 }
 
-                string idTipoExamen = cboTipoExamen.SelectedValue.ToString();
+                string idTipoExamen = cboTipoExamen.EditValue.ToString();
 
                 if (!string.IsNullOrEmpty(idTipoExamen) && idTipoExamen != Guid.Empty.ToString())
                 {
-                    // Cargar Nivel 2 (especialidades hijas dentro de este tipo/padre)
                     DataTable dtNivel2 = tipoEx.cargarNivel2Especialidad(idTipoExamen);
 
                     if (dtNivel2 != null && dtNivel2.Rows.Count > 0)
                     {
-                        // Agregar opción "TODOS"
                         DataRow rowTodos = dtNivel2.NewRow();
                         rowTodos["id"] = Guid.Empty;
                         rowTodos["descripcion"] = "TODOS";
                         dtNivel2.Rows.InsertAt(rowTodos, 0);
 
-                        // Debug: imprimir el orden de los subtipos antes de asignar al combo
-                        foreach (DataRow dr in dtNivel2.Rows)
-                        {
-                            System.Diagnostics.Debug.WriteLine($"Subtipo: {dr["descripcion"]}");
-                        }
+                        cboSubTipoExamen.Properties.DataSource = dtNivel2;
+                        cboSubTipoExamen.Properties.ValueMember = "id";
+                        cboSubTipoExamen.Properties.DisplayMember = "descripcion";
+                        cboSubTipoExamen.EditValue = Guid.Empty;
 
-                        cboSubTipoExamen.DataSource = dtNivel2;
-                        cboSubTipoExamen.ValueMember = "id";
-                        cboSubTipoExamen.DisplayMember = "descripcion";
-                        cboSubTipoExamen.SelectedIndex = 0;
-
-                        // Cargar grilla
                         cargarGrillaTurnosSinFiltro();
                     }
                     else
                     {
-                        // Si no hay Nivel 2, limpiar y cargar grilla
-                        cboSubTipoExamen.DataSource = null;
+                        cboSubTipoExamen.Properties.DataSource = null;
                         rbHoraTodas.Checked = true;
                         cargarGrillaTurnosSinFiltro();
                     }
                 }
                 else
                 {
-                    // Si selecciona "TODOS" en cboTipoExamen, limpiar cboSubTipoExamen
-                    cboSubTipoExamen.DataSource = null;
+                    cboSubTipoExamen.Properties.DataSource = null;
                     rbHoraTodas.Checked = true;
                     cargarGrillaTurnosSinFiltro();
                 }
@@ -291,7 +283,7 @@ namespace CapaPresentacion
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error en cboTipoExamen_SelectionChangeCommitted: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Error en cboTipoExamen_EditValueChanged: {ex.Message}");
             }
         }
 
@@ -348,6 +340,9 @@ namespace CapaPresentacion
         }
         private void llenarDgv(DataTable tabla)
         {
+            blnCargandoDgv = true;
+            dgv.SuspendLayout();
+
             int intTotalTurnosAsignados = 150;
             intTotalTurnosAsignados = 150;
 
@@ -435,6 +430,12 @@ namespace CapaPresentacion
             {
                 //
             }
+            finally
+            {
+                dgv.ResumeLayout();
+                blnCargandoDgv = false;
+                cargarTurnoSeleccionado(); // Carga manual al final
+            }
         }
 
         public virtual void mostrarMessageBox(string str)
@@ -491,9 +492,9 @@ namespace CapaPresentacion
         private Guid obtenerTipoExamen()
         {
             // PRIORIDAD: Si está seleccionado cboSubTipoExamen (y no es TODOS), usarlo
-            if (cboSubTipoExamen.SelectedIndex > 0 && cboSubTipoExamen.SelectedValue != null)
+            if (cboSubTipoExamen.EditValue != null && cboSubTipoExamen.EditValue != DBNull.Value)
             {
-                string selectedValue = cboSubTipoExamen.SelectedValue.ToString();
+                string selectedValue = cboSubTipoExamen.EditValue.ToString();
                 if (!string.IsNullOrEmpty(selectedValue) && selectedValue != Guid.Empty.ToString())
                 {
                     return new Guid(selectedValue);
@@ -501,9 +502,9 @@ namespace CapaPresentacion
             }
 
             // Si no hay SubTipo seleccionado, usar cboTipoExamen (Padre)
-            if (cboTipoExamen.SelectedIndex > 0 && cboTipoExamen.SelectedValue != null)
+            if (cboTipoExamen.EditValue != null && cboTipoExamen.EditValue != DBNull.Value)
             {
-                string selectedValue = cboTipoExamen.SelectedValue.ToString();
+                string selectedValue = cboTipoExamen.EditValue.ToString();
                 if (!string.IsNullOrEmpty(selectedValue) && selectedValue != Guid.Empty.ToString())
                 {
                     return new Guid(selectedValue);
@@ -748,7 +749,7 @@ namespace CapaPresentacion
             if (turnoPrev.Nacimiento != new DateTime(1800, 1, 1))
             {
                 //tbCategoriaPreventiva.Text = turnoPrev.Nacimiento.Year.ToString();
-                tbCategoriaPreventiva.Text = turnoPrev.Nacimiento.ToString("dd/MM/yyyy");
+                tbCategoriaPreventiva.DateTime = turnoPrev.Nacimiento;
             }
             tbDniPreventiva.Text = turnoPrev.Dni;
             tbTelefonoPreventiva.Text = turnoPrev.Telefono;
@@ -851,12 +852,12 @@ namespace CapaPresentacion
             strFecha = turnoLab.FechaNacimiento.ToString("dd/MM/yyyy");
             if (strFecha != "01/01/0001")
             {
-                txtFNacLab.Text = turnoLab.FechaNacimiento.ToString("dd/MM/yyyy");
+                txtFNacLab.DateTime = turnoLab.FechaNacimiento;
                 txtEdadLab.Text = (DateTime.Today.AddTicks(-turnoLab.FechaNacimiento.Ticks).Year - 1).ToString();
             }
             else
             {
-                txtFNacLab.Text = "";
+                txtFNacLab.DateTime = DateTime.Today;
                 txtEdadLab.Text = "0";
             }
 
@@ -1210,6 +1211,7 @@ namespace CapaPresentacion
 
         private void dgv_CurrentCellChanged(object sender, EventArgs e)
         {
+            if (blnCargandoDgv) return;
             cargarTurnoSeleccionado();
         }
 
@@ -1767,12 +1769,12 @@ namespace CapaPresentacion
             strFecha = turnoLab.FechaNacimiento.ToString("dd/MM/yyyy");
             if (strFecha != "01/01/0001")
             {
-                txtFNacLab.Text = turnoLab.FechaNacimiento.ToString("dd/MM/yyyy");
+                txtFNacLab.DateTime = turnoLab.FechaNacimiento;
                 txtEdadLab.Text = (DateTime.Today.AddTicks(-turnoLab.FechaNacimiento.Ticks).Year - 1).ToString();
             }
             else
             {
-                txtFNacLab.Text = "";
+                txtFNacLab.DateTime = DateTime.Today;
                 txtEdadLab.Text = "0";
             }
 
@@ -1799,7 +1801,7 @@ namespace CapaPresentacion
             ((DataGridViewImageColumn)dgvLigaYClub.Columns[1]).DefaultCellStyle.BackColor = System.Drawing.Color.Transparent;
             tbDniPreventiva.Text = entidad.Dni;
             tbPacientePreventiva.Text = entidad.ApellidoNombre;
-            tbCategoriaPreventiva.Text = entidad.Nacimiento.Year.ToString();
+            tbCategoriaPreventiva.DateTime = entidad.Nacimiento;
             tbTelefonoPreventiva.Text = entidad.Telefono;
             txtEmail.Text = entidad.Mail;
             txtEdad.Text = (DateTime.Today.AddTicks(-entidad.Nacimiento.Ticks).Year - 1).ToString();
@@ -2067,7 +2069,7 @@ namespace CapaPresentacion
 
         private void botLimpiar_Click(object sender, EventArgs e)
         {
-            tbFiltro.Clear();
+            tbFiltro.Text = "";
             cargarGrillaTurnosSinFiltro();
         }
 
@@ -2169,7 +2171,7 @@ namespace CapaPresentacion
             strIDEmpresa = idEmpresa;
             blnConsultaExterna = true;
             tpFecha.DateTime = fechaTurno;
-            cboTipoExamen.SelectedIndex = 7;   // Propiedad .Text = CONSULTORIO
+            cboTipoExamen.ItemIndex = 7;   // Propiedad .Text = CONSULTORIO (Selección por índice original)
             obtenerTipoExamen();
             rbEstadoLibres.Checked = true;
             dgv.CurrentCell = this.dgv[8, 0];
@@ -2189,7 +2191,7 @@ namespace CapaPresentacion
             strIDEmpresa = idEmpresa;
             blnConsultaExterna = true;
             tpFecha.DateTime = fechaTurno;
-            cboTipoExamen.SelectedIndex = 7;   // Propiedad .Text = CONSULTORIO
+            cboTipoExamen.ItemIndex = 7;   // Propiedad .Text = CONSULTORIO (Selección por índice original)
             obtenerTipoExamen();
             rbEstadoAsignados.Checked = true;
             dgv.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
@@ -2690,74 +2692,122 @@ namespace CapaPresentacion
 
         private void pintarControlesPanelDeshabilitar()
         {
-            tbDniPreventiva.BackColor = Color.WhiteSmoke;
-            tbCategoriaPreventiva.BackColor = Color.WhiteSmoke;
-            txtEdad.BackColor = Color.WhiteSmoke;
-            tbPacientePreventiva.BackColor = Color.WhiteSmoke;
-            tbTelefonoPreventiva.BackColor = Color.WhiteSmoke;
-            txtEmail.BackColor = Color.WhiteSmoke;
-            dgvLigaYClub.BackColor = Color.WhiteSmoke;
-            tbExamenPreventiva.BackColor = Color.WhiteSmoke;
-            tbImportePreventiva.BackColor = Color.WhiteSmoke;
-            tbImporteListaPreventiva.BackColor = Color.WhiteSmoke;
-            tbImporteListaPreventiva.ReadOnly = true;
-            tbSeñaPreventiva.BackColor = Color.WhiteSmoke;
-            tbSeñaPreventiva.ReadOnly = true;
-            tbObservPreventiva.BackColor = Color.WhiteSmoke;
-            tbObservPreventiva.ReadOnly = true;
+            tbDniPreventiva.Properties.Appearance.BackColor = Color.WhiteSmoke;
+            tbDniPreventiva.Properties.Appearance.Options.UseBackColor = true;
+            tbCategoriaPreventiva.Properties.Appearance.BackColor = Color.WhiteSmoke;
+            tbCategoriaPreventiva.Properties.Appearance.Options.UseBackColor = true;
+            txtEdad.Properties.Appearance.BackColor = Color.WhiteSmoke;
+            txtEdad.Properties.Appearance.Options.UseBackColor = true;
+            tbPacientePreventiva.Properties.Appearance.BackColor = Color.WhiteSmoke;
+            tbPacientePreventiva.Properties.Appearance.Options.UseBackColor = true;
+            tbTelefonoPreventiva.Properties.Appearance.BackColor = Color.WhiteSmoke;
+            tbTelefonoPreventiva.Properties.Appearance.Options.UseBackColor = true;
+            txtEmail.Properties.Appearance.BackColor = Color.WhiteSmoke;
+            txtEmail.Properties.Appearance.Options.UseBackColor = true;
+            dgvLigaYClub.BackgroundColor = Color.WhiteSmoke;
+            tbExamenPreventiva.Properties.Appearance.BackColor = Color.WhiteSmoke;
+            tbExamenPreventiva.Properties.Appearance.Options.UseBackColor = true;
+            tbImportePreventiva.Properties.Appearance.BackColor = Color.WhiteSmoke;
+            tbImportePreventiva.Properties.Appearance.Options.UseBackColor = true;
+            tbImporteListaPreventiva.Properties.Appearance.BackColor = Color.WhiteSmoke;
+            tbImporteListaPreventiva.Properties.Appearance.Options.UseBackColor = true;
+            tbImporteListaPreventiva.Properties.ReadOnly = true;
+            tbSeñaPreventiva.Properties.Appearance.BackColor = Color.WhiteSmoke;
+            tbSeñaPreventiva.Properties.Appearance.Options.UseBackColor = true;
+            tbSeñaPreventiva.Properties.ReadOnly = true;
+            tbObservPreventiva.Properties.Appearance.BackColor = Color.WhiteSmoke;
+            tbObservPreventiva.Properties.Appearance.Options.UseBackColor = true;
+            tbObservPreventiva.Properties.ReadOnly = true;
 
-            tbDniLaboral.BackColor = Color.WhiteSmoke;
-            txtFNacLab.BackColor = Color.WhiteSmoke;
-            txtEdadLab.BackColor = Color.WhiteSmoke;
-            tbExamenLaboral.BackColor = Color.WhiteSmoke;
-            tbEmpresaLaboral.BackColor = Color.WhiteSmoke;
-            tbPacienteLaboral.BackColor = Color.WhiteSmoke;
-            tbTareaLaboral.BackColor = Color.WhiteSmoke;
-            tbTelefonoLaboral.BackColor = Color.WhiteSmoke;
-            txtEmailLab.BackColor = Color.WhiteSmoke;
-            tbImporteLaboral.BackColor = Color.WhiteSmoke;
-            tbImporteListaLaboral.BackColor = Color.WhiteSmoke;
-            tbImporteListaLaboral.ReadOnly = true;
-            tbSeñaLaboral.BackColor = Color.WhiteSmoke;
-            tbSeñaLaboral.ReadOnly = true;
-            tbObservacionesLaboral.BackColor = Color.WhiteSmoke;
-            tbObservacionesLaboral.ReadOnly = true;
+            tbDniLaboral.Properties.Appearance.BackColor = Color.WhiteSmoke;
+            tbDniLaboral.Properties.Appearance.Options.UseBackColor = true;
+            txtFNacLab.Properties.Appearance.BackColor = Color.WhiteSmoke;
+            txtFNacLab.Properties.Appearance.Options.UseBackColor = true;
+            txtEdadLab.Properties.Appearance.BackColor = Color.WhiteSmoke;
+            txtEdadLab.Properties.Appearance.Options.UseBackColor = true;
+            tbExamenLaboral.Properties.Appearance.BackColor = Color.WhiteSmoke;
+            tbExamenLaboral.Properties.Appearance.Options.UseBackColor = true;
+            tbEmpresaLaboral.Properties.Appearance.BackColor = Color.WhiteSmoke;
+            tbEmpresaLaboral.Properties.Appearance.Options.UseBackColor = true;
+            tbPacienteLaboral.Properties.Appearance.BackColor = Color.WhiteSmoke;
+            tbPacienteLaboral.Properties.Appearance.Options.UseBackColor = true;
+            tbTareaLaboral.Properties.Appearance.BackColor = Color.WhiteSmoke;
+            tbTareaLaboral.Properties.Appearance.Options.UseBackColor = true;
+            tbTelefonoLaboral.Properties.Appearance.BackColor = Color.WhiteSmoke;
+            tbTelefonoLaboral.Properties.Appearance.Options.UseBackColor = true;
+            txtEmailLab.Properties.Appearance.BackColor = Color.WhiteSmoke;
+            txtEmailLab.Properties.Appearance.Options.UseBackColor = true;
+            tbImporteLaboral.Properties.Appearance.BackColor = Color.WhiteSmoke;
+            tbImporteLaboral.Properties.Appearance.Options.UseBackColor = true;
+            tbImporteListaLaboral.Properties.Appearance.BackColor = Color.WhiteSmoke;
+            tbImporteListaLaboral.Properties.Appearance.Options.UseBackColor = true;
+            tbImporteListaLaboral.Properties.ReadOnly = true;
+            tbSeñaLaboral.Properties.Appearance.BackColor = Color.WhiteSmoke;
+            tbSeñaLaboral.Properties.Appearance.Options.UseBackColor = true;
+            tbSeñaLaboral.Properties.ReadOnly = true;
+            tbObservacionesLaboral.Properties.Appearance.BackColor = Color.WhiteSmoke;
+            tbObservacionesLaboral.Properties.Appearance.Options.UseBackColor = true;
+            tbObservacionesLaboral.Properties.ReadOnly = true;
         }
 
         private void pintarControlesPanelHabilitar()
         {
-            tbDniPreventiva.BackColor = Color.White;
-            tbCategoriaPreventiva.BackColor = Color.White;
-            txtEdad.BackColor = Color.White;
-            tbPacientePreventiva.BackColor = Color.White;
-            tbTelefonoPreventiva.BackColor = Color.White;
-            txtEmail.BackColor = Color.White;
-            dgvLigaYClub.BackColor = Color.White;
-            tbExamenPreventiva.BackColor = Color.White;
-            tbImportePreventiva.BackColor = Color.White;
-            tbImporteListaPreventiva.BackColor = Color.White;
-            tbImporteListaPreventiva.ReadOnly = false;
-            tbSeñaPreventiva.BackColor = Color.White;
-            tbSeñaPreventiva.ReadOnly = false;
-            tbObservPreventiva.BackColor = Color.White;
-            tbObservPreventiva.ReadOnly = false;
+            tbDniPreventiva.Properties.Appearance.BackColor = Color.White;
+            tbDniPreventiva.Properties.Appearance.Options.UseBackColor = true;
+            tbCategoriaPreventiva.Properties.Appearance.BackColor = Color.White;
+            tbCategoriaPreventiva.Properties.Appearance.Options.UseBackColor = true;
+            txtEdad.Properties.Appearance.BackColor = Color.White;
+            txtEdad.Properties.Appearance.Options.UseBackColor = true;
+            tbPacientePreventiva.Properties.Appearance.BackColor = Color.White;
+            tbPacientePreventiva.Properties.Appearance.Options.UseBackColor = true;
+            tbTelefonoPreventiva.Properties.Appearance.BackColor = Color.White;
+            tbTelefonoPreventiva.Properties.Appearance.Options.UseBackColor = true;
+            txtEmail.Properties.Appearance.BackColor = Color.White;
+            txtEmail.Properties.Appearance.Options.UseBackColor = true;
+            dgvLigaYClub.BackgroundColor = Color.White;
+            tbExamenPreventiva.Properties.Appearance.BackColor = Color.White;
+            tbExamenPreventiva.Properties.Appearance.Options.UseBackColor = true;
+            tbImportePreventiva.Properties.Appearance.BackColor = Color.White;
+            tbImportePreventiva.Properties.Appearance.Options.UseBackColor = true;
+            tbImporteListaPreventiva.Properties.Appearance.BackColor = Color.White;
+            tbImporteListaPreventiva.Properties.Appearance.Options.UseBackColor = true;
+            tbImporteListaPreventiva.Properties.ReadOnly = false;
+            tbSeñaPreventiva.Properties.Appearance.BackColor = Color.White;
+            tbSeñaPreventiva.Properties.Appearance.Options.UseBackColor = true;
+            tbSeñaPreventiva.Properties.ReadOnly = false;
+            tbObservPreventiva.Properties.Appearance.BackColor = Color.White;
+            tbObservPreventiva.Properties.Appearance.Options.UseBackColor = true;
+            tbObservPreventiva.Properties.ReadOnly = false;
 
-            tbDniLaboral.BackColor = Color.White;
-            txtFNacLab.BackColor = Color.White;
-            txtEdadLab.BackColor = Color.White;
-            tbExamenLaboral.BackColor = Color.White;
-            tbEmpresaLaboral.BackColor = Color.White;
-            tbPacienteLaboral.BackColor = Color.White;
-            tbTareaLaboral.BackColor = Color.White;
-            tbTelefonoLaboral.BackColor = Color.White;
-            txtEmailLab.BackColor = Color.White;
-            tbImporteLaboral.BackColor = Color.White;
-            tbImporteListaLaboral.BackColor = Color.White;
-            tbImporteListaLaboral.ReadOnly = false;
-            tbSeñaLaboral.BackColor = Color.White;
-            tbSeñaLaboral.ReadOnly = false;
-            tbObservacionesLaboral.BackColor = Color.White;
-            tbObservacionesLaboral.ReadOnly = false;
+            tbDniLaboral.Properties.Appearance.BackColor = Color.White;
+            tbDniLaboral.Properties.Appearance.Options.UseBackColor = true;
+            txtFNacLab.Properties.Appearance.BackColor = Color.White;
+            txtFNacLab.Properties.Appearance.Options.UseBackColor = true;
+            txtEdadLab.Properties.Appearance.BackColor = Color.White;
+            txtEdadLab.Properties.Appearance.Options.UseBackColor = true;
+            tbExamenLaboral.Properties.Appearance.BackColor = Color.White;
+            tbExamenLaboral.Properties.Appearance.Options.UseBackColor = true;
+            tbEmpresaLaboral.Properties.Appearance.BackColor = Color.White;
+            tbEmpresaLaboral.Properties.Appearance.Options.UseBackColor = true;
+            tbPacienteLaboral.Properties.Appearance.BackColor = Color.White;
+            tbPacienteLaboral.Properties.Appearance.Options.UseBackColor = true;
+            tbTareaLaboral.Properties.Appearance.BackColor = Color.White;
+            tbTareaLaboral.Properties.Appearance.Options.UseBackColor = true;
+            tbTelefonoLaboral.Properties.Appearance.BackColor = Color.White;
+            tbTelefonoLaboral.Properties.Appearance.Options.UseBackColor = true;
+            txtEmailLab.Properties.Appearance.BackColor = Color.White;
+            txtEmailLab.Properties.Appearance.Options.UseBackColor = true;
+            tbImporteLaboral.Properties.Appearance.BackColor = Color.White;
+            tbImporteLaboral.Properties.Appearance.Options.UseBackColor = true;
+            tbImporteListaLaboral.Properties.Appearance.BackColor = Color.White;
+            tbImporteListaLaboral.Properties.Appearance.Options.UseBackColor = true;
+            tbImporteListaLaboral.Properties.ReadOnly = false;
+            tbSeñaLaboral.Properties.Appearance.BackColor = Color.White;
+            tbSeñaLaboral.Properties.Appearance.Options.UseBackColor = true;
+            tbSeñaLaboral.Properties.ReadOnly = false;
+            tbObservacionesLaboral.Properties.Appearance.BackColor = Color.White;
+            tbObservacionesLaboral.Properties.Appearance.Options.UseBackColor = true;
+            tbObservacionesLaboral.Properties.ReadOnly = false;
         }
 
         private void btnCancelarMover_Click(object sender, EventArgs e)
@@ -2945,25 +2995,25 @@ namespace CapaPresentacion
             rowTodos["nombre"] = "TODOS";
             dtMotivos.Rows.InsertAt(rowTodos, 0);
 
-            cboMotivoConsulta.DataSource = dtMotivos;
-            cboMotivoConsulta.ValueMember = "id";
-            cboMotivoConsulta.DisplayMember = "nombre";
-            cboMotivoConsulta.SelectedIndex = 0; // Selecciona "TODOS" por defecto
+            cboMotivoConsulta.Properties.DataSource = dtMotivos;
+            cboMotivoConsulta.Properties.ValueMember = "id";
+            cboMotivoConsulta.Properties.DisplayMember = "nombre";
+            cboMotivoConsulta.EditValue = 0; // Selecciona "TODOS" por defecto
 
-            // Conectar el evento SelectionChangeCommitted si no está ya conectado
-            cboMotivoConsulta.SelectionChangeCommitted -= cboMotivoConsulta_SelectionChangeCommitted;
-            cboMotivoConsulta.SelectionChangeCommitted += cboMotivoConsulta_SelectionChangeCommitted;
+            // Conectar el evento EditValueChanged si no está ya conectado
+            cboMotivoConsulta.EditValueChanged -= cboMotivoConsulta_EditValueChanged;
+            cboMotivoConsulta.EditValueChanged += cboMotivoConsulta_EditValueChanged;
 
             // Conectar eventos de los otros combos
-            cboTipoExamen.SelectionChangeCommitted -= cboTipoExamen_SelectionChangeCommitted;
-            cboTipoExamen.SelectionChangeCommitted += cboTipoExamen_SelectionChangeCommitted;
+            cboTipoExamen.EditValueChanged -= cboTipoExamen_EditValueChanged;
+            cboTipoExamen.EditValueChanged += cboTipoExamen_EditValueChanged;
 
-            cboSubTipoExamen.SelectionChangeCommitted -= cboSubTipoExamen_SelectionChangeCommitted;
-            cboSubTipoExamen.SelectionChangeCommitted += cboSubTipoExamen_SelectionChangeCommitted;
+            cboSubTipoExamen.EditValueChanged -= cboSubTipoExamen_EditValueChanged;
+            cboSubTipoExamen.EditValueChanged += cboSubTipoExamen_EditValueChanged;
 
             // Limpiar los otros combos
-            cboTipoExamen.DataSource = null;
-            cboSubTipoExamen.DataSource = null;
+            cboTipoExamen.Properties.DataSource = null;
+            cboSubTipoExamen.Properties.DataSource = null;
         }
         private void panel1_Paint(object sender, PaintEventArgs e)
         {
@@ -3338,7 +3388,7 @@ namespace CapaPresentacion
         /// <summary>
         /// Evento CASCADA NIVEL 3: Cuando cambia cboSubTipoExamen, recarga la grilla con el filtro aplicado
         /// </summary>
-        private void cboSubTipoExamen_SelectionChangeCommitted(object sender, EventArgs e)
+        private void cboSubTipoExamen_EditValueChanged(object sender, EventArgs e)
         {
             try
             {
@@ -3348,7 +3398,7 @@ namespace CapaPresentacion
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error en cboSubTipoExamen_SelectionChangeCommitted: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Error en cboSubTipoExamen_EditValueChanged: {ex.Message}");
             }
         }
 
@@ -3421,7 +3471,8 @@ namespace CapaPresentacion
             if (cbo.SelectedIndex <= 0) return;
 
             string seleccion = cbo.SelectedItem.ToString();
-            TextBox target = (cbo.Name == "cboObsPredefinidasPrev") ? tbObservPreventiva : tbObservacionesLaboral;
+            // Usamos dynamic o object para manejar tanto TextBox como MemoEdit
+            dynamic target = (cbo.Name == "cboObsPredefinidasPrev") ? (object)tbObservPreventiva : (object)tbObservacionesLaboral;
 
             if (seleccion.Contains("PRECIO AUTO"))
             {
@@ -3440,6 +3491,11 @@ namespace CapaPresentacion
                 string limpio = seleccion.Length > 3 ? seleccion.Substring(3) : seleccion;
                 target.Text = limpio;
             }
+        }
+
+        private void pnlFiltrosTop_Paint(object sender, PaintEventArgs e)
+        {
+
         }
 
         private void CboObsPredefinidas_DrawItem(object sender, DrawItemEventArgs e)
