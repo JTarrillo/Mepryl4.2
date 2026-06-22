@@ -527,7 +527,7 @@ namespace CapaDatosMepryl
 
         public DataTable cargarMotivosDeConsultaTipoExamen()
         {
-            return SQLConnector.obtenerTablaSegunConsultaString(@"select id, nombre from dbo.MotivoDeConsulta WITH (NOLOCK)
+            return SQLConnector.obtenerTablaSegunConsultaString(@"select * from dbo.MotivoDeConsulta 
             where nombre <> 'VISITAS' AND ISNULL(estado, 1) = 1
             ORDER BY id ASC");
         }
