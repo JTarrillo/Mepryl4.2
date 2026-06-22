@@ -63,17 +63,33 @@ namespace CapaPresentacion
 
         private void inicializar()
         {
+            System.Diagnostics.Stopwatch stopwatchInicializar = System.Diagnostics.Stopwatch.StartNew();
+            System.Diagnostics.Debug.WriteLine($"[LOG] Iniciando inicializar()");
+
             tipoEx = new CapaNegocioMepryl.TipoExamen();
             turno = new CapaNegocioMepryl.Turno();
             inicializarDgv();
+
+            stopwatchInicializar.Restart();
             cargarMotivoConsulta(); // Dispara cascada (solo carga combos, NO grilla)
+            stopwatchInicializar.Stop();
+            System.Diagnostics.Debug.WriteLine($"[LOG] cargarMotivoConsulta() desde inicializar() demoró: {stopwatchInicializar.ElapsedMilliseconds} ms");
+
             modoConsulta();
+
+            stopwatchInicializar.Restart();
             cargarGrillaTurnosSinFiltro(); // Carga INICIAL de turnos (TODOS los tipos)
+            stopwatchInicializar.Stop();
+            System.Diagnostics.Debug.WriteLine($"[LOG] cargarGrillaTurnosSinFiltro() desde inicializar() demoró: {stopwatchInicializar.ElapsedMilliseconds} ms");
+
             cambiarEnabledBotonProximaFecha();
             blnConsultaExterna = false;
             LimpiarUltimoRegistroIngresado(); // GRV - Modificado
             inicializarObservacionesPredefinidas();
             BotonesRibbon('*');
+
+            stopwatchInicializar.Stop();
+            System.Diagnostics.Debug.WriteLine($"[LOG] inicializar() TOTAL demoró: {stopwatchInicializar.Elapsed.TotalMilliseconds} ms");
         }
 
         private void inicializarDgv()
@@ -136,8 +152,8 @@ namespace CapaPresentacion
             dgv.Enabled = true;
             panelFechaTipoExamen.Enabled = true;
             panelHorario.Enabled = true;
-            panelFiltro.Enabled = true;
-            panelEstado.Enabled = true;
+         
+   
             cambiarVisibilidadBotonesPrincipales();
 
             botEditarExamenLaboral.Visible = false;
@@ -1171,9 +1187,9 @@ namespace CapaPresentacion
             botCancelar.Visible = true;
             dgv.Enabled = false;
             panelFechaTipoExamen.Enabled = false;
-            panelFiltro.Enabled = false;
+           
             panelHorario.Enabled = false;
-            panelEstado.Enabled = false;
+           
             btnCopiarInfo.Visible = false; //GRV - Modificado
             btnVerEstudio.Visible = false;
 
@@ -1959,7 +1975,7 @@ namespace CapaPresentacion
 
         private void botBuscar_Click(object sender, EventArgs e)
         {
-            if (tbFiltro.Text.Trim() == string.Empty)
+            if (searchControl1.Text.Trim() == string.Empty)
             {
                 MessageBox.Show("Por favor ingrese un DNI o nombre", "Búsqueda Vacía",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -1979,7 +1995,7 @@ namespace CapaPresentacion
 
         private void cargarGrillaTurnoConFiltro()
         {
-            string filtro = tbFiltro.Text.Trim();
+            string filtro = searchControl1.Text.Trim();
 
             if (EsDNI(filtro))
             {
@@ -1992,13 +2008,48 @@ namespace CapaPresentacion
                 llenarDgv(turno.buscarTurnosPorNombre(filtro));
             }
         }
+
+        /// <summary>
+        /// Event handler para el SearchControl moderno
+        /// Realiza búsqueda en tiempo real con UX mejorada
+        /// </summary>
+        private void searchControl1_EditValueChanged(object sender, EventArgs e)
+        {
+            string filtro = searchControl1.Text.Trim();
+
+            if (string.IsNullOrEmpty(filtro))
+            {
+                // Si está vacío, recargar todos los turnos
+                cargarGrillaTurnosSinFiltro();
+                return;
+            }
+
+            Cursor.Current = Cursors.WaitCursor;
+            try
+            {
+                if (EsDNI(filtro))
+                {
+                    // Buscar por DNI
+                    llenarDgv(turno.buscarTurnosPorDNI(filtro));
+                }
+                else
+                {
+                    // Buscar por Nombre
+                    llenarDgv(turno.buscarTurnosPorNombre(filtro));
+                }
+            }
+            finally
+            {
+                Cursor.Current = Cursors.Default;
+            }
+        }
         /// <summary>
         /// Método mejorado para buscar turnos por DNI o Nombre
         /// Identifica automáticamente el tipo de búsqueda según el criterio
         /// </summary>
         private void buscarTurnosPorDNIONombre()
         {
-            if (tbFiltro.Text.Trim() == string.Empty)
+            if (searchControl1.Text.Trim() == string.Empty)
             {
                 MessageBox.Show("Por favor ingrese un DNI o nombre para buscar", "Búsqueda Vacía",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -2008,7 +2059,7 @@ namespace CapaPresentacion
             Cursor.Current = Cursors.WaitCursor;
             try
             {
-                string filtro = tbFiltro.Text.Trim();
+                string filtro = searchControl1.Text.Trim();
                 DataTable resultado = null;
 
                 // Validar si es DNI (solo números) o Nombre
@@ -2069,7 +2120,7 @@ namespace CapaPresentacion
 
         private void botLimpiar_Click(object sender, EventArgs e)
         {
-            tbFiltro.Text = "";
+            searchControl1.Text = "";
             cargarGrillaTurnosSinFiltro();
         }
 
@@ -2156,7 +2207,7 @@ namespace CapaPresentacion
             }
         }
 
-        private void tbFiltro_KeyPress(object sender, KeyPressEventArgs e)
+        private void searchControl1_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == (char)Keys.Enter)
             {
@@ -2987,7 +3038,13 @@ namespace CapaPresentacion
         }
         private void cargarMotivoConsulta()
         {
+            System.Diagnostics.Stopwatch stopwatch = System.Diagnostics.Stopwatch.StartNew();
+            System.Diagnostics.Debug.WriteLine($"[LOG] Iniciando cargarMotivoConsulta()");
+
             DataTable dtMotivos = tipoEx.cargarMotivosDeConsultaTipoExamen();
+            stopwatch.Stop();
+            System.Diagnostics.Debug.WriteLine($"[LOG] cargarMotivosDeConsultaTipoExamen() demoró: {stopwatch.ElapsedMilliseconds} ms");
+            stopwatch.Restart();
 
             // Agregar opción "TODOS" al principio
             DataRow rowTodos = dtMotivos.NewRow();
@@ -2998,11 +3055,16 @@ namespace CapaPresentacion
             cboMotivoConsulta.Properties.DataSource = dtMotivos;
             cboMotivoConsulta.Properties.ValueMember = "id";
             cboMotivoConsulta.Properties.DisplayMember = "nombre";
-            cboMotivoConsulta.EditValue = 0; // Selecciona "TODOS" por defecto
 
-            // Conectar el evento EditValueChanged si no está ya conectado
+            // Desconectar el evento ANTES de setear el valor para evitar cascade
             cboMotivoConsulta.EditValueChanged -= cboMotivoConsulta_EditValueChanged;
+            cboMotivoConsulta.EditValue = 0; // Selecciona "TODOS" por defecto
             cboMotivoConsulta.EditValueChanged += cboMotivoConsulta_EditValueChanged;
+
+            stopwatch.Stop();
+            System.Diagnostics.Debug.WriteLine($"[LOG] Configuración de cboMotivoConsulta demoró: {stopwatch.ElapsedMilliseconds} ms");
+
+            stopwatch.Restart();
 
             // Conectar eventos de los otros combos
             cboTipoExamen.EditValueChanged -= cboTipoExamen_EditValueChanged;
@@ -3014,6 +3076,10 @@ namespace CapaPresentacion
             // Limpiar los otros combos
             cboTipoExamen.Properties.DataSource = null;
             cboSubTipoExamen.Properties.DataSource = null;
+
+            stopwatch.Stop();
+            System.Diagnostics.Debug.WriteLine($"[LOG] Limpiar otros combos demoró: {stopwatch.ElapsedMilliseconds} ms");
+            System.Diagnostics.Debug.WriteLine($"[LOG] cargarMotivoConsulta() TOTAL demoró: {stopwatch.Elapsed.TotalMilliseconds} ms");
         }
         private void panel1_Paint(object sender, PaintEventArgs e)
         {
@@ -3045,7 +3111,7 @@ namespace CapaPresentacion
 
         }
 
-        private void tbFiltro_TextChanged(object sender, EventArgs e)
+        private void searchControl1_TextChanged(object sender, EventArgs e)
         {
 
         }

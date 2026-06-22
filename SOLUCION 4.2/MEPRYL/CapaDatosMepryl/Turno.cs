@@ -76,7 +76,7 @@ namespace CapaDatosMepryl
             date = fecha.ToShortDateString();
 
             DataTable turnos = SQLConnector.obtenerTablaSegunConsultaString(@"
-        SELECT 
+        SELECT TOP 500
             t.id as Id,
             COALESCE(tePadre.descripcion, te.descripcion) as TipoPadre,
             COALESCE(
@@ -100,7 +100,7 @@ namespace CapaDatosMepryl
             t.estadoID as IdEstado,
             COALESCE(teReal.id, te.id) as IdSubtipo,
             ISNULL(tePadre.id, te.id) as IdPadre
-        FROM dbo.Turno t
+        FROM dbo.Turno t WITH (NOLOCK)
         INNER JOIN dbo.TurnoEstado e ON t.estadoID = e.id
         INNER JOIN dbo.Horario h ON t.horarioID = h.id
         INNER JOIN dbo.Profesional p ON h.profesionalID = p.id
@@ -1040,50 +1040,39 @@ namespace CapaDatosMepryl
         {
             string strSQL = "";
 
-            strSQL = "select t.id as Id, tep.descripcion as TipoExamen, " +
+            strSQL = "select TOP 200 t.id as Id, tep.descripcion as TipoExamen, " +
                      "p.apellido + ' ' + p.nombres as Profesional, " +
                      "t.fecha as Fecha, t.horaReferencia as Hora, t.nroOrden as Nro, t.pacienteID as idPaciente, " +
                      "t.codigo as Codigo, t.reserva as Reserva, t.usuarioID as Usuario, t.bloqueado as Bloqueado, " +
                      "t.asistio as Asistio, t.reservado as Reservado, tep.id as IdTipoExamen, t.habilitado as Habilitado, t.estadoID as IdEstado " +
-                     "from dbo.Turno t inner join dbo.TurnoEstado e on t.estadoID = e.id " +
+                     "from dbo.Turno t WITH (NOLOCK) inner join dbo.TurnoEstado e on t.estadoID = e.id " +
                      "inner join dbo.Horario h on t.horarioID = h.id inner join dbo.Profesional p on h.profesionalID = p.id " +
                      "inner join dbo.Especialidad tep on h.especialidadID = tep.id " +
-                     "INNER JOIN dbo.Paciente PC ON PC.id = t.pacienteID " +
+                     "INNER JOIN dbo.Paciente PC WITH (NOLOCK) ON PC.id = t.pacienteID " +
                      "WHERE PC.dni LIKE '" + filtro + "%' OR t.codigo LIKE '" + filtro + "%' OR (PC.apellido + ' ' + PC.nombres) LIKE '" + filtro + "%'" +
                      "order by t.fecha, t.hora";
 
             try
             {
-                //                DataTable turnos = SQLConnector.obtenerTablaSegunConsultaString(@"select t.id as Id, tep.descripcion as TipoExamen, 
-                //                    p.apellido + ' ' + p.nombres as Profesional,
-                //                    t.fecha as Fecha, t.horaReferencia as Hora, t.nroOrden as Nro, t.pacienteID as idPaciente,
-                //                    t.codigo as Codigo, t.reserva as Reserva, t.usuarioID as Usuario, t.bloqueado as Bloqueado, 
-                //                    t.asistio as Asistio, t.reservado as Reservado, tep.id as IdTipoExamen, t.habilitado as Habilitado from dbo.Turno t inner join dbo.TurnoEstado e on t.estadoID = e.id
-                //                    inner join dbo.Horario h on t.horarioID = h.id inner join dbo.Profesional p on h.profesionalID = p.id
-                //                    inner join dbo.Especialidad tep on h.especialidadID = tep.id
-                //                    order by t.fecha, t.hora");
                 DataTable turnos = SQLConnector.obtenerTablaSegunConsultaString(strSQL);
 
                 if (turnos.Rows.Count > 0)
                 {
-                    string test;
-                    test = "aa";
-                    test = "aa";
                     return filtrarTabla(generarTablaRetornoTurno(turnos), filtro);
                 }
                 else if (turnos.Rows.Count < 1)
                 {
                     turnos = null;
 
-                    strSQL = "select t.id as Id, tep.descripcion as TipoExamen, " +
+                    strSQL = "select TOP 200 t.id as Id, tep.descripcion as TipoExamen, " +
                      "p.apellido + ' ' + p.nombres as Profesional, " +
                      "t.fecha as Fecha, t.horaReferencia as Hora, t.nroOrden as Nro, t.pacienteID as idPaciente, " +
                      "t.codigo as Codigo, t.reserva as Reserva, t.usuarioID as Usuario, t.bloqueado as Bloqueado, " +
                      "t.asistio as Asistio, t.reservado as Reservado, tep.id as IdTipoExamen, t.habilitado as Habilitado, t.estadoID as IdEstado " +
-                     "from dbo.Turno t inner join dbo.TurnoEstado e on t.estadoID = e.id " +
+                     "from dbo.Turno t WITH (NOLOCK) inner join dbo.TurnoEstado e on t.estadoID = e.id " +
                      "inner join dbo.Horario h on t.horarioID = h.id inner join dbo.Profesional p on h.profesionalID = p.id " +
                      "inner join dbo.Especialidad tep on h.especialidadID = tep.id " +
-                     "INNER JOIN dbo.PacienteLaboral PC ON PC.id = t.pacienteID " +
+                     "INNER JOIN dbo.PacienteLaboral PC WITH (NOLOCK) ON PC.id = t.pacienteID " +
                      "WHERE PC.dni LIKE '" + filtro + "%' OR t.codigo LIKE '" + filtro + "%' OR (PC.apellido + ' ' + PC.nombres) LIKE '" + filtro + "%'" +
                      "order by t.fecha, t.hora";
 
@@ -1091,29 +1080,23 @@ namespace CapaDatosMepryl
 
                     if (turnos.Rows.Count > 0)
                     {
-                        string test;
-                        test = "aa";
-                        test = "aa";
                         return filtrarTabla(generarTablaRetornoTurno(turnos), filtro);
                     }
                     else
                     {
                         turnos = null;
 
-                        strSQL = "select t.id as Id, tep.descripcion as TipoExamen, " +
+                        strSQL = "select TOP 200 t.id as Id, tep.descripcion as TipoExamen, " +
                                 "p.apellido + ' ' + p.nombres as Profesional, " +
                                 "t.fecha as Fecha, t.horaReferencia as Hora, t.nroOrden as Nro, t.pacienteID as idPaciente, " +
                                 "t.codigo as Codigo, t.reserva as Reserva, t.usuarioID as Usuario, t.bloqueado as Bloqueado, " +
                                 "t.asistio as Asistio, t.reservado as Reservado, tep.id as IdTipoExamen, t.habilitado as Habilitado, t.estadoID as IdEstado " +
-                                "from dbo.Turno t inner join dbo.TurnoEstado e on t.estadoID = e.id " +
+                                "from dbo.Turno t WITH (NOLOCK) inner join dbo.TurnoEstado e on t.estadoID = e.id " +
                                 "inner join dbo.Horario h on t.horarioID = h.id inner join dbo.Profesional p on h.profesionalID = p.id " +
                                 "inner join dbo.Especialidad tep on h.especialidadID = tep.id " +
-                                "INNER JOIN dbo.PacienteLaboral PC ON PC.id = t.pacienteID " +
+                                "INNER JOIN dbo.PacienteLaboral PC WITH (NOLOCK) ON PC.id = t.pacienteID " +
                                 "order by t.fecha, t.hora";
                         turnos = SQLConnector.obtenerTablaSegunConsultaString(strSQL);
-                        string test;
-                        test = "aa";
-                        test = "aa";
                         return filtrarTabla(generarTablaRetornoTurno(turnos), filtro);
                     }
                 }
@@ -1531,7 +1514,8 @@ namespace CapaDatosMepryl
             try
             {
                 string strSQL = @"
-                    SELECT t.id as Id, 
+                    SELECT TOP 100
+                        t.id as Id,
                         ISNULL(tePadre.descripcion, te.descripcion) as TipoPadre,
                         te.descripcion as SubTipo,
                         p.apellido + ' ' + p.nombres as Profesional,
@@ -1550,7 +1534,7 @@ namespace CapaDatosMepryl
                         t.estadoID as IdEstado,
                         te.id as IdSubtipo,
                         ISNULL(tePadre.id, te.id) as IdPadre
-                    FROM dbo.Turno t
+                    FROM dbo.Turno t WITH (NOLOCK)
                     INNER JOIN dbo.TurnoEstado e ON t.estadoID = e.id
                     INNER JOIN dbo.Horario h ON t.horarioID = h.id
                     INNER JOIN dbo.Profesional p ON h.profesionalID = p.id
@@ -1559,9 +1543,9 @@ namespace CapaDatosMepryl
                     LEFT JOIN dbo.Especialidad tePadre ON te.IdPadre = tePadre.id AND te.Padre = 0
                     WHERE t.codigo = '" + dni + @"'
                     OR (t.pacienteID IN (
-                        SELECT id FROM dbo.Paciente WHERE dni LIKE '" + dni + @"%'
+                        SELECT TOP 1 id FROM dbo.Paciente WITH (NOLOCK) WHERE dni LIKE '" + dni + @"%'
                         UNION
-                        SELECT id FROM dbo.PacienteLaboral WHERE dni LIKE '" + dni + @"%'
+                        SELECT TOP 1 id FROM dbo.PacienteLaboral WITH (NOLOCK) WHERE dni LIKE '" + dni + @"%'
                     ))
                     ORDER BY t.fecha DESC, t.horaReferencia DESC";
 
@@ -1583,7 +1567,8 @@ namespace CapaDatosMepryl
             try
             {
                 string strSQL = @"
-                    SELECT t.id as Id, 
+                    SELECT TOP 100
+                        t.id as Id,
                         ISNULL(tePadre.descripcion, te.descripcion) as TipoPadre,
                         te.descripcion as SubTipo,
                         p.apellido + ' ' + p.nombres as Profesional,
@@ -1602,7 +1587,7 @@ namespace CapaDatosMepryl
                         t.estadoID as IdEstado,
                         te.id as IdSubtipo,
                         ISNULL(tePadre.id, te.id) as IdPadre
-                    FROM dbo.Turno t
+                    FROM dbo.Turno t WITH (NOLOCK)
                     INNER JOIN dbo.TurnoEstado e ON t.estadoID = e.id
                     INNER JOIN dbo.Horario h ON t.horarioID = h.id
                     INNER JOIN dbo.Profesional p ON h.profesionalID = p.id
@@ -1610,9 +1595,9 @@ namespace CapaDatosMepryl
                     LEFT JOIN dbo.Especialidad te ON h.especialidadID = te.id
                     LEFT JOIN dbo.Especialidad tePadre ON te.IdPadre = tePadre.id AND te.Padre = 0
                     WHERE t.pacienteID IN (
-                        SELECT id FROM dbo.Paciente WHERE (apellido + ' ' + nombres) LIKE '" + nombre + @"%'
+                        SELECT TOP 1 id FROM dbo.Paciente WITH (NOLOCK) WHERE (apellido + ' ' + nombres) LIKE '" + nombre + @"%'
                         UNION
-                        SELECT id FROM dbo.PacienteLaboral WHERE (apellido + ' ' + nombres) LIKE '" + nombre + @"%'
+                        SELECT TOP 1 id FROM dbo.PacienteLaboral WITH (NOLOCK) WHERE (apellido + ' ' + nombres) LIKE '" + nombre + @"%'
                     )
                     ORDER BY t.fecha DESC, t.horaReferencia DESC";
 
@@ -1721,9 +1706,9 @@ namespace CapaDatosMepryl
                 return new DataTable();
 
             return SQLConnector.obtenerTablaSegunConsultaString(@"
-                SELECT * FROM dbo.Especialidad
+                SELECT TOP 50 id FROM dbo.Especialidad WITH (NOLOCK)
                 WHERE IdPadre = '" + idEspecialidad + @"'
-                AND id NOT IN (SELECT id FROM dbo.EspecialidadesEliminadas)");
+                AND id NOT IN (SELECT id FROM dbo.EspecialidadesEliminadas WITH (NOLOCK))");
         }
     }
 }

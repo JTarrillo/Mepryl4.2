@@ -527,7 +527,7 @@ namespace CapaDatosMepryl
 
         public DataTable cargarMotivosDeConsultaTipoExamen()
         {
-            return SQLConnector.obtenerTablaSegunConsultaString(@"select * from dbo.MotivoDeConsulta 
+            return SQLConnector.obtenerTablaSegunConsultaString(@"select id, nombre from dbo.MotivoDeConsulta WITH (NOLOCK)
             where nombre <> 'VISITAS' AND ISNULL(estado, 1) = 1
             ORDER BY id ASC");
         }
@@ -542,19 +542,19 @@ namespace CapaDatosMepryl
                 return new DataTable();
 
             return SQLConnector.obtenerTablaSegunConsultaString(
-                @"SELECT e.* FROM dbo.Especialidad e
+                @"SELECT e.id, e.descripcion, e.Padre, e.IdPadre FROM dbo.Especialidad e WITH (NOLOCK)
           WHERE e.descripcion <> 'VISITAS'
             AND e.idMotivoConsulta = " + id + @"
             AND e.Padre = 1
             AND e.estado = 1
-            AND e.id NOT IN (SELECT id FROM dbo.EspecialidadesEliminadas)
+            AND e.id NOT IN (SELECT id FROM dbo.EspecialidadesEliminadas WITH (NOLOCK))
             -- ✅ NUEVO: Solo PADRES que tienen SUBTIPOS ACTIVOS
             AND EXISTS (
-                SELECT 1 FROM dbo.Especialidad s
-                WHERE s.IdPadre = e.id 
-                  AND s.Padre = 0 
+                SELECT 1 FROM dbo.Especialidad s WITH (NOLOCK)
+                WHERE s.IdPadre = e.id
+                  AND s.Padre = 0
                   AND s.estado = 1
-                  AND s.id NOT IN (SELECT id FROM dbo.EspecialidadesEliminadas)
+                  AND s.id NOT IN (SELECT id FROM dbo.EspecialidadesEliminadas WITH (NOLOCK))
             )
           ORDER BY LOWER(e.descripcion)");
         }
@@ -564,11 +564,11 @@ namespace CapaDatosMepryl
         public DataTable cargarNivel2Especialidad(string idPadre)
         {
             DataTable dt = SQLConnector.obtenerTablaSegunConsultaString(@"
-              SELECT * FROM dbo.Especialidad
-              WHERE Padre = 0 
+              SELECT id, descripcion, Padre, IdPadre FROM dbo.Especialidad WITH (NOLOCK)
+              WHERE Padre = 0
               AND IdPadre = '" + idPadre + @"'
               AND estado = 1
-              AND id NOT IN (SELECT id FROM dbo.EspecialidadesEliminadas)
+              AND id NOT IN (SELECT id FROM dbo.EspecialidadesEliminadas WITH (NOLOCK))
               ORDER BY LOWER(descripcion)");
             if (!dt.Columns.Contains("id") && dt.Columns.Contains("Id"))
                 dt.Columns["Id"].ColumnName = "id";
