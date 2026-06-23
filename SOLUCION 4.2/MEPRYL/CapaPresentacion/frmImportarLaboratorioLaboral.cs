@@ -74,9 +74,9 @@ namespace CapaPresentacion
                 valoresInvalidos.Columns.Add("Fila");
                 valoresInvalidos.Columns.Add("Columna");
                 dtRequeridoMensaje.Columns.Add("Fila");
-                dtRequeridoMensaje.Columns.Add("Columna");                
+                dtRequeridoMensaje.Columns.Add("Columna");
                 dtDatos = UtilMepryl.DatosArchivoExcel(tbArchivo.Text);
-                progressBar.Minimum = 0;                
+                progressBar.Minimum = 0;
                 progressBar.Maximum = dtDatos.Rows.Count;
                 progressBar.Visible = true;
 
@@ -98,7 +98,7 @@ namespace CapaPresentacion
                 progressBar.Visible = false;
                 if (valoresInvalidos.Rows.Count == 0)
                 {
-                    if(!faltanResultados())                    
+                    if(!faltanResultados())
                         MessageBox.Show("¡Importación exitosa! Registros importados correctamente: " + (puntero - 1).ToString(), "Importar", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else
@@ -177,29 +177,47 @@ namespace CapaPresentacion
                     }
                     else
                     {
-                        double oa;
-                        if (double.TryParse(rawFecha.ToString(), out oa))
+                        string rawStr = rawFecha.ToString().Trim();
+
+                        // ✅ PRIORIDAD 1: Si el dato tiene 6 u 8 dígitos, es formato DDMMYY / DDMMYYYY
+                        if (Regex.IsMatch(rawStr, @"^\d{6}$") || Regex.IsMatch(rawStr, @"^\d{8}$"))
                         {
-                            try
-                            {
-                                DateTime fromOADate = DateTime.FromOADate(oa);
-                                fecha = fromOADate.ToString("yyyy-MM-dd");
-                            }
-                            catch
-                            {
-                                if (DateTime.TryParse(rawFecha.ToString(), out dtFecha))
-                                    fecha = dtFecha.ToString("yyyy-MM-dd");
-                                else
-                                    fecha = procesarFecha(rawFecha.ToString());
-                            }
+                            fecha = procesarFecha(rawStr);
                         }
-                        else if (DateTime.TryParse(rawFecha.ToString(), out dtFecha))
+                        // PRIORIDAD 2: Intentar parsear como fecha string normal
+                        else if (DateTime.TryParse(rawStr, out dtFecha))
                         {
                             fecha = dtFecha.ToString("yyyy-MM-dd");
                         }
+                        // PRIORIDAD 3: Intentar como OADate de Excel (solo si es número grande)
                         else
                         {
-                            fecha = procesarFecha(rawFecha.ToString());
+                            double oa;
+                            if (double.TryParse(rawStr, out oa))
+                            {
+                                try
+                                {
+                                    // Las fechas actuales en OADate están en el rango 40000-60000
+                                    // Si es un número fuera de este rango, probablemente sea DDMMYY
+                                    if (oa > 30000 && oa < 70000)
+                                    {
+                                        DateTime fromOADate = DateTime.FromOADate(oa);
+                                        fecha = fromOADate.ToString("yyyy-MM-dd");
+                                    }
+                                    else
+                                    {
+                                        fecha = procesarFecha(rawStr);
+                                    }
+                                }
+                                catch
+                                {
+                                    fecha = procesarFecha(rawStr);
+                                }
+                            }
+                            else
+                            {
+                                fecha = procesarFecha(rawStr);
+                            }
                         }
                     }
                 }
@@ -207,21 +225,18 @@ namespace CapaPresentacion
                 {
                     fecha = string.Empty;
                 }
-                // Debug: mostrar información clave para diagnosticar parsing/consulta
-                Debug.WriteLine($"[ImportLaboralLaboral] Puntero={puntero} RawFecha='{rawFecha}' FechaParseada='{fecha}'");
-                string examen01 = CorregirIdentificador(row.ItemArray[1].ToString());
-                Debug.WriteLine($"[ImportLaboralLaboral] ExamenIdentificador='{examen01}'");
-                DataTable tipoExamen = SQLConnector.obtenerTablaSegunConsultaString(@"Select tep.id from dbo.TipoExamenDePaciente 
-                tep inner join dbo.Consulta c on tep.idConsulta = c.id AND C.tipo = 'L' 
-                where Convert(date,c.fecha) = '" + fecha + "' and c.identificador = '" + examen01.ToString() + "'");
-                Debug.WriteLine($"[ImportLaboralLaboral] Query executed; tipoExamen.Rows.Count={tipoExamen.Rows.Count}");
 
-            dtDatoRequerido.Clear();
-            test = tipoExamen.Rows[0][0].ToString();
-            dtDatoRequerido = examen.ComprobarEstudioPorExamen(tipoExamen.Rows[0][0].ToString());
+                string examen01 = CorregirIdentificador(row.ItemArray[1].ToString());
+                DataTable tipoExamen = SQLConnector.obtenerTablaSegunConsultaString(@"Select tep.id from dbo.TipoExamenDePaciente
+                tep inner join dbo.Consulta c on tep.idConsulta = c.id
+                where Convert(date,c.fecha) = '" + fecha + "' and c.identificador = '" + examen01.ToString() + "'");
 
                 if (tipoExamen.Rows.Count > 0)
                 {
+                    dtDatoRequerido.Clear();
+                    test = tipoExamen.Rows[0][0].ToString();
+                    dtDatoRequerido = examen.ComprobarEstudioPorExamen(tipoExamen.Rows[0][0].ToString());
+
                     procesarLaboratorio(examen01, fecha, row);
                     //CampoRequerido(puntero, row);                
                     CampoRequerido(ObtieneNroOrden(row.ItemArray[1].ToString()), row);

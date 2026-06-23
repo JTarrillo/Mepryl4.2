@@ -936,11 +936,19 @@ namespace CapaPresentacion
                             idConsulta = insertarEnBaseDeDatosOtros("EC", 0, "");
                         System.Diagnostics.Debug.WriteLine($"[ingresarPaciente] idConsulta generado: {idConsulta}");
 
-                        List<string> lista = SQLConnector.generarListaParaProcedure("@id", "@valor");
-                        SQLConnector.executeProcedure("sp_Turno_UpdateMesaDeEntrada", lista, dgvTurno.SelectedRows[0].Cells[0].Value.ToString(), "1");
+                        // FIX: Solo actualizar mesaDeEntrada si se generó idConsulta correctamente
+                        if (!string.IsNullOrEmpty(idConsulta))
+                        {
+                            List<string> lista = SQLConnector.generarListaParaProcedure("@id", "@valor");
+                            SQLConnector.executeProcedure("sp_Turno_UpdateMesaDeEntrada", lista, dgvTurno.SelectedRows[0].Cells[0].Value.ToString(), "1");
 
-                        List<string> list = SQLConnector.generarListaParaProcedure("@idTurno", "@idConsulta");
-                        SQLConnector.executeProcedure("sp_Items_UpdateItemsPorPaciente", list, dgvTurno.SelectedRows[0].Cells[0].Value.ToString(), idConsulta);
+                            List<string> list = SQLConnector.generarListaParaProcedure("@idTurno", "@idConsulta");
+                            SQLConnector.executeProcedure("sp_Items_UpdateItemsPorPaciente", list, dgvTurno.SelectedRows[0].Cells[0].Value.ToString(), idConsulta);
+                        }
+                        else
+                        {
+                            System.Diagnostics.Debug.WriteLine($"[ingresarPaciente] ERROR: idConsulta está vacío, no se ejecutó sp_Turno_UpdateMesaDeEntrada");
+                        }
 
                         char tipoPaciente = mesaEntrada.verificarTipoPaciente(new Guid(idPacienteTurno));
                         System.Diagnostics.Debug.WriteLine($"[ingresarPaciente] tipoPaciente: {tipoPaciente}");
