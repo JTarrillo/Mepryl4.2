@@ -636,7 +636,7 @@ namespace CapaPresentacion
                         botModificar.Visible = false;
                         botLiberar.Visible = false;
                         btnCopiarInfo.Visible = false;
-                        btnWhatsApp.Visible = false;
+                       
                         btnVerEstudio.Visible = false;
                     }
                     else
@@ -644,7 +644,6 @@ namespace CapaPresentacion
                         botModificar.Visible = true;
                         botLiberar.Visible = true;
                         btnCopiarInfo.Visible = true; //GRV - Visible para todos los tipos de turno
-                        btnWhatsApp.Visible = true; // WhatsApp visible para todos los tipos de turno
                         btnVerEstudio.Visible = true;
                     }
 
@@ -666,7 +665,6 @@ namespace CapaPresentacion
                         btnMoverTurno.Visible = false; // GRV - Modificado
                     }
 
-                    btnWhatsApp.Visible = false; // WhatsApp oculto si no hay turno asignado
                     botModificar.Visible = false;
                     botLiberar.Visible = false;
                     btnCopiarInfo.Visible = false; //GRV - Modificado
@@ -679,7 +677,6 @@ namespace CapaPresentacion
                 botModificar.Visible = false;
                 botLiberar.Visible = false;
                 btnCopiarInfo.Visible = false; //GRV - Modificado
-                btnWhatsApp.Visible = false; // WhatsApp oculto si no hay selección
                 btnVerEstudio.Visible = false;
                 btnMoverTurno.Visible = false;
             }

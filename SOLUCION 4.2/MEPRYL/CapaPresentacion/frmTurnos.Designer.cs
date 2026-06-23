@@ -29,7 +29,7 @@ namespace CapaPresentacion
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmTurnos));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             this.lbTitulo = new System.Windows.Forms.Label();
             this.labelSubTipoExamen = new System.Windows.Forms.Label();
             this.cboSubTipoExamen = new System.Windows.Forms.ComboBox();
@@ -38,7 +38,6 @@ namespace CapaPresentacion
             this.cboMotivoConsulta = new System.Windows.Forms.ComboBox();
             this.cboTipoExamen = new System.Windows.Forms.ComboBox();
             this.botonLaboratorio = new System.Windows.Forms.Panel();
-            this.btnWhatsApp = new System.Windows.Forms.Button();
             this.btnCancelarMover = new System.Windows.Forms.Button();
             this.btnMoverTurno = new System.Windows.Forms.Button();
             this.btnVerEstudio = new System.Windows.Forms.Button();
@@ -272,7 +271,6 @@ namespace CapaPresentacion
             // 
             this.botonLaboratorio.BackColor = System.Drawing.SystemColors.ControlLight;
             this.botonLaboratorio.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.botonLaboratorio.Controls.Add(this.btnWhatsApp);
             this.botonLaboratorio.Controls.Add(this.btnCancelarMover);
             this.botonLaboratorio.Controls.Add(this.btnMoverTurno);
             this.botonLaboratorio.Controls.Add(this.btnVerEstudio);
@@ -294,20 +292,6 @@ namespace CapaPresentacion
             this.botonLaboratorio.Size = new System.Drawing.Size(134, 682);
             this.botonLaboratorio.TabIndex = 129;
             // 
-            // btnWhatsApp
-            // 
-            this.btnWhatsApp.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold);
-            this.btnWhatsApp.Image = ((System.Drawing.Image)(resources.GetObject("btnWhatsApp.Image")));
-            this.btnWhatsApp.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnWhatsApp.Location = new System.Drawing.Point(9, 198);
-            this.btnWhatsApp.Name = "btnWhatsApp";
-            this.btnWhatsApp.Size = new System.Drawing.Size(120, 45);
-            this.btnWhatsApp.TabIndex = 135;
-            this.btnWhatsApp.Text = "WhatsApp";
-            this.btnWhatsApp.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.btnWhatsApp.UseVisualStyleBackColor = true;
-            this.btnWhatsApp.Click += new System.EventHandler(this.btnWhatsApp_Click);
-            // 
             // btnCancelarMover
             // 
             this.btnCancelarMover.FlatAppearance.BorderColor = System.Drawing.Color.Black;
@@ -315,7 +299,7 @@ namespace CapaPresentacion
             this.btnCancelarMover.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.btnCancelarMover.Image = ((System.Drawing.Image)(resources.GetObject("btnCancelarMover.Image")));
             this.btnCancelarMover.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnCancelarMover.Location = new System.Drawing.Point(9, 487);
+            this.btnCancelarMover.Location = new System.Drawing.Point(9, 252);
             this.btnCancelarMover.Name = "btnCancelarMover";
             this.btnCancelarMover.Size = new System.Drawing.Size(120, 45);
             this.btnCancelarMover.TabIndex = 134;
@@ -333,7 +317,7 @@ namespace CapaPresentacion
             this.btnMoverTurno.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.btnMoverTurno.Image = ((System.Drawing.Image)(resources.GetObject("btnMoverTurno.Image")));
             this.btnMoverTurno.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnMoverTurno.Location = new System.Drawing.Point(9, 611);
+            this.btnMoverTurno.Location = new System.Drawing.Point(9, 201);
             this.btnMoverTurno.Name = "btnMoverTurno";
             this.btnMoverTurno.Size = new System.Drawing.Size(120, 45);
             this.btnMoverTurno.TabIndex = 133;
@@ -395,7 +379,7 @@ namespace CapaPresentacion
             this.botAsignar.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.botAsignar.Image = ((System.Drawing.Image)(resources.GetObject("botAsignar.Image")));
             this.botAsignar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.botAsignar.Location = new System.Drawing.Point(9, 487);
+            this.botAsignar.Location = new System.Drawing.Point(9, 252);
             this.botAsignar.Name = "botAsignar";
             this.botAsignar.Size = new System.Drawing.Size(120, 45);
             this.botAsignar.TabIndex = 7;
@@ -411,7 +395,7 @@ namespace CapaPresentacion
             this.botCancelar.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.botCancelar.Image = ((System.Drawing.Image)(resources.GetObject("botCancelar.Image")));
             this.botCancelar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.botCancelar.Location = new System.Drawing.Point(9, 319);
+            this.botCancelar.Location = new System.Drawing.Point(7, 252);
             this.botCancelar.Name = "botCancelar";
             this.botCancelar.Size = new System.Drawing.Size(120, 45);
             this.botCancelar.TabIndex = 6;
@@ -426,7 +410,7 @@ namespace CapaPresentacion
             this.botAceptar.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.botAceptar.Image = ((System.Drawing.Image)(resources.GetObject("botAceptar.Image")));
             this.botAceptar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.botAceptar.Location = new System.Drawing.Point(9, 259);
+            this.botAceptar.Location = new System.Drawing.Point(9, 201);
             this.botAceptar.Name = "botAceptar";
             this.botAceptar.Size = new System.Drawing.Size(120, 45);
             this.botAceptar.TabIndex = 5;
@@ -441,7 +425,7 @@ namespace CapaPresentacion
             this.botLiberar.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.botLiberar.Image = ((System.Drawing.Image)(resources.GetObject("botLiberar.Image")));
             this.botLiberar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.botLiberar.Location = new System.Drawing.Point(9, 550);
+            this.botLiberar.Location = new System.Drawing.Point(9, 252);
             this.botLiberar.Name = "botLiberar";
             this.botLiberar.Size = new System.Drawing.Size(120, 45);
             this.botLiberar.TabIndex = 4;
@@ -457,7 +441,7 @@ namespace CapaPresentacion
             this.botModificar.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.botModificar.Image = ((System.Drawing.Image)(resources.GetObject("botModificar.Image")));
             this.botModificar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.botModificar.Location = new System.Drawing.Point(9, 143);
+            this.botModificar.Location = new System.Drawing.Point(7, 136);
             this.botModificar.Name = "botModificar";
             this.botModificar.Size = new System.Drawing.Size(120, 45);
             this.botModificar.TabIndex = 3;
@@ -532,14 +516,13 @@ namespace CapaPresentacion
             this.botSelecSubtipoExamen.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.botSelecSubtipoExamen.Image = ((System.Drawing.Image)(resources.GetObject("botSelecSubtipoExamen.Image")));
             this.botSelecSubtipoExamen.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.botSelecSubtipoExamen.Location = new System.Drawing.Point(9, 143);
+            this.botSelecSubtipoExamen.Location = new System.Drawing.Point(7, 547);
             this.botSelecSubtipoExamen.Name = "botSelecSubtipoExamen";
             this.botSelecSubtipoExamen.Size = new System.Drawing.Size(120, 45);
             this.botSelecSubtipoExamen.TabIndex = 44;
             this.botSelecSubtipoExamen.Text = "Modificar Tipo/Subt.";
             this.botSelecSubtipoExamen.TextAlign = System.Drawing.ContentAlignment.BottomRight;
             this.botSelecSubtipoExamen.UseVisualStyleBackColor = true;
-            this.botSelecSubtipoExamen.Visible = false;
             this.botSelecSubtipoExamen.Click += new System.EventHandler(this.botSelecSubtipoExamen_Click);
             // 
             // botTurno
@@ -1168,14 +1151,14 @@ namespace CapaPresentacion
             this.dgvLigaYClub.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.dgvLigaYClub.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvLigaYClub.ColumnHeadersVisible = false;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Tahoma", 8.25F);
-            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvLigaYClub.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Tahoma", 8.25F);
+            dataGridViewCellStyle4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(31)))), ((int)(((byte)(53)))));
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvLigaYClub.DefaultCellStyle = dataGridViewCellStyle4;
             this.dgvLigaYClub.GridColor = System.Drawing.SystemColors.Control;
             this.dgvLigaYClub.Location = new System.Drawing.Point(15, 209);
             this.dgvLigaYClub.MultiSelect = false;
@@ -2077,6 +2060,5 @@ namespace CapaPresentacion
         private System.Windows.Forms.Button botTurno;
         private System.Windows.Forms.Label labelTipoExamen;
         private System.Windows.Forms.Label labelSubTipoExamen;
-        private System.Windows.Forms.Button btnWhatsApp;
     }
 }
