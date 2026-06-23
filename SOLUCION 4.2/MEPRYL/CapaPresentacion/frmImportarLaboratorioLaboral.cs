@@ -34,7 +34,7 @@ namespace CapaPresentacion
             //form = frm;
             examen = new CapaNegocioMepryl.Examen();
             UtilMepryl = new CapaNegocioMepryl.UtilidadesMepryl();
-            preventiva = new CapaNegocioMepryl.ExamenPreventiva();      
+            preventiva = new CapaNegocioMepryl.ExamenPreventiva();
             validaciones = SQLConnector.obtenerTablaSegunConsultaString("Select * from dbo.Validaciones");
         }
 
@@ -74,9 +74,9 @@ namespace CapaPresentacion
                 valoresInvalidos.Columns.Add("Fila");
                 valoresInvalidos.Columns.Add("Columna");
                 dtRequeridoMensaje.Columns.Add("Fila");
-                dtRequeridoMensaje.Columns.Add("Columna");                
+                dtRequeridoMensaje.Columns.Add("Columna");
                 dtDatos = UtilMepryl.DatosArchivoExcel(tbArchivo.Text);
-                progressBar.Minimum = 0;                
+                progressBar.Minimum = 0;
                 progressBar.Maximum = dtDatos.Rows.Count;
                 progressBar.Visible = true;
 
@@ -98,7 +98,7 @@ namespace CapaPresentacion
                 progressBar.Visible = false;
                 if (valoresInvalidos.Rows.Count == 0)
                 {
-                    if(!faltanResultados())                    
+                    if (!faltanResultados())
                         MessageBox.Show("¡Importación exitosa! Registros importados correctamente: " + (puntero - 1).ToString(), "Importar", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else
@@ -169,57 +169,55 @@ namespace CapaPresentacion
                 string fecha;
                 object rawFecha = row.ItemArray[0];
                 DateTime dtFecha;
-
                 if (rawFecha != null)
                 {
-                    string rawStr = rawFecha.ToString().Trim();
-
-                    // ✅ CORRECCIÓN: Si el dato tiene 6 u 8 dígitos, es nuestro formato DDMMYY / DDMMYYYY.
-                    // Priorizamos esto antes que el formato numérico de Excel (OADate), 
-                    // ya que '090626' se interpreta erróneamente como el año 2148 en Excel.
-                    if (Regex.IsMatch(rawStr, @"^\d{6}$") || Regex.IsMatch(rawStr, @"^\d{8}$"))
-                    {
-                        fecha = procesarFecha(rawStr);
-                    }
-                    else if (rawFecha is DateTime)
+                    if (rawFecha is DateTime)
                     {
                         fecha = ((DateTime)rawFecha).ToString("yyyy-MM-dd");
                     }
                     else
                     {
-                        // Intentar tratar como fecha numérica de Excel (OADate)
-                        double oa;
-                        if (double.TryParse(rawStr, out oa))
+                        string rawStr = rawFecha.ToString().Trim();
+
+                        // ✅ PRIORIDAD 1: Si el dato tiene 6 u 8 dígitos, es formato DDMMYY / DDMMYYYY
+                        if (Regex.IsMatch(rawStr, @"^\d{6}$") || Regex.IsMatch(rawStr, @"^\d{8}$"))
                         {
-                            try
-                            {
-                                // Las fechas actuales en OADate están en el rango 40000-60000.
-                                // Si es un número fuera de este rango, probablemente sea DDMMYY.
-                                if (oa > 30000 && oa < 70000)
-                                {
-                                    DateTime fromOADate = DateTime.FromOADate(oa);
-                                    fecha = fromOADate.ToString("yyyy-MM-dd");
-                                }
-                                else
-                                {
-                                    fecha = procesarFecha(rawStr);
-                                }
-                            }
-                            catch
-                            {
-                                if (DateTime.TryParse(rawStr, out dtFecha))
-                                    fecha = dtFecha.ToString("yyyy-MM-dd");
-                                else
-                                    fecha = procesarFecha(rawStr);
-                            }
+                            fecha = procesarFecha(rawStr);
                         }
+                        // PRIORIDAD 2: Intentar parsear como fecha string normal
                         else if (DateTime.TryParse(rawStr, out dtFecha))
                         {
                             fecha = dtFecha.ToString("yyyy-MM-dd");
                         }
+                        // PRIORIDAD 3: Intentar como OADate de Excel (solo si es número grande)
                         else
                         {
-                            fecha = procesarFecha(rawStr);
+                            double oa;
+                            if (double.TryParse(rawStr, out oa))
+                            {
+                                try
+                                {
+                                    // Las fechas actuales en OADate están en el rango 40000-60000
+                                    // Si es un número fuera de este rango, probablemente sea DDMMYY
+                                    if (oa > 30000 && oa < 70000)
+                                    {
+                                        DateTime fromOADate = DateTime.FromOADate(oa);
+                                        fecha = fromOADate.ToString("yyyy-MM-dd");
+                                    }
+                                    else
+                                    {
+                                        fecha = procesarFecha(rawStr);
+                                    }
+                                }
+                                catch
+                                {
+                                    fecha = procesarFecha(rawStr);
+                                }
+                            }
+                            else
+                            {
+                                fecha = procesarFecha(rawStr);
+                            }
                         }
                     }
                 }
@@ -227,21 +225,18 @@ namespace CapaPresentacion
                 {
                     fecha = string.Empty;
                 }
-                // Debug: mostrar información clave para diagnosticar parsing/consulta
-                Debug.WriteLine($"[ImportLaboralLaboral] Puntero={puntero} RawFecha='{rawFecha}' FechaParseada='{fecha}'");
-                string examen01 = CorregirIdentificador(row.ItemArray[1].ToString());
-                Debug.WriteLine($"[ImportLaboralLaboral] ExamenIdentificador='{examen01}'");
-                DataTable tipoExamen = SQLConnector.obtenerTablaSegunConsultaString(@"Select tep.id from dbo.TipoExamenDePaciente 
-                tep inner join dbo.Consulta c on tep.idConsulta = c.id AND C.tipo = 'L' 
-                where Convert(date,c.fecha) = '" + fecha + "' and c.identificador = '" + examen01.ToString() + "'");
-                Debug.WriteLine($"[ImportLaboralLaboral] Query executed; tipoExamen.Rows.Count={tipoExamen.Rows.Count}");
 
-            dtDatoRequerido.Clear();
-            test = tipoExamen.Rows[0][0].ToString();
-            dtDatoRequerido = examen.ComprobarEstudioPorExamen(tipoExamen.Rows[0][0].ToString());
+                string examen01 = CorregirIdentificador(row.ItemArray[1].ToString());
+                DataTable tipoExamen = SQLConnector.obtenerTablaSegunConsultaString(@"Select tep.id from dbo.TipoExamenDePaciente
+                tep inner join dbo.Consulta c on tep.idConsulta = c.id
+                where Convert(date,c.fecha) = '" + fecha + "' and c.identificador = '" + examen01.ToString() + "'");
 
                 if (tipoExamen.Rows.Count > 0)
                 {
+                    dtDatoRequerido.Clear();
+                    test = tipoExamen.Rows[0][0].ToString();
+                    dtDatoRequerido = examen.ComprobarEstudioPorExamen(tipoExamen.Rows[0][0].ToString());
+
                     procesarLaboratorio(examen01, fecha, row);
                     //CampoRequerido(puntero, row);                
                     CampoRequerido(ObtieneNroOrden(row.ItemArray[1].ToString()), row);
@@ -383,7 +378,7 @@ namespace CapaPresentacion
             {
                 valores.Add("");
                 marcarComoInvalido(ObtieneNroOrden(fila.ItemArray[1].ToString()), 4);
-                
+
             }
             if (fila.ItemArray[5].ToString() != "" && fila.ItemArray[5].ToString() != "*")
             {
@@ -402,7 +397,7 @@ namespace CapaPresentacion
             {
                 valores.Add("");
                 marcarComoInvalido(ObtieneNroOrden(fila.ItemArray[1].ToString()), 6);
-                
+
             }
             if (fila.ItemArray[7].ToString() != "" && fila.ItemArray[7].ToString() != "*")
             {
@@ -478,7 +473,7 @@ namespace CapaPresentacion
                 //marcarComoInvalido(puntero, 15);                
             }
 
-            valores.Add(obtenerIdValorChagas(fila.ItemArray[16].ToString(), validaciones));            
+            valores.Add(obtenerIdValorChagas(fila.ItemArray[16].ToString(), validaciones));
             valores.Add(obtenerIdColor(fila.ItemArray[17].ToString(), validaciones));
             valores.Add(obtenerIdAspecto(fila.ItemArray[18].ToString(), validaciones));
 
@@ -501,9 +496,9 @@ namespace CapaPresentacion
                 valores.Add("");
                 //marcarComoInvalido(puntero, 20);
             }
-            valores.Add(obtenerId(fila.ItemArray[21].ToString(), "51", validaciones, 21));            
-            valores.Add(obtenerId(fila.ItemArray[22].ToString(), "52", validaciones, 22));                
-            valores.Add(obtenerId(fila.ItemArray[23].ToString(), "53", validaciones, 23));            
+            valores.Add(obtenerId(fila.ItemArray[21].ToString(), "51", validaciones, 21));
+            valores.Add(obtenerId(fila.ItemArray[22].ToString(), "52", validaciones, 22));
+            valores.Add(obtenerId(fila.ItemArray[23].ToString(), "53", validaciones, 23));
             valores.Add(obtenerId(fila.ItemArray[24].ToString(), "53", validaciones, 24));
             valores.Add(obtenerId(fila.ItemArray[25].ToString(), "54", validaciones, 25));
             valores.Add(obtenerIdCelulas(fila.ItemArray[26].ToString(), "55", validaciones, 26)); // Celulas
@@ -518,7 +513,7 @@ namespace CapaPresentacion
             }
             else
             {
-                valores.Add("");                
+                valores.Add("");
             }
             if (fila.ItemArray[32].ToString() != "" && fila.ItemArray[32].ToString() != "*")
             {
@@ -526,7 +521,7 @@ namespace CapaPresentacion
             }
             else
             {
-                valores.Add("");                
+                valores.Add("");
             }
             if (fila.ItemArray[33].ToString() != "" && fila.ItemArray[33].ToString() != "*")
             {
@@ -543,7 +538,7 @@ namespace CapaPresentacion
             else
             {
                 valores.Add("");
-            }            
+            }
             if (fila.ItemArray[35].ToString() != "" && fila.ItemArray[35].ToString() != "*")
             {
                 valores.Add(fila.ItemArray[35].ToString());
@@ -552,11 +547,11 @@ namespace CapaPresentacion
             {
                 valores.Add("");
             }
-            
+
             valores.Add(obtenerIdValorFactor(fila.ItemArray[36].ToString()));
             valores.Add(obtenerIdValorVDRL(fila.ItemArray[37].ToString(), validaciones));
             valores.Add(obtenerIdValorEmbarazo(fila.ItemArray[38].ToString(), validaciones));
-            
+
             if (fila.ItemArray[39].ToString() != "" && fila.ItemArray[39].ToString() != "*")
             {
                 valores.Add(fila.ItemArray[39].ToString());
@@ -737,7 +732,7 @@ namespace CapaPresentacion
         {
             preventiva.guardarExLaboratorio(cargarEntidad(idTipoExamen, valores));
         }
-        
+
         private string obtenerIdColor(string valor, DataTable validaciones)
         {
             string idValidacion = "";
@@ -808,7 +803,7 @@ namespace CapaPresentacion
 
 
         }
-        
+
         private string obtenerIdValorChagas(string valor, DataTable validaciones)
         {
             string idValidacion = "";
@@ -877,7 +872,7 @@ namespace CapaPresentacion
             else if (valor == "*")
             {
                 //idValidacion = filtrarTablaDescripcion(validaciones, "43", "3");
-                idValidacion = "";                
+                idValidacion = "";
             }
             else if (valor == "")
             {
@@ -887,7 +882,7 @@ namespace CapaPresentacion
             else
             {
                 idValidacion = "";
-                marcarComoInvalido(puntero, 38);                
+                marcarComoInvalido(puntero, 38);
             }
             return idValidacion;
         }
@@ -1345,22 +1340,22 @@ namespace CapaPresentacion
             {
                 strCorregido = Ident.Remove(Ident.IndexOf("L"), 2);
                 intNumero = Convert.ToInt32(strCorregido);
-                
+
             }
             else if (Ident.Contains("EC"))
             {
                 strCorregido = Ident.Remove(Ident.IndexOf("E"), 3);
-                intNumero = Convert.ToInt32(strCorregido);                
+                intNumero = Convert.ToInt32(strCorregido);
             }
             else if (Ident.Contains("C"))
             {
                 strCorregido = Ident.Remove(Ident.IndexOf("C"), 2);
-                intNumero = Convert.ToInt32(strCorregido);                
+                intNumero = Convert.ToInt32(strCorregido);
             }
             else if (Ident.Contains("R"))
             {
                 strCorregido = Ident.Remove(Ident.IndexOf("R"), 2);
-                intNumero = Convert.ToInt32(strCorregido);                
+                intNumero = Convert.ToInt32(strCorregido);
             }
 
             return intNumero;
