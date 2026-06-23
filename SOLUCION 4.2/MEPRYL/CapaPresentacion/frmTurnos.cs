@@ -152,8 +152,8 @@ namespace CapaPresentacion
             dgv.Enabled = true;
             panelFechaTipoExamen.Enabled = true;
             panelHorario.Enabled = true;
-         
-   
+
+
             cambiarVisibilidadBotonesPrincipales();
 
             botEditarExamenLaboral.Visible = false;
@@ -173,9 +173,9 @@ namespace CapaPresentacion
         {
             botProxFechaLibre.Enabled = false;
             // Habilitar si hay un tipo de examen seleccionado (no TODOS)
-            if (cboTipoExamen.EditValue != null && cboTipoExamen.EditValue != DBNull.Value && (Guid)cboTipoExamen.EditValue != Guid.Empty) 
-            { 
-                botProxFechaLibre.Enabled = true; 
+            if (cboTipoExamen.EditValue != null && cboTipoExamen.EditValue != DBNull.Value && (Guid)cboTipoExamen.EditValue != Guid.Empty)
+            {
+                botProxFechaLibre.Enabled = true;
             }
         }
 
@@ -789,10 +789,10 @@ namespace CapaPresentacion
             tbImportePreventiva.Text = tipoExamenActual.PrecioBase.ToString("N0");
             tbImporteListaPreventiva.Text = tipoExamenActual.PrecioLista.ToString("N0");
             tbSeñaPreventiva.Text = tipoExamenActual.Seña.ToString("N0");
-            
+
             // ✅ Recalcular balance
             ActualizarPreciosPanelPreventiva();
-            
+
             tbExamenPreventiva.Text = tipoExamenActual.Descripcion;
             if (tipoExamenActual.Modificado)
             {
@@ -890,10 +890,10 @@ namespace CapaPresentacion
             tbImporteLaboral.Text = tipoExamenActual.PrecioBase.ToString("N0");
             tbImporteListaLaboral.Text = tipoExamenActual.PrecioLista.ToString("N0");
             tbSeñaLaboral.Text = tipoExamenActual.Seña.ToString("N0");
-            
+
             // ✅ Recalcular balance
             ActualizarPreciosPanelLaboral();
-            
+
             tbExamenLaboral.Text = dgv.Rows[dgv.CurrentCell.RowIndex].Cells["SubTipoExamen"].Value?.ToString();
             if (tipoExamenActual.Modificado)
             {
@@ -1187,9 +1187,9 @@ namespace CapaPresentacion
             botCancelar.Visible = true;
             dgv.Enabled = false;
             panelFechaTipoExamen.Enabled = false;
-           
+
             panelHorario.Enabled = false;
-           
+
             btnCopiarInfo.Visible = false; //GRV - Modificado
             btnVerEstudio.Visible = false;
 
@@ -1449,7 +1449,7 @@ namespace CapaPresentacion
             if (tipoExamenActual == null) return;
             tipoExamenActual.Seña = obtenerDoubleDesdeTextBox(tbSeñaPreventiva.Text, tipoExamenActual.Seña);
             tbObservPreventiva.Text = generarObservaciones(tipoExamenActual);
-            
+
             // ✅ Actualizar textboxes de importe restando la seña
             ActualizarPreciosPanelPreventiva();
         }
@@ -1553,7 +1553,7 @@ namespace CapaPresentacion
             tbImportePreventiva.Text = tipoEx.PrecioBase.ToString("N0");
             tbImporteListaPreventiva.Text = tipoEx.PrecioLista.ToString("N0");
             tbSeñaPreventiva.Text = tipoEx.Seña.ToString("N0");
-            
+
             // ✅ Recalcular balance
             ActualizarPreciosPanelPreventiva();
 
@@ -2021,6 +2021,12 @@ namespace CapaPresentacion
             {
                 // Si está vacío, recargar todos los turnos
                 cargarGrillaTurnosSinFiltro();
+                return;
+            }
+
+            // Solo filtrar si tiene al menos 8 caracteres
+            if (filtro.Length < 8)
+            {
                 return;
             }
 
@@ -3475,7 +3481,7 @@ namespace CapaPresentacion
                 // Configurar ComboBox para Preventiva
                 cboObsPredefinidasPrev = new ComboBox();
                 cboObsPredefinidasPrev.Name = "cboObsPredefinidasPrev";
-                cboObsPredefinidasPrev.Location = new Point(324, 148); // Subido un poco para dar aire
+                cboObsPredefinidasPrev.Location = new Point(324, 115); // Subido un poco para dar aire
                 cboObsPredefinidasPrev.Size = new Size(233, 21);
                 cboObsPredefinidasPrev.DropDownStyle = ComboBoxStyle.DropDownList;
                 cboObsPredefinidasPrev.DrawMode = DrawMode.OwnerDrawFixed;
@@ -3488,7 +3494,7 @@ namespace CapaPresentacion
                 // Configurar ComboBox para Laboral
                 cboObsPredefinidasLab = new ComboBox();
                 cboObsPredefinidasLab.Name = "cboObsPredefinidasLab";
-                cboObsPredefinidasLab.Location = new Point(345, 133); // Subido un poco para dar aire
+                cboObsPredefinidasLab.Location = new Point(345, 110); // Subido un poco para dar aire
                 cboObsPredefinidasLab.Size = new Size(216, 21);
                 cboObsPredefinidasLab.DropDownStyle = ComboBoxStyle.DropDownList;
                 cboObsPredefinidasLab.DrawMode = DrawMode.OwnerDrawFixed;

@@ -29,7 +29,7 @@ namespace CapaPresentacion
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmTurnos));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.lbTitulo = new DevExpress.XtraEditors.LabelControl();
             this.labelSubTipoExamen = new DevExpress.XtraEditors.LabelControl();
             this.cboSubTipoExamen = new DevExpress.XtraEditors.LookUpEdit();
@@ -63,12 +63,13 @@ namespace CapaPresentacion
             this.txtFNacLab = new DevExpress.XtraEditors.DateEdit();
             this.txtEdadLab = new DevExpress.XtraEditors.TextEdit();
             this.tbTelefonoLaboral = new DevExpress.XtraEditors.TextEdit();
+            this.tbIdEmpresaLaboral = new System.Windows.Forms.TextBox();
+            this.tbIdPacienteLaboral = new System.Windows.Forms.TextBox();
             this.label17 = new DevExpress.XtraEditors.LabelControl();
             this.tbTareaLaboral = new DevExpress.XtraEditors.TextEdit();
             this.label16 = new DevExpress.XtraEditors.LabelControl();
             this.tbEmpresaLaboral = new DevExpress.XtraEditors.TextEdit();
             this.label13 = new DevExpress.XtraEditors.LabelControl();
-            this.tbCuilLaboral = new DevExpress.XtraEditors.TextEdit();
             this.label12 = new DevExpress.XtraEditors.LabelControl();
             this.tbIdTipoExamenLaboral = new System.Windows.Forms.TextBox();
             this.tbObservacionesLaboral = new DevExpress.XtraEditors.MemoEdit();
@@ -85,6 +86,7 @@ namespace CapaPresentacion
             this.label14 = new DevExpress.XtraEditors.LabelControl();
             this.tbDniLaboral = new DevExpress.XtraEditors.TextEdit();
             this.label15 = new DevExpress.XtraEditors.LabelControl();
+            this.tbCuilLaboral = new DevExpress.XtraEditors.TextEdit();
             this.panelPacientePreventiva = new System.Windows.Forms.Panel();
             this.txtEdad = new DevExpress.XtraEditors.TextEdit();
             this.label23 = new DevExpress.XtraEditors.LabelControl();
@@ -118,10 +120,6 @@ namespace CapaPresentacion
             this.panelFechaTipoExamen = new System.Windows.Forms.Panel();
             this.botProxFechaLibre = new System.Windows.Forms.Button();
             this.tpFecha = new DevExpress.XtraEditors.Controls.CalendarControl();
-            this.rbEstadoAsignados = new System.Windows.Forms.RadioButton();
-            this.rbEstadoLibres = new System.Windows.Forms.RadioButton();
-            this.pictureBox2 = new System.Windows.Forms.PictureBox();
-            this.rbEstadoTodos = new System.Windows.Forms.RadioButton();
             this.panelHorario = new System.Windows.Forms.Panel();
             this.label18 = new DevExpress.XtraEditors.LabelControl();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
@@ -135,12 +133,16 @@ namespace CapaPresentacion
             this.rbHora9 = new System.Windows.Forms.RadioButton();
             this.rbHora10 = new System.Windows.Forms.RadioButton();
             this.rbHora11 = new System.Windows.Forms.RadioButton();
+            this.rbEstadoAsignados = new System.Windows.Forms.RadioButton();
+            this.rbEstadoLibres = new System.Windows.Forms.RadioButton();
+            this.pictureBox2 = new System.Windows.Forms.PictureBox();
+            this.rbEstadoTodos = new System.Windows.Forms.RadioButton();
             this.panelBusqueda = new System.Windows.Forms.Panel();
+            this.panelEstado = new System.Windows.Forms.Panel();
+            this.label19 = new DevExpress.XtraEditors.LabelControl();
             this.searchControl1 = new DevExpress.XtraEditors.SearchControl();
             this.rbcMenu = new DevExpress.XtraBars.Ribbon.RibbonControl();
-            this.tbIdEmpresaLaboral = new System.Windows.Forms.TextBox();
             this.tbIdTurnoLaboral = new System.Windows.Forms.TextBox();
-            this.tbIdPacienteLaboral = new System.Windows.Forms.TextBox();
             this.lblInformacion = new DevExpress.XtraEditors.LabelControl();
             this.dgv = new System.Windows.Forms.DataGridView();
             this.panel2 = new System.Windows.Forms.Panel();
@@ -156,8 +158,6 @@ namespace CapaPresentacion
             this.botHabilitar = new System.Windows.Forms.Button();
             this.LblTurnos = new DevExpress.XtraEditors.LabelControl();
             this.panel3 = new System.Windows.Forms.Panel();
-            this.label19 = new DevExpress.XtraEditors.LabelControl();
-            this.panelEstado = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)(this.cboSubTipoExamen.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cboMotivoConsulta.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cboTipoExamen.Properties)).BeginInit();
@@ -172,7 +172,6 @@ namespace CapaPresentacion
             ((System.ComponentModel.ISupportInitialize)(this.tbTelefonoLaboral.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbTareaLaboral.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbEmpresaLaboral.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.tbCuilLaboral.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbObservacionesLaboral.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbImporteLaboral.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbImporteListaLaboral.Properties)).BeginInit();
@@ -180,6 +179,7 @@ namespace CapaPresentacion
             ((System.ComponentModel.ISupportInitialize)(this.tbExamenLaboral.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbPacienteLaboral.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbDniLaboral.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbCuilLaboral.Properties)).BeginInit();
             this.panelPacientePreventiva.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.txtEdad.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtEmail.Properties)).BeginInit();
@@ -198,16 +198,16 @@ namespace CapaPresentacion
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
             this.panelFechaTipoExamen.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tpFecha.CalendarTimeProperties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.panelHorario.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.panelBusqueda.SuspendLayout();
+            this.panelEstado.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.searchControl1.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.rbcMenu)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgv)).BeginInit();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
-            this.panelEstado.SuspendLayout();
             this.SuspendLayout();
             // 
             // lbTitulo
@@ -216,7 +216,7 @@ namespace CapaPresentacion
             this.lbTitulo.Appearance.Options.UseBackColor = true;
             this.lbTitulo.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple;
             this.lbTitulo.Dock = System.Windows.Forms.DockStyle.Top;
-            this.lbTitulo.Location = new System.Drawing.Point(0, 418);
+            this.lbTitulo.Location = new System.Drawing.Point(0, 358);
             this.lbTitulo.Name = "lbTitulo";
             this.lbTitulo.Size = new System.Drawing.Size(2, 15);
             this.lbTitulo.TabIndex = 128;
@@ -612,7 +612,7 @@ namespace CapaPresentacion
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 110);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1190, 283);
+            this.panel1.Size = new System.Drawing.Size(1190, 220);
             this.panel1.TabIndex = 130;
             this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
             // 
@@ -653,7 +653,7 @@ namespace CapaPresentacion
             this.panelLaboral.Controls.Add(this.tbCuilLaboral);
             this.panelLaboral.Location = new System.Drawing.Point(276, 0);
             this.panelLaboral.Name = "panelLaboral";
-            this.panelLaboral.Size = new System.Drawing.Size(914, 283);
+            this.panelLaboral.Size = new System.Drawing.Size(916, 283);
             this.panelLaboral.TabIndex = 20;
             this.panelLaboral.Visible = false;
             // 
@@ -756,6 +756,28 @@ namespace CapaPresentacion
             this.tbTelefonoLaboral.Size = new System.Drawing.Size(305, 22);
             this.tbTelefonoLaboral.TabIndex = 51;
             // 
+            // tbIdEmpresaLaboral
+            // 
+            this.tbIdEmpresaLaboral.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.tbIdEmpresaLaboral.Enabled = false;
+            this.tbIdEmpresaLaboral.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tbIdEmpresaLaboral.Location = new System.Drawing.Point(706, 107);
+            this.tbIdEmpresaLaboral.Name = "tbIdEmpresaLaboral";
+            this.tbIdEmpresaLaboral.Size = new System.Drawing.Size(181, 22);
+            this.tbIdEmpresaLaboral.TabIndex = 53;
+            this.tbIdEmpresaLaboral.Visible = false;
+            // 
+            // tbIdPacienteLaboral
+            // 
+            this.tbIdPacienteLaboral.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.tbIdPacienteLaboral.Enabled = false;
+            this.tbIdPacienteLaboral.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tbIdPacienteLaboral.Location = new System.Drawing.Point(706, 137);
+            this.tbIdPacienteLaboral.Name = "tbIdPacienteLaboral";
+            this.tbIdPacienteLaboral.Size = new System.Drawing.Size(158, 22);
+            this.tbIdPacienteLaboral.TabIndex = 40;
+            this.tbIdPacienteLaboral.Visible = false;
+            // 
             // label17
             // 
             this.label17.Appearance.Font = new System.Drawing.Font("Segoe UI Semibold", 8.25F, System.Drawing.FontStyle.Bold);
@@ -824,25 +846,6 @@ namespace CapaPresentacion
             this.label13.TabIndex = 46;
             this.label13.Text = "Empresa";
             // 
-            // tbCuilLaboral
-            // 
-            this.tbCuilLaboral.Location = new System.Drawing.Point(115, 23);
-            this.tbCuilLaboral.Name = "tbCuilLaboral";
-            // 
-            // 
-            // 
-            this.tbCuilLaboral.Properties.Appearance.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(252)))), ((int)(((byte)(252)))), ((int)(((byte)(252)))));
-            this.tbCuilLaboral.Properties.Appearance.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.tbCuilLaboral.Properties.Appearance.Options.UseBackColor = true;
-            this.tbCuilLaboral.Properties.Appearance.Options.UseFont = true;
-            this.tbCuilLaboral.Properties.Appearance.Options.UseTextOptions = true;
-            this.tbCuilLaboral.Properties.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.tbCuilLaboral.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple;
-            this.tbCuilLaboral.Properties.ReadOnly = true;
-            this.tbCuilLaboral.Size = new System.Drawing.Size(115, 22);
-            this.tbCuilLaboral.TabIndex = 45;
-            this.tbCuilLaboral.Visible = false;
-            // 
             // label12
             // 
             this.label12.Appearance.Font = new System.Drawing.Font("Segoe UI Semibold", 8.25F, System.Drawing.FontStyle.Bold);
@@ -860,7 +863,7 @@ namespace CapaPresentacion
             this.tbIdTipoExamenLaboral.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.tbIdTipoExamenLaboral.Enabled = false;
             this.tbIdTipoExamenLaboral.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbIdTipoExamenLaboral.Location = new System.Drawing.Point(556, 96);
+            this.tbIdTipoExamenLaboral.Location = new System.Drawing.Point(844, 70);
             this.tbIdTipoExamenLaboral.Name = "tbIdTipoExamenLaboral";
             this.tbIdTipoExamenLaboral.Size = new System.Drawing.Size(25, 22);
             this.tbIdTipoExamenLaboral.TabIndex = 41;
@@ -878,7 +881,7 @@ namespace CapaPresentacion
             this.tbObservacionesLaboral.Properties.Appearance.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.tbObservacionesLaboral.Properties.Appearance.Options.UseFont = true;
             this.tbObservacionesLaboral.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple;
-            this.tbObservacionesLaboral.Size = new System.Drawing.Size(551, 96);
+            this.tbObservacionesLaboral.Size = new System.Drawing.Size(553, 96);
             this.tbObservacionesLaboral.TabIndex = 39;
             // 
             // tbImporteLaboral
@@ -955,7 +958,7 @@ namespace CapaPresentacion
             // btnTogglePrecioLaboral
             // 
             this.btnTogglePrecioLaboral.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Bold);
-            this.btnTogglePrecioLaboral.Location = new System.Drawing.Point(617, 121);
+            this.btnTogglePrecioLaboral.Location = new System.Drawing.Point(670, 66);
             this.btnTogglePrecioLaboral.Name = "btnTogglePrecioLaboral";
             this.btnTogglePrecioLaboral.Size = new System.Drawing.Size(30, 26);
             this.btnTogglePrecioLaboral.TabIndex = 201;
@@ -1003,7 +1006,7 @@ namespace CapaPresentacion
             this.tbExamenLaboral.Properties.Appearance.Options.UseFont = true;
             this.tbExamenLaboral.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple;
             this.tbExamenLaboral.Properties.ReadOnly = true;
-            this.tbExamenLaboral.Size = new System.Drawing.Size(551, 22);
+            this.tbExamenLaboral.Size = new System.Drawing.Size(553, 22);
             this.tbExamenLaboral.TabIndex = 32;
             // 
             // label11
@@ -1076,6 +1079,25 @@ namespace CapaPresentacion
             this.label15.Size = new System.Drawing.Size(19, 13);
             this.label15.TabIndex = 19;
             this.label15.Text = "DNI";
+            // 
+            // tbCuilLaboral
+            // 
+            this.tbCuilLaboral.Location = new System.Drawing.Point(115, 23);
+            this.tbCuilLaboral.Name = "tbCuilLaboral";
+            // 
+            // 
+            // 
+            this.tbCuilLaboral.Properties.Appearance.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(252)))), ((int)(((byte)(252)))), ((int)(((byte)(252)))));
+            this.tbCuilLaboral.Properties.Appearance.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.tbCuilLaboral.Properties.Appearance.Options.UseBackColor = true;
+            this.tbCuilLaboral.Properties.Appearance.Options.UseFont = true;
+            this.tbCuilLaboral.Properties.Appearance.Options.UseTextOptions = true;
+            this.tbCuilLaboral.Properties.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.tbCuilLaboral.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple;
+            this.tbCuilLaboral.Properties.ReadOnly = true;
+            this.tbCuilLaboral.Size = new System.Drawing.Size(115, 22);
+            this.tbCuilLaboral.TabIndex = 45;
+            this.tbCuilLaboral.Visible = false;
             // 
             // panelPacientePreventiva
             // 
@@ -1383,14 +1405,14 @@ namespace CapaPresentacion
             this.dgvLigaYClub.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.dgvLigaYClub.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvLigaYClub.ColumnHeadersVisible = false;
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("Tahoma", 8.25F);
-            dataGridViewCellStyle4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvLigaYClub.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Tahoma", 8.25F);
+            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(31)))), ((int)(((byte)(53)))));
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvLigaYClub.DefaultCellStyle = dataGridViewCellStyle2;
             this.dgvLigaYClub.GridColor = System.Drawing.SystemColors.Control;
             this.dgvLigaYClub.Location = new System.Drawing.Point(15, 209);
             this.dgvLigaYClub.MultiSelect = false;
@@ -1509,13 +1531,12 @@ namespace CapaPresentacion
             // 
             // panelFechaTipoExamen
             // 
-            this.panelFechaTipoExamen.Controls.Add(this.botProxFechaLibre);
             this.panelFechaTipoExamen.Controls.Add(this.tpFecha);
             this.panelFechaTipoExamen.Controls.Add(this.botTurno);
             this.panelFechaTipoExamen.Controls.Add(this.panelHorario);
             this.panelFechaTipoExamen.Location = new System.Drawing.Point(-1, 0);
             this.panelFechaTipoExamen.Name = "panelFechaTipoExamen";
-            this.panelFechaTipoExamen.Size = new System.Drawing.Size(537, 283);
+            this.panelFechaTipoExamen.Size = new System.Drawing.Size(537, 150);
             this.panelFechaTipoExamen.TabIndex = 0;
             // 
             // botProxFechaLibre
@@ -1523,7 +1544,7 @@ namespace CapaPresentacion
             this.botProxFechaLibre.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.botProxFechaLibre.Image = ((System.Drawing.Image)(resources.GetObject("botProxFechaLibre.Image")));
             this.botProxFechaLibre.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.botProxFechaLibre.Location = new System.Drawing.Point(31, 4);
+            this.botProxFechaLibre.Location = new System.Drawing.Point(645, 2);
             this.botProxFechaLibre.Name = "botProxFechaLibre";
             this.botProxFechaLibre.Size = new System.Drawing.Size(212, 46);
             this.botProxFechaLibre.TabIndex = 3;
@@ -1534,7 +1555,7 @@ namespace CapaPresentacion
             // 
             // tpFecha
             // 
-            this.tpFecha.Appearance.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tpFecha.Appearance.Font = new System.Drawing.Font("Tahoma", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tpFecha.Appearance.Options.UseFont = true;
             // 
             // 
@@ -1543,69 +1564,12 @@ namespace CapaPresentacion
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.tpFecha.DateTime = new System.DateTime(2026, 6, 18, 0, 0, 0, 0);
             this.tpFecha.EditValue = new System.DateTime(2026, 6, 18, 0, 0, 0, 0);
-            this.tpFecha.Location = new System.Drawing.Point(22, 53);
+            this.tpFecha.Location = new System.Drawing.Point(13, 2);
             this.tpFecha.Name = "tpFecha";
-            this.tpFecha.Size = new System.Drawing.Size(238, 227);
+            this.tpFecha.Size = new System.Drawing.Size(246, 227);
             this.tpFecha.TabIndex = 0;
             this.tpFecha.CustomDrawDayNumberCell += new DevExpress.XtraEditors.Calendar.CustomDrawDayNumberCellEventHandler(this.tpFecha_CustomDrawDayNumberCell);
             this.tpFecha.DateTimeChanged += new System.EventHandler(this.tpFecha_DateTimeChanged);
-            // 
-            // rbEstadoAsignados
-            // 
-            this.rbEstadoAsignados.Appearance = System.Windows.Forms.Appearance.Button;
-            this.rbEstadoAsignados.BackColor = System.Drawing.SystemColors.Control;
-            this.rbEstadoAsignados.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rbEstadoAsignados.Location = new System.Drawing.Point(282, 4);
-            this.rbEstadoAsignados.Name = "rbEstadoAsignados";
-            this.rbEstadoAsignados.Size = new System.Drawing.Size(141, 30);
-            this.rbEstadoAsignados.TabIndex = 19;
-            this.rbEstadoAsignados.TabStop = true;
-            this.rbEstadoAsignados.Text = "ASIGNADOS";
-            this.rbEstadoAsignados.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.rbEstadoAsignados.UseVisualStyleBackColor = false;
-            this.rbEstadoAsignados.CheckedChanged += new System.EventHandler(this.rbEstadoAsignados_CheckedChanged);
-            // 
-            // rbEstadoLibres
-            // 
-            this.rbEstadoLibres.Appearance = System.Windows.Forms.Appearance.Button;
-            this.rbEstadoLibres.BackColor = System.Drawing.SystemColors.Control;
-            this.rbEstadoLibres.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rbEstadoLibres.Location = new System.Drawing.Point(443, 3);
-            this.rbEstadoLibres.Name = "rbEstadoLibres";
-            this.rbEstadoLibres.Size = new System.Drawing.Size(141, 29);
-            this.rbEstadoLibres.TabIndex = 18;
-            this.rbEstadoLibres.TabStop = true;
-            this.rbEstadoLibres.Text = "LIBRES";
-            this.rbEstadoLibres.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.rbEstadoLibres.UseVisualStyleBackColor = false;
-            this.rbEstadoLibres.CheckedChanged += new System.EventHandler(this.rbEstadoLibres_CheckedChanged);
-            // 
-            // pictureBox2
-            // 
-            this.pictureBox2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.pictureBox2.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.pictureBox2.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox2.Image")));
-            this.pictureBox2.Location = new System.Drawing.Point(84, -1);
-            this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(45, 39);
-            this.pictureBox2.TabIndex = 17;
-            this.pictureBox2.TabStop = false;
-            this.pictureBox2.Click += new System.EventHandler(this.pictureBox2_Click);
-            // 
-            // rbEstadoTodos
-            // 
-            this.rbEstadoTodos.Appearance = System.Windows.Forms.Appearance.Button;
-            this.rbEstadoTodos.BackColor = System.Drawing.SystemColors.Control;
-            this.rbEstadoTodos.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rbEstadoTodos.Location = new System.Drawing.Point(168, 4);
-            this.rbEstadoTodos.Name = "rbEstadoTodos";
-            this.rbEstadoTodos.Size = new System.Drawing.Size(108, 33);
-            this.rbEstadoTodos.TabIndex = 5;
-            this.rbEstadoTodos.TabStop = true;
-            this.rbEstadoTodos.Text = "TODOS";
-            this.rbEstadoTodos.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.rbEstadoTodos.UseVisualStyleBackColor = false;
-            this.rbEstadoTodos.CheckedChanged += new System.EventHandler(this.rbEstadoTodos_CheckedChanged);
             // 
             // panelHorario
             // 
@@ -1798,10 +1762,67 @@ namespace CapaPresentacion
             this.rbHora11.UseVisualStyleBackColor = true;
             this.rbHora11.CheckedChanged += new System.EventHandler(this.rbHora11_CheckedChanged);
             // 
+            // rbEstadoAsignados
+            // 
+            this.rbEstadoAsignados.Appearance = System.Windows.Forms.Appearance.Button;
+            this.rbEstadoAsignados.BackColor = System.Drawing.SystemColors.Control;
+            this.rbEstadoAsignados.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.rbEstadoAsignados.Location = new System.Drawing.Point(282, 4);
+            this.rbEstadoAsignados.Name = "rbEstadoAsignados";
+            this.rbEstadoAsignados.Size = new System.Drawing.Size(141, 30);
+            this.rbEstadoAsignados.TabIndex = 19;
+            this.rbEstadoAsignados.TabStop = true;
+            this.rbEstadoAsignados.Text = "ASIGNADOS";
+            this.rbEstadoAsignados.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.rbEstadoAsignados.UseVisualStyleBackColor = false;
+            this.rbEstadoAsignados.CheckedChanged += new System.EventHandler(this.rbEstadoAsignados_CheckedChanged);
+            // 
+            // rbEstadoLibres
+            // 
+            this.rbEstadoLibres.Appearance = System.Windows.Forms.Appearance.Button;
+            this.rbEstadoLibres.BackColor = System.Drawing.SystemColors.Control;
+            this.rbEstadoLibres.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.rbEstadoLibres.Location = new System.Drawing.Point(443, 3);
+            this.rbEstadoLibres.Name = "rbEstadoLibres";
+            this.rbEstadoLibres.Size = new System.Drawing.Size(141, 29);
+            this.rbEstadoLibres.TabIndex = 18;
+            this.rbEstadoLibres.TabStop = true;
+            this.rbEstadoLibres.Text = "LIBRES";
+            this.rbEstadoLibres.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.rbEstadoLibres.UseVisualStyleBackColor = false;
+            this.rbEstadoLibres.CheckedChanged += new System.EventHandler(this.rbEstadoLibres_CheckedChanged);
+            // 
+            // pictureBox2
+            // 
+            this.pictureBox2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.pictureBox2.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.pictureBox2.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox2.Image")));
+            this.pictureBox2.Location = new System.Drawing.Point(84, -1);
+            this.pictureBox2.Name = "pictureBox2";
+            this.pictureBox2.Size = new System.Drawing.Size(45, 39);
+            this.pictureBox2.TabIndex = 17;
+            this.pictureBox2.TabStop = false;
+            this.pictureBox2.Click += new System.EventHandler(this.pictureBox2_Click);
+            // 
+            // rbEstadoTodos
+            // 
+            this.rbEstadoTodos.Appearance = System.Windows.Forms.Appearance.Button;
+            this.rbEstadoTodos.BackColor = System.Drawing.SystemColors.Control;
+            this.rbEstadoTodos.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.rbEstadoTodos.Location = new System.Drawing.Point(168, 4);
+            this.rbEstadoTodos.Name = "rbEstadoTodos";
+            this.rbEstadoTodos.Size = new System.Drawing.Size(108, 33);
+            this.rbEstadoTodos.TabIndex = 5;
+            this.rbEstadoTodos.TabStop = true;
+            this.rbEstadoTodos.Text = "TODOS";
+            this.rbEstadoTodos.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.rbEstadoTodos.UseVisualStyleBackColor = false;
+            this.rbEstadoTodos.CheckedChanged += new System.EventHandler(this.rbEstadoTodos_CheckedChanged);
+            // 
             // panelBusqueda
             // 
             this.panelBusqueda.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(235)))), ((int)(((byte)(236)))), ((int)(((byte)(239)))));
-            this.panelBusqueda.Controls.Add(this.searchControl1);
+            this.panelBusqueda.Controls.Add(this.botProxFechaLibre);
             this.panelBusqueda.Controls.Add(this.panelEstado);
             this.panelBusqueda.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelBusqueda.Location = new System.Drawing.Point(0, 0);
@@ -1810,18 +1831,41 @@ namespace CapaPresentacion
             this.panelBusqueda.Size = new System.Drawing.Size(1324, 50);
             this.panelBusqueda.TabIndex = 1;
             // 
+            // panelEstado
+            // 
+            this.panelEstado.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelEstado.Controls.Add(this.label19);
+            this.panelEstado.Controls.Add(this.rbEstadoLibres);
+            this.panelEstado.Controls.Add(this.pictureBox2);
+            this.panelEstado.Controls.Add(this.rbEstadoAsignados);
+            this.panelEstado.Controls.Add(this.rbEstadoTodos);
+            this.panelEstado.Location = new System.Drawing.Point(12, 3);
+            this.panelEstado.Name = "panelEstado";
+            this.panelEstado.Size = new System.Drawing.Size(612, 41);
+            this.panelEstado.TabIndex = 17;
+            // 
+            // label19
+            // 
+            this.label19.Appearance.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label19.Appearance.Options.UseFont = true;
+            this.label19.Location = new System.Drawing.Point(3, 1);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(38, 16);
+            this.label19.TabIndex = 20;
+            this.label19.Text = "Estado";
+            // 
             // searchControl1
             // 
-            this.searchControl1.Location = new System.Drawing.Point(15, 10);
+            this.searchControl1.Location = new System.Drawing.Point(10, 3);
             this.searchControl1.Name = "searchControl1";
             // 
             // 
             // 
-            this.searchControl1.Properties.Appearance.BackColor = System.Drawing.Color.White;
+            this.searchControl1.Properties.Appearance.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(250)))), ((int)(((byte)(245)))));
             this.searchControl1.Properties.Appearance.BackColor2 = System.Drawing.Color.White;
-            this.searchControl1.Properties.Appearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(200)))), ((int)(((byte)(200)))));
-            this.searchControl1.Properties.Appearance.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.searchControl1.Properties.Appearance.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
+            this.searchControl1.Properties.Appearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(120)))), ((int)(((byte)(170)))), ((int)(((byte)(120)))));
+            this.searchControl1.Properties.Appearance.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.searchControl1.Properties.Appearance.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(70)))));
             this.searchControl1.Properties.Appearance.Options.UseBackColor = true;
             this.searchControl1.Properties.Appearance.Options.UseBorderColor = true;
             this.searchControl1.Properties.Appearance.Options.UseFont = true;
@@ -1831,7 +1875,7 @@ namespace CapaPresentacion
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Search)});
             this.searchControl1.Properties.ShowClearButton = false;
             this.searchControl1.Properties.ShowSearchButton = false;
-            this.searchControl1.Size = new System.Drawing.Size(600, 26);
+            this.searchControl1.Size = new System.Drawing.Size(350, 24);
             this.searchControl1.TabIndex = 20;
             this.searchControl1.EditValueChanged += new System.EventHandler(this.searchControl1_EditValueChanged);
             // 
@@ -1843,22 +1887,11 @@ namespace CapaPresentacion
             // 
             this.rbcMenu.ExpandCollapseItem.Id = 0;
             this.rbcMenu.Items.AddRange(new DevExpress.XtraBars.BarItem[] {
-            ((DevExpress.XtraBars.BarItem)(this.rbcMenu.ExpandCollapseItem))});
-            this.rbcMenu.Location = new System.Drawing.Point(0, 433);
+            this.rbcMenu.ExpandCollapseItem});
+            this.rbcMenu.Location = new System.Drawing.Point(0, 373);
             this.rbcMenu.MaxItemId = 1;
             this.rbcMenu.Name = "rbcMenu";
             this.rbcMenu.Size = new System.Drawing.Size(1190, 47);
-            // 
-            // tbIdEmpresaLaboral
-            // 
-            this.tbIdEmpresaLaboral.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tbIdEmpresaLaboral.Enabled = false;
-            this.tbIdEmpresaLaboral.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbIdEmpresaLaboral.Location = new System.Drawing.Point(430, 121);
-            this.tbIdEmpresaLaboral.Name = "tbIdEmpresaLaboral";
-            this.tbIdEmpresaLaboral.Size = new System.Drawing.Size(181, 22);
-            this.tbIdEmpresaLaboral.TabIndex = 53;
-            this.tbIdEmpresaLaboral.Visible = false;
             // 
             // tbIdTurnoLaboral
             // 
@@ -1870,17 +1903,6 @@ namespace CapaPresentacion
             this.tbIdTurnoLaboral.Size = new System.Drawing.Size(126, 22);
             this.tbIdTurnoLaboral.TabIndex = 52;
             this.tbIdTurnoLaboral.Visible = false;
-            // 
-            // tbIdPacienteLaboral
-            // 
-            this.tbIdPacienteLaboral.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tbIdPacienteLaboral.Enabled = false;
-            this.tbIdPacienteLaboral.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbIdPacienteLaboral.Location = new System.Drawing.Point(453, 149);
-            this.tbIdPacienteLaboral.Name = "tbIdPacienteLaboral";
-            this.tbIdPacienteLaboral.Size = new System.Drawing.Size(158, 22);
-            this.tbIdPacienteLaboral.TabIndex = 40;
-            this.tbIdPacienteLaboral.Visible = false;
             // 
             // lblInformacion
             // 
@@ -1896,7 +1918,7 @@ namespace CapaPresentacion
             this.lblInformacion.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblInformacion.Location = new System.Drawing.Point(0, 0);
             this.lblInformacion.Name = "lblInformacion";
-            this.lblInformacion.Size = new System.Drawing.Size(1190, 25);
+            this.lblInformacion.Size = new System.Drawing.Size(1190, 28);
             this.lblInformacion.TabIndex = 131;
             // 
             // dgv
@@ -1907,10 +1929,10 @@ namespace CapaPresentacion
             this.dgv.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.dgv.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgv.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgv.Location = new System.Drawing.Point(0, 418);
+            this.dgv.Location = new System.Drawing.Point(0, 358);
             this.dgv.Name = "dgv";
             this.dgv.ReadOnly = true;
-            this.dgv.Size = new System.Drawing.Size(1190, 289);
+            this.dgv.Size = new System.Drawing.Size(1190, 349);
             this.dgv.TabIndex = 132;
             this.dgv.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgv_CellClick);
             this.dgv.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgv_CellDoubleClick);
@@ -2061,7 +2083,7 @@ namespace CapaPresentacion
             this.LblTurnos.Appearance.Options.UseTextOptions = true;
             this.LblTurnos.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
             this.LblTurnos.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
-            this.LblTurnos.Location = new System.Drawing.Point(662, 4);
+            this.LblTurnos.Location = new System.Drawing.Point(680, 4);
             this.LblTurnos.Name = "LblTurnos";
             this.LblTurnos.Size = new System.Drawing.Size(491, 18);
             this.LblTurnos.TabIndex = 135;
@@ -2070,36 +2092,14 @@ namespace CapaPresentacion
             // 
             // panel3
             // 
+            this.panel3.Controls.Add(this.searchControl1);
             this.panel3.Controls.Add(this.LblTurnos);
             this.panel3.Controls.Add(this.lblInformacion);
             this.panel3.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel3.Location = new System.Drawing.Point(0, 393);
+            this.panel3.Location = new System.Drawing.Point(0, 330);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(1190, 25);
+            this.panel3.Size = new System.Drawing.Size(1190, 28);
             this.panel3.TabIndex = 137;
-            // 
-            // label19
-            // 
-            this.label19.Appearance.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label19.Appearance.Options.UseFont = true;
-            this.label19.Location = new System.Drawing.Point(3, 1);
-            this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(38, 16);
-            this.label19.TabIndex = 20;
-            this.label19.Text = "Estado";
-            // 
-            // panelEstado
-            // 
-            this.panelEstado.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelEstado.Controls.Add(this.label19);
-            this.panelEstado.Controls.Add(this.rbEstadoLibres);
-            this.panelEstado.Controls.Add(this.pictureBox2);
-            this.panelEstado.Controls.Add(this.rbEstadoAsignados);
-            this.panelEstado.Controls.Add(this.rbEstadoTodos);
-            this.panelEstado.Location = new System.Drawing.Point(621, 3);
-            this.panelEstado.Name = "panelEstado";
-            this.panelEstado.Size = new System.Drawing.Size(612, 41);
-            this.panelEstado.TabIndex = 17;
             // 
             // frmTurnos
             // 
@@ -2141,7 +2141,6 @@ namespace CapaPresentacion
             ((System.ComponentModel.ISupportInitialize)(this.tbTelefonoLaboral.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbTareaLaboral.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbEmpresaLaboral.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.tbCuilLaboral.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbObservacionesLaboral.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbImporteLaboral.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbImporteListaLaboral.Properties)).EndInit();
@@ -2149,6 +2148,7 @@ namespace CapaPresentacion
             ((System.ComponentModel.ISupportInitialize)(this.tbExamenLaboral.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbPacienteLaboral.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbDniLaboral.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbCuilLaboral.Properties)).EndInit();
             this.panelPacientePreventiva.ResumeLayout(false);
             this.panelPacientePreventiva.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.txtEdad.Properties)).EndInit();
@@ -2169,19 +2169,19 @@ namespace CapaPresentacion
             this.panelFechaTipoExamen.ResumeLayout(false);
             this.panelFechaTipoExamen.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tpFecha.CalendarTimeProperties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.panelHorario.ResumeLayout(false);
             this.panelHorario.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.panelBusqueda.ResumeLayout(false);
+            this.panelEstado.ResumeLayout(false);
+            this.panelEstado.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.searchControl1.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.rbcMenu)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgv)).EndInit();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             this.panel3.ResumeLayout(false);
-            this.panelEstado.ResumeLayout(false);
-            this.panelEstado.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
