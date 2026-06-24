@@ -534,7 +534,7 @@ namespace CapaPresentacion
             this.botTurno.ForeColor = System.Drawing.Color.White;
             this.botTurno.Image = ((System.Drawing.Image)(resources.GetObject("botTurno.Image")));
             this.botTurno.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.botTurno.Location = new System.Drawing.Point(405, 65);
+            this.botTurno.Location = new System.Drawing.Point(389, 20);
             this.botTurno.Name = "botTurno";
             this.botTurno.Size = new System.Drawing.Size(147, 52);
             this.botTurno.TabIndex = 200;
@@ -550,8 +550,8 @@ namespace CapaPresentacion
             this.panel1.Controls.Add(this.panelPacientePreventiva);
             this.panel1.Controls.Add(this.panelFiltro);
             this.panel1.Controls.Add(this.panelEstado);
-            this.panel1.Controls.Add(this.panelHorario);
             this.panel1.Controls.Add(this.panelFechaTipoExamen);
+            this.panel1.Controls.Add(this.botTurno);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 50);
             this.panel1.Name = "panel1";
@@ -1416,9 +1416,9 @@ namespace CapaPresentacion
             this.panelHorario.Controls.Add(this.rbHora9);
             this.panelHorario.Controls.Add(this.rbHora10);
             this.panelHorario.Controls.Add(this.rbHora11);
-            this.panelHorario.Location = new System.Drawing.Point(309, 0);
+            this.panelHorario.Location = new System.Drawing.Point(58, 253);
             this.panelHorario.Name = "panelHorario";
-            this.panelHorario.Size = new System.Drawing.Size(297, 90);
+            this.panelHorario.Size = new System.Drawing.Size(119, 23);
             this.panelHorario.TabIndex = 16;
             this.panelHorario.Visible = false;
             // 
@@ -1596,9 +1596,10 @@ namespace CapaPresentacion
             // 
             this.panelFechaTipoExamen.Controls.Add(this.botProxFechaLibre);
             this.panelFechaTipoExamen.Controls.Add(this.tpFecha);
+            this.panelFechaTipoExamen.Controls.Add(this.panelHorario);
             this.panelFechaTipoExamen.Location = new System.Drawing.Point(-1, 0);
             this.panelFechaTipoExamen.Name = "panelFechaTipoExamen";
-            this.panelFechaTipoExamen.Size = new System.Drawing.Size(331, 450);
+            this.panelFechaTipoExamen.Size = new System.Drawing.Size(304, 280);
             this.panelFechaTipoExamen.TabIndex = 0;
             // 
             // botProxFechaLibre
@@ -1606,7 +1607,7 @@ namespace CapaPresentacion
             this.botProxFechaLibre.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.botProxFechaLibre.Image = ((System.Drawing.Image)(resources.GetObject("botProxFechaLibre.Image")));
             this.botProxFechaLibre.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.botProxFechaLibre.Location = new System.Drawing.Point(19, 218);
+            this.botProxFechaLibre.Location = new System.Drawing.Point(47, 25);
             this.botProxFechaLibre.Name = "botProxFechaLibre";
             this.botProxFechaLibre.Size = new System.Drawing.Size(225, 43);
             this.botProxFechaLibre.TabIndex = 3;
@@ -1619,7 +1620,7 @@ namespace CapaPresentacion
             // 
             this.tpFecha.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
             this.tpFecha.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tpFecha.Location = new System.Drawing.Point(19, 28);
+            this.tpFecha.Location = new System.Drawing.Point(61, 84);
             this.tpFecha.Name = "tpFecha";
             this.tpFecha.TabIndex = 0;
             this.tpFecha.TitleBackColor = System.Drawing.Color.White;
@@ -1862,7 +1863,6 @@ namespace CapaPresentacion
             this.Controls.Add(this.cboMotivoConsulta);
             this.Controls.Add(this.cboSubTipoExamen);
             this.Controls.Add(this.labelTipoExamen);
-            this.Controls.Add(this.botTurno);
             this.Controls.Add(this.cboTipoExamen);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.dgv);
