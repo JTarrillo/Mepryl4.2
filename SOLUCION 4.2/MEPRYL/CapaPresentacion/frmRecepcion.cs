@@ -444,6 +444,8 @@ namespace CapaPresentacion
 
         private void editarTipoExamen()
         {
+            Control controlConFoco = this.ActiveControl;
+
             frmTipoExamen fTipoExamen = new frmTipoExamen();
             fTipoExamen.cargarSegunIdTurno(new Guid(dgv.SelectedRows[0].Cells[2].Value.ToString()));
             fTipoExamen.objDelegateModificado = new frmTipoExamen.DelegateModificado(actualizarListadoManteniendoPosicion);
@@ -451,6 +453,16 @@ namespace CapaPresentacion
 
             // Fuerza la recarga si el examen se modificó fuera del delegado o si el cambio no quedó reflejado.
             actualizarListadoManteniendoPosicion();
+
+            // Restaurar el foco en el control que tenía antes de abrir la ventana
+            if (controlConFoco != null && controlConFoco.CanFocus)
+            {
+                controlConFoco.Focus();
+            }
+            else
+            {
+                dgv.Focus();
+            }
         }
 
         private void dgv_CellClick(object sender, DataGridViewCellEventArgs e)
