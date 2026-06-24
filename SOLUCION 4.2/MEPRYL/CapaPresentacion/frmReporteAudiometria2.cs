@@ -154,9 +154,8 @@ namespace CapaPresentacion
         {
             bool blnResultado = false;
 
-            dtDatosAudiometria = null;
-            //dtDatosAudiometria = reporte.AudiometriaEstablcerDatos(dtFecha, strNroOrden);
-            dtDatosAudiometria = reporte.AudiometriaDiagnostico(dtFecha, strNroOrden);
+            // dtDatosAudiometria ya está cargado en CargarDatosPaciente() - no volver a consultar
+            // dtDatosAudiometria = reporte.AudiometriaDiagnostico(dtFecha, strNroOrden);
             string strPathFirma = "";
 
             //Datos Cabecera
@@ -540,15 +539,15 @@ namespace CapaPresentacion
         private void CargarDatosPaciente()
         {            
             var swCDP = System.Diagnostics.Stopwatch.StartNew();
-            DataTable dt = reporte.AudiometriaDiagnostico(dtFecha, strNroOrden);
+            dtDatosAudiometria = reporte.AudiometriaDiagnostico(dtFecha, strNroOrden);
             swCDP.Stop();
             System.Diagnostics.Debug.WriteLine($"[AUDIOMETRIA] AudiometriaDiagnostico (CargarDatosPaciente): {swCDP.ElapsedMilliseconds} ms");
 
             LimpiarVariablesGlobales();
 
-            if (dt.Rows.Count > 0)
+            if (dtDatosAudiometria.Rows.Count > 0)
             {
-                foreach (DataRow fila in dt.Rows)
+                foreach (DataRow fila in dtDatosAudiometria.Rows)
                 {
                     strNombre = fila["Nombre"].ToString();
                     strApellido = fila["Apellido"].ToString();
@@ -1162,8 +1161,13 @@ namespace CapaPresentacion
                     ListViewItem listItem = lstLista.SelectedItems[0];
                     strNroOrden = listItem.SubItems[0].Text.ToString();
                     dtFecha = dtpCalendario.SelectionRange.Start;
+                    
+                    // Cargar datos del paciente (hace la consulta a DB)
                     CargarDatosPaciente();
+                    
+                    // Establecer datos en el formulario (usa dtDatosAudiometria ya cargado)
                     EstablcerDatos();
+                    
                     VerificaEstudioCargado();
                 }
 
