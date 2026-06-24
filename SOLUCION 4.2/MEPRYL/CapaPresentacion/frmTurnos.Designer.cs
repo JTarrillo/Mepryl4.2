@@ -29,7 +29,7 @@ namespace CapaPresentacion
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmTurnos));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.lbTitulo = new System.Windows.Forms.Label();
             this.labelSubTipoExamen = new System.Windows.Forms.Label();
             this.cboSubTipoExamen = new System.Windows.Forms.ComboBox();
@@ -295,7 +295,7 @@ namespace CapaPresentacion
             this.btnWhatsApp.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold);
             this.btnWhatsApp.Image = ((System.Drawing.Image)(resources.GetObject("btnWhatsApp.Image")));
             this.btnWhatsApp.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnWhatsApp.Location = new System.Drawing.Point(13, 546);
+            this.btnWhatsApp.Location = new System.Drawing.Point(5, 548);
             this.btnWhatsApp.Name = "btnWhatsApp";
             this.btnWhatsApp.Size = new System.Drawing.Size(120, 45);
             this.btnWhatsApp.TabIndex = 135;
@@ -311,7 +311,7 @@ namespace CapaPresentacion
             this.btnCancelarMover.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.btnCancelarMover.Image = ((System.Drawing.Image)(resources.GetObject("btnCancelarMover.Image")));
             this.btnCancelarMover.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnCancelarMover.Location = new System.Drawing.Point(9, 341);
+            this.btnCancelarMover.Location = new System.Drawing.Point(9, 239);
             this.btnCancelarMover.Name = "btnCancelarMover";
             this.btnCancelarMover.Size = new System.Drawing.Size(120, 45);
             this.btnCancelarMover.TabIndex = 134;
@@ -329,7 +329,7 @@ namespace CapaPresentacion
             this.btnMoverTurno.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.btnMoverTurno.Image = ((System.Drawing.Image)(resources.GetObject("btnMoverTurno.Image")));
             this.btnMoverTurno.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnMoverTurno.Location = new System.Drawing.Point(9, 288);
+            this.btnMoverTurno.Location = new System.Drawing.Point(9, 191);
             this.btnMoverTurno.Name = "btnMoverTurno";
             this.btnMoverTurno.Size = new System.Drawing.Size(120, 45);
             this.btnMoverTurno.TabIndex = 133;
@@ -391,7 +391,7 @@ namespace CapaPresentacion
             this.botAsignar.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.botAsignar.Image = ((System.Drawing.Image)(resources.GetObject("botAsignar.Image")));
             this.botAsignar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.botAsignar.Location = new System.Drawing.Point(5, 341);
+            this.botAsignar.Location = new System.Drawing.Point(7, 290);
             this.botAsignar.Name = "botAsignar";
             this.botAsignar.Size = new System.Drawing.Size(120, 45);
             this.botAsignar.TabIndex = 7;
@@ -407,7 +407,7 @@ namespace CapaPresentacion
             this.botCancelar.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.botCancelar.Image = ((System.Drawing.Image)(resources.GetObject("botCancelar.Image")));
             this.botCancelar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.botCancelar.Location = new System.Drawing.Point(9, 237);
+            this.botCancelar.Location = new System.Drawing.Point(7, 190);
             this.botCancelar.Name = "botCancelar";
             this.botCancelar.Size = new System.Drawing.Size(120, 45);
             this.botCancelar.TabIndex = 6;
@@ -422,7 +422,7 @@ namespace CapaPresentacion
             this.botAceptar.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.botAceptar.Image = ((System.Drawing.Image)(resources.GetObject("botAceptar.Image")));
             this.botAceptar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.botAceptar.Location = new System.Drawing.Point(9, 188);
+            this.botAceptar.Location = new System.Drawing.Point(7, 137);
             this.botAceptar.Name = "botAceptar";
             this.botAceptar.Size = new System.Drawing.Size(120, 45);
             this.botAceptar.TabIndex = 5;
@@ -437,7 +437,7 @@ namespace CapaPresentacion
             this.botLiberar.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.botLiberar.Image = ((System.Drawing.Image)(resources.GetObject("botLiberar.Image")));
             this.botLiberar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.botLiberar.Location = new System.Drawing.Point(9, 392);
+            this.botLiberar.Location = new System.Drawing.Point(9, 239);
             this.botLiberar.Name = "botLiberar";
             this.botLiberar.Size = new System.Drawing.Size(120, 45);
             this.botLiberar.TabIndex = 4;
@@ -1162,14 +1162,14 @@ namespace CapaPresentacion
             this.dgvLigaYClub.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.dgvLigaYClub.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvLigaYClub.ColumnHeadersVisible = false;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Tahoma", 8.25F);
-            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(31)))), ((int)(((byte)(53)))));
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvLigaYClub.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Tahoma", 8.25F);
+            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(31)))), ((int)(((byte)(53)))));
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvLigaYClub.DefaultCellStyle = dataGridViewCellStyle2;
             this.dgvLigaYClub.GridColor = System.Drawing.SystemColors.Control;
             this.dgvLigaYClub.Location = new System.Drawing.Point(15, 209);
             this.dgvLigaYClub.MultiSelect = false;
