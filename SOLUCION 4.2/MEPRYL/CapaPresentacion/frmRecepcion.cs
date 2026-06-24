@@ -86,30 +86,38 @@ namespace CapaPresentacion
 
         private void actualizarListadoManteniendoPosicion()
         {
-            int nroFila = 0;
+            Guid idTurnoSeleccionado = Guid.Empty;
             try
             {
-                if (dgv.SelectedRows.Count > 0)
-                    nroFila = dgv.SelectedRows[0].Index;
-                else if (dgv.CurrentRow != null)
-                    nroFila = dgv.CurrentRow.Index;
+                if (dgv.SelectedRows.Count > 0 && dgv.SelectedRows[0].Cells[2].Value != null)
+                    idTurnoSeleccionado = new Guid(dgv.SelectedRows[0].Cells[2].Value.ToString());
+                else if (dgv.CurrentRow != null && dgv.CurrentRow.Cells[2].Value != null)
+                    idTurnoSeleccionado = new Guid(dgv.CurrentRow.Cells[2].Value.ToString());
             }
             catch
             {
-                nroFila = 0;
+                idTurnoSeleccionado = Guid.Empty;
             }
 
             cargarDgv();
 
-            if (dgv.Rows.Count == 0)
+            if (dgv.Rows.Count == 0 || idTurnoSeleccionado == Guid.Empty)
                 return;
-
-            if (nroFila >= dgv.Rows.Count)
-                nroFila = dgv.Rows.Count - 1;
 
             try
             {
-                dgv.CurrentCell = dgv.Rows[nroFila].Cells[0];
+                foreach (DataGridViewRow row in dgv.Rows)
+                {
+                    if (row.Cells[2].Value != null)
+                    {
+                        Guid idFila = new Guid(row.Cells[2].Value.ToString());
+                        if (idFila == idTurnoSeleccionado)
+                        {
+                            dgv.CurrentCell = row.Cells[0];
+                            break;
+                        }
+                    }
+                }
             }
             catch
             {
