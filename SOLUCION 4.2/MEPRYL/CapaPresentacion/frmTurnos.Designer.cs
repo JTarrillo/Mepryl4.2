@@ -29,7 +29,7 @@ namespace CapaPresentacion
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmTurnos));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.lbTitulo = new System.Windows.Forms.Label();
             this.labelSubTipoExamen = new System.Windows.Forms.Label();
             this.cboSubTipoExamen = new System.Windows.Forms.ComboBox();
@@ -1162,14 +1162,14 @@ namespace CapaPresentacion
             this.dgvLigaYClub.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.dgvLigaYClub.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvLigaYClub.ColumnHeadersVisible = false;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Tahoma", 8.25F);
-            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(31)))), ((int)(((byte)(53)))));
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvLigaYClub.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Tahoma", 8.25F);
+            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(31)))), ((int)(((byte)(53)))));
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvLigaYClub.DefaultCellStyle = dataGridViewCellStyle1;
             this.dgvLigaYClub.GridColor = System.Drawing.SystemColors.Control;
             this.dgvLigaYClub.Location = new System.Drawing.Point(15, 209);
             this.dgvLigaYClub.MultiSelect = false;
@@ -1610,7 +1610,7 @@ namespace CapaPresentacion
             this.panelFechaTipoExamen.Controls.Add(this.botTurno);
             this.panelFechaTipoExamen.Location = new System.Drawing.Point(-1, 0);
             this.panelFechaTipoExamen.Name = "panelFechaTipoExamen";
-            this.panelFechaTipoExamen.Size = new System.Drawing.Size(460, 283);
+            this.panelFechaTipoExamen.Size = new System.Drawing.Size(310, 283);
             this.panelFechaTipoExamen.TabIndex = 0;
             // 
             // botProxFechaLibre
@@ -1618,7 +1618,7 @@ namespace CapaPresentacion
             this.botProxFechaLibre.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.botProxFechaLibre.Image = ((System.Drawing.Image)(resources.GetObject("botProxFechaLibre.Image")));
             this.botProxFechaLibre.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.botProxFechaLibre.Location = new System.Drawing.Point(39, 210);
+            this.botProxFechaLibre.Location = new System.Drawing.Point(45, 15);
             this.botProxFechaLibre.Name = "botProxFechaLibre";
             this.botProxFechaLibre.Size = new System.Drawing.Size(225, 43);
             this.botProxFechaLibre.TabIndex = 3;
@@ -1631,7 +1631,7 @@ namespace CapaPresentacion
             // 
             this.tpFecha.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
             this.tpFecha.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tpFecha.Location = new System.Drawing.Point(61, 37);
+            this.tpFecha.Location = new System.Drawing.Point(61, 68);
             this.tpFecha.Name = "tpFecha";
             this.tpFecha.TabIndex = 0;
             this.tpFecha.TitleBackColor = System.Drawing.Color.White;
