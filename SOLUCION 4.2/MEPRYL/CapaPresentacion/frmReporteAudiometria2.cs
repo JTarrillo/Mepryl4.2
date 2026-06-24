@@ -1190,32 +1190,32 @@ namespace CapaPresentacion
 
         private void CambiarColorLista()
         {
-            dtDatosAudiometria = null;            
-            string strNroOrdenCCL = "";
+            dtDatosAudiometria = null;
+            
+            // Una sola consulta para todos los pacientes de la fecha
+            dtDatosAudiometria = reporte.AudiometriaEstablcerDatos(dtFecha);
 
-            if (lstLista.Items.Count > 0)
+            if (lstLista.Items.Count > 0 && dtDatosAudiometria.Rows.Count > 0)
             {
-                for (int i = 0; i < lstLista.Items.Count; i++)
+                // Crear diccionario para búsqueda rápida en memoria
+                var dictRevisado = new Dictionary<string, bool>();
+                foreach (DataRow fila in dtDatosAudiometria.Rows)
                 {
-                    strNroOrdenCCL = lstLista.Items[i].SubItems[0].Text;
-
-                    dtDatosAudiometria = reporte.AudiometriaEstablcerDatos(dtFecha, strNroOrdenCCL);
-
-                    if (dtDatosAudiometria.Rows.Count > 0)
-                    {
-                        foreach (DataRow fila in dtDatosAudiometria.Rows)
-                        {
-                            bool blnValor = Convert.ToBoolean(fila["Revisado"].ToString());
-
-                            if (blnValor)
-                                lstLista.Items[i].BackColor = Color.LimeGreen;
-                            else
-                                lstLista.Items[i].BackColor = Color.Orange;
-                        }
-                    }
-
+                    string nroOrden = fila["NroOrden"].ToString();
+                    bool revisado = Convert.ToBoolean(fila["Revisado"].ToString());
+                    dictRevisado[nroOrden] = revisado;
                 }
 
+                // Iterar sobre la lista usando el diccionario en memoria
+                for (int i = 0; i < lstLista.Items.Count; i++)
+                {
+                    string nroOrden = lstLista.Items[i].SubItems[0].Text;
+                    
+                    if (dictRevisado.ContainsKey(nroOrden))
+                    {
+                        lstLista.Items[i].BackColor = dictRevisado[nroOrden] ? Color.LimeGreen : Color.Orange;
+                    }
+                }
             }
         }
 

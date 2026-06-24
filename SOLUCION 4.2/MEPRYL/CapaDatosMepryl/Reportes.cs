@@ -70,7 +70,7 @@ namespace CapaDatosMepryl
             //    <= '" + dtFecha.ToShortDateString() + @"' AND epe.item68 = '1' order by CONVERT(VARCHAR(10), c.fecha, 101), convert(int, REPLACE(REPLACE(c.identificador, 'L', ''), 'CO', ''))";
 
             strSQL = @"select c.nroOrden as 'Ingreso', c.identificador as 'NroOrden', VCP.Apellidos + ' ' + VCP.Nombres as Paciente, VCP.TipoPaciente, 
-	                      VCP.Apellidos, VCP.Nombres, te.id as IdTipoExamen
+	                      VCP.Apellidos, VCP.Nombres, te.id as IdTipoExamen, ISNULL(DA.Revisado, 0) as Revisado
                     from Consulta c
                     inner
                     join dbo.TipoExamenDePaciente te on te.idConsulta = c.id
@@ -78,6 +78,7 @@ namespace CapaDatosMepryl
                     join dbo.Especialidad e on te.idEspecialidad = e.id
                     INNER JOIN dbo.EstudiosPorExamen EPE ON EPE.idTipoExamen = te.id
                     INNER JOIN dbo.vwConsultarPacientes VCP ON VCP.id = c.pacienteID
+                    LEFT OUTER JOIN dbo.DatosAudiometria DA on c.identificador = DA.NroOrden AND convert(date, c.fecha) = convert(date, DA.Fecha)
                     WHERE convert(Date, c.fecha) = '" + dtFecha.ToShortDateString() + @"' and c.valido = '1' and c.nroOrden != '0' and c.tipo != 'V' and EPE.item68 = '1'
                     order by c.nroOrden";
 
