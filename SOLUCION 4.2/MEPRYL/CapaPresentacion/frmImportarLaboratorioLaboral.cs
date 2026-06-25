@@ -227,9 +227,25 @@ namespace CapaPresentacion
                 }
 
                 string examen01 = CorregirIdentificador(row.ItemArray[1].ToString());
-                DataTable tipoExamen = SQLConnector.obtenerTablaSegunConsultaString(@"Select tep.id from dbo.TipoExamenDePaciente
-                tep inner join dbo.Consulta c on tep.idConsulta = c.id
-                where Convert(date,c.fecha) = '" + fecha + "' and c.identificador = '" + examen01.ToString() + "'");
+                // Modificado: buscar solo por identificador, ignorar fecha del Excel
+                // Usar la fecha que ya tiene el registro en la base de datos
+                string strSQL = "Select tep.id, Convert(date,c.fecha) as FechaReal from dbo.TipoExamenDePaciente " +
+                    "tep inner join dbo.Consulta c on tep.idConsulta = c.id " +
+                    "where c.identificador = '" + examen01.ToString() + "' AND c.valido = '1' AND c.nroOrden != '0' AND c.tipo != 'V' " +
+                    "ORDER BY c.fecha DESC";
+                
+                Debug.WriteLine("[ImportLaboralLaboral] Buscando: Identificador=" + examen01);
+                Debug.WriteLine("[ImportLaboralLaboral] SQL: " + strSQL);
+                
+                DataTable tipoExamen = SQLConnector.obtenerTablaSegunConsultaString(strSQL);
+                Debug.WriteLine("[ImportLaboralLaboral] Resultados encontrados: " + tipoExamen.Rows.Count);
+                
+                // Si se encontró el registro, usar la fecha real de la base de datos
+                if (tipoExamen.Rows.Count > 0)
+                {
+                    fecha = tipoExamen.Rows[0]["FechaReal"].ToString();
+                    Debug.WriteLine("[ImportLaboralLaboral] Fecha real del registro: " + fecha);
+                }
 
                 if (tipoExamen.Rows.Count > 0)
                 {
@@ -303,20 +319,24 @@ namespace CapaPresentacion
                 return dt.ToString("yyyy-MM-dd");
             }
 
-            // Eliminar caracteres no numéricos y manejar ddMMyy o ddMMyyyy
+            // Eliminar caracteres no numéricos y manejar ddMMyy, yyyyMMdd, ddMMyyyy
             string digits = Regex.Replace(fechaSinProcesar, "\\D", "");
             if (digits.Length == 6)
             {
-                string dia = digits.Substring(0, 2);
+                // SIEMPRE interpretar como yyyyMMdd (año-mes-día) para este sistema
+                // Formato: 230326 → 2023-03-26
+                string año = "20" + digits.Substring(0, 2);
                 string mes = digits.Substring(2, 2);
-                string año = "20" + digits.Substring(4, 2);
+                string dia = digits.Substring(4, 2);
                 return año + "-" + mes + "-" + dia;
             }
             else if (digits.Length == 8)
             {
-                string dia = digits.Substring(0, 2);
-                string mes = digits.Substring(2, 2);
-                string año = digits.Substring(4, 4);
+                // SIEMPRE interpretar como yyyyMMdd (año-mes-día) para este sistema
+                // Formato: 20230326 → 2023-03-26
+                string año = digits.Substring(0, 4);
+                string mes = digits.Substring(4, 2);
+                string dia = digits.Substring(6, 2);
                 return año + "-" + mes + "-" + dia;
             }
 

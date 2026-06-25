@@ -2422,6 +2422,7 @@ namespace CapaPresentacion
         }
         private void btnCopiarInfo_Click(object sender, EventArgs e)
         {
+            System.Diagnostics.Debug.WriteLine("[CopiarInfo] Iniciando copia de info");
             CopiarTexto();
         }
 
@@ -2466,6 +2467,7 @@ namespace CapaPresentacion
                 }
             }
             strIdSubtipo = dgv.Rows[dgv.CurrentCell.RowIndex].Cells[20].Value?.ToString() ?? ""; // IDSUBTIPO [20]
+            System.Diagnostics.Debug.WriteLine("[CopiarInfo] Paciente: " + strPaciente + ", IdSubtipo: " + strIdSubtipo);
 
             dtDiaSemana = Convert.ToDateTime(strFechaTurno);
             strFechaTurno = dtDiaSemana.ToString("dddd", System.Globalization.CultureInfo.CreateSpecificCulture("es-ES")).ToUpper() + " " + strFechaTurno;
