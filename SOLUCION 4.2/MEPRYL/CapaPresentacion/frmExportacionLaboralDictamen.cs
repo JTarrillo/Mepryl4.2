@@ -134,15 +134,15 @@ namespace CapaPresentacion
 
         private void guardarExportacionExcel()
         {
-            Microsoft.Office.Interop.Excel.Application excel = new Microsoft.Office.Interop.Excel.Application();
-            Microsoft.Office.Interop.Excel.Workbook excelworkBook;
-            Microsoft.Office.Interop.Excel.Worksheet excelSheet;
+            dynamic excel = new Microsoft.Office.Interop.Excel.Application();
+            dynamic excelworkBook;
+            dynamic excelSheet;
 
             excel.Visible = false;
             excel.DisplayAlerts = false;
             excel.SheetsInNewWorkbook = 1;
-            excelworkBook = (Microsoft.Office.Interop.Excel.Workbook)(excel.Workbooks.Add(Type.Missing));
-            excelSheet = (Microsoft.Office.Interop.Excel.Worksheet)excelworkBook.ActiveSheet;
+            excelworkBook = excel.Workbooks.Add(Type.Missing);
+            excelSheet = excelworkBook.ActiveSheet;
             excelSheet.Name = "Hoja 1";
                        
             excelSheet.Cells[1, 1] = "FECHA";
@@ -204,8 +204,8 @@ namespace CapaPresentacion
                 }
                 lblTarea.Visible = false;
                 progressBar.Visible = false;
-                excel.get_Range("A1", "H1").EntireColumn.AutoFit();
-                excel.get_Range("A1", "H1").EntireColumn.Borders.LineStyle = Excel.XlLineStyle.xlContinuous;
+                excel.Range("A1", "H1").EntireColumn.AutoFit();
+                excel.Range("A1", "H1").EntireColumn.Borders.LineStyle = Excel.XlLineStyle.xlContinuous;
                 excelworkBook.SaveAs(tbUbicacion.Text, Excel.XlFileFormat.xlAddIn,
                 Type.Missing, Type.Missing, Type.Missing, Type.Missing, Excel.XlSaveAsAccessMode.xlExclusive,
                 Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
@@ -437,15 +437,15 @@ namespace CapaPresentacion
 
         private void guardarExportacionAcotada()
         {
-            Microsoft.Office.Interop.Excel.Application excel = new Microsoft.Office.Interop.Excel.Application();
-            Microsoft.Office.Interop.Excel.Workbook excelworkBook;
-            Microsoft.Office.Interop.Excel.Worksheet excelSheet;
+            dynamic excel = new Microsoft.Office.Interop.Excel.Application();
+            dynamic excelworkBook;
+            dynamic excelSheet;
 
             excel.Visible = false;
             excel.DisplayAlerts = false;
             excel.SheetsInNewWorkbook = 1;
-            excelworkBook = (Microsoft.Office.Interop.Excel.Workbook)(excel.Workbooks.Add(Type.Missing));
-            excelSheet = (Microsoft.Office.Interop.Excel.Worksheet)excelworkBook.ActiveSheet;
+            excelworkBook = excel.Workbooks.Add(Type.Missing);
+            excelSheet = excelworkBook.ActiveSheet;
             excelSheet.Name = "Hoja 1";
                         
             lblTarea.Visible = true;
@@ -468,10 +468,10 @@ namespace CapaPresentacion
             excelSheet.Cells[1, 16] = "RETIRADO";
             excelSheet.Cells[1, 17] = "ENVIADO";
 
-            setearColorYBorde(excel.get_Range("A1", "G1"), System.Drawing.Color.White);
-            setearColorYBorde(excel.get_Range("H1", "K1"), System.Drawing.Color.White);
-            setearColorYBorde(excel.get_Range("L1", "L1"), System.Drawing.Color.White);
-            setearColorYBorde(excel.get_Range("M1", "Q1"), System.Drawing.Color.White);
+            setearColorYBorde(excel.Range("A1", "G1"), System.Drawing.Color.White);
+            setearColorYBorde(excel.Range("H1", "K1"), System.Drawing.Color.White);
+            setearColorYBorde(excel.Range("L1", "L1"), System.Drawing.Color.White);
+            setearColorYBorde(excel.Range("M1", "Q1"), System.Drawing.Color.White);
             
             DataTable dt = cargarTablasAcotada();
 
@@ -535,8 +535,8 @@ namespace CapaPresentacion
             }
             lblTarea.Visible = false;
             progressBar.Visible = false;
-            excel.get_Range("A1", "Q1").EntireColumn.AutoFit();
-            excel.get_Range("A1", "Q1").EntireColumn.Borders.LineStyle = Excel.XlLineStyle.xlContinuous;            
+            excel.Range("A1", "Q1").EntireColumn.AutoFit();
+            excel.Range("A1", "Q1").EntireColumn.Borders.LineStyle = Excel.XlLineStyle.xlContinuous;            
             excelworkBook.SaveAs(tbUbicacion.Text, Excel.XlFileFormat.xlAddIn,
             Type.Missing, Type.Missing, Type.Missing, Type.Missing, Excel.XlSaveAsAccessMode.xlExclusive,
             Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
