@@ -26,9 +26,9 @@ namespace CapaDatosMepryl
                         SELECT @talla = talla, @peso = peso, @informe = espiro FROM dbo.ExamenLaboral WHERE id = '" + strIdExamenLaboral + @"'
                         SELECT @paciente = apellido + ' ' + nombres, @Nacimiento = Convert(date,fechaNacimiento,105) FROM dbo.PacienteLaboral WHERE dni = '" + strDNI + @"'
                         SELECT @paciente, @talla, @peso, @Nacimiento, @informe";
-            
+
             DataTable dtConsulta = SQLConnector.obtenerTablaSegunConsultaString(strSQL);
-            
+
             return dtConsulta;
         }
 
@@ -70,7 +70,7 @@ namespace CapaDatosMepryl
             //    <= '" + dtFecha.ToShortDateString() + @"' AND epe.item68 = '1' order by CONVERT(VARCHAR(10), c.fecha, 101), convert(int, REPLACE(REPLACE(c.identificador, 'L', ''), 'CO', ''))";
 
             strSQL = @"select c.nroOrden as 'Ingreso', c.identificador as 'NroOrden', VCP.Apellidos + ' ' + VCP.Nombres as Paciente, VCP.TipoPaciente, 
-	                      VCP.Apellidos, VCP.Nombres, te.id as IdTipoExamen
+	                      VCP.Apellidos, VCP.Nombres, te.id as IdTipoExamen, ISNULL(DA.Revisado, 0) as Revisado
                     from Consulta c
                     inner
                     join dbo.TipoExamenDePaciente te on te.idConsulta = c.id
@@ -78,6 +78,7 @@ namespace CapaDatosMepryl
                     join dbo.Especialidad e on te.idEspecialidad = e.id
                     INNER JOIN dbo.EstudiosPorExamen EPE ON EPE.idTipoExamen = te.id
                     INNER JOIN dbo.vwConsultarPacientes VCP ON VCP.id = c.pacienteID
+                    LEFT OUTER JOIN dbo.DatosAudiometria DA on c.identificador = DA.NroOrden AND convert(date, c.fecha) = convert(date, DA.Fecha)
                     WHERE convert(Date, c.fecha) = '" + dtFecha.ToShortDateString() + @"' and c.valido = '1' and c.nroOrden != '0' and c.tipo != 'V' and EPE.item68 = '1'
                     order by c.nroOrden";
 
@@ -131,7 +132,7 @@ namespace CapaDatosMepryl
                     order by c.nroOrden";
 
             dt = SQLConnector.obtenerTablaSegunConsultaString(strSQL);
-            
+
             return dt;
         }
 
@@ -185,7 +186,7 @@ namespace CapaDatosMepryl
                         strDatos[28] + ", " +
                         strDatos[29] + ", '" +
                         strDatos[30] + "', '" +
-                        strDatos[31] + "')";    
+                        strDatos[31] + "')";
                 }
                 else
                 {
@@ -219,13 +220,13 @@ namespace CapaDatosMepryl
                         "OidoDer8192 = " + strDatos[27] + ", " +
                         "OidoDer16334 = " + strDatos[28] + ", " +
                         "OidoDer20000 = " + strDatos[29] + ", " +
-                        "idTipoExamen = '" + strDatos[30] + "' "  +
+                        "idTipoExamen = '" + strDatos[30] + "' " +
                         "WHERE Fecha = '" + Convert.ToDateTime(strDatos[1]).ToString("yyyyMMdd") + "' AND NroOrden = '" + strDatos[0] + "'";
                 }
 
                 SQLConnector.obtenerTablaSegunConsultaString(strSQL);
 
-                blnRetorno = true;                
+                blnRetorno = true;
             }
 
             return blnRetorno;
@@ -262,11 +263,11 @@ namespace CapaDatosMepryl
                 SQLConnector.obtenerTablaSegunConsultaString(strSQL);
             }
 
-                strSQL = "update dbo.DatosAudiometria " +
-                     "SET diagnostico = '" + strDicAudio + "' ," +
-                     "Usuario = '" + Usuario + "', " +
-                     "Revisado = " + blnRevisado + " " +
-                     "WHERE idTipoExamen = '" + IdTipoExamen + "'";
+            strSQL = "update dbo.DatosAudiometria " +
+                 "SET diagnostico = '" + strDicAudio + "' ," +
+                 "Usuario = '" + Usuario + "', " +
+                 "Revisado = " + blnRevisado + " " +
+                 "WHERE idTipoExamen = '" + IdTipoExamen + "'";
             SQLConnector.obtenerTablaSegunConsultaString(strSQL);
 
             blnRetorno = true;
@@ -291,7 +292,7 @@ namespace CapaDatosMepryl
 
             dt = SQLConnector.obtenerTablaSegunConsultaString(strSQL);
 
-            if(dt.Rows.Count > 0)
+            if (dt.Rows.Count > 0)
             {
                 blnResultado = true;
             }
