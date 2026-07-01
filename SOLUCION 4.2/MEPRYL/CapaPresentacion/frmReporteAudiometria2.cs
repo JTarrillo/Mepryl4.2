@@ -21,7 +21,7 @@ namespace CapaPresentacion
         private CapaNegocioMepryl.Reportes reporte;
         private ReporteAudiometria ReporteAudio;
 
-        IWorkbook workbook;        
+        IWorkbook workbook;
         Worksheet worksheet;
         string strNroOrden = "";
         DateTime dtFecha = DateTime.Now;
@@ -37,7 +37,7 @@ namespace CapaPresentacion
         bool blnItemsCargados = false;
         string strTipoUsuario = "";
         int intIndexLista = 0;
-               
+
         public frmReporteAudiometria2()
         {
             InitializeComponent();
@@ -46,9 +46,9 @@ namespace CapaPresentacion
 
         public frmReporteAudiometria2(frmBasePrincipal parentForm, bool blnModoVista)
         {
-            InitializeComponent();            
+            InitializeComponent();
             this.MdiParent = parentForm;
-            this.WindowState = FormWindowState.Maximized;            
+            this.WindowState = FormWindowState.Maximized;
             reporte = new CapaNegocioMepryl.Reportes();
             ModoVista(blnModoVista);
             //AbrirArchivoExcel();            
@@ -56,11 +56,11 @@ namespace CapaPresentacion
 
         public frmReporteAudiometria2(bool blnModoVista)
         {
-            InitializeComponent();            
+            InitializeComponent();
             reporte = new CapaNegocioMepryl.Reportes();
             ModoVista(blnModoVista);
             //AbrirArchivoExcel();
-            
+
         }
 
         private void ModoVista(bool blnVerPanel)
@@ -75,7 +75,8 @@ namespace CapaPresentacion
                 this.Size = new Size(913, 611);
                 btnGuardarDatosExcel.Visible = true;
                 btnCrearReporte.Visible = true;
-            }else
+            }
+            else
             {
                 chkRevisar.Visible = true;
             }
@@ -119,11 +120,11 @@ namespace CapaPresentacion
 
         public void GuardarDatosPdf()
         {
-            string strArchivoAudiometria = reporte.ReporteSalida("AUDIOMETRIA", false, dtFecha, GenerarNombreReporte());            
+            string strArchivoAudiometria = reporte.ReporteSalida("AUDIOMETRIA", false, dtFecha, GenerarNombreReporte());
 
             using (FileStream pdfFileStream = new FileStream(strArchivoAudiometria, FileMode.Create))
             {
-                spreadsheetControl1.ExportToPdf(pdfFileStream);                
+                spreadsheetControl1.ExportToPdf(pdfFileStream);
             }
         }
 
@@ -154,9 +155,8 @@ namespace CapaPresentacion
         {
             bool blnResultado = false;
 
-            dtDatosAudiometria = null;
-            //dtDatosAudiometria = reporte.AudiometriaEstablcerDatos(dtFecha, strNroOrden);
-            dtDatosAudiometria = reporte.AudiometriaDiagnostico(dtFecha, strNroOrden);
+            // dtDatosAudiometria ya está cargado en CargarDatosPaciente() - no volver a consultar
+            // dtDatosAudiometria = reporte.AudiometriaDiagnostico(dtFecha, strNroOrden);
             string strPathFirma = "";
 
             //Datos Cabecera
@@ -187,14 +187,15 @@ namespace CapaPresentacion
             {
                 foreach (DataRow fila in dtDatosAudiometria.Rows)
                 {
-                    if (string.IsNullOrEmpty(fila["Revisado"].ToString())) {
+                    if (string.IsNullOrEmpty(fila["Revisado"].ToString()))
+                    {
                         chkRevisar.Checked = false;
                     }
                     else
                     {
                         chkRevisar.Checked = Convert.ToBoolean(fila["Revisado"].ToString());
                     }
-                    
+
                     // Oido Izquierdo
                     if (string.IsNullOrEmpty(fila["OidoIzq0"].ToString()))
                         worksheet.Cells["Q3"].Value = null;
@@ -399,15 +400,15 @@ namespace CapaPresentacion
                     if (string.IsNullOrEmpty(fila["OidoDer20000"].ToString()))
                         worksheet.Cells["R14"].Value = null;
                     else
-                        worksheet.Cells["R14"].Value = Convert.ToInt32(fila["OidoDer20000"].ToString());                    
+                        worksheet.Cells["R14"].Value = Convert.ToInt32(fila["OidoDer20000"].ToString());
                 }
             }
 
             // Datos diagnostico
             worksheet.Cells["B41"].Value = strDiagnostico;
             txtDiagnostico.Text = strDiagnostico;
-            
-            strPathFirma = PathFirmaProfesional();           
+
+            strPathFirma = PathFirmaProfesional();
 
             if (!string.IsNullOrEmpty(strPathFirma))
             {
@@ -440,7 +441,7 @@ namespace CapaPresentacion
 
         public List<string> RecuperarDatos()
         {
-            
+
             List<string> strValor = new List<string>();
 
             strDiagnostico = txtDiagnostico.Text;
@@ -451,7 +452,7 @@ namespace CapaPresentacion
             strValor.Add(strNombre);
             strValor.Add(strEmpresa);
             strValor.Add(strDiagnostico);
-                                    
+
             // Oido Derecho
             if (string.IsNullOrEmpty(worksheet.Cells["Q3"].Value.ToString()))
                 strValor.Add("''");
@@ -538,17 +539,17 @@ namespace CapaPresentacion
         }
 
         private void CargarDatosPaciente()
-        {            
+        {
             var swCDP = System.Diagnostics.Stopwatch.StartNew();
-            DataTable dt = reporte.AudiometriaDiagnostico(dtFecha, strNroOrden);
+            dtDatosAudiometria = reporte.AudiometriaDiagnostico(dtFecha, strNroOrden);
             swCDP.Stop();
             System.Diagnostics.Debug.WriteLine($"[AUDIOMETRIA] AudiometriaDiagnostico (CargarDatosPaciente): {swCDP.ElapsedMilliseconds} ms");
 
             LimpiarVariablesGlobales();
 
-            if (dt.Rows.Count > 0)
+            if (dtDatosAudiometria.Rows.Count > 0)
             {
-                foreach (DataRow fila in dt.Rows)
+                foreach (DataRow fila in dtDatosAudiometria.Rows)
                 {
                     strNombre = fila["Nombre"].ToString();
                     strApellido = fila["Apellido"].ToString();
@@ -560,10 +561,10 @@ namespace CapaPresentacion
                 }
             }
         }
-      
+
         private void FormatoListView()
         {
-            lstLista.View = View.Details;            
+            lstLista.View = View.Details;
             lstLista.Columns.Add("Nro");
             lstLista.Columns.Add("Ord");
             lstLista.Columns.Add("Nro");
@@ -573,9 +574,9 @@ namespace CapaPresentacion
             lstLista.Columns[2].Width = 40;
             lstLista.Columns[3].Width = 210;
         }
-                         
-      private void CargarListView()
-      {
+
+        private void CargarListView()
+        {
             var swLV = System.Diagnostics.Stopwatch.StartNew();
             dtDatosAudiometria = null;
             dtDatosAudiometria = reporte.AudiometriaEstablcerDatos(dtFecha);
@@ -632,7 +633,8 @@ namespace CapaPresentacion
             {
                 btnGuardarDatosExcel.Enabled = true;
                 //chkRevisar.Enabled = true;
-            }else
+            }
+            else
             {
                 btnGuardarDatosExcel.Enabled = false;
                 //chkRevisar.Enabled = false;
@@ -652,7 +654,7 @@ namespace CapaPresentacion
                 CargarListView();
                 btnGuardarDatosExcel.Enabled = false;
                 chkRevisar.Enabled = false;
-                pnlPie.Enabled = false;                
+                pnlPie.Enabled = false;
             }
         }
 
@@ -727,7 +729,7 @@ namespace CapaPresentacion
                                 strApellido = dtDiagnostico.Rows[i][3].ToString();
                                 strNombre = dtDiagnostico.Rows[i][4].ToString();
                                 strEmpresa = dtDiagnostico.Rows[i][5].ToString();
-                                strDiagnostico = dtDiagnostico.Rows[i][6].ToString();                                
+                                strDiagnostico = dtDiagnostico.Rows[i][6].ToString();
                                 EstablcerDatos();
                                 GuardarDatosPdf();
                                 blnResultado = true;
@@ -749,7 +751,7 @@ namespace CapaPresentacion
             {
                 strUsuario = fila["Usuario"].ToString();
             }
-                    
+
             return strUsuario;
         }
 
@@ -759,9 +761,9 @@ namespace CapaPresentacion
             CapaNegocioMepryl.UsuarioSistema usuario = new CapaNegocioMepryl.UsuarioSistema();
             strPath = usuario.FirmaProfesional(NombreUsuarioSistema());
 
-            return strPath;            
+            return strPath;
         }
-        
+
         private void chkRevisar_Click(object sender, EventArgs e)
         {
             string strDiagnosticoAux = "";
@@ -784,9 +786,9 @@ namespace CapaPresentacion
                 {
                     CambiarColorLista();
                     MessageBox.Show("Datos guardados correctamente.", "Audiometría", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    
+
                     lstLista.Select();
-                }                                
+                }
             }
             else
             {
@@ -808,7 +810,7 @@ namespace CapaPresentacion
             {
                 chkRevisar.Image = Image.FromFile("P:\\img-system\\mCheck02_36x36.png");
                 chkRevisar.Text = "Revisar";
-            } 
+            }
         }
 
         private void frmReporteAudiometria_Shown(object sender, EventArgs e)
@@ -834,8 +836,8 @@ namespace CapaPresentacion
                 EstablcerDatos();
                 sw2.Stop();
                 System.Diagnostics.Debug.WriteLine($"[AUDIOMETRIA] EstablcerDatos: {sw2.ElapsedMilliseconds} ms");
-            }            
-            
+            }
+
             gbActualizando.Visible = false;
             swShown.Stop();
             System.Diagnostics.Debug.WriteLine($"[AUDIOMETRIA] === TOTAL Shown: {swShown.ElapsedMilliseconds} ms ===");
@@ -889,7 +891,7 @@ namespace CapaPresentacion
             }
             else
             {
-                worksheet.Cells["Q8"].Value =0;
+                worksheet.Cells["Q8"].Value = 0;
             }
         }
 
@@ -1111,7 +1113,7 @@ namespace CapaPresentacion
         private void PintarDeColor(DateTime fecha, string NroOrden, int IndexList)
         {
             //lstListaPaciente
-            
+
         }
 
         private void VerificaEstudioCargado()
@@ -1146,7 +1148,7 @@ namespace CapaPresentacion
             txtEmpresa.Text = "";
             txtDiagnostico.Text = "";
             strTipoPaciente = "";
-        }        
+        }
 
         private void lstLista_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -1162,8 +1164,13 @@ namespace CapaPresentacion
                     ListViewItem listItem = lstLista.SelectedItems[0];
                     strNroOrden = listItem.SubItems[0].Text.ToString();
                     dtFecha = dtpCalendario.SelectionRange.Start;
+
+                    // Cargar datos del paciente (hace la consulta a DB)
                     CargarDatosPaciente();
+
+                    // Establecer datos en el formulario (usa dtDatosAudiometria ya cargado)
                     EstablcerDatos();
+
                     VerificaEstudioCargado();
                 }
 
@@ -1176,7 +1183,7 @@ namespace CapaPresentacion
                 {
                     btnGuardarDatosExcel.Enabled = false;
                     //chkRevisar.Enabled = false;
-                }               
+                }
 
                 VerificaEstudioRevisado();
             }
@@ -1190,32 +1197,32 @@ namespace CapaPresentacion
 
         private void CambiarColorLista()
         {
-            dtDatosAudiometria = null;            
-            string strNroOrdenCCL = "";
+            dtDatosAudiometria = null;
 
-            if (lstLista.Items.Count > 0)
+            // Una sola consulta para todos los pacientes de la fecha
+            dtDatosAudiometria = reporte.AudiometriaEstablcerDatos(dtFecha);
+
+            if (lstLista.Items.Count > 0 && dtDatosAudiometria.Rows.Count > 0)
             {
-                for (int i = 0; i < lstLista.Items.Count; i++)
+                // Crear diccionario para búsqueda rápida en memoria
+                var dictRevisado = new Dictionary<string, bool>();
+                foreach (DataRow fila in dtDatosAudiometria.Rows)
                 {
-                    strNroOrdenCCL = lstLista.Items[i].SubItems[0].Text;
-
-                    dtDatosAudiometria = reporte.AudiometriaEstablcerDatos(dtFecha, strNroOrdenCCL);
-
-                    if (dtDatosAudiometria.Rows.Count > 0)
-                    {
-                        foreach (DataRow fila in dtDatosAudiometria.Rows)
-                        {
-                            bool blnValor = Convert.ToBoolean(fila["Revisado"].ToString());
-
-                            if (blnValor)
-                                lstLista.Items[i].BackColor = Color.LimeGreen;
-                            else
-                                lstLista.Items[i].BackColor = Color.Orange;
-                        }
-                    }
-
+                    string nroOrden = fila["NroOrden"].ToString();
+                    bool revisado = Convert.ToBoolean(fila["Revisado"].ToString());
+                    dictRevisado[nroOrden] = revisado;
                 }
 
+                // Iterar sobre la lista usando el diccionario en memoria
+                for (int i = 0; i < lstLista.Items.Count; i++)
+                {
+                    string nroOrden = lstLista.Items[i].SubItems[0].Text;
+
+                    if (dictRevisado.ContainsKey(nroOrden))
+                    {
+                        lstLista.Items[i].BackColor = dictRevisado[nroOrden] ? Color.LimeGreen : Color.Orange;
+                    }
+                }
             }
         }
 
@@ -1236,7 +1243,7 @@ namespace CapaPresentacion
                     strTipoUsuario = fila["Tipo"].ToString();
                 }
             }
-        }         
+        }
 
         private void lstLista_Click(object sender, EventArgs e)
         {
@@ -1252,7 +1259,7 @@ namespace CapaPresentacion
             //    else
             //        btnGuardarDatosExcel.Enabled = false;
             //}
-            
+
         }
 
         private void VerificaEstudioRevisado()
@@ -1370,7 +1377,7 @@ namespace CapaPresentacion
                 blnEstado = false;
             }
 
-            if(Convert.ToInt32(txt256IZQ.Text) < 20)
+            if (Convert.ToInt32(txt256IZQ.Text) < 20)
             {
                 txt256IZQ.BackColor = Color.LightYellow;
                 blnEstado = false;
@@ -1481,18 +1488,18 @@ namespace CapaPresentacion
             bool blnResultado = false;
 
             if (txt128DER.Text != "18") blnResultado = true;
-            if (txt512DER.Text != "18" ) blnResultado = true;
+            if (txt512DER.Text != "18") blnResultado = true;
             if (txt256DER.Text != "18") blnResultado = true;
             if (txt1024DER.Text != "18") blnResultado = true;
-            if (txt2048DER.Text != "18" ) blnResultado = true;
-            if (txt4096DER.Text != "18" ) blnResultado = true;
-            if (txt8192DER.Text != "18" ) blnResultado = true;
+            if (txt2048DER.Text != "18") blnResultado = true;
+            if (txt4096DER.Text != "18") blnResultado = true;
+            if (txt8192DER.Text != "18") blnResultado = true;
 
             if (txt128IZQ.Text != "20") blnResultado = true;
             if (txt256IZQ.Text != "20") blnResultado = true;
             if (txt512IZQ.Text != "20") blnResultado = true;
             if (txt1024IZQ.Text != "20") blnResultado = true;
-            if (txt2048IZQ.Text != "20") blnResultado = true; 
+            if (txt2048IZQ.Text != "20") blnResultado = true;
             if (txt4096IZQ.Text != "20") blnResultado = true;
             if (txt8192IZQ.Text != "20") blnResultado = true;
 
@@ -1509,7 +1516,8 @@ namespace CapaPresentacion
 
         private void txtDiagnostico_TextChanged(object sender, EventArgs e)
         {
-            if(txtDiagnostico.Text.Length > 254){
+            if (txtDiagnostico.Text.Length > 254)
+            {
                 MessageBox.Show("Solo puede guardar un máximo de 255 caracteres.", "Audiometría", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
