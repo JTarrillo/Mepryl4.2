@@ -21,6 +21,7 @@ namespace CapaPresentacion
         private bool yaInicializado = false;
         private decimal[] _coefsPromo = new decimal[12];
         private decimal[] _coefsPublico = new decimal[12];
+        private decimal[] _factoresPublico = new decimal[12];
 
         private decimal[] _coefs 
         { 
@@ -45,9 +46,11 @@ namespace CapaPresentacion
             {
                 _coefsPromo[i] = 1;
                 _coefsPublico[i] = 1;
+                _factoresPublico[i] = 0;
             }
 
             this.tabControl.SelectedIndexChanged += new System.EventHandler(this.tabControl_SelectedIndexChanged);
+            this.cboMesVariacion.SelectedIndexChanged += new System.EventHandler(this.cboMesVariacion_SelectedIndexChanged);
             this.dgvObsPre.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvObsPre_CellContentClick);
         }
 
@@ -58,7 +61,7 @@ namespace CapaPresentacion
             {
                 string checkSql = "IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('CoeficientePrecio') AND name = 'Tipo') " +
                                   "BEGIN " +
-                                  "  ALTER TABLE CoeficientePrecio ADD Tipo VARCHAR(10) NOT NULL DEFAULT 'PROMO'; " +
+                                  "  ALTER TABLE CoeficientePrecio ADD Tipo VARCHAR(20) NOT NULL DEFAULT 'PROMO'; " +
                                   "  ALTER TABLE CoeficientePrecio DROP CONSTRAINT UQ_CoeficientePrecio_MesAnio; " +
                                   "  ALTER TABLE CoeficientePrecio ADD CONSTRAINT UQ_CoeficientePrecio_MesAnioTipo UNIQUE (Mes, Anio, Tipo); " +
                                   "END";
@@ -169,6 +172,17 @@ namespace CapaPresentacion
                     int mes = Convert.ToInt32(row["Mes"]);
                     if (mes >= 1 && mes <= 12)
                         _coefs[mes - 1] = Convert.ToDecimal(row["Coeficiente"]);
+                }
+
+                // Cargar factores públicos y actualizar la UI
+                _factoresPublico = ObtenerFactoresAnio(anio);
+                if (cboMesVariacion.SelectedIndex > 0)
+                {
+                    txtVariacion.Text = _factoresPublico[cboMesVariacion.SelectedIndex - 1].ToString("0.####", System.Globalization.CultureInfo.InvariantCulture);
+                }
+                else
+                {
+                    txtVariacion.Text = "0";
                 }
 
                 // Cargar datos
@@ -373,8 +387,9 @@ namespace CapaPresentacion
                 
                 if (rowPromo == null) continue;
 
-                // El bucle empieza en el mes siguiente al modificado (o desde enero si mesModificado es 0 o 1)
-                int mesInicio = mesModificado + 1;
+                // El bucle empieza en el mes modificado para afectar también al mes en curso con el factor nuevo
+                int mesInicio = mesModificado;
+                if (mesInicio == 0) mesInicio = 1;
                 if (mesInicio > 12) return;
 
                 // ✅ LÓGICA SENIOR: Detectar si ya existe un precio forzado previo en esta fila 
@@ -404,18 +419,48 @@ namespace CapaPresentacion
                     {
                         // Si estamos en una cadena forzada y el importe actual es 0,
                         // multiplicamos el PRECIO PÚBLICO ANTERIOR por el COEFICIENTE GLOBAL PÚBLICO.
-                        decimal valorAnteriorPublico = ParseDecimal(rowPublico.Cells[5 + (mes - 2) * 2].Value);
-                        decimal factorRelacion = _coefsPublico[mes - 2]; 
-                        rowPublico.Cells[5 + (mes - 1) * 2].Value = valorAnteriorPublico * factorRelacion;
+                        decimal valorAnteriorPublico = 0;
+                        decimal factorRelacion = 1;
+                        if (mes > 1) 
+                        {
+                            valorAnteriorPublico = ParseDecimal(rowPublico.Cells[5 + (mes - 2) * 2].Value);
+                            factorRelacion = _coefsPublico[mes - 2]; 
+                        }
+                        
+                        decimal precioCalculado = valorAnteriorPublico * factorRelacion;
+                        
+                        // Y AQUÍ SE APLICA TU NUEVO FACTOR TAMBIÉN EN LA CASCADA FORZADA:
+                        decimal factorDelMes = _factoresPublico[mes - 1];
+                        if (factorDelMes > 0)
+                        {
+                            precioCalculado = precioCalculado * factorDelMes;
+                        }
+
+                        rowPublico.Cells[5 + (mes - 1) * 2].Value = Math.Ceiling(precioCalculado / 1000m) * 1000m;
                     }
                     else
                     {
-                        // Si no hay fuerza de precio previa, seguimos la relación normal: Público(Mes) = Promo(Mes) * FactorRelación(Mes-1)
+                        // Si no hay fuerza de precio previa, seguimos la relación normal: Público(Mes) = Promo(Mes) * CoeficienteRojo(Mes-1)
                         decimal valorPromo = ParseDecimal(rowPromo.Cells[5 + (mes - 1) * 2].Value);
                         if (valorPromo == 0) continue;
 
-                        decimal factorRelacion = _coefsPublico[mes - 2]; 
-                        rowPublico.Cells[5 + (mes - 1) * 2].Value = valorPromo * factorRelacion;
+                        // Se respeta la lógica base intocable (Coeficiente Rojo Público)
+                        decimal factorRelacion = 1;
+                        if (mes > 1)
+                        {
+                            factorRelacion = _coefsPublico[mes - 2]; 
+                        }
+                        
+                        decimal precioPublicoCalculado = valorPromo * factorRelacion;
+                        
+                        // Y AQUÍ SE APLICA TU NUEVO FACTOR: Se multiplica el resultado por el Factor del mes actual
+                        decimal factorDelMes = _factoresPublico[mes - 1];
+                        if (factorDelMes > 0)
+                        {
+                            precioPublicoCalculado = precioPublicoCalculado * factorDelMes;
+                        }
+
+                        rowPublico.Cells[5 + (mes - 1) * 2].Value = Math.Ceiling(precioPublicoCalculado / 1000m) * 1000m;
                     }
                 }
             }
@@ -458,8 +503,8 @@ namespace CapaPresentacion
                             }
                         }
 
-                        // Empezamos desde el mes siguiente al coeficiente o precio modificado
-                        for (int mes = mesModificado + 1; mes <= 12; mes++)
+                        // Empezamos desde el mes modificado
+                        for (int mes = mesModificado; mes <= 12; mes++)
                         {
                             decimal aumentoFijoFilaPublico = ParseDecimal(filaPublico.Cells[6 + (mes - 2) * 2].Value);
                             
@@ -472,15 +517,34 @@ namespace CapaPresentacion
                             {
                                 decimal valorAnteriorPublico = ParseDecimal(filaPublico.Cells[5 + (mes - 2) * 2].Value);
                                 decimal factorRelacion = _coefsPublico[mes - 2]; 
-                                filaPublico.Cells[5 + (mes - 1) * 2].Value = valorAnteriorPublico * factorRelacion;
+                                decimal precioCalculado = valorAnteriorPublico * factorRelacion;
+                                
+                                // Aquí aplicamos el factor multiplicador nuevo a la cascada forzada
+                                decimal factorDelMes = _factoresPublico[mes - 1];
+                                if (factorDelMes > 0)
+                                {
+                                    precioCalculado = precioCalculado * factorDelMes;
+                                }
+
+                                filaPublico.Cells[5 + (mes - 1) * 2].Value = Math.Ceiling(precioCalculado / 1000m) * 1000m;
                             }
                             else
                             {
                                 decimal valorPromo = ParseDecimal(filaPromo.Cells[5 + (mes - 1) * 2].Value);
                                 if (valorPromo == 0) continue;
 
+                                // Lógica base intocable
                                 decimal factorRelacion = _coefsPublico[mes - 2];
-                                filaPublico.Cells[5 + (mes - 1) * 2].Value = valorPromo * factorRelacion;
+                                decimal precioPublicoCalculado = valorPromo * factorRelacion;
+
+                                // Aquí aplicamos el factor multiplicador nuevo
+                                decimal factorDelMes = _factoresPublico[mes - 1];
+                                if (factorDelMes > 0)
+                                {
+                                    precioPublicoCalculado = precioPublicoCalculado * factorDelMes;
+                                }
+
+                                filaPublico.Cells[5 + (mes - 1) * 2].Value = Math.Ceiling(precioPublicoCalculado / 1000m) * 1000m;
                             }
                         }
                     }
@@ -600,15 +664,26 @@ namespace CapaPresentacion
 
                 foreach (DataGridViewRow row in dgv.Rows)
                 {
-                    if (!row.Visible) continue;
+                    if (row.IsNewRow || !row.Visible) continue;
+                    
+                    // Asegurarnos de que tenga el ID antes de guardar
+                    string idEsp = row.Cells[ObtenerNombreColumnaIdEspecialidad(dgv)].Value?.ToString();
+                    if (string.IsNullOrEmpty(idEsp)) continue;
+
                     DataRow dr = dtGuardar.NewRow();
-                    dr["idEspecialidad"] = row.Cells[ObtenerNombreColumnaIdEspecialidad(dgv)].Value?.ToString() ?? "";
+                    dr["idEspecialidad"] = idEsp;
                     dr["Descripcion"] = row.Cells[ObtenerNombreColumnaDescripcion(dgv)].Value?.ToString() ?? "";
                     dr["IPCBase"] = ParseDecimal(row.Cells[ObtenerNombreColumnaIPCBase(dgv)].Value);
+                    
+                    // Buscar en qué índice empiezan los meses (dependiendo si tiene Tipo/Motivo, el offset cambia)
+                    int colBaseMeses = 5; // Por defecto
+                    if (dgv.Columns.Contains("colPromo01")) colBaseMeses = dgv.Columns["colPromo01"].Index;
+                    else if (dgv.Columns.Contains("colPublicoPromo01")) colBaseMeses = dgv.Columns["colPublicoPromo01"].Index;
+
                     for (int mes = 1; mes <= 12; mes++)
                     {
-                        dr["Promo" + mes.ToString("00")] = ParseDecimal(row.Cells[5 + (mes - 1) * 2].Value);
-                        dr["Coef" + mes.ToString("00")] = ParseDecimal(row.Cells[6 + (mes - 1) * 2].Value);
+                        dr["Promo" + mes.ToString("00")] = ParseDecimal(row.Cells[colBaseMeses + (mes - 1) * 2].Value);
+                        dr["Coef" + mes.ToString("00")] = ParseDecimal(row.Cells[colBaseMeses + 1 + (mes - 1) * 2].Value);
                     }
                     dtGuardar.Rows.Add(dr);
                 }
@@ -625,15 +700,24 @@ namespace CapaPresentacion
                     DataTable dtPublicoGuardar = dtGuardar.Clone();
                     foreach (DataGridViewRow rowPub in dgvPrecioPublico.Rows)
                     {
-                        if (!rowPub.Visible) continue;
+                        if (rowPub.IsNewRow || !rowPub.Visible) continue;
+                        
+                        string idEspPub = rowPub.Cells[ObtenerNombreColumnaIdEspecialidad(dgvPrecioPublico)].Value?.ToString();
+                        if (string.IsNullOrEmpty(idEspPub)) continue;
+
                         DataRow drPub = dtPublicoGuardar.NewRow();
-                        drPub["idEspecialidad"] = rowPub.Cells[ObtenerNombreColumnaIdEspecialidad(dgvPrecioPublico)].Value?.ToString() ?? "";
+                        drPub["idEspecialidad"] = idEspPub;
                         drPub["Descripcion"] = rowPub.Cells[ObtenerNombreColumnaDescripcion(dgvPrecioPublico)].Value?.ToString() ?? "";
                         drPub["IPCBase"] = ParseDecimal(rowPub.Cells[ObtenerNombreColumnaIPCBase(dgvPrecioPublico)].Value);
+                        
+                        int colBaseMesesPub = dgvPrecioPublico.Columns.Contains("colPublicoPromo01") 
+                            ? dgvPrecioPublico.Columns["colPublicoPromo01"].Index 
+                            : 5;
+
                         for (int mes = 1; mes <= 12; mes++)
                         {
-                            drPub["Promo" + mes.ToString("00")] = ParseDecimal(rowPub.Cells[5 + (mes - 1) * 2].Value);
-                            drPub["Coef" + mes.ToString("00")] = ParseDecimal(rowPub.Cells[6 + (mes - 1) * 2].Value);
+                            drPub["Promo" + mes.ToString("00")] = ParseDecimal(rowPub.Cells[colBaseMesesPub + (mes - 1) * 2].Value);
+                            drPub["Coef" + mes.ToString("00")] = ParseDecimal(rowPub.Cells[colBaseMesesPub + 1 + (mes - 1) * 2].Value);
                         }
                         dtPublicoGuardar.Rows.Add(drPub);
                     }
@@ -647,7 +731,7 @@ namespace CapaPresentacion
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error al guardar precios: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Error al guardar precios: " + ex.Message + "\n" + ex.StackTrace, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -763,10 +847,44 @@ namespace CapaPresentacion
             AplicarVariacionGrilla();
         }
 
+        private decimal[] ObtenerFactoresAnio(int anio)
+        {
+            decimal[] result = new decimal[12];
+            for (int i = 0; i < 12; i++) result[i] = 0;
+            
+            // Asumiendo que guardamos los factores en la misma tabla con Tipo='FACTOR'
+            string sql = $"SELECT Mes, Coeficiente FROM CoeficientePrecio WHERE Anio = {anio} AND Tipo = 'FACTOR'";
+            DataTable dt = SQLConnector.obtenerTablaSegunConsultaString(sql);
+            if (dt != null)
+            {
+                foreach (DataRow row in dt.Rows)
+                {
+                    int mes = Convert.ToInt32(row["Mes"]);
+                    if (mes >= 1 && mes <= 12)
+                        result[mes - 1] = Convert.ToDecimal(row["Coeficiente"]);
+                }
+            }
+            return result;
+        }
+
+        private void GuardarFactoresAnio(int anio)
+        {
+            for (int mes = 1; mes <= 12; mes++)
+            {
+                // Solo inserta o actualiza; y lo formatea correctamente para SQL
+                string valorSQL = _factoresPublico[mes - 1].ToString("0.####", System.Globalization.CultureInfo.InvariantCulture);
+                string sql = $"IF EXISTS (SELECT * FROM CoeficientePrecio WHERE Mes={mes} AND Anio={anio} AND Tipo='FACTOR') " +
+                             $"UPDATE CoeficientePrecio SET Coeficiente={valorSQL} WHERE Mes={mes} AND Anio={anio} AND Tipo='FACTOR' " +
+                             $"ELSE " +
+                             $"INSERT INTO CoeficientePrecio (Mes, Anio, Tipo, Coeficiente) VALUES ({mes}, {anio}, 'FACTOR', {valorSQL})";
+                SQLConnector.obtenerTablaSegunConsultaString(sql);
+            }
+        }
+
         private void AplicarVariacionGrilla()
         {
             decimal factor = ObtenerFactor();
-            if (factor <= 0)
+            if (factor < 0)
             {
                 MessageBox.Show("Ingrese un valor válido.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
@@ -775,45 +893,27 @@ namespace CapaPresentacion
             int mesIdx = cboMesVariacion.SelectedIndex; // 0 = Todos, 1-12 = mes
             string alcanceMes = mesIdx == 0 ? "todos los meses" : NombresMeses[mesIdx - 1];
 
-            DataGridView dgv = ObtenerDGVActual();
-            int seleccionadas = 0;
-            foreach (DataGridViewRow r in dgv.SelectedRows)
-                seleccionadas++;
-            int totalData = dgv.Rows.Count;
-            string alcance = seleccionadas == 0 || seleccionadas >= totalData
-                ? "TODAS las prestaciones"
-                : seleccionadas + " prestación(es) seleccionada(s)";
-
             DialogResult dr = MessageBox.Show(
-                "Se aplicará factor " + factor.ToString("0.##") + " a " + alcanceMes + " en " + alcance + ".\n\n" +
-                "(Los cambios quedan en la grilla. Presione Guardar para confirmar.)\n¿Continuar?",
-                "Confirmar variación", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            if (dr != DialogResult.Yes) return;
+                $"¿Está seguro que desea aplicar un factor de {factor} a {alcanceMes} en Precio Público?",
+                "Confirmar", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
-            List<DataGridViewRow> filas = new List<DataGridViewRow>();
-            if (seleccionadas == 0 || seleccionadas >= totalData)
-                foreach (DataGridViewRow row in dgv.Rows)
-                    filas.Add(row);
-            else
-                foreach (DataGridViewRow row in dgv.SelectedRows)
-                    filas.Add(row);
-
-            int mesInicio = mesIdx == 0 ? 1 : mesIdx;
-            int mesFin = mesIdx == 0 ? 12 : mesIdx;
-
-            foreach (DataGridViewRow row in filas)
+            if (dr == DialogResult.Yes)
             {
-                for (int mes = mesInicio; mes <= mesFin; mes++)
+                if (mesIdx == 0) // Todos
                 {
-                    int colIdx = 5 + (mes - 1) * 2;
-                    decimal precio = ParseDecimal(row.Cells[colIdx].Value) * factor;
-                    row.Cells[colIdx].Value = Math.Ceiling(precio / 1000m) * 1000m;
+                    for (int i = 0; i < 12; i++) _factoresPublico[i] = factor;
                 }
+                else
+                {
+                    _factoresPublico[mesIdx - 1] = factor;
+                }
+                
+                // Forzar recálculo visualmente en la grilla
+                RecalcularPrecioPublicoRelativoAPromo(mesIdx == 0 ? 1 : mesIdx);
+                
+                // Guardar Inmediatamente en BD
+                GuardarFactoresAnio((int)nudAnio.Value);
             }
-
-            txtVariacion.Text = "0";
-            MessageBox.Show("Variación aplicada a " + alcanceMes + " en " + alcance + ".\nRecuerde presionar Guardar para confirmar.",
-                "Variación aplicada", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void txtBuscar_TextChanged(object sender, EventArgs e)
@@ -871,24 +971,25 @@ namespace CapaPresentacion
             decimal valor;
             string texto = txtVariacion.Text.Replace(".", ",");
             if (!decimal.TryParse(texto, out valor)) return -1;
-            return chkFactor.Checked ? valor : 1 + valor / 100;
+            return valor;
         }
 
         private void chkFactor_CheckedChanged(object sender, EventArgs e)
         {
-            decimal valor;
-            string texto = txtVariacion.Text.Replace(".", ",");
-            if (!decimal.TryParse(texto, out valor)) return;
+            // Sin lógica, dejamos solo Factor
+        }
 
-            if (chkFactor.Checked)
+        private void cboMesVariacion_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cboMesVariacion.SelectedIndex == 0)
             {
-                lblVariacion.Text = "Factor:";
-                txtVariacion.Text = (1 + valor / 100).ToString("0.##");
+                txtVariacion.Text = "0";
             }
             else
             {
-                lblVariacion.Text = "Incremento %:";
-                txtVariacion.Text = ((valor - 1) * 100).ToString("0.##");
+                // Si el factor es diferente de 0, lo mostramos, si no mostramos "0" para mantener la UI limpia.
+                decimal factorActual = _factoresPublico[cboMesVariacion.SelectedIndex - 1];
+                txtVariacion.Text = factorActual.ToString("0.####", System.Globalization.CultureInfo.InvariantCulture);
             }
         }
 
@@ -1147,13 +1248,49 @@ namespace CapaPresentacion
             if (yaInicializado)
             {
                 if (tabControl.SelectedTab == tabPrecios)
+                {
                     lblTitulo.Text = "  Precios Promos";
+                    btnCopiarAnio.Visible = true;
+                    // Ocultar Factor
+                    lblMesVariacion.Visible = false;
+                    cboMesVariacion.Visible = false;
+                    lblVariacion.Visible = false;
+                    txtVariacion.Visible = false;
+                    btnAplicar.Visible = false;
+                }
                 else if (tabControl.SelectedTab == tabPrecioPublico)
+                {
                     lblTitulo.Text = "  Precios Públicos";
+                    btnCopiarAnio.Visible = false;
+                    // Mostrar Factor
+                    lblMesVariacion.Visible = true;
+                    cboMesVariacion.Visible = true;
+                    lblVariacion.Visible = true;
+                    txtVariacion.Visible = true;
+                    btnAplicar.Visible = true;
+                }
                 else if (tabControl.SelectedTab == tabConfig)
+                {
                     lblTitulo.Text = "  Configuración de Señas y Planilla";
+                    // Ocultar controles
+                    btnCopiarAnio.Visible = false;
+                    lblMesVariacion.Visible = false;
+                    cboMesVariacion.Visible = false;
+                    lblVariacion.Visible = false;
+                    txtVariacion.Visible = false;
+                    btnAplicar.Visible = false;
+                }
                 else if (tabControl.SelectedTab == tabObsPre)
+                {
                     lblTitulo.Text = "  Gestión de Observaciones Rápidas";
+                    // Ocultar controles
+                    btnCopiarAnio.Visible = false;
+                    lblMesVariacion.Visible = false;
+                    cboMesVariacion.Visible = false;
+                    lblVariacion.Visible = false;
+                    txtVariacion.Visible = false;
+                    btnAplicar.Visible = false;
+                }
 
                 CargarGrilla();
             }
