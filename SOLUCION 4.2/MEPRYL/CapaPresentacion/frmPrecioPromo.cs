@@ -370,6 +370,7 @@ namespace CapaPresentacion
 
             foreach (DataGridViewRow rowPublico in dgvPublico.Rows)
             {
+                // Solo ignoramos las filas nuevas de edición
                 if (rowPublico.IsNewRow) continue;
 
                 string idEsp = rowPublico.Cells[ObtenerNombreColumnaIdEspecialidad(dgvPublico)].Value?.ToString();
@@ -894,7 +895,7 @@ namespace CapaPresentacion
             string alcanceMes = mesIdx == 0 ? "todos los meses" : NombresMeses[mesIdx - 1];
 
             DialogResult dr = MessageBox.Show(
-                $"¿Está seguro que desea aplicar un factor de {factor} a {alcanceMes} en Precio Público?",
+                $"¿Está seguro que desea aplicar un factor de {factor} a {alcanceMes} en Precio Público?\nEsto actualizará TODAS las prestaciones de ese mes.",
                 "Confirmar", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
             if (dr == DialogResult.Yes)
@@ -908,7 +909,7 @@ namespace CapaPresentacion
                     _factoresPublico[mesIdx - 1] = factor;
                 }
                 
-                // Forzar recálculo visualmente en la grilla
+                // Forzar recálculo visualmente en la grilla para TODAS las filas
                 RecalcularPrecioPublicoRelativoAPromo(mesIdx == 0 ? 1 : mesIdx);
                 
                 // Guardar Inmediatamente en BD

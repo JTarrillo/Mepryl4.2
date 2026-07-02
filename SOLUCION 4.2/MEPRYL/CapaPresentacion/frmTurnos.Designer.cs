@@ -302,6 +302,7 @@ namespace CapaPresentacion
             this.btnWhatsApp.Text = "WhatsApp";
             this.btnWhatsApp.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btnWhatsApp.UseVisualStyleBackColor = true;
+            this.btnWhatsApp.Visible = false;
             this.btnWhatsApp.Click += new System.EventHandler(this.btnWhatsApp_Click);
             // 
             // btnCancelarMover
@@ -547,7 +548,6 @@ namespace CapaPresentacion
             this.panel1.Controls.Add(this.panelPacientePreventiva);
             this.panel1.Controls.Add(this.panelFiltro);
             this.panel1.Controls.Add(this.panelEstado);
-            this.panel1.Controls.Add(this.panelHorario);
             this.panel1.Controls.Add(this.panelFechaTipoExamen);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 50);
@@ -1165,7 +1165,7 @@ namespace CapaPresentacion
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
             dataGridViewCellStyle1.Font = new System.Drawing.Font("Tahoma", 8.25F);
-            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(31)))), ((int)(((byte)(53)))));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Control;
             dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.ControlText;
             dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
@@ -1271,7 +1271,7 @@ namespace CapaPresentacion
             this.panelFiltro.Controls.Add(this.pictureBox3);
             this.panelFiltro.Controls.Add(this.botLimpiar);
             this.panelFiltro.Controls.Add(this.botBuscar);
-            this.panelFiltro.Location = new System.Drawing.Point(309, 177);
+            this.panelFiltro.Location = new System.Drawing.Point(309, 98);
             this.panelFiltro.Name = "panelFiltro";
             this.panelFiltro.Size = new System.Drawing.Size(297, 105);
             this.panelFiltro.TabIndex = 18;
@@ -1295,7 +1295,7 @@ namespace CapaPresentacion
             this.label20.Name = "label20";
             this.label20.Size = new System.Drawing.Size(144, 16);
             this.label20.TabIndex = 23;
-            this.label20.Text = "Búscar Turno / Paciente";
+            this.label20.Text = "Buscar Turno / Paciente";
             // 
             // pictureBox3
             // 
@@ -1341,7 +1341,7 @@ namespace CapaPresentacion
             this.panelEstado.Controls.Add(this.rbEstadoLibres);
             this.panelEstado.Controls.Add(this.pictureBox2);
             this.panelEstado.Controls.Add(this.rbEstadoTodos);
-            this.panelEstado.Location = new System.Drawing.Point(309, 87);
+            this.panelEstado.Location = new System.Drawing.Point(309, 3);
             this.panelEstado.Name = "panelEstado";
             this.panelEstado.Size = new System.Drawing.Size(297, 90);
             this.panelEstado.TabIndex = 17;
@@ -1428,10 +1428,11 @@ namespace CapaPresentacion
             this.panelHorario.Controls.Add(this.rbHora9);
             this.panelHorario.Controls.Add(this.rbHora10);
             this.panelHorario.Controls.Add(this.rbHora11);
-            this.panelHorario.Location = new System.Drawing.Point(309, 0);
+            this.panelHorario.Location = new System.Drawing.Point(7, 232);
             this.panelHorario.Name = "panelHorario";
-            this.panelHorario.Size = new System.Drawing.Size(297, 90);
+            this.panelHorario.Size = new System.Drawing.Size(143, 40);
             this.panelHorario.TabIndex = 16;
+            this.panelHorario.Visible = false;
             // 
             // label18
             // 
@@ -1466,6 +1467,7 @@ namespace CapaPresentacion
             this.rbHoraTodas.Text = "TODAS";
             this.rbHoraTodas.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.rbHoraTodas.UseVisualStyleBackColor = true;
+            this.rbHoraTodas.Visible = false;
             this.rbHoraTodas.CheckedChanged += new System.EventHandler(this.rbHoraTodas_CheckedChanged);
             // 
             // rbHora15
@@ -1608,6 +1610,7 @@ namespace CapaPresentacion
             this.panelFechaTipoExamen.Controls.Add(this.botProxFechaLibre);
             this.panelFechaTipoExamen.Controls.Add(this.tpFecha);
             this.panelFechaTipoExamen.Controls.Add(this.botTurno);
+            this.panelFechaTipoExamen.Controls.Add(this.panelHorario);
             this.panelFechaTipoExamen.Location = new System.Drawing.Point(-1, 0);
             this.panelFechaTipoExamen.Name = "panelFechaTipoExamen";
             this.panelFechaTipoExamen.Size = new System.Drawing.Size(310, 283);
@@ -1631,7 +1634,7 @@ namespace CapaPresentacion
             // 
             this.tpFecha.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
             this.tpFecha.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tpFecha.Location = new System.Drawing.Point(61, 68);
+            this.tpFecha.Location = new System.Drawing.Point(43, 68);
             this.tpFecha.Name = "tpFecha";
             this.tpFecha.TabIndex = 0;
             this.tpFecha.TitleBackColor = System.Drawing.Color.White;
