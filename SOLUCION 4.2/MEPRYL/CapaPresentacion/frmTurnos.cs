@@ -651,7 +651,7 @@ namespace CapaPresentacion
                         botModificar.Visible = true;
                         botLiberar.Visible = true;
                         btnCopiarInfo.Visible = true; //GRV - Visible para todos los tipos de turno
-                        btnWhatsApp.Visible = true; // WhatsApp visible para todos los tipos de turno
+                        btnWhatsApp.Visible = false;
                         btnVerEstudio.Visible = true;
                         btnMoverTurno.Visible = true; // GRV - Modificado
                     }
@@ -708,25 +708,6 @@ namespace CapaPresentacion
                     DataTable ppPrev = turno.ObtenerPrecioPromo(new Guid(idSubtipoPrev), obtenerFecha());
                     if (ppPrev.Rows.Count > 0 && Convert.ToDouble(ppPrev.Rows[0]["PrecioLista"].ToString()) > 0)
                         pacientePreventiva.TipoExamen.PrecioLista = Convert.ToDouble(ppPrev.Rows[0]["PrecioLista"].ToString());
-                }
-            }
-
-            // Cargar campos de seña y planilla desde PrecioPromo (solo si no hay valor personalizado)
-            {
-                string idSubtipoPrev2 = dgv.Rows[dgv.CurrentCell.RowIndex].Cells["IdSubtipo"].Value?.ToString() ?? "";
-                if (!string.IsNullOrEmpty(idSubtipoPrev2) && idSubtipoPrev2 != Guid.Empty.ToString())
-                {
-                    DataTable ppPrev2 = turno.ObtenerPrecioPromo(new Guid(idSubtipoPrev2), obtenerFecha());
-                    if (ppPrev2.Rows.Count > 0)
-                    {
-                        // Solo cargar Seña desde PrecioPromo si no hay un valor personalizado (> 0)
-                        if (pacientePreventiva.TipoExamen.Seña <= 0)
-                        {
-                            pacientePreventiva.TipoExamen.Seña = Convert.ToDouble(ppPrev2.Rows[0]["Seña"]);
-                        }
-                        pacientePreventiva.TipoExamen.LlevaPlanilla = Convert.ToBoolean(ppPrev2.Rows[0]["LlevaPlanilla"]);
-                        pacientePreventiva.TipoExamen.ObservacionesExtra = ppPrev2.Rows[0]["ObservacionesExtra"].ToString();
-                    }
                 }
             }
 
@@ -808,25 +789,6 @@ namespace CapaPresentacion
                     DataTable ppLab = turno.ObtenerPrecioPromo(new Guid(idSubtipoLab), obtenerFecha());
                     if (ppLab.Rows.Count > 0 && Convert.ToDouble(ppLab.Rows[0]["PrecioLista"].ToString()) > 0)
                         pacienteLaboral.TipoExamen.PrecioLista = Convert.ToDouble(ppLab.Rows[0]["PrecioLista"].ToString());
-                }
-            }
-
-            // Cargar campos de seña y planilla desde PrecioPromo (solo si no hay valor personalizado)
-            {
-                string idSubtipoLab2 = dgv.Rows[dgv.CurrentCell.RowIndex].Cells["IdSubtipo"].Value?.ToString() ?? "";
-                if (!string.IsNullOrEmpty(idSubtipoLab2) && idSubtipoLab2 != Guid.Empty.ToString())
-                {
-                    DataTable ppLab2 = turno.ObtenerPrecioPromo(new Guid(idSubtipoLab2), obtenerFecha());
-                    if (ppLab2.Rows.Count > 0)
-                    {
-                        // Solo cargar Seña desde PrecioPromo si no hay un valor personalizado (> 0)
-                        if (pacienteLaboral.TipoExamen.Seña <= 0)
-                        {
-                            pacienteLaboral.TipoExamen.Seña = Convert.ToDouble(ppLab2.Rows[0]["Seña"]);
-                        }
-                        pacienteLaboral.TipoExamen.LlevaPlanilla = Convert.ToBoolean(ppLab2.Rows[0]["LlevaPlanilla"]);
-                        pacienteLaboral.TipoExamen.ObservacionesExtra = ppLab2.Rows[0]["ObservacionesExtra"].ToString();
-                    }
                 }
             }
 
@@ -1235,17 +1197,17 @@ namespace CapaPresentacion
 
             if (panelPacientePreventiva.Visible)
             {
-                tipoExamenActual.PrecioBase = obtenerDoubleDesdeTextBox(tbImportePreventiva.Text, tipoExamenActual.PrecioBase);
-                tipoExamenActual.PrecioLista = obtenerDoubleDesdeTextBox(tbImporteListaPreventiva.Text, tipoExamenActual.PrecioLista);
                 tipoExamenActual.Seña = obtenerDoubleDesdeTextBox(tbSeñaPreventiva.Text, tipoExamenActual.Seña);
+                tipoExamenActual.PrecioBase = obtenerPrecioBrutoDesdeTextBox(tbImportePreventiva.Text, tipoExamenActual.Seña, tipoExamenActual.PrecioBase);
+                tipoExamenActual.PrecioLista = obtenerPrecioBrutoDesdeTextBox(tbImporteListaPreventiva.Text, tipoExamenActual.Seña, tipoExamenActual.PrecioLista);
                 return;
             }
 
             if (panelLaboral.Visible)
             {
-                tipoExamenActual.PrecioBase = obtenerDoubleDesdeTextBox(tbImporteLaboral.Text, tipoExamenActual.PrecioBase);
-                tipoExamenActual.PrecioLista = obtenerDoubleDesdeTextBox(tbImporteListaLaboral.Text, tipoExamenActual.PrecioLista);
                 tipoExamenActual.Seña = obtenerDoubleDesdeTextBox(tbSeñaLaboral.Text, tipoExamenActual.Seña);
+                tipoExamenActual.PrecioBase = obtenerPrecioBrutoDesdeTextBox(tbImporteLaboral.Text, tipoExamenActual.Seña, tipoExamenActual.PrecioBase);
+                tipoExamenActual.PrecioLista = obtenerPrecioBrutoDesdeTextBox(tbImporteListaLaboral.Text, tipoExamenActual.Seña, tipoExamenActual.PrecioLista);
             }
         }
 
@@ -1340,8 +1302,8 @@ namespace CapaPresentacion
             retorno.IdPaciente = new Guid(tbIdPacientePreventiva.Text);
             if (tipoExamenActual != null)
             {
-                double precioListaUI = obtenerDoubleDesdeTextBox(tbImporteListaPreventiva.Text, tipoExamenActual.PrecioLista);
-                tipoExamenActual.PrecioLista = precioListaUI;
+                tipoExamenActual.PrecioBase = obtenerPrecioBrutoDesdeTextBox(tbImportePreventiva.Text, tipoExamenActual.Seña, tipoExamenActual.PrecioBase);
+                tipoExamenActual.PrecioLista = obtenerPrecioBrutoDesdeTextBox(tbImporteListaPreventiva.Text, tipoExamenActual.Seña, tipoExamenActual.PrecioLista);
             }
             retorno.TipoExamen = tipoExamenActual;
             retorno.Consulta = "PREVENTIVA";
@@ -1358,8 +1320,8 @@ namespace CapaPresentacion
             retorno.IdPaciente = new Guid(tbIdPacienteLaboral.Text);
             if (tipoExamenActual != null)
             {
-                double precioListaUI = obtenerDoubleDesdeTextBox(tbImporteListaLaboral.Text, tipoExamenActual.PrecioLista);
-                tipoExamenActual.PrecioLista = precioListaUI;
+                tipoExamenActual.PrecioBase = obtenerPrecioBrutoDesdeTextBox(tbImporteLaboral.Text, tipoExamenActual.Seña, tipoExamenActual.PrecioBase);
+                tipoExamenActual.PrecioLista = obtenerPrecioBrutoDesdeTextBox(tbImporteListaLaboral.Text, tipoExamenActual.Seña, tipoExamenActual.PrecioLista);
             }
             retorno.TipoExamen = tipoExamenActual;
             retorno.Consulta = "LABORAL";
@@ -1509,6 +1471,12 @@ namespace CapaPresentacion
                 return valor;
 
             return valorDefault;
+        }
+
+        private double obtenerPrecioBrutoDesdeTextBox(string textoNeto, double seña, double valorDefault)
+        {
+            double precioNeto = obtenerDoubleDesdeTextBox(textoNeto, valorDefault - seña);
+            return precioNeto + seña;
         }
 
         private void botEditarExamenPreventiva_Click(object sender, EventArgs e)

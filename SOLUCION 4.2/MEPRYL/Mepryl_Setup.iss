@@ -44,7 +44,6 @@ Source: "C:\Programador\SOLUCION 3.10\MEPRYL\Administracion\bin\Release\MEPRYL.e
 Source: "C:\Programador\SOLUCION 3.10\MEPRYL\Administracion\bin\Release\*.dll"; DestDir: "{app}"; Flags: ignoreversion
 ; Archivos adicionales
 Source: "C:\Programador\SOLUCION 3.10\MEPRYL\Administracion\bin\Release\Logo Definitivo.ico"; DestDir: "{app}"; DestName: "Logo Definitivo.ico"; Flags: ignoreversion
-Source: "C:\Programador\SOLUCION 3.10\MEPRYL\Administracion\bin\Release\Config.xml"; DestDir: "{app}"; Flags: ignoreversion onlyifdoesntexist
 
 
 [Icons]
