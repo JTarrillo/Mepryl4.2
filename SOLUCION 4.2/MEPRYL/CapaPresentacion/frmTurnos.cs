@@ -2641,6 +2641,7 @@ namespace CapaPresentacion
             dgvLigaYClub.BackColor = Color.WhiteSmoke;
             tbExamenPreventiva.BackColor = Color.WhiteSmoke;
             tbImportePreventiva.BackColor = Color.WhiteSmoke;
+            tbImportePreventiva.ReadOnly = true;
             tbImporteListaPreventiva.BackColor = Color.WhiteSmoke;
             tbImporteListaPreventiva.ReadOnly = true;
             tbSeñaPreventiva.BackColor = Color.WhiteSmoke;
@@ -2658,6 +2659,7 @@ namespace CapaPresentacion
             tbTelefonoLaboral.BackColor = Color.WhiteSmoke;
             txtEmailLab.BackColor = Color.WhiteSmoke;
             tbImporteLaboral.BackColor = Color.WhiteSmoke;
+            tbImporteLaboral.ReadOnly = true;
             tbImporteListaLaboral.BackColor = Color.WhiteSmoke;
             tbImporteListaLaboral.ReadOnly = true;
             tbSeñaLaboral.BackColor = Color.WhiteSmoke;
@@ -2677,6 +2679,7 @@ namespace CapaPresentacion
             dgvLigaYClub.BackColor = Color.White;
             tbExamenPreventiva.BackColor = Color.White;
             tbImportePreventiva.BackColor = Color.White;
+            tbImportePreventiva.ReadOnly = false;
             tbImporteListaPreventiva.BackColor = Color.White;
             tbImporteListaPreventiva.ReadOnly = false;
             tbSeñaPreventiva.BackColor = Color.White;
@@ -2694,6 +2697,7 @@ namespace CapaPresentacion
             tbTelefonoLaboral.BackColor = Color.White;
             txtEmailLab.BackColor = Color.White;
             tbImporteLaboral.BackColor = Color.White;
+            tbImporteLaboral.ReadOnly = false;
             tbImporteListaLaboral.BackColor = Color.White;
             tbImporteListaLaboral.ReadOnly = false;
             tbSeñaLaboral.BackColor = Color.White;

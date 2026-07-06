@@ -126,6 +126,9 @@ namespace CapaPresentacion
             this.rbEstadoLibres = new System.Windows.Forms.RadioButton();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.rbEstadoTodos = new System.Windows.Forms.RadioButton();
+            this.panelFechaTipoExamen = new System.Windows.Forms.Panel();
+            this.botProxFechaLibre = new System.Windows.Forms.Button();
+            this.tpFecha = new System.Windows.Forms.MonthCalendar();
             this.panelHorario = new System.Windows.Forms.Panel();
             this.label18 = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
@@ -139,9 +142,6 @@ namespace CapaPresentacion
             this.rbHora9 = new System.Windows.Forms.RadioButton();
             this.rbHora10 = new System.Windows.Forms.RadioButton();
             this.rbHora11 = new System.Windows.Forms.RadioButton();
-            this.panelFechaTipoExamen = new System.Windows.Forms.Panel();
-            this.botProxFechaLibre = new System.Windows.Forms.Button();
-            this.tpFecha = new System.Windows.Forms.MonthCalendar();
             this.rbcMenu = new DevExpress.XtraBars.Ribbon.RibbonControl();
             this.tbIdEmpresaLaboral = new System.Windows.Forms.TextBox();
             this.tbIdTurnoLaboral = new System.Windows.Forms.TextBox();
@@ -172,9 +172,9 @@ namespace CapaPresentacion
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             this.panelEstado.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
+            this.panelFechaTipoExamen.SuspendLayout();
             this.panelHorario.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-            this.panelFechaTipoExamen.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.rbcMenu)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgv)).BeginInit();
             this.panel2.SuspendLayout();
@@ -1413,6 +1413,43 @@ namespace CapaPresentacion
             this.rbEstadoTodos.UseVisualStyleBackColor = false;
             this.rbEstadoTodos.CheckedChanged += new System.EventHandler(this.rbEstadoTodos_CheckedChanged);
             // 
+            // panelFechaTipoExamen
+            // 
+            this.panelFechaTipoExamen.Controls.Add(this.botProxFechaLibre);
+            this.panelFechaTipoExamen.Controls.Add(this.tpFecha);
+            this.panelFechaTipoExamen.Controls.Add(this.botTurno);
+            this.panelFechaTipoExamen.Controls.Add(this.panelHorario);
+            this.panelFechaTipoExamen.Location = new System.Drawing.Point(-1, 0);
+            this.panelFechaTipoExamen.Name = "panelFechaTipoExamen";
+            this.panelFechaTipoExamen.Size = new System.Drawing.Size(310, 283);
+            this.panelFechaTipoExamen.TabIndex = 0;
+            // 
+            // botProxFechaLibre
+            // 
+            this.botProxFechaLibre.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.botProxFechaLibre.Image = ((System.Drawing.Image)(resources.GetObject("botProxFechaLibre.Image")));
+            this.botProxFechaLibre.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.botProxFechaLibre.Location = new System.Drawing.Point(45, 15);
+            this.botProxFechaLibre.Name = "botProxFechaLibre";
+            this.botProxFechaLibre.Size = new System.Drawing.Size(225, 43);
+            this.botProxFechaLibre.TabIndex = 3;
+            this.botProxFechaLibre.Text = "Próxima Fecha Libre";
+            this.botProxFechaLibre.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.botProxFechaLibre.UseVisualStyleBackColor = true;
+            this.botProxFechaLibre.Click += new System.EventHandler(this.botProxFechaLibre_Click);
+            // 
+            // tpFecha
+            // 
+            this.tpFecha.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
+            this.tpFecha.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tpFecha.Location = new System.Drawing.Point(43, 68);
+            this.tpFecha.Name = "tpFecha";
+            this.tpFecha.TabIndex = 0;
+            this.tpFecha.TitleBackColor = System.Drawing.Color.White;
+            this.tpFecha.TitleForeColor = System.Drawing.Color.Black;
+            this.tpFecha.TrailingForeColor = System.Drawing.Color.Black;
+            this.tpFecha.DateSelected += new System.Windows.Forms.DateRangeEventHandler(this.tpFecha_DateSelected);
+            // 
             // panelHorario
             // 
             this.panelHorario.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -1604,43 +1641,6 @@ namespace CapaPresentacion
             this.rbHora11.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.rbHora11.UseVisualStyleBackColor = true;
             this.rbHora11.CheckedChanged += new System.EventHandler(this.rbHora11_CheckedChanged);
-            // 
-            // panelFechaTipoExamen
-            // 
-            this.panelFechaTipoExamen.Controls.Add(this.botProxFechaLibre);
-            this.panelFechaTipoExamen.Controls.Add(this.tpFecha);
-            this.panelFechaTipoExamen.Controls.Add(this.botTurno);
-            this.panelFechaTipoExamen.Controls.Add(this.panelHorario);
-            this.panelFechaTipoExamen.Location = new System.Drawing.Point(-1, 0);
-            this.panelFechaTipoExamen.Name = "panelFechaTipoExamen";
-            this.panelFechaTipoExamen.Size = new System.Drawing.Size(310, 283);
-            this.panelFechaTipoExamen.TabIndex = 0;
-            // 
-            // botProxFechaLibre
-            // 
-            this.botProxFechaLibre.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.botProxFechaLibre.Image = ((System.Drawing.Image)(resources.GetObject("botProxFechaLibre.Image")));
-            this.botProxFechaLibre.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.botProxFechaLibre.Location = new System.Drawing.Point(45, 15);
-            this.botProxFechaLibre.Name = "botProxFechaLibre";
-            this.botProxFechaLibre.Size = new System.Drawing.Size(225, 43);
-            this.botProxFechaLibre.TabIndex = 3;
-            this.botProxFechaLibre.Text = "Próxima Fecha Libre";
-            this.botProxFechaLibre.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.botProxFechaLibre.UseVisualStyleBackColor = true;
-            this.botProxFechaLibre.Click += new System.EventHandler(this.botProxFechaLibre_Click);
-            // 
-            // tpFecha
-            // 
-            this.tpFecha.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
-            this.tpFecha.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tpFecha.Location = new System.Drawing.Point(43, 68);
-            this.tpFecha.Name = "tpFecha";
-            this.tpFecha.TabIndex = 0;
-            this.tpFecha.TitleBackColor = System.Drawing.Color.White;
-            this.tpFecha.TitleForeColor = System.Drawing.Color.Black;
-            this.tpFecha.TrailingForeColor = System.Drawing.Color.Black;
-            this.tpFecha.DateSelected += new System.Windows.Forms.DateRangeEventHandler(this.tpFecha_DateSelected);
             // 
             // rbcMenu
             // 
@@ -1912,10 +1912,10 @@ namespace CapaPresentacion
             this.panelEstado.ResumeLayout(false);
             this.panelEstado.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
+            this.panelFechaTipoExamen.ResumeLayout(false);
             this.panelHorario.ResumeLayout(false);
             this.panelHorario.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-            this.panelFechaTipoExamen.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.rbcMenu)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgv)).EndInit();
             this.panel2.ResumeLayout(false);

@@ -5,6 +5,7 @@ using System.Text;
 using Comunes;
 using System.Data;
 using Entidades;
+using System.Globalization;
 
 namespace CapaDatosMepryl
 {
@@ -56,6 +57,20 @@ namespace CapaDatosMepryl
             return dt;
         }
 
+        private decimal convertirADecimal(object valor)
+        {
+            if (valor == null || valor == DBNull.Value) return 0m;
+
+            decimal numero;
+            string texto = valor.ToString();
+            if (decimal.TryParse(texto, NumberStyles.Any, CultureInfo.CurrentCulture, out numero))
+                return numero;
+            if (decimal.TryParse(texto, NumberStyles.Any, CultureInfo.InvariantCulture, out numero))
+                return numero;
+
+            return 0m;
+        }
+
         private DataTable generarTablaRetornoVentanillaBatch(DataTable rawTurnos)
         {
             DataTable retorno = crearTablaRetornoVentanilla();
@@ -80,9 +95,9 @@ namespace CapaDatosMepryl
                 " UNION ALL " +
                 "select id, dni, apellido + ' ' + nombres as Paciente from dbo.PacienteLaboral where id in (" + pIn + ")");
 
-            // Batch: TipoExamenDePaciente (trae idTurno, id, precioExamen, modificado, idEspecialidad)
+            // Batch: TipoExamenDePaciente (trae idTurno, id, precioExamen, seña, modificado, idEspecialidad)
             DataTable tipoExamenBatch = SQLConnector.obtenerTablaSegunConsultaString(
-                @"select tep.idTurno, tep.id, tep.precioExamen, tep.modificado, e.descripcion as SubtipoReal, e.Padre
+                @"select tep.idTurno, tep.id, tep.precioExamen, tep.seña, tep.modificado, e.descripcion as SubtipoReal, e.Padre
                 from dbo.TipoExamenDePaciente tep
                 inner join dbo.Especialidad e on tep.idEspecialidad = e.id
                 where tep.idTurno in (" + tIn + ")");
@@ -120,15 +135,16 @@ namespace CapaDatosMepryl
                 if (!dictPaciente.ContainsKey(id)) dictPaciente[id] = r;
             }
 
-            // turnoId -> (idTE, precioExamen, modificado, subtipoReal, esPadre)
-            var dictTE = new Dictionary<string, (string idTE, string precio, string modificado, string subtipoReal, bool esPadre)>(StringComparer.OrdinalIgnoreCase);
+            // turnoId -> (idTE, precioExamen, seña, modificado, subtipoReal, esPadre)
+            var dictTE = new Dictionary<string, (string idTE, decimal precio, decimal sena, string modificado, string subtipoReal, bool esPadre)>(StringComparer.OrdinalIgnoreCase);
             foreach (DataRow r in tipoExamenBatch.Rows)
             {
                 string idTurno = r["idTurno"].ToString();
                 if (!dictTE.ContainsKey(idTurno))
                     dictTE[idTurno] = (
                         r["id"].ToString(), 
-                        r["precioExamen"].ToString(), 
+                        convertirADecimal(r["precioExamen"]),
+                        convertirADecimal(r["seña"]),
                         r["modificado"].ToString(),
                         r["SubtipoReal"].ToString(),
                         r["Padre"].ToString() == "1"
@@ -136,9 +152,9 @@ namespace CapaDatosMepryl
             }
 
             // precioBase por turno tomado directamente de rawTurnos
-            var dictPrecioBase = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            var dictPrecioBase = new Dictionary<string, decimal>(StringComparer.OrdinalIgnoreCase);
             foreach (DataRow r in rawTurnos.Rows)
-                dictPrecioBase[r["Id"].ToString()] = r["PrecioBase"].ToString();
+                dictPrecioBase[r["Id"].ToString()] = convertirADecimal(r["PrecioBase"]);
 
             // idTE -> (empresaClub, idEmpresa) — clubes tienen prioridad sobre empresas
             var dictEmpresaClub = new Dictionary<string, (string nombre, string id)>(StringComparer.OrdinalIgnoreCase);
@@ -175,9 +191,11 @@ namespace CapaDatosMepryl
                 dictTE.TryGetValue(idTurno, out var teData);
                 string idTE       = teData.idTE ?? string.Empty;
                 string modificado = teData.modificado ?? string.Empty;
-                string importe    = string.Empty;
-                if (!string.IsNullOrEmpty(teData.precio)) importe = teData.precio;
-                else dictPrecioBase.TryGetValue(idTurno, out importe);
+                decimal importeBruto = teData.precio;
+                if (importeBruto <= 0) dictPrecioBase.TryGetValue(idTurno, out importeBruto);
+                decimal importeNeto = importeBruto - teData.sena;
+                if (importeNeto < 0) importeNeto = 0;
+                string importe = importeNeto.ToString("0.00", CultureInfo.InvariantCulture);
 
                 // El nombre del subtipo ya viene rescatado desde el SQL mediante COALESCE
                 string subtipoExamen = r["SubtipoExamen"].ToString();
@@ -449,9 +467,16 @@ namespace CapaDatosMepryl
 
         private string cargarImporte(Guid idTurno)
         {
-            DataTable tipoExamen = SQLConnector.obtenerTablaSegunConsultaString(@"select precioExamen from dbo.TipoExamenDePaciente 
+            DataTable tipoExamen = SQLConnector.obtenerTablaSegunConsultaString(@"select precioExamen, seña from dbo.TipoExamenDePaciente 
             where idTurno = '" + idTurno.ToString() + "'");
-            if (tipoExamen.Rows.Count > 0) { return tipoExamen.Rows[0][0].ToString();}
+            if (tipoExamen.Rows.Count > 0)
+            {
+                decimal precioExamen = convertirADecimal(tipoExamen.Rows[0]["precioExamen"]);
+                decimal sena = convertirADecimal(tipoExamen.Rows[0]["seña"]);
+                decimal importeNeto = precioExamen - sena;
+                if (importeNeto < 0) importeNeto = 0;
+                return importeNeto.ToString("0.00", CultureInfo.InvariantCulture);
+            }
             return cargarImporteSegunTipoExamen(idTurno);
         }
 
