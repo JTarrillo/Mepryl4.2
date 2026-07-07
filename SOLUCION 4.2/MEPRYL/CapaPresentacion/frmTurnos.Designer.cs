@@ -127,7 +127,8 @@ namespace CapaPresentacion
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.rbEstadoTodos = new System.Windows.Forms.RadioButton();
             this.panelFechaTipoExamen = new System.Windows.Forms.Panel();
-            this.tpFecha = new System.Windows.Forms.MonthCalendar();
+            this.botProxFechaLibre = new System.Windows.Forms.Button();
+            this.tpFecha = new DevExpress.XtraEditors.Controls.CalendarControl();
             this.panelHorario = new System.Windows.Forms.Panel();
             this.label18 = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
@@ -160,7 +161,6 @@ namespace CapaPresentacion
             this.botHabilitar = new System.Windows.Forms.Button();
             this.LblTurnos = new System.Windows.Forms.Label();
             this.panel3 = new System.Windows.Forms.Panel();
-            this.botProxFechaLibre = new System.Windows.Forms.Button();
             this.botonLaboratorio.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panelLaboral.SuspendLayout();
@@ -173,6 +173,7 @@ namespace CapaPresentacion
             this.panelEstado.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.panelFechaTipoExamen.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.tpFecha.CalendarTimeProperties)).BeginInit();
             this.panelHorario.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.rbcMenu)).BeginInit();
@@ -1424,17 +1425,42 @@ namespace CapaPresentacion
             this.panelFechaTipoExamen.Size = new System.Drawing.Size(310, 283);
             this.panelFechaTipoExamen.TabIndex = 0;
             // 
+            // botProxFechaLibre
+            // 
+            this.botProxFechaLibre.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.botProxFechaLibre.Image = ((System.Drawing.Image)(resources.GetObject("botProxFechaLibre.Image")));
+            this.botProxFechaLibre.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.botProxFechaLibre.Location = new System.Drawing.Point(156, 249);
+            this.botProxFechaLibre.Name = "botProxFechaLibre";
+            this.botProxFechaLibre.Size = new System.Drawing.Size(70, 21);
+            this.botProxFechaLibre.TabIndex = 3;
+            this.botProxFechaLibre.Text = "Próxima Fecha Libre";
+            this.botProxFechaLibre.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.botProxFechaLibre.UseVisualStyleBackColor = true;
+            this.botProxFechaLibre.Visible = false;
+            this.botProxFechaLibre.Click += new System.EventHandler(this.botProxFechaLibre_Click);
+            // 
             // tpFecha
             // 
-            this.tpFecha.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
-            this.tpFecha.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tpFecha.Location = new System.Drawing.Point(32, 44);
+            this.tpFecha.Appearance.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
+            this.tpFecha.Appearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
+            this.tpFecha.Appearance.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tpFecha.Appearance.Options.UseBackColor = true;
+            this.tpFecha.Appearance.Options.UseBorderColor = true;
+            this.tpFecha.Appearance.Options.UseFont = true;
+            // 
+            // 
+            // 
+            this.tpFecha.CalendarTimeProperties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.tpFecha.DateTime = new System.DateTime(((long)(0)));
+            this.tpFecha.EditValue = null;
+            this.tpFecha.Location = new System.Drawing.Point(35, 36);
             this.tpFecha.Name = "tpFecha";
+            this.tpFecha.Size = new System.Drawing.Size(236, 227);
             this.tpFecha.TabIndex = 0;
-            this.tpFecha.TitleBackColor = System.Drawing.Color.White;
-            this.tpFecha.TitleForeColor = System.Drawing.Color.Black;
-            this.tpFecha.TrailingForeColor = System.Drawing.Color.Black;
-            this.tpFecha.DateSelected += new System.Windows.Forms.DateRangeEventHandler(this.tpFecha_DateSelected);
+            this.tpFecha.DateTimeChanged += new System.EventHandler(this.tpFecha_DateTimeChanged);
+            this.tpFecha.CustomDrawDayNumberCell += new DevExpress.XtraEditors.Calendar.CustomDrawDayNumberCellEventHandler(this.tpFecha_CustomDrawDayNumberCell);
             // 
             // panelHorario
             // 
@@ -1636,7 +1662,7 @@ namespace CapaPresentacion
             // 
             this.rbcMenu.ExpandCollapseItem.Id = 0;
             this.rbcMenu.Items.AddRange(new DevExpress.XtraBars.BarItem[] {
-            ((DevExpress.XtraBars.BarItem)(this.rbcMenu.ExpandCollapseItem))});
+            this.rbcMenu.ExpandCollapseItem});
             this.rbcMenu.Location = new System.Drawing.Point(0, 358);
             this.rbcMenu.MaxItemId = 1;
             this.rbcMenu.Name = "rbcMenu";
@@ -1853,21 +1879,6 @@ namespace CapaPresentacion
             this.panel3.Size = new System.Drawing.Size(1190, 25);
             this.panel3.TabIndex = 137;
             // 
-            // botProxFechaLibre
-            // 
-            this.botProxFechaLibre.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.botProxFechaLibre.Image = ((System.Drawing.Image)(resources.GetObject("botProxFechaLibre.Image")));
-            this.botProxFechaLibre.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.botProxFechaLibre.Location = new System.Drawing.Point(156, 249);
-            this.botProxFechaLibre.Name = "botProxFechaLibre";
-            this.botProxFechaLibre.Size = new System.Drawing.Size(70, 21);
-            this.botProxFechaLibre.TabIndex = 3;
-            this.botProxFechaLibre.Text = "Próxima Fecha Libre";
-            this.botProxFechaLibre.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.botProxFechaLibre.UseVisualStyleBackColor = true;
-            this.botProxFechaLibre.Visible = false;
-            this.botProxFechaLibre.Click += new System.EventHandler(this.botProxFechaLibre_Click);
-            // 
             // frmTurnos
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1914,6 +1925,8 @@ namespace CapaPresentacion
             this.panelEstado.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.panelFechaTipoExamen.ResumeLayout(false);
+            this.panelFechaTipoExamen.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.tpFecha.CalendarTimeProperties)).EndInit();
             this.panelHorario.ResumeLayout(false);
             this.panelHorario.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
@@ -1934,7 +1947,7 @@ namespace CapaPresentacion
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Panel panelFechaTipoExamen;
         protected System.Windows.Forms.Label lblInformacion;
-        private System.Windows.Forms.MonthCalendar tpFecha;
+        private DevExpress.XtraEditors.Controls.CalendarControl tpFecha;
         private System.Windows.Forms.DataGridView dgv;
         private System.Windows.Forms.ComboBox cboTipoExamen;
         private System.Windows.Forms.ComboBox cboSubTipoExamen;
