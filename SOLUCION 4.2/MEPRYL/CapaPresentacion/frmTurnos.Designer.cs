@@ -127,7 +127,6 @@ namespace CapaPresentacion
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.rbEstadoTodos = new System.Windows.Forms.RadioButton();
             this.panelFechaTipoExamen = new System.Windows.Forms.Panel();
-            this.botProxFechaLibre = new System.Windows.Forms.Button();
             this.tpFecha = new System.Windows.Forms.MonthCalendar();
             this.panelHorario = new System.Windows.Forms.Panel();
             this.label18 = new System.Windows.Forms.Label();
@@ -161,6 +160,7 @@ namespace CapaPresentacion
             this.botHabilitar = new System.Windows.Forms.Button();
             this.LblTurnos = new System.Windows.Forms.Label();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.botProxFechaLibre = new System.Windows.Forms.Button();
             this.botonLaboratorio.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panelLaboral.SuspendLayout();
@@ -1424,25 +1424,11 @@ namespace CapaPresentacion
             this.panelFechaTipoExamen.Size = new System.Drawing.Size(310, 283);
             this.panelFechaTipoExamen.TabIndex = 0;
             // 
-            // botProxFechaLibre
-            // 
-            this.botProxFechaLibre.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.botProxFechaLibre.Image = ((System.Drawing.Image)(resources.GetObject("botProxFechaLibre.Image")));
-            this.botProxFechaLibre.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.botProxFechaLibre.Location = new System.Drawing.Point(45, 15);
-            this.botProxFechaLibre.Name = "botProxFechaLibre";
-            this.botProxFechaLibre.Size = new System.Drawing.Size(225, 43);
-            this.botProxFechaLibre.TabIndex = 3;
-            this.botProxFechaLibre.Text = "Próxima Fecha Libre";
-            this.botProxFechaLibre.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.botProxFechaLibre.UseVisualStyleBackColor = true;
-            this.botProxFechaLibre.Click += new System.EventHandler(this.botProxFechaLibre_Click);
-            // 
             // tpFecha
             // 
             this.tpFecha.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
             this.tpFecha.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tpFecha.Location = new System.Drawing.Point(43, 68);
+            this.tpFecha.Location = new System.Drawing.Point(32, 44);
             this.tpFecha.Name = "tpFecha";
             this.tpFecha.TabIndex = 0;
             this.tpFecha.TitleBackColor = System.Drawing.Color.White;
@@ -1650,7 +1636,7 @@ namespace CapaPresentacion
             // 
             this.rbcMenu.ExpandCollapseItem.Id = 0;
             this.rbcMenu.Items.AddRange(new DevExpress.XtraBars.BarItem[] {
-            this.rbcMenu.ExpandCollapseItem});
+            ((DevExpress.XtraBars.BarItem)(this.rbcMenu.ExpandCollapseItem))});
             this.rbcMenu.Location = new System.Drawing.Point(0, 358);
             this.rbcMenu.MaxItemId = 1;
             this.rbcMenu.Name = "rbcMenu";
@@ -1867,6 +1853,21 @@ namespace CapaPresentacion
             this.panel3.Size = new System.Drawing.Size(1190, 25);
             this.panel3.TabIndex = 137;
             // 
+            // botProxFechaLibre
+            // 
+            this.botProxFechaLibre.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.botProxFechaLibre.Image = ((System.Drawing.Image)(resources.GetObject("botProxFechaLibre.Image")));
+            this.botProxFechaLibre.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.botProxFechaLibre.Location = new System.Drawing.Point(156, 249);
+            this.botProxFechaLibre.Name = "botProxFechaLibre";
+            this.botProxFechaLibre.Size = new System.Drawing.Size(70, 21);
+            this.botProxFechaLibre.TabIndex = 3;
+            this.botProxFechaLibre.Text = "Próxima Fecha Libre";
+            this.botProxFechaLibre.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.botProxFechaLibre.UseVisualStyleBackColor = true;
+            this.botProxFechaLibre.Visible = false;
+            this.botProxFechaLibre.Click += new System.EventHandler(this.botProxFechaLibre_Click);
+            // 
             // frmTurnos
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1935,7 +1936,6 @@ namespace CapaPresentacion
         protected System.Windows.Forms.Label lblInformacion;
         private System.Windows.Forms.MonthCalendar tpFecha;
         private System.Windows.Forms.DataGridView dgv;
-        private System.Windows.Forms.Button botProxFechaLibre;
         private System.Windows.Forms.ComboBox cboTipoExamen;
         private System.Windows.Forms.ComboBox cboSubTipoExamen;
         private System.Windows.Forms.RadioButton rbHora10;
@@ -2072,5 +2072,6 @@ namespace CapaPresentacion
         private System.Windows.Forms.Button btnWhatsApp;
         private System.Windows.Forms.PictureBox pictureBox5;
         private System.Windows.Forms.Button botTurno;
+        private System.Windows.Forms.Button botProxFechaLibre;
     }
 }
