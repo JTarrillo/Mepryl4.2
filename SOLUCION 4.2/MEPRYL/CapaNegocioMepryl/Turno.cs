@@ -188,9 +188,9 @@ namespace CapaNegocioMepryl
             return turno.TurnoTieneAsociadoExamen(idTurno);
         }
 
-        public bool MoverTurno(string strIdTurnoAntiguo, string strIdTurnoNuevo, string NombreEspecialidad)
+        public bool MoverTurno(string strIdTurnoAntiguo, string strIdTurnoNuevo, string idEspecialidadDestino)
         {
-            return turno.MoverTurno(strIdTurnoAntiguo, strIdTurnoNuevo, NombreEspecialidad);
+            return turno.MoverTurno(strIdTurnoAntiguo, strIdTurnoNuevo, idEspecialidadDestino);
         }
 
         public string TipoConsulta(string IdTurno)

@@ -1,10 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using System.Globalization;
 using Comunes;
 using CapaNegocio;
 using System.Data.SqlClient;
@@ -30,6 +31,30 @@ namespace CapaPresentacion
             typeof(DataGridView).InvokeMember("DoubleBuffered",
                 System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.SetProperty,
                 null, dgv, new object[] { true });
+            dgv.CellFormatting += dgv_CellFormatting;
+        }
+
+        private bool TryParseImporte(object valor, out decimal importe)
+        {
+            importe = 0m;
+            if (valor == null || valor == DBNull.Value) return false;
+
+            string textoImporte = valor.ToString();
+            return decimal.TryParse(textoImporte, NumberStyles.Any, CultureInfo.CurrentCulture, out importe) ||
+                   decimal.TryParse(textoImporte, NumberStyles.Any, CultureInfo.InvariantCulture, out importe);
+        }
+
+        private void dgv_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            if (dgv.Columns[e.ColumnIndex].Name != "Importe" || e.Value == null || e.Value == DBNull.Value)
+                return;
+
+            decimal importe;
+            if (TryParseImporte(e.Value, out importe))
+            {
+                e.Value = "$ " + importe.ToString("N0", CultureInfo.CurrentCulture);
+                e.FormattingApplied = true;
+            }
         }
         public frmRecepcion()
         {
@@ -523,11 +548,11 @@ namespace CapaPresentacion
                 if (row.Visible && row.Cells["Importe"].Value != null)
                 {
                     decimal importe;
-                    if (decimal.TryParse(row.Cells["Importe"].Value.ToString(), out importe))
+                    if (TryParseImporte(row.Cells["Importe"].Value, out importe))
                         totalImporte += importe;
                 }
             }
-            lblExpIngreso.Text = $"Exp. Ingreso : {totalImporte:N0}";
+            lblExpIngreso.Text = "Exp. Ingreso : $ " + totalImporte.ToString("N0", CultureInfo.CurrentCulture);
         }
         private void registrar()
         {

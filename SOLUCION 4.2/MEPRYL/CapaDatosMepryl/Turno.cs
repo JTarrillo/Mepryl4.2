@@ -98,7 +98,11 @@ namespace CapaDatosMepryl
             tep.id as IdTipoExamen,
             t.habilitado as Habilitado,
             t.estadoID as IdEstado,
-            COALESCE(teReal.id, te.id) as IdSubtipo,
+            COALESCE(
+                CASE WHEN teReal.Padre = 0 THEN teReal.id ELSE NULL END,
+                CASE WHEN te.Padre = 0 THEN te.id ELSE NULL END,
+                te.id
+            ) as IdSubtipo,
             ISNULL(tePadre.id, te.id) as IdPadre
         FROM dbo.Turno t
         INNER JOIN dbo.TurnoEstado e ON t.estadoID = e.id
@@ -1443,7 +1447,7 @@ namespace CapaDatosMepryl
             return retorno;
         }
 
-        public bool MoverTurno(string strIdTurnoAntiguo, string strIdTurnoNuevo, string strNombreEspecialidad)
+        public bool MoverTurno(string strIdTurnoAntiguo, string strIdTurnoNuevo, string strIdEspecialidad)
         {
             DataTable dtConsulta = null;
             bool blnRetorno = false;
@@ -1453,13 +1457,11 @@ namespace CapaDatosMepryl
             string strConsulta = "";
             string strUsuarioID = "";
             string strObservaciones = "";
-            string strIdEspecialidad = "";
+            string strIdEspecialidadDestino = strIdEspecialidad;
 
             // Cargar datos
             strSQL = "SELECT estadoID, pacienteID, consulta, usuarioID, observaciones FROM dbo.Turno WHERE id = '" + strIdTurnoAntiguo + "'";
             dtConsulta = SQLConnector.obtenerTablaSegunConsultaString(strSQL);
-
-            strIdEspecialidad = ObtenerIdEspecialidad(strNombreEspecialidad);
 
             if (dtConsulta.Rows.Count > 0)
             {
@@ -1468,6 +1470,19 @@ namespace CapaDatosMepryl
                 strConsulta = dtConsulta.Rows[0][2].ToString();
                 strUsuarioID = dtConsulta.Rows[0][3].ToString();
                 strObservaciones = dtConsulta.Rows[0][4].ToString();
+
+                DataTable dtEspecialidadDestino = SQLConnector.obtenerTablaSegunConsultaString(
+                    "SELECT TOP 1 h.especialidadID " +
+                    "FROM dbo.Turno t " +
+                    "INNER JOIN dbo.Horario h ON t.horarioID = h.id " +
+                    "WHERE t.id = '" + strIdTurnoNuevo + "'");
+
+                if (dtEspecialidadDestino.Rows.Count > 0 &&
+                    dtEspecialidadDestino.Rows[0][0] != null &&
+                    !string.IsNullOrWhiteSpace(dtEspecialidadDestino.Rows[0][0].ToString()))
+                {
+                    strIdEspecialidadDestino = dtEspecialidadDestino.Rows[0][0].ToString();
+                }
 
                 strSQL = "UPDATE dbo.Turno " +
                             "SET " +
@@ -1484,7 +1499,7 @@ namespace CapaDatosMepryl
 
                 strSQL = "UPDATE dbo.TipoExamenDePaciente " +
                             "SET " +
-                            "idEspecialidad = '" + strIdEspecialidad + "', " +
+                            "idEspecialidad = '" + strIdEspecialidadDestino + "', " +
                             "idTurno = '" + strIdTurnoNuevo + "' " +
                             "WHERE idTurno = '" + strIdTurnoAntiguo + "'";
                 SQLConnector.obtenerTablaSegunConsultaString(strSQL);
@@ -1502,6 +1517,8 @@ namespace CapaDatosMepryl
                             "observaciones = '' " +
                             "WHERE id = '" + strIdTurnoAntiguo + "'";
                 SQLConnector.obtenerTablaSegunConsultaString(strSQL);
+
+                blnRetorno = true;
             }
 
             return blnRetorno;
@@ -1533,7 +1550,11 @@ namespace CapaDatosMepryl
                 string strSQL = @"
                     SELECT t.id as Id, 
                         ISNULL(tePadre.descripcion, te.descripcion) as TipoPadre,
-                        te.descripcion as SubTipo,
+                        COALESCE(
+                            CASE WHEN teReal.Padre = 0 THEN teReal.descripcion ELSE NULL END,
+                            CASE WHEN te.Padre = 0 THEN te.descripcion ELSE NULL END,
+                            te.descripcion
+                        ) as SubTipo,
                         p.apellido + ' ' + p.nombres as Profesional,
                         t.fecha as Fecha,
                         t.horaReferencia as Hora,
@@ -1548,13 +1569,18 @@ namespace CapaDatosMepryl
                         tep.id as IdTipoExamen,
                         t.habilitado as Habilitado,
                         t.estadoID as IdEstado,
-                        te.id as IdSubtipo,
+                        COALESCE(
+                            CASE WHEN teReal.Padre = 0 THEN teReal.id ELSE NULL END,
+                            CASE WHEN te.Padre = 0 THEN te.id ELSE NULL END,
+                            te.id
+                        ) as IdSubtipo,
                         ISNULL(tePadre.id, te.id) as IdPadre
                     FROM dbo.Turno t
                     INNER JOIN dbo.TurnoEstado e ON t.estadoID = e.id
                     INNER JOIN dbo.Horario h ON t.horarioID = h.id
                     INNER JOIN dbo.Profesional p ON h.profesionalID = p.id
                     LEFT JOIN dbo.TipoExamenDePaciente tep ON tep.idTurno = t.id
+                    LEFT JOIN dbo.Especialidad teReal ON tep.idEspecialidad = teReal.id
                     LEFT JOIN dbo.Especialidad te ON h.especialidadID = te.id
                     LEFT JOIN dbo.Especialidad tePadre ON te.IdPadre = tePadre.id AND te.Padre = 0
                     WHERE t.codigo = '" + dni + @"'
@@ -1585,7 +1611,11 @@ namespace CapaDatosMepryl
                 string strSQL = @"
                     SELECT t.id as Id, 
                         ISNULL(tePadre.descripcion, te.descripcion) as TipoPadre,
-                        te.descripcion as SubTipo,
+                        COALESCE(
+                            CASE WHEN teReal.Padre = 0 THEN teReal.descripcion ELSE NULL END,
+                            CASE WHEN te.Padre = 0 THEN te.descripcion ELSE NULL END,
+                            te.descripcion
+                        ) as SubTipo,
                         p.apellido + ' ' + p.nombres as Profesional,
                         t.fecha as Fecha,
                         t.horaReferencia as Hora,
@@ -1600,13 +1630,18 @@ namespace CapaDatosMepryl
                         tep.id as IdTipoExamen,
                         t.habilitado as Habilitado,
                         t.estadoID as IdEstado,
-                        te.id as IdSubtipo,
+                        COALESCE(
+                            CASE WHEN teReal.Padre = 0 THEN teReal.id ELSE NULL END,
+                            CASE WHEN te.Padre = 0 THEN te.id ELSE NULL END,
+                            te.id
+                        ) as IdSubtipo,
                         ISNULL(tePadre.id, te.id) as IdPadre
                     FROM dbo.Turno t
                     INNER JOIN dbo.TurnoEstado e ON t.estadoID = e.id
                     INNER JOIN dbo.Horario h ON t.horarioID = h.id
                     INNER JOIN dbo.Profesional p ON h.profesionalID = p.id
                     LEFT JOIN dbo.TipoExamenDePaciente tep ON tep.idTurno = t.id
+                    LEFT JOIN dbo.Especialidad teReal ON tep.idEspecialidad = teReal.id
                     LEFT JOIN dbo.Especialidad te ON h.especialidadID = te.id
                     LEFT JOIN dbo.Especialidad tePadre ON te.IdPadre = tePadre.id AND te.Padre = 0
                     WHERE t.pacienteID IN (

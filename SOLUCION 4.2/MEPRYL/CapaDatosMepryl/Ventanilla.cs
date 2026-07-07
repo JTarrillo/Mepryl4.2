@@ -191,11 +191,13 @@ namespace CapaDatosMepryl
                 dictTE.TryGetValue(idTurno, out var teData);
                 string idTE       = teData.idTE ?? string.Empty;
                 string modificado = teData.modificado ?? string.Empty;
+                bool tieneTipoExamenPaciente = !string.IsNullOrEmpty(idTE);
                 decimal importeBruto = teData.precio;
-                if (importeBruto <= 0) dictPrecioBase.TryGetValue(idTurno, out importeBruto);
+                if (!tieneTipoExamenPaciente)
+                    dictPrecioBase.TryGetValue(idTurno, out importeBruto);
                 decimal importeNeto = importeBruto - teData.sena;
                 if (importeNeto < 0) importeNeto = 0;
-                string importe = importeNeto.ToString("0.00", CultureInfo.InvariantCulture);
+                string importe = importeNeto.ToString("0.##", CultureInfo.CurrentCulture);
 
                 // El nombre del subtipo ya viene rescatado desde el SQL mediante COALESCE
                 string subtipoExamen = r["SubtipoExamen"].ToString();
@@ -475,7 +477,7 @@ namespace CapaDatosMepryl
                 decimal sena = convertirADecimal(tipoExamen.Rows[0]["seña"]);
                 decimal importeNeto = precioExamen - sena;
                 if (importeNeto < 0) importeNeto = 0;
-                return importeNeto.ToString("0.00", CultureInfo.InvariantCulture);
+                return importeNeto.ToString("0.##", CultureInfo.CurrentCulture);
             }
             return cargarImporteSegunTipoExamen(idTurno);
         }
