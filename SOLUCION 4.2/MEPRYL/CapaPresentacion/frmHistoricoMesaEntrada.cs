@@ -607,6 +607,11 @@ namespace CapaPresentacion
             butImprimirListado_Click(sender, e);
         }
 
+        private void dgv_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
         private void tpFecha_ValueChanged(object sender, EventArgs e)
         {
             fechaDesde = tpFecha.Value.ToShortDateString();

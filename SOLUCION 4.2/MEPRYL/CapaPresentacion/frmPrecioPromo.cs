@@ -81,7 +81,9 @@ namespace CapaPresentacion
             nudAnio.Value = DateTime.Now.Year;
             cboMesVariacion.SelectedIndex = DateTime.Now.Month; // 0 = Todos, 1-12 = mes
             
-            if (EsPrecioPublico())
+            if (tabControl.SelectedTab == tabEmpresas)
+                lblTitulo.Text = "  Precios Empresas";
+            else if (EsPrecioPublico())
                 lblTitulo.Text = "  Precios Públicos";
             else
                 lblTitulo.Text = "  Precios Promos";
@@ -1248,7 +1250,17 @@ namespace CapaPresentacion
         {
             if (yaInicializado)
             {
-                if (tabControl.SelectedTab == tabPrecios)
+                if (tabControl.SelectedTab == tabEmpresas)
+                {
+                    lblTitulo.Text = "  Precios Empresas";
+                    btnCopiarAnio.Visible = false;
+                    lblMesVariacion.Visible = false;
+                    cboMesVariacion.Visible = false;
+                    lblVariacion.Visible = false;
+                    txtVariacion.Visible = false;
+                    btnAplicar.Visible = false;
+                }
+                else if (tabControl.SelectedTab == tabPrecios)
                 {
                     lblTitulo.Text = "  Precios Promos";
                     btnCopiarAnio.Visible = true;

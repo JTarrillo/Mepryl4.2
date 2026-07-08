@@ -483,7 +483,7 @@ namespace CapaPresentacion
             this.gbDatosPersonales.Location = new System.Drawing.Point(5, 57);
             this.gbDatosPersonales.Name = "gbDatosPersonales";
             this.gbDatosPersonales.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.gbDatosPersonales.Size = new System.Drawing.Size(3354, 444);
+            this.gbDatosPersonales.Size = new System.Drawing.Size(3768, 444);
             this.gbDatosPersonales.TabIndex = 1;
             this.gbDatosPersonales.TabStop = false;
             // 
@@ -538,7 +538,7 @@ namespace CapaPresentacion
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 2.695418F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 129F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 4.725208F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 283F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 285F));
             this.tableLayoutPanel1.Controls.Add(this.txtEdad, 4, 3);
             this.tableLayoutPanel1.Controls.Add(this.tbApellido, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.label32, 4, 2);
@@ -564,7 +564,7 @@ namespace CapaPresentacion
             this.txtEdad.BackColor = System.Drawing.SystemColors.Control;
             this.txtEdad.Enabled = false;
             this.txtEdad.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtEdad.Location = new System.Drawing.Point(401, 69);
+            this.txtEdad.Location = new System.Drawing.Point(400, 69);
             this.txtEdad.MaxLength = 8;
             this.txtEdad.Name = "txtEdad";
             this.txtEdad.Size = new System.Drawing.Size(60, 22);
@@ -579,14 +579,14 @@ namespace CapaPresentacion
             this.tbApellido.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tbApellido.Location = new System.Drawing.Point(3, 21);
             this.tbApellido.Name = "tbApellido";
-            this.tbApellido.Size = new System.Drawing.Size(244, 22);
+            this.tbApellido.Size = new System.Drawing.Size(243, 22);
             this.tbApellido.TabIndex = 1;
             // 
             // label32
             // 
             this.label32.AutoSize = true;
             this.label32.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label32.Location = new System.Drawing.Point(401, 48);
+            this.label32.Location = new System.Drawing.Point(400, 48);
             this.label32.Name = "label32";
             this.label32.Size = new System.Drawing.Size(40, 16);
             this.label32.TabIndex = 48;
@@ -596,7 +596,7 @@ namespace CapaPresentacion
             // 
             this.tbDNI.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
             this.tbDNI.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbDNI.Location = new System.Drawing.Point(260, 21);
+            this.tbDNI.Location = new System.Drawing.Point(259, 21);
             this.tbDNI.Name = "tbDNI";
             this.tbDNI.Size = new System.Drawing.Size(114, 22);
             this.tbDNI.TabIndex = 20;
@@ -605,7 +605,7 @@ namespace CapaPresentacion
             // 
             this.label8.AutoSize = true;
             this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label8.Location = new System.Drawing.Point(260, 0);
+            this.label8.Location = new System.Drawing.Point(259, 0);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(29, 13);
             this.label8.TabIndex = 14;
@@ -630,14 +630,14 @@ namespace CapaPresentacion
             this.tbNombres.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tbNombres.Location = new System.Drawing.Point(3, 69);
             this.tbNombres.Name = "tbNombres";
-            this.tbNombres.Size = new System.Drawing.Size(244, 22);
+            this.tbNombres.Size = new System.Drawing.Size(243, 22);
             this.tbNombres.TabIndex = 2;
             // 
             // label9
             // 
             this.label9.AutoSize = true;
             this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label9.Location = new System.Drawing.Point(260, 48);
+            this.label9.Location = new System.Drawing.Point(259, 48);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(116, 16);
             this.label9.TabIndex = 16;
@@ -647,7 +647,7 @@ namespace CapaPresentacion
             // 
             this.dtpFechaNacimiento.BackColor = System.Drawing.Color.White;
             this.dtpFechaNacimiento.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.dtpFechaNacimiento.Location = new System.Drawing.Point(260, 69);
+            this.dtpFechaNacimiento.Location = new System.Drawing.Point(259, 69);
             this.dtpFechaNacimiento.Mask = "00/00/0000";
             this.dtpFechaNacimiento.Name = "dtpFechaNacimiento";
             this.dtpFechaNacimiento.Size = new System.Drawing.Size(114, 22);
@@ -2361,7 +2361,7 @@ namespace CapaPresentacion
             this.Text = "Paciente preventiva";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.frmPaciente_FormClosed);
             this.Load += new System.EventHandler(this.frmPaciente_Load);
-            //this.Controls.SetChildIndex(this.rbcMenu, 0);
+            this.Controls.SetChildIndex(this.rbcMenu, 0);
             this.Controls.SetChildIndex(this.panDerecha, 0);
             this.Controls.SetChildIndex(this.panAbajo, 0);
             this.Controls.SetChildIndex(this.panCentro, 0);

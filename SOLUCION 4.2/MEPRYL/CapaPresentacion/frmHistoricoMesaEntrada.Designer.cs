@@ -56,13 +56,6 @@
             this.tbBusqueda = new System.Windows.Forms.TextBox();
             this.cboTipoBusqueda = new System.Windows.Forms.ComboBox();
             this.dgv = new System.Windows.Forms.DataGridView();
-            this.tbTotal = new System.Windows.Forms.TextBox();
-            this.progressBar = new System.Windows.Forms.ProgressBar();
-            this.botonRango = new System.Windows.Forms.Button();
-            this.gbFecha = new System.Windows.Forms.GroupBox();
-            this.tpFecha = new System.Windows.Forms.DateTimePicker();
-            this.botonFecha = new System.Windows.Forms.Button();
-            this.panel1 = new System.Windows.Forms.Panel();
             this.idConsulta = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.idPaciente = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.idTipoExamen = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -80,6 +73,13 @@
             this.LigaDesc = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Tipo = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Estudios = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.tbTotal = new System.Windows.Forms.TextBox();
+            this.progressBar = new System.Windows.Forms.ProgressBar();
+            this.botonRango = new System.Windows.Forms.Button();
+            this.gbFecha = new System.Windows.Forms.GroupBox();
+            this.tpFecha = new System.Windows.Forms.DateTimePicker();
+            this.botonFecha = new System.Windows.Forms.Button();
+            this.panel1 = new System.Windows.Forms.Panel();
             this.botonLaboratorio.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.gbRango.SuspendLayout();
@@ -449,98 +449,7 @@
             this.dgv.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgv.Size = new System.Drawing.Size(1137, 450);
             this.dgv.TabIndex = 270;
-            // 
-            // tbTotal
-            // 
-            this.tbTotal.BackColor = System.Drawing.Color.SeaGreen;
-            this.tbTotal.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.tbTotal.Dock = System.Windows.Forms.DockStyle.Top;
-            this.tbTotal.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbTotal.ForeColor = System.Drawing.Color.White;
-            this.tbTotal.Location = new System.Drawing.Point(0, 151);
-            this.tbTotal.Multiline = true;
-            this.tbTotal.Name = "tbTotal";
-            this.tbTotal.Size = new System.Drawing.Size(1282, 25);
-            this.tbTotal.TabIndex = 271;
-            this.tbTotal.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // progressBar
-            // 
-            this.progressBar.ForeColor = System.Drawing.Color.ForestGreen;
-            this.progressBar.Location = new System.Drawing.Point(6, 100);
-            this.progressBar.Name = "progressBar";
-            this.progressBar.Size = new System.Drawing.Size(564, 16);
-            this.progressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
-            this.progressBar.TabIndex = 273;
-            this.progressBar.Visible = false;
-            // 
-            // botonRango
-            // 
-            this.botonRango.BackColor = System.Drawing.Color.Transparent;
-            this.botonRango.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("botonRango.BackgroundImage")));
-            this.botonRango.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.botonRango.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.botonRango.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.botonRango.ForeColor = System.Drawing.SystemColors.ControlLight;
-            this.botonRango.Location = new System.Drawing.Point(154, 22);
-            this.botonRango.Name = "botonRango";
-            this.botonRango.Size = new System.Drawing.Size(34, 33);
-            this.botonRango.TabIndex = 275;
-            this.botonRango.UseVisualStyleBackColor = false;
-            this.botonRango.Click += new System.EventHandler(this.botonRango_Click);
-            // 
-            // gbFecha
-            // 
-            this.gbFecha.Controls.Add(this.tpFecha);
-            this.gbFecha.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.gbFecha.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.gbFecha.Location = new System.Drawing.Point(7, 10);
-            this.gbFecha.Name = "gbFecha";
-            this.gbFecha.Size = new System.Drawing.Size(141, 85);
-            this.gbFecha.TabIndex = 274;
-            this.gbFecha.TabStop = false;
-            this.gbFecha.Text = "Fecha";
-            // 
-            // tpFecha
-            // 
-            this.tpFecha.CustomFormat = "yyyy";
-            this.tpFecha.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tpFecha.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.tpFecha.Location = new System.Drawing.Point(16, 39);
-            this.tpFecha.Name = "tpFecha";
-            this.tpFecha.Size = new System.Drawing.Size(110, 22);
-            this.tpFecha.TabIndex = 1;
-            this.tpFecha.ValueChanged += new System.EventHandler(this.tpFecha_ValueChanged);
-            // 
-            // botonFecha
-            // 
-            this.botonFecha.BackColor = System.Drawing.Color.Transparent;
-            this.botonFecha.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("botonFecha.BackgroundImage")));
-            this.botonFecha.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.botonFecha.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.botonFecha.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.botonFecha.ForeColor = System.Drawing.SystemColors.ControlLight;
-            this.botonFecha.Location = new System.Drawing.Point(154, 56);
-            this.botonFecha.Name = "botonFecha";
-            this.botonFecha.Size = new System.Drawing.Size(34, 33);
-            this.botonFecha.TabIndex = 276;
-            this.botonFecha.UseVisualStyleBackColor = false;
-            this.botonFecha.Click += new System.EventHandler(this.botonFecha_Click);
-            // 
-            // panel1
-            // 
-            this.panel1.Controls.Add(this.gbFecha);
-            this.panel1.Controls.Add(this.botonRango);
-            this.panel1.Controls.Add(this.progressBar);
-            this.panel1.Controls.Add(this.groupBox2);
-            this.panel1.Controls.Add(this.gbRango);
-            this.panel1.Controls.Add(this.botonFecha);
-            this.panel1.Controls.Add(this.groupBox3);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel1.Location = new System.Drawing.Point(0, 25);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1282, 126);
-            this.panel1.TabIndex = 277;
+            this.dgv.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgv_CellContentClick);
             // 
             // idConsulta
             // 
@@ -672,6 +581,98 @@
             this.Estudios.ReadOnly = true;
             this.Estudios.Visible = false;
             this.Estudios.Width = 72;
+            // 
+            // tbTotal
+            // 
+            this.tbTotal.BackColor = System.Drawing.Color.SeaGreen;
+            this.tbTotal.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.tbTotal.Dock = System.Windows.Forms.DockStyle.Top;
+            this.tbTotal.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tbTotal.ForeColor = System.Drawing.Color.White;
+            this.tbTotal.Location = new System.Drawing.Point(0, 151);
+            this.tbTotal.Multiline = true;
+            this.tbTotal.Name = "tbTotal";
+            this.tbTotal.Size = new System.Drawing.Size(1282, 25);
+            this.tbTotal.TabIndex = 271;
+            this.tbTotal.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // progressBar
+            // 
+            this.progressBar.ForeColor = System.Drawing.Color.ForestGreen;
+            this.progressBar.Location = new System.Drawing.Point(6, 100);
+            this.progressBar.Name = "progressBar";
+            this.progressBar.Size = new System.Drawing.Size(564, 16);
+            this.progressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+            this.progressBar.TabIndex = 273;
+            this.progressBar.Visible = false;
+            // 
+            // botonRango
+            // 
+            this.botonRango.BackColor = System.Drawing.Color.Transparent;
+            this.botonRango.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("botonRango.BackgroundImage")));
+            this.botonRango.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.botonRango.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.botonRango.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.botonRango.ForeColor = System.Drawing.SystemColors.ControlLight;
+            this.botonRango.Location = new System.Drawing.Point(154, 22);
+            this.botonRango.Name = "botonRango";
+            this.botonRango.Size = new System.Drawing.Size(34, 33);
+            this.botonRango.TabIndex = 275;
+            this.botonRango.UseVisualStyleBackColor = false;
+            this.botonRango.Click += new System.EventHandler(this.botonRango_Click);
+            // 
+            // gbFecha
+            // 
+            this.gbFecha.Controls.Add(this.tpFecha);
+            this.gbFecha.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.gbFecha.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.gbFecha.Location = new System.Drawing.Point(7, 10);
+            this.gbFecha.Name = "gbFecha";
+            this.gbFecha.Size = new System.Drawing.Size(141, 85);
+            this.gbFecha.TabIndex = 274;
+            this.gbFecha.TabStop = false;
+            this.gbFecha.Text = "Fecha";
+            // 
+            // tpFecha
+            // 
+            this.tpFecha.CustomFormat = "yyyy";
+            this.tpFecha.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tpFecha.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.tpFecha.Location = new System.Drawing.Point(16, 39);
+            this.tpFecha.Name = "tpFecha";
+            this.tpFecha.Size = new System.Drawing.Size(110, 22);
+            this.tpFecha.TabIndex = 1;
+            this.tpFecha.ValueChanged += new System.EventHandler(this.tpFecha_ValueChanged);
+            // 
+            // botonFecha
+            // 
+            this.botonFecha.BackColor = System.Drawing.Color.Transparent;
+            this.botonFecha.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("botonFecha.BackgroundImage")));
+            this.botonFecha.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.botonFecha.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.botonFecha.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.botonFecha.ForeColor = System.Drawing.SystemColors.ControlLight;
+            this.botonFecha.Location = new System.Drawing.Point(154, 56);
+            this.botonFecha.Name = "botonFecha";
+            this.botonFecha.Size = new System.Drawing.Size(34, 33);
+            this.botonFecha.TabIndex = 276;
+            this.botonFecha.UseVisualStyleBackColor = false;
+            this.botonFecha.Click += new System.EventHandler(this.botonFecha_Click);
+            // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.gbFecha);
+            this.panel1.Controls.Add(this.botonRango);
+            this.panel1.Controls.Add(this.progressBar);
+            this.panel1.Controls.Add(this.groupBox2);
+            this.panel1.Controls.Add(this.gbRango);
+            this.panel1.Controls.Add(this.botonFecha);
+            this.panel1.Controls.Add(this.groupBox3);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel1.Location = new System.Drawing.Point(0, 25);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(1282, 126);
+            this.panel1.TabIndex = 277;
             // 
             // frmHistoricoMesaEntrada
             // 

@@ -156,6 +156,7 @@ namespace CapaPresentacion
             this.colPublicoCoef12 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tabPrecioPublico = new System.Windows.Forms.TabPage();
             this.tabControl = new System.Windows.Forms.TabControl();
+            this.tabEmpresas = new System.Windows.Forms.TabPage();
             this.tabPrecios = new System.Windows.Forms.TabPage();
             this.tabConfig = new System.Windows.Forms.TabPage();
             this.dgvConfig = new System.Windows.Forms.DataGridView();
@@ -1216,6 +1217,7 @@ namespace CapaPresentacion
             // tabControl
             // 
             this.tabControl.Alignment = System.Windows.Forms.TabAlignment.Bottom;
+            this.tabControl.Controls.Add(this.tabEmpresas);
             this.tabControl.Controls.Add(this.tabPrecios);
             this.tabControl.Controls.Add(this.tabPrecioPublico);
             this.tabControl.Controls.Add(this.tabConfig);
@@ -1228,6 +1230,17 @@ namespace CapaPresentacion
             this.tabControl.Size = new System.Drawing.Size(1364, 409);
             this.tabControl.TabIndex = 3;
             // 
+            // 
+            // tabEmpresas
+            // 
+            this.tabEmpresas.Location = new System.Drawing.Point(4, 4);
+            this.tabEmpresas.Name = "tabEmpresas";
+            this.tabEmpresas.Padding = new System.Windows.Forms.Padding(3);
+            this.tabEmpresas.Size = new System.Drawing.Size(1356, 379);
+            this.tabEmpresas.TabIndex = 0;
+            this.tabEmpresas.Text = "  Precios Empresas  ";
+            this.tabEmpresas.UseVisualStyleBackColor = true;
+            // 
             // tabPrecios
             // 
             this.tabPrecios.Controls.Add(this.dgvPrecios);
@@ -1235,7 +1248,7 @@ namespace CapaPresentacion
             this.tabPrecios.Name = "tabPrecios";
             this.tabPrecios.Padding = new System.Windows.Forms.Padding(3);
             this.tabPrecios.Size = new System.Drawing.Size(1356, 379);
-            this.tabPrecios.TabIndex = 0;
+            this.tabPrecios.TabIndex = 1;
             this.tabPrecios.Text = "  Precio Promo  ";
             this.tabPrecios.UseVisualStyleBackColor = true;
             // 
@@ -1246,7 +1259,7 @@ namespace CapaPresentacion
             this.tabConfig.Name = "tabConfig";
             this.tabConfig.Padding = new System.Windows.Forms.Padding(3);
             this.tabConfig.Size = new System.Drawing.Size(1356, 379);
-            this.tabConfig.TabIndex = 2;
+            this.tabConfig.TabIndex = 3;
             this.tabConfig.Text = "  Señas / Planilla";
             this.tabConfig.UseVisualStyleBackColor = true;
             // 
@@ -1327,7 +1340,7 @@ namespace CapaPresentacion
             this.tabObsPre.Name = "tabObsPre";
             this.tabObsPre.Padding = new System.Windows.Forms.Padding(3);
             this.tabObsPre.Size = new System.Drawing.Size(1356, 379);
-            this.tabObsPre.TabIndex = 3;
+            this.tabObsPre.TabIndex = 4;
             this.tabObsPre.Text = "  Observaciones Rápidas";
             this.tabObsPre.UseVisualStyleBackColor = true;
             // 
@@ -1431,6 +1444,7 @@ namespace CapaPresentacion
         private System.Windows.Forms.ContextMenuStrip mnuAplicar;
         private System.Windows.Forms.ToolStripMenuItem mnuVariacion;
         private System.Windows.Forms.TabControl tabControl;
+        private System.Windows.Forms.TabPage tabEmpresas;
         private System.Windows.Forms.TabPage tabPrecios;
         private System.Windows.Forms.TabPage tabPrecioPublico;
         private System.Windows.Forms.TabPage tabConfig;

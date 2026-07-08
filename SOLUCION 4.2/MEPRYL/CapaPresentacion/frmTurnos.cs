@@ -43,6 +43,7 @@ namespace CapaPresentacion
 
         private ComboBox cboObsPredefinidasPrev;
         private ComboBox cboObsPredefinidasLab;
+        private System.Windows.Forms.Label lblHoy;
 
         public frmTurnos()
         {
@@ -65,6 +66,7 @@ namespace CapaPresentacion
             tipoEx = new CapaNegocioMepryl.TipoExamen();
             turno = new CapaNegocioMepryl.Turno();
             inicializarDgv();
+            tpFecha.DateTime = DateTime.Today; // Establecer fecha actual en el calendario
             cargarMotivoConsulta(); // Dispara cascada (solo carga combos, NO grilla)
             modoConsulta();
             cargarGrillaTurnosSinFiltro(); // Carga INICIAL de turnos (TODOS los tipos)
@@ -1782,13 +1784,26 @@ namespace CapaPresentacion
 
         private void tpFecha_CustomDrawDayNumberCell(object sender, DevExpress.XtraEditors.Calendar.CustomDrawDayNumberCellEventArgs e)
         {
-            // Personalizar color de selección
-            if (e.Selected)
+            // Solo dibujamos si estamos en una celda válida de día
+            if (e.Date != DateTime.MinValue)
             {
-                e.Graphics.FillRectangle(new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(70, 130, 180)), e.Bounds);
-                e.Graphics.DrawString(e.Date.Day.ToString(), e.Style.Font, System.Drawing.Brushes.White, e.Bounds, new System.Drawing.StringFormat() { Alignment = System.Drawing.StringAlignment.Center, LineAlignment = System.Drawing.StringAlignment.Center });
-                e.Handled = true;
+                // Borde para el día de hoy
+                if (e.Date.Date == DateTime.Today.Date)
+                {
+                    using (Pen p = new Pen(Color.FromArgb(100, 149, 237), 2))
+                    {
+                        Rectangle rect = e.Bounds;
+                        rect.Width -= 1;
+                        rect.Height -= 1;
+                        e.Graphics.DrawRectangle(p, rect);
+                    }
+                }
             }
+        }
+        private void tpFecha_MouseMove(object sender, System.Windows.Forms.MouseEventArgs e)
+        {
+            // Forzar redibujado para actualizar efectos hover
+            tpFecha.Invalidate();
         }
 
         private void botReservar_Click(object sender, EventArgs e)
