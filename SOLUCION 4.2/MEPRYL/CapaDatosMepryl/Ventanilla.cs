@@ -71,6 +71,59 @@ namespace CapaDatosMepryl
             return 0m;
         }
 
+        private string GenerarObservaciones(decimal promo, decimal lista, decimal sena, bool llevaPlanilla, string observacionesExtra)
+        {
+            var sb = new StringBuilder();
+
+            if (!string.IsNullOrWhiteSpace(observacionesExtra))
+                sb.Append(observacionesExtra.Trim() + " | ");
+
+            if (llevaPlanilla)
+                sb.Append("PLANILLA | ");
+
+            if (sena > 0)
+                sb.Append("$ " + promo.ToString("N0") + " - $ " + sena.ToString("N0") + " (SEÑA)");
+            else
+                sb.Append("$ " + promo.ToString("N0"));
+
+            if (lista > 0)
+            {
+                sb.Append(" | LISTA: $ " + lista.ToString("N0"));
+                if (sena > 0)
+                    sb.Append(" - SEÑA = $ " + (lista - sena).ToString("N0"));
+            }
+
+            return sb.ToString();
+        }
+
+        private string ObtenerObservacionVigente(string observacionActual, decimal promo, decimal lista, decimal sena, bool llevaPlanilla, string observacionesExtra)
+        {
+            if (EsObservacionAutomatica(observacionActual))
+                return GenerarObservaciones(promo, lista, sena, llevaPlanilla, observacionesExtra);
+
+            bool requiereObservacionAutomatica = llevaPlanilla || sena > 0 || !string.IsNullOrWhiteSpace(observacionesExtra);
+            if (!requiereObservacionAutomatica)
+                return observacionActual ?? string.Empty;
+
+            if (string.IsNullOrWhiteSpace(observacionActual))
+                return GenerarObservaciones(promo, lista, sena, llevaPlanilla, observacionesExtra);
+
+            return observacionActual ?? string.Empty;
+        }
+
+        private bool EsObservacionAutomatica(string texto)
+        {
+            if (string.IsNullOrWhiteSpace(texto))
+                return false;
+
+            string normalizado = texto.Trim().ToUpperInvariant();
+            return normalizado.Contains("LISTA: $")
+                || normalizado.Contains("(SEÑA)")
+                || normalizado.Contains("- SEÑA = $")
+                || normalizado.StartsWith("PLANILLA |")
+                || normalizado.Contains(" | PLANILLA | ");
+        }
+
         private DataTable generarTablaRetornoVentanillaBatch(DataTable rawTurnos)
         {
             DataTable retorno = crearTablaRetornoVentanilla();
@@ -95,11 +148,23 @@ namespace CapaDatosMepryl
                 " UNION ALL " +
                 "select id, dni, apellido + ' ' + nombres as Paciente from dbo.PacienteLaboral where id in (" + pIn + ")");
 
-            // Batch: TipoExamenDePaciente (trae idTurno, id, precioExamen, seña, modificado, idEspecialidad)
+            // Batch: TipoExamenDePaciente + configuracion vigente para observaciones
             DataTable tipoExamenBatch = SQLConnector.obtenerTablaSegunConsultaString(
-                @"select tep.idTurno, tep.id, tep.precioExamen, tep.seña, tep.modificado, e.descripcion as SubtipoReal, e.Padre
+                @"select tep.idTurno, tep.id, tep.precioExamen, tep.seña, tep.modificado,
+                ISNULL(pp.PrecioPromo, tep.precioExamen) as PrecioPromoVigente,
+                CASE WHEN ISNULL(tep.precioLista, 0) > 0 THEN tep.precioLista ELSE ISNULL(pu.PrecioLista, 0) END as PrecioListaVigente,
+                ISNULL(cfg.Seña, 0) as SenaVigente,
+                ISNULL(cfg.LlevaPlanilla, 0) as LlevaPlanilla,
+                ISNULL(cfg.Observaciones, '') as ObservacionesExtra,
+                e.descripcion as SubtipoReal, e.Padre
                 from dbo.TipoExamenDePaciente tep
                 inner join dbo.Especialidad e on tep.idEspecialidad = e.id
+                inner join dbo.Turno t on tep.idTurno = t.id
+                left join dbo.PrecioPromo pp on pp.idEspecialidad = tep.idEspecialidad
+                    and pp.Mes = MONTH(t.fecha) and pp.Anio = YEAR(t.fecha) and pp.Eliminado = 0
+                left join dbo.PrecioPublico pu on pu.idEspecialidad = tep.idEspecialidad
+                    and pu.Mes = MONTH(t.fecha) and pu.Anio = YEAR(t.fecha) and pu.Eliminado = 0
+                left join dbo.ConfigPrecioEspecialidad cfg on cfg.idEspecialidad = tep.idEspecialidad
                 where tep.idTurno in (" + tIn + ")");
 
             sw.Stop();
@@ -135,8 +200,8 @@ namespace CapaDatosMepryl
                 if (!dictPaciente.ContainsKey(id)) dictPaciente[id] = r;
             }
 
-            // turnoId -> (idTE, precioExamen, seña, modificado, subtipoReal, esPadre)
-            var dictTE = new Dictionary<string, (string idTE, decimal precio, decimal sena, string modificado, string subtipoReal, bool esPadre)>(StringComparer.OrdinalIgnoreCase);
+            // turnoId -> datos del examen asignado
+            var dictTE = new Dictionary<string, (string idTE, decimal precio, decimal sena, string modificado, string subtipoReal, bool esPadre, decimal precioPromoVigente, decimal precioListaVigente, decimal senaVigente, bool llevaPlanilla, string observacionesExtra)>(StringComparer.OrdinalIgnoreCase);
             foreach (DataRow r in tipoExamenBatch.Rows)
             {
                 string idTurno = r["idTurno"].ToString();
@@ -147,7 +212,12 @@ namespace CapaDatosMepryl
                         convertirADecimal(r["seña"]),
                         r["modificado"].ToString(),
                         r["SubtipoReal"].ToString(),
-                        r["Padre"].ToString() == "1"
+                        r["Padre"].ToString() == "1",
+                        convertirADecimal(r["PrecioPromoVigente"]),
+                        convertirADecimal(r["PrecioListaVigente"]),
+                        convertirADecimal(r["SenaVigente"]),
+                        r["LlevaPlanilla"].ToString() == "1" || r["LlevaPlanilla"].ToString().Equals("true", StringComparison.OrdinalIgnoreCase),
+                        r["ObservacionesExtra"].ToString()
                     );
             }
 
@@ -198,6 +268,19 @@ namespace CapaDatosMepryl
                 decimal importeNeto = importeBruto - teData.sena;
                 if (importeNeto < 0) importeNeto = 0;
                 string importe = importeNeto.ToString("0.##", CultureInfo.CurrentCulture);
+                string observaciones = r["Observaciones"].ToString();
+
+                if (tieneTipoExamenPaciente)
+                {
+                    decimal promoObservacion = teData.precioPromoVigente > 0 ? teData.precioPromoVigente : importeBruto;
+                    observaciones = ObtenerObservacionVigente(
+                        observaciones,
+                        promoObservacion,
+                        teData.precioListaVigente,
+                        teData.senaVigente,
+                        teData.llevaPlanilla,
+                        teData.observacionesExtra);
+                }
 
                 // El nombre del subtipo ya viene rescatado desde el SQL mediante COALESCE
                 string subtipoExamen = r["SubtipoExamen"].ToString();
@@ -227,7 +310,7 @@ namespace CapaDatosMepryl
                         r["Orden"], tipoPadre,
                         subtipoExamen + " " + modificado,
                         dni, paciente, importe, empresaClub,
-                        r["Observaciones"], r["Codigo"], idPaciente,
+                        observaciones, r["Codigo"], idPaciente,
                         reservado, idEmpresa, ocultar);
                 }
                 else if (reservado)

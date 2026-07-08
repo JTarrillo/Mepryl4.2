@@ -739,12 +739,8 @@ namespace CapaPresentacion
                 ((DataGridViewImageColumn)dgvLigaYClub.Columns[1]).ImageLayout = DataGridViewImageCellLayout.Zoom;
                 ((DataGridViewImageColumn)dgvLigaYClub.Columns[1]).DefaultCellStyle.BackColor = System.Drawing.Color.Transparent;
             }
-            tbObservPreventiva.Text = turnoPrev.Observaciones;
             tipoExamenActual = turnoPrev.TipoExamen;
-            // Auto-generar observaciones si tiene seña/planilla y la observación está vacía
-            if (string.IsNullOrWhiteSpace(tbObservPreventiva.Text) &&
-                (tipoExamenActual.LlevaPlanilla || tipoExamenActual.Seña > 0))
-                tbObservPreventiva.Text = generarObservaciones(tipoExamenActual);
+            tbObservPreventiva.Text = ObtenerObservacionVigente(turnoPrev.Observaciones, tipoExamenActual);
             txtEmail.Text = turnoPrev.Mail;
             txtEdad.Text = (DateTime.Today.AddTicks(-turnoPrev.Nacimiento.Ticks).Year - 1).ToString();
             tbIdTipoExamenPreventiva.Text = tipoExamenActual.IdTipoExamenPaciente.ToString();
@@ -823,12 +819,8 @@ namespace CapaPresentacion
             tbTareaLaboral.Text = turnoLab.Tarea;
             txtEmailLab.Text = turnoLab.Email;
             tbTelefonoLaboral.Text = turnoLab.Telefono;
-            tbObservacionesLaboral.Text = turnoLab.Observaciones;
             tipoExamenActual = turnoLab.TipoExamen;
-            // Auto-generar observaciones si tiene seña/planilla y la observación está vacía
-            if (string.IsNullOrWhiteSpace(tbObservacionesLaboral.Text) &&
-                (tipoExamenActual.LlevaPlanilla || tipoExamenActual.Seña > 0))
-                tbObservacionesLaboral.Text = generarObservaciones(tipoExamenActual);
+            tbObservacionesLaboral.Text = ObtenerObservacionVigente(turnoLab.Observaciones, tipoExamenActual);
             tbIdTipoExamenLaboral.Text = tipoExamenActual.IdTipoExamenPaciente.ToString();
             tbImporteLaboral.Text = tipoExamenActual.PrecioBase.ToString("N0");
             tbImporteListaLaboral.Text = tipoExamenActual.PrecioLista.ToString("N0");
@@ -1454,6 +1446,37 @@ namespace CapaPresentacion
             }
 
             return sb.ToString();
+        }
+
+        private string ObtenerObservacionVigente(string observacionActual, Entidades.TipoExamen te)
+        {
+            if (te == null)
+                return observacionActual ?? string.Empty;
+
+            if (EsObservacionAutomatica(observacionActual))
+                return generarObservaciones(te);
+
+            bool requiereObservacionAutomatica = te.LlevaPlanilla || te.Seña > 0 || !string.IsNullOrWhiteSpace(te.ObservacionesExtra);
+            if (!requiereObservacionAutomatica)
+                return observacionActual ?? string.Empty;
+
+            if (string.IsNullOrWhiteSpace(observacionActual))
+                return generarObservaciones(te);
+
+            return observacionActual;
+        }
+
+        private bool EsObservacionAutomatica(string texto)
+        {
+            if (string.IsNullOrWhiteSpace(texto))
+                return false;
+
+            string normalizado = texto.Trim().ToUpperInvariant();
+            return normalizado.Contains("LISTA: $")
+                || normalizado.Contains("(SEÑA)")
+                || normalizado.Contains("- SEÑA = $")
+                || normalizado.StartsWith("PLANILLA |")
+                || normalizado.Contains(" | PLANILLA | ");
         }
 
         private double obtenerDoubleDesdeTextBox(string texto, double valorDefault)

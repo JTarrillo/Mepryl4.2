@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿﻿﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -26,6 +26,7 @@ namespace CapaPresentacion
         private int intFilaSelecc = 0;
         private string _idMotivoConsultaActual;
         private bool _mostrandoDatos = false;
+        private bool _refrescandoGrillaSilenciosamente = false;
 
         [System.Runtime.InteropServices.DllImport("user32.dll")]
         private static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
@@ -1312,6 +1313,9 @@ namespace CapaPresentacion
 
         private void dgvGrilla_CurrentCellChanged(object sender, EventArgs e)
         {
+            if (_refrescandoGrillaSilenciosamente)
+                return;
+
             if (dgvGrilla.CurrentCell != null)
             {
                 mostrarDatos();
@@ -1481,68 +1485,94 @@ namespace CapaPresentacion
         private void timer_Tick(object sender, EventArgs e)
         {
             setearTotales();
-            cargarTurnoSeleccionado();
-            SeleccinarFilaTurno();
+
+            // Si el medico esta viendo estudios en la grilla principal, evitamos
+            // tocar la grilla lateral de turnos para no cambiarle el contexto.
+            if (panelTurnos.Visible)
+            {
+                cargarTurnoSeleccionado();
+                SeleccinarFilaTurno();
+            }
+
             refrescarGrilla();
         }
 
         private void refrescarGrilla()
         {
+            if (_refrescandoGrillaSilenciosamente)
+                return;
+
             // Guardar estado visual antes de limpiar
             string idSeleccionado = (dgvGrilla.CurrentCell != null)
                 ? dgvGrilla.Rows[dgvGrilla.CurrentCell.RowIndex].Cells[0].Value?.ToString() ?? ""
                 : "";
+            int columnaSeleccionada = (dgvGrilla.CurrentCell != null)
+                ? dgvGrilla.CurrentCell.ColumnIndex
+                : 4;
             int primeraFilaVisible = dgvGrilla.FirstDisplayedScrollingRowIndex;
 
-            // Suprimir repintado para evitar parpadeo
-            SendMessage(dgvGrilla.Handle, WM_SETREDRAW, IntPtr.Zero, IntPtr.Zero);
-            dgvGrilla.Rows.Clear();
-
-            foreach (DataRow r in mesaEntrada.cargarMesaEntrada().Rows)
+            try
             {
-                agregar(r.ItemArray[0], r.ItemArray[1], r.ItemArray[2], r.ItemArray[3],
-                        r.ItemArray[4], r.ItemArray[5], r.ItemArray[6], r.ItemArray[7], r.ItemArray[8], r.ItemArray[9],
-                        r.ItemArray[10], r.ItemArray[11], r.ItemArray[12], r.ItemArray[13], r.ItemArray[14], r.ItemArray[15],
-                        r.ItemArray[16], r.ItemArray[17]);
+                _refrescandoGrillaSilenciosamente = true;
 
-                Color color = Color.White;
-                switch (r.ItemArray[7].ToString())
+                // Suprimir repintado para evitar parpadeo
+                SendMessage(dgvGrilla.Handle, WM_SETREDRAW, IntPtr.Zero, IntPtr.Zero);
+                dgvGrilla.Rows.Clear();
+
+                foreach (DataRow r in mesaEntrada.cargarMesaEntrada().Rows)
                 {
-                    case "P": color = Color.MistyRose; break;
-                    case "L": color = Color.Moccasin; break;
-                    case "EC": color = Color.Azure; break;
-                    case "CO": color = Color.LightSteelBlue; break;
-                    case "R": color = Color.LightYellow; break;
-                }
-                dgvGrilla.Rows[dgvGrilla.Rows.Count - 1].DefaultCellStyle.BackColor = color;
-            }
+                    agregar(r.ItemArray[0], r.ItemArray[1], r.ItemArray[2], r.ItemArray[3],
+                            r.ItemArray[4], r.ItemArray[5], r.ItemArray[6], r.ItemArray[7], r.ItemArray[8], r.ItemArray[9],
+                            r.ItemArray[10], r.ItemArray[11], r.ItemArray[12], r.ItemArray[13], r.ItemArray[14], r.ItemArray[15],
+                            r.ItemArray[16], r.ItemArray[17]);
 
-            lblTotal.Text = "Total Pacientes: " + dgvGrilla.Rows.Count.ToString();
-
-            // Rehabilitar repintado antes de restaurar posición
-            SendMessage(dgvGrilla.Handle, WM_SETREDRAW, new IntPtr(1), IntPtr.Zero);
-            dgvGrilla.Refresh();
-
-            // Restaurar posición de scroll
-            if (primeraFilaVisible >= 0 && primeraFilaVisible < dgvGrilla.Rows.Count)
-                dgvGrilla.FirstDisplayedScrollingRowIndex = primeraFilaVisible;
-
-            // Restaurar fila seleccionada por ID (no por índice, por si cambió la cantidad de filas)
-            if (dgvGrilla.Rows.Count > 0)
-            {
-                int filaRestaurar = -1;
-                if (!string.IsNullOrEmpty(idSeleccionado))
-                {
-                    for (int i = 0; i < dgvGrilla.Rows.Count; i++)
+                    Color color = Color.White;
+                    switch (r.ItemArray[7].ToString())
                     {
-                        if (dgvGrilla.Rows[i].Cells[0].Value?.ToString() == idSeleccionado)
+                        case "P": color = Color.MistyRose; break;
+                        case "L": color = Color.Moccasin; break;
+                        case "EC": color = Color.Azure; break;
+                        case "CO": color = Color.LightSteelBlue; break;
+                        case "R": color = Color.LightYellow; break;
+                    }
+                    dgvGrilla.Rows[dgvGrilla.Rows.Count - 1].DefaultCellStyle.BackColor = color;
+                }
+
+                lblTotal.Text = "Total Pacientes: " + dgvGrilla.Rows.Count.ToString();
+
+                // Restaurar posición de scroll
+                if (primeraFilaVisible >= 0 && primeraFilaVisible < dgvGrilla.Rows.Count)
+                    dgvGrilla.FirstDisplayedScrollingRowIndex = primeraFilaVisible;
+
+                // Restaurar fila seleccionada por ID (no por índice, por si cambió la cantidad de filas)
+                if (dgvGrilla.Rows.Count > 0)
+                {
+                    int filaRestaurar = -1;
+                    if (!string.IsNullOrEmpty(idSeleccionado))
+                    {
+                        for (int i = 0; i < dgvGrilla.Rows.Count; i++)
                         {
-                            filaRestaurar = i;
-                            break;
+                            if (dgvGrilla.Rows[i].Cells[0].Value?.ToString() == idSeleccionado)
+                            {
+                                filaRestaurar = i;
+                                break;
+                            }
                         }
                     }
+
+                    int filaFinal = filaRestaurar >= 0 ? filaRestaurar : 0;
+                    int columnaFinal = (columnaSeleccionada >= 0 && columnaSeleccionada < dgvGrilla.Columns.Count)
+                        ? columnaSeleccionada
+                        : 4;
+
+                    dgvGrilla.CurrentCell = dgvGrilla.Rows[filaFinal].Cells[columnaFinal];
                 }
-                dgvGrilla.CurrentCell = dgvGrilla.Rows[filaRestaurar >= 0 ? filaRestaurar : 0].Cells[4];
+            }
+            finally
+            {
+                _refrescandoGrillaSilenciosamente = false;
+                SendMessage(dgvGrilla.Handle, WM_SETREDRAW, new IntPtr(1), IntPtr.Zero);
+                dgvGrilla.Refresh();
             }
         }
 
