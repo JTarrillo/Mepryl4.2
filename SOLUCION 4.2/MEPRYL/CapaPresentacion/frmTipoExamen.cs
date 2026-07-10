@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -162,6 +162,7 @@ namespace CapaPresentacion
 
         private void cancelar()
         {
+            this.DialogResult = DialogResult.Cancel;
             this.Close();
         }
 
@@ -175,6 +176,7 @@ namespace CapaPresentacion
             if (objDelegateDevolverTipoExamen != null)
             {
                 objDelegateDevolverTipoExamen(llenarDatosEntidad());
+                this.DialogResult = DialogResult.OK;
                 this.Close();
             }
             if (objDelegateModificado != null)
@@ -182,6 +184,7 @@ namespace CapaPresentacion
                 actualizarDatosEntidad();
                 tep.actualizarEstudiosPorExamen(tipoExamen);
                 objDelegateModificado();
+                this.DialogResult = DialogResult.OK;
                 this.Close();
             }
         }

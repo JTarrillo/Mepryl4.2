@@ -1677,9 +1677,15 @@ namespace CapaDatosMepryl
             return strIdEspecialidad;
         }
 
+        private static readonly Guid EspecialidadSinSenaFutbolMetro = new Guid("60E94892-6F59-4202-A966-884FD71A5D8B");
+        private static readonly Guid EspecialidadSinSenaFutbolMetroSinLab = new Guid("C260173E-3C3C-4AB0-8FAB-822DD540A3AA");
+        private static readonly Guid EspecialidadSenaManualGna3Ecografias = new Guid("185F4837-E9CF-48D9-9FDC-3D031B939B19");
+        private static readonly Guid EspecialidadSenaManualGnaEcografiaAbdominal = new Guid("A022589B-1299-4E3F-BE33-492D4EFEEC5F");
+        private static readonly Guid EspecialidadSenaManualPsaEcografiaAbdominal = new Guid("6E86E3F4-9B5A-4FBE-9E39-BD47055D8F56");
+
         public DataTable ObtenerPrecioPromo(Guid idEspecialidad, DateTime fecha)
         {
-            return SQLConnector.obtenerTablaSegunConsultaString(
+            DataTable dt = SQLConnector.obtenerTablaSegunConsultaString(
                 "SELECT pp.PrecioPromo, pu.PrecioLista, " +
                 "ISNULL(cfg.Seña, 0) AS Seña, " +
                 "ISNULL(cfg.LlevaPlanilla, 0) AS LlevaPlanilla, " +
@@ -1689,6 +1695,51 @@ namespace CapaDatosMepryl
                 "LEFT JOIN dbo.ConfigPrecioEspecialidad cfg ON cfg.idEspecialidad = pp.idEspecialidad " +
                 "WHERE pp.idEspecialidad = '" + idEspecialidad.ToString() +
                 "' AND pp.Mes = " + fecha.Month + " AND pp.Anio = " + fecha.Year + " AND pp.Eliminado = 0");
+
+            if (dt.Rows.Count > 0 && dt.Columns.Contains("Seña") && dt.Columns.Contains("PrecioPromo"))
+            {
+                decimal precioPromo = 0m;
+                decimal senaConfigurada = 0m;
+                decimal.TryParse(dt.Rows[0]["PrecioPromo"].ToString(), out precioPromo);
+                decimal.TryParse(dt.Rows[0]["Seña"].ToString(), out senaConfigurada);
+                dt.Rows[0]["Seña"] = CalcularSenaAutomatica(idEspecialidad, precioPromo, senaConfigurada);
+            }
+
+            return dt;
+        }
+
+        private decimal CalcularSenaAutomatica(Guid idEspecialidad, decimal precioPromo, decimal senaConfigurada)
+        {
+            if (precioPromo <= 0)
+                return 0m;
+
+            if (EsEspecialidadSinSena(idEspecialidad))
+                return 0m;
+
+            if (EsEspecialidadSenaManual(idEspecialidad))
+                return senaConfigurada;
+
+            decimal residuo = precioPromo % 10000m;
+            if (residuo == 5000m)
+                return 5000m;
+
+            if (residuo < 5000m)
+                return residuo + 5000m;
+
+            return residuo;
+        }
+
+        private bool EsEspecialidadSinSena(Guid idEspecialidad)
+        {
+            return idEspecialidad == EspecialidadSinSenaFutbolMetro
+                || idEspecialidad == EspecialidadSinSenaFutbolMetroSinLab;
+        }
+
+        private bool EsEspecialidadSenaManual(Guid idEspecialidad)
+        {
+            return idEspecialidad == EspecialidadSenaManualGna3Ecografias
+                || idEspecialidad == EspecialidadSenaManualGnaEcografiaAbdominal
+                || idEspecialidad == EspecialidadSenaManualPsaEcografiaAbdominal;
         }
 
         public void ActualizarPrecioListaTipoExamenPaciente(Guid idTipoExamenPaciente, double precioLista)

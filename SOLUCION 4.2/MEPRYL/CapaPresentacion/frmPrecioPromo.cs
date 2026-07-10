@@ -22,6 +22,11 @@ namespace CapaPresentacion
         private decimal[] _coefsPromo = new decimal[12];
         private decimal[] _coefsPublico = new decimal[12];
         private decimal[] _factoresPublico = new decimal[12];
+        private static readonly Guid EspecialidadSinSenaFutbolMetro = new Guid("60E94892-6F59-4202-A966-884FD71A5D8B");
+        private static readonly Guid EspecialidadSinSenaFutbolMetroSinLab = new Guid("C260173E-3C3C-4AB0-8FAB-822DD540A3AA");
+        private static readonly Guid EspecialidadSenaManualGna3Ecografias = new Guid("185F4837-E9CF-48D9-9FDC-3D031B939B19");
+        private static readonly Guid EspecialidadSenaManualGnaEcografiaAbdominal = new Guid("A022589B-1299-4E3F-BE33-492D4EFEEC5F");
+        private static readonly Guid EspecialidadSenaManualPsaEcografiaAbdominal = new Guid("6E86E3F4-9B5A-4FBE-9E39-BD47055D8F56");
 
         private decimal[] _coefs 
         { 
@@ -1205,6 +1210,10 @@ namespace CapaPresentacion
             dgvConfig.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
             dgvConfig.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dgvConfig.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            dgvConfig.Columns[4].HeaderText = "Seña";
+            dgvConfig.Columns[4].ReadOnly = false;
+            dgvConfig.Columns[4].DefaultCellStyle.BackColor = Color.White;
+            dgvConfig.Columns[4].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
         }
 
         private void CargarGrillaConfig()
@@ -1212,14 +1221,27 @@ namespace CapaPresentacion
             dgvConfig.Rows.Clear();
             DataTable dt = precioPromo.ListarConfigEspecialidades();
             if (dt == null) return;
+            Dictionary<string, decimal> preciosPromoMesActual = ObtenerPreciosPromoMesActualParaConfig((int)nudAnio.Value);
             foreach (DataRow row in dt.Rows)
             {
                 int idx = dgvConfig.Rows.Add();
+                string idEspecialidad = row["idEspecialidad"].ToString();
+                Guid guidEspecialidad;
+                Guid.TryParse(idEspecialidad, out guidEspecialidad);
+                decimal precioPromoMesActual = 0m;
+                preciosPromoMesActual.TryGetValue(idEspecialidad, out precioPromoMesActual);
+                decimal senaCalculada = CalcularSenaAutomaticaConfig(guidEspecialidad, precioPromoMesActual);
+                decimal senaConfigurada = row["Seña"] == DBNull.Value ? 0m : Convert.ToDecimal(row["Seña"]);
+                bool esManual = EsEspecialidadSenaManualConfig(guidEspecialidad);
+
                 dgvConfig.Rows[idx].Cells[0].Value = row["idEspecialidad"].ToString();
                 dgvConfig.Rows[idx].Cells[1].Value = row["Motivo"].ToString();
                 dgvConfig.Rows[idx].Cells[2].Value = row["Tipo"].ToString();
                 dgvConfig.Rows[idx].Cells[3].Value = row["Descripcion"].ToString();
-                dgvConfig.Rows[idx].Cells[4].Value = Convert.ToDecimal(row["Seña"]);
+                dgvConfig.Rows[idx].Cells[4].Value = esManual ? senaConfigurada : senaCalculada;
+                dgvConfig.Rows[idx].Cells[4].Tag = senaConfigurada;
+                dgvConfig.Rows[idx].Cells[4].ReadOnly = !esManual;
+                dgvConfig.Rows[idx].Cells[4].Style.BackColor = esManual ? Color.White : Color.WhiteSmoke;
                 dgvConfig.Rows[idx].Cells[5].Value = Convert.ToBoolean(row["LlevaPlanilla"]);
                 dgvConfig.Rows[idx].Cells[6].Value = row["Observaciones"].ToString();
             }
@@ -1236,14 +1258,74 @@ namespace CapaPresentacion
             foreach (DataGridViewRow row in dgvConfig.Rows)
             {
                 DataRow dr = dtConfig.NewRow();
-                dr["idEspecialidad"] = row.Cells[0].Value?.ToString() ?? "";
-                decimal seña = ParseDecimal(row.Cells[4].Value);
+                string idEspecialidad = row.Cells[0].Value?.ToString() ?? "";
+                dr["idEspecialidad"] = idEspecialidad;
+                Guid guidEspecialidad;
+                Guid.TryParse(idEspecialidad, out guidEspecialidad);
+                decimal seña = EsEspecialidadSenaManualConfig(guidEspecialidad)
+                    ? ParseDecimal(row.Cells[4].Value)
+                    : (row.Cells[4].Tag == null ? 0m : ParseDecimal(row.Cells[4].Tag));
                 dr["Seña"] = seña;
                 dr["LlevaPlanilla"] = (row.Cells[5].Value as bool?) ?? false;
                 dr["Observaciones"] = row.Cells[6].Value?.ToString() ?? "";
                 dtConfig.Rows.Add(dr);
             }
             precioPromo.GuardarConfigEspecialidades(dtConfig);
+        }
+
+        private Dictionary<string, decimal> ObtenerPreciosPromoMesActualParaConfig(int anio)
+        {
+            var resultado = new Dictionary<string, decimal>(StringComparer.OrdinalIgnoreCase);
+            DataTable dtPrecios = precioPromo.ListarPreciosPublicoAnio(anio);
+            if (dtPrecios == null || dtPrecios.Rows.Count == 0)
+                return resultado;
+
+            string nombreColumna = "Promo" + DateTime.Now.Month.ToString("00");
+            if (!dtPrecios.Columns.Contains("idEspecialidad") || !dtPrecios.Columns.Contains(nombreColumna))
+                return resultado;
+
+            foreach (DataRow row in dtPrecios.Rows)
+            {
+                string idEspecialidad = row["idEspecialidad"].ToString();
+                decimal precioPromo = row[nombreColumna] == DBNull.Value ? 0m : Convert.ToDecimal(row[nombreColumna]);
+                resultado[idEspecialidad] = precioPromo;
+            }
+
+            return resultado;
+        }
+
+        private decimal CalcularSenaAutomaticaConfig(Guid idEspecialidad, decimal precioPromo)
+        {
+            if (precioPromo <= 0)
+                return 0m;
+
+            if (EsEspecialidadSinSenaConfig(idEspecialidad))
+                return 0m;
+
+            if (EsEspecialidadSenaManualConfig(idEspecialidad))
+                return 0m;
+
+            decimal residuo = precioPromo % 10000m;
+            if (residuo == 5000m)
+                return 5000m;
+
+            if (residuo < 5000m)
+                return residuo + 5000m;
+
+            return residuo;
+        }
+
+        private bool EsEspecialidadSinSenaConfig(Guid idEspecialidad)
+        {
+            return idEspecialidad == EspecialidadSinSenaFutbolMetro
+                || idEspecialidad == EspecialidadSinSenaFutbolMetroSinLab;
+        }
+
+        private bool EsEspecialidadSenaManualConfig(Guid idEspecialidad)
+        {
+            return idEspecialidad == EspecialidadSenaManualGna3Ecografias
+                || idEspecialidad == EspecialidadSenaManualGnaEcografiaAbdominal
+                || idEspecialidad == EspecialidadSenaManualPsaEcografiaAbdominal;
         }
 
         private void tabControl_SelectedIndexChanged(object sender, EventArgs e)
@@ -1284,7 +1366,7 @@ namespace CapaPresentacion
                 }
                 else if (tabControl.SelectedTab == tabConfig)
                 {
-                    lblTitulo.Text = "  Configuración de Señas y Planilla";
+                    lblTitulo.Text = "  Configuración de Seña Automática y Planilla";
                     // Ocultar controles
                     btnCopiarAnio.Visible = false;
                     lblMesVariacion.Visible = false;

@@ -1807,19 +1807,45 @@ namespace CapaPresentacion
 
         private void tpFecha_CustomDrawDayNumberCell(object sender, DevExpress.XtraEditors.Calendar.CustomDrawDayNumberCellEventArgs e)
         {
-            // Solo dibujamos si estamos en una celda válida de día
-            if (e.Date != DateTime.MinValue)
+            if (e.Date == DateTime.MinValue)
+                return;
+
+            if (e.View != DevExpress.XtraEditors.Controls.DateEditCalendarViewType.MonthInfo)
+                return;
+
+            if (e.Selected)
             {
-                // Borde para el día de hoy
-                if (e.Date.Date == DateTime.Today.Date)
+                Rectangle rect = e.Bounds;
+                rect.Inflate(-1, -1);
+
+                using (SolidBrush brush = new SolidBrush(Color.FromArgb(0, 120, 215)))
+                using (Pen pen = new Pen(Color.FromArgb(0, 84, 153)))
                 {
-                    using (Pen p = new Pen(Color.FromArgb(100, 149, 237), 2))
-                    {
-                        Rectangle rect = e.Bounds;
-                        rect.Width -= 1;
-                        rect.Height -= 1;
-                        e.Graphics.DrawRectangle(p, rect);
-                    }
+                    e.Graphics.FillRectangle(brush, rect);
+                    e.Graphics.DrawRectangle(pen, rect);
+                }
+
+                TextRenderer.DrawText(
+                    e.Graphics,
+                    e.Date.Day.ToString(),
+                    tpFecha.Font,
+                    rect,
+                    Color.White,
+                    TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
+
+                e.Handled = true;
+                return;
+            }
+
+            // Borde para el día de hoy
+            if (e.Date.Date == DateTime.Today.Date)
+            {
+                using (Pen p = new Pen(Color.FromArgb(100, 149, 237), 2))
+                {
+                    Rectangle rect = e.Bounds;
+                    rect.Width -= 1;
+                    rect.Height -= 1;
+                    e.Graphics.DrawRectangle(p, rect);
                 }
             }
         }

@@ -44,7 +44,6 @@ namespace CapaPresentacion
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle21 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle22 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle24 = new System.Windows.Forms.DataGridViewCellStyle();
-            this.rbcMenu = new DevExpress.XtraBars.Ribbon.RibbonControl();
             this.bbiAgregarClub = new DevExpress.XtraBars.BarButtonItem();
             this.bbiBuscarPaciente = new DevExpress.XtraBars.BarButtonItem();
             this.bbiImprimir = new DevExpress.XtraBars.BarButtonItem();
@@ -2425,7 +2424,6 @@ namespace CapaPresentacion
 
         #endregion
 
-        private DevExpress.XtraBars.Ribbon.RibbonControl rbcMenu;
         private DevExpress.XtraBars.BarButtonItem bbiAgregarClub;
         private DevExpress.XtraBars.BarButtonItem bbiBuscarPaciente;
         private DevExpress.XtraBars.BarButtonItem bbiImprimir;

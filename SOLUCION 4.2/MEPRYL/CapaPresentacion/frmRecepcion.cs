@@ -473,9 +473,6 @@ namespace CapaPresentacion
             fTipoExamen.cargarSegunIdTurno(new Guid(dgv.SelectedRows[0].Cells[2].Value.ToString()));
             fTipoExamen.objDelegateModificado = new frmTipoExamen.DelegateModificado(actualizarListadoManteniendoPosicion);
             fTipoExamen.ShowDialog();
-
-            // Fuerza la recarga si el examen se modificó fuera del delegado o si el cambio no quedó reflejado.
-            actualizarListadoManteniendoPosicion();
         }
 
         private void dgv_CellClick(object sender, DataGridViewCellEventArgs e)
