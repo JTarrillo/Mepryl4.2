@@ -18,6 +18,7 @@ namespace CapaPresentacion
     {
         private PrecioPromo precioPromo;
         private PrecioPublico precioPublico;
+        private DataGridView dgvEmpresas;
         private bool yaInicializado = false;
         private decimal[] _coefsPromo = new decimal[12];
         private decimal[] _coefsPublico = new decimal[12];
@@ -46,6 +47,7 @@ namespace CapaPresentacion
             this.MdiParent = parentForm;
             precioPromo = new PrecioPromo();
             precioPublico = new PrecioPublico();
+            InicializarGrillaEmpresas();
 
             for (int i = 0; i < 12; i++)
             {
@@ -76,10 +78,13 @@ namespace CapaPresentacion
 
             foreach (DataGridViewColumn col in dgvPrecios.Columns)
                 col.SortMode = DataGridViewColumnSortMode.NotSortable;
+            foreach (DataGridViewColumn col in dgvEmpresas.Columns)
+                col.SortMode = DataGridViewColumnSortMode.NotSortable;
             foreach (DataGridViewColumn col in dgvPrecioPublico.Columns)
                 col.SortMode = DataGridViewColumnSortMode.NotSortable;
 
             ConfigurarOrdenColumnas(dgvPrecios);
+            ConfigurarOrdenColumnas(dgvEmpresas);
             ConfigurarOrdenColumnas(dgvPrecioPublico);
 
             ConfigurarGrillaConfig();
@@ -109,9 +114,20 @@ namespace CapaPresentacion
             return tabControl.SelectedTab == tabPrecioPublico;
         }
 
+        private bool EsPrecioEmpresa()
+        {
+            return tabControl.SelectedTab == tabEmpresas;
+        }
+
         private DataGridView ObtenerDGVActual()
         {
-            return EsPrecioPublico() ? dgvPrecioPublico : dgvPrecios;
+            if (EsPrecioPublico())
+                return dgvPrecioPublico;
+
+            if (EsPrecioEmpresa())
+                return dgvEmpresas;
+
+            return dgvPrecios;
         }
 
         private DataTable ObtenerDatosActual(int anio)
@@ -163,67 +179,11 @@ namespace CapaPresentacion
 
         private void CargarGrilla()
         {
-            if (tabControl.SelectedTab == tabPrecioPublico || tabControl.SelectedTab == tabPrecios)
+            if (tabControl.SelectedTab == tabPrecioPublico || tabControl.SelectedTab == tabPrecios || tabControl.SelectedTab == tabEmpresas)
             {
                 int anio = (int)nudAnio.Value;
-                DataGridView dgv = ObtenerDGVActual();
-
-                dgv.Rows.Clear();
-
-                // Cargar coeficientes
-                _coefs = new decimal[12];
-                for (int i = 0; i < 12; i++) _coefs[i] = 1;
-                DataTable dtCoef = ObtenerCoeficientesActual(anio);
-                foreach (DataRow row in dtCoef.Rows)
-                {
-                    int mes = Convert.ToInt32(row["Mes"]);
-                    if (mes >= 1 && mes <= 12)
-                        _coefs[mes - 1] = Convert.ToDecimal(row["Coeficiente"]);
-                }
-
-                // Cargar factores públicos y actualizar la UI
-                _factoresPublico = ObtenerFactoresAnio(anio);
-                if (cboMesVariacion.SelectedIndex > 0)
-                {
-                    txtVariacion.Text = _factoresPublico[cboMesVariacion.SelectedIndex - 1].ToString("0.####", System.Globalization.CultureInfo.InvariantCulture);
-                }
-                else
-                {
-                    txtVariacion.Text = "0";
-                }
-
-                // Cargar datos
-                DataTable dt = ObtenerDatosActual(anio);
-                foreach (DataRow row in dt.Rows)
-                {
-                    int idx = dgv.Rows.Add();
-                    dgv.Rows[idx].Cells[ObtenerNombreColumnaIdEspecialidad(dgv)].Value = row["idEspecialidad"].ToString();
-                    dgv.Rows[idx].Cells[ObtenerNombreColumnaMotivo(dgv)].Value = row["Motivo"].ToString();
-                    dgv.Rows[idx].Cells[ObtenerNombreColumnaTipo(dgv)].Value = row["Tipo"].ToString();
-                    dgv.Rows[idx].Cells[ObtenerNombreColumnaDescripcion(dgv)].Value = row["Descripcion"].ToString();
-
-                    // Cargar IPC
-                    decimal ipcBase = (row["IPCBase"] == DBNull.Value) ? 0m : Convert.ToDecimal(row["IPCBase"]);
-                    dgv.Rows[idx].Cells[ObtenerNombreColumnaIPCBase(dgv)].Value = ipcBase;
-
-                    // Cargar precios y coeficientes
-                    for (int mes = 1; mes <= 12; mes++)
-                    {
-                        string colPromo = "Promo" + mes.ToString("00");
-                        string colCoef = "Coef" + mes.ToString("00");
-                        decimal valorPromo = (row[colPromo] == DBNull.Value) ? 0 : Convert.ToDecimal(row[colPromo]);
-                        decimal coefInd = (row[colCoef] == DBNull.Value) ? 0m : Convert.ToDecimal(row[colCoef]);
-                        dgv.Rows[idx].Cells[5 + (mes - 1) * 2].Value = valorPromo;
-                        dgv.Rows[idx].Cells[6 + (mes - 1) * 2].Value = coefInd;
-                    }
-                }
-
-                // Actualizar encabezados de coeficientes
-                for (int mes = 1; mes <= 12; mes++)
-                {
-                    dgv.Columns[6 + (mes - 1) * 2].HeaderText = _coefs[mes - 1].ToString("0.##", System.Globalization.CultureInfo.CurrentCulture);
-                }
-                dgv.Columns[ObtenerNombreColumnaIPCBase(dgv)].HeaderText = _coefs[0].ToString("0.##", System.Globalization.CultureInfo.CurrentCulture);
+                CargarGrillasPromoYEmpresas(anio);
+                CargarGrillaPublico(anio);
 
                 txtBuscar_TextChanged(this, EventArgs.Empty);
             }
@@ -235,6 +195,176 @@ namespace CapaPresentacion
             {
                 CargarGrillaObsPre();
             }
+        }
+
+        private void InicializarGrillaEmpresas()
+        {
+            dgvEmpresas = new DataGridView();
+            dgvEmpresas.Name = "dgvEmpresas";
+            dgvEmpresas.Dock = DockStyle.Fill;
+            dgvEmpresas.AllowUserToAddRows = dgvPrecios.AllowUserToAddRows;
+            dgvEmpresas.AllowUserToDeleteRows = dgvPrecios.AllowUserToDeleteRows;
+            dgvEmpresas.AutoSizeColumnsMode = dgvPrecios.AutoSizeColumnsMode;
+            dgvEmpresas.BackgroundColor = dgvPrecios.BackgroundColor;
+            dgvEmpresas.BorderStyle = dgvPrecios.BorderStyle;
+            dgvEmpresas.ColumnHeadersHeightSizeMode = dgvPrecios.ColumnHeadersHeightSizeMode;
+            dgvEmpresas.EditMode = dgvPrecios.EditMode;
+            dgvEmpresas.EnableHeadersVisualStyles = dgvPrecios.EnableHeadersVisualStyles;
+            dgvEmpresas.RowHeadersVisible = dgvPrecios.RowHeadersVisible;
+            dgvEmpresas.RowTemplate.Height = dgvPrecios.RowTemplate.Height;
+            dgvEmpresas.SelectionMode = dgvPrecios.SelectionMode;
+            dgvEmpresas.MultiSelect = dgvPrecios.MultiSelect;
+            dgvEmpresas.ColumnHeadersDefaultCellStyle = (DataGridViewCellStyle)dgvPrecios.ColumnHeadersDefaultCellStyle.Clone();
+            dgvEmpresas.DefaultCellStyle = (DataGridViewCellStyle)dgvPrecios.DefaultCellStyle.Clone();
+            dgvEmpresas.AlternatingRowsDefaultCellStyle = (DataGridViewCellStyle)dgvPrecios.AlternatingRowsDefaultCellStyle.Clone();
+
+            foreach (DataGridViewColumn col in dgvPrecios.Columns)
+            {
+                DataGridViewColumn colClonada = (DataGridViewColumn)col.Clone();
+                colClonada.DefaultCellStyle = (DataGridViewCellStyle)col.DefaultCellStyle.Clone();
+                dgvEmpresas.Columns.Add(colClonada);
+            }
+
+            dgvEmpresas.CellBeginEdit += new DataGridViewCellCancelEventHandler(this.dgvPrecios_CellBeginEdit);
+            dgvEmpresas.CellEndEdit += new DataGridViewCellEventHandler(this.dgvPrecios_CellEndEdit);
+            dgvEmpresas.CellFormatting += new DataGridViewCellFormattingEventHandler(this.dgvPrecios_CellFormatting);
+            dgvEmpresas.CellPainting += new DataGridViewCellPaintingEventHandler(this.dgvPrecios_CellPainting);
+            dgvEmpresas.ColumnHeaderMouseDoubleClick += new DataGridViewCellMouseEventHandler(this.dgvPrecios_ColumnHeaderMouseDoubleClick);
+            dgvEmpresas.EditingControlShowing += new DataGridViewEditingControlShowingEventHandler(this.dgvPrecios_EditingControlShowing);
+
+            tabEmpresas.Controls.Add(dgvEmpresas);
+            dgvEmpresas.BringToFront();
+        }
+
+        private void CargarGrillasPromoYEmpresas(int anio)
+        {
+            _coefsPromo = ConstruirArrayCoeficientes(precioPromo.ListarCoeficientesAnio(anio));
+            DataTable dtPromo = precioPromo.ListarPreciosPublicoAnio(anio);
+
+            CargarFilasEnGrilla(dgvPrecios, dtPromo, row => !EsSubtipoEmpresa(row["Tipo"]?.ToString(), row["Descripcion"]?.ToString()));
+            CargarFilasEnGrilla(dgvEmpresas, dtPromo, row => EsSubtipoEmpresa(row["Tipo"]?.ToString(), row["Descripcion"]?.ToString()));
+
+            ActualizarEncabezadosCoeficientes(dgvPrecios, _coefsPromo);
+            ActualizarEncabezadosCoeficientes(dgvEmpresas, _coefsPromo);
+        }
+
+        private void CargarGrillaPublico(int anio)
+        {
+            _coefsPublico = ConstruirArrayCoeficientes(precioPublico.ListarCoeficientesAnio(anio));
+            _factoresPublico = ObtenerFactoresAnio(anio);
+
+            if (cboMesVariacion.SelectedIndex > 0)
+                txtVariacion.Text = _factoresPublico[cboMesVariacion.SelectedIndex - 1].ToString("0.####", System.Globalization.CultureInfo.InvariantCulture);
+            else
+                txtVariacion.Text = "0";
+
+            CargarFilasEnGrilla(dgvPrecioPublico, precioPublico.ListarPreciosPublicoAnio(anio), null);
+            ActualizarEncabezadosCoeficientes(dgvPrecioPublico, _coefsPublico);
+        }
+
+        private void CargarFilasEnGrilla(DataGridView dgv, DataTable dt, Func<DataRow, bool> filtro)
+        {
+            dgv.Rows.Clear();
+            if (dt == null) return;
+
+            int colBaseMeses = dgv.Columns.Contains("colPromo01")
+                ? dgv.Columns["colPromo01"].Index
+                : dgv.Columns["colPublicoPromo01"].Index;
+
+            foreach (DataRow row in dt.Rows)
+            {
+                if (filtro != null && !filtro(row))
+                    continue;
+
+                int idx = dgv.Rows.Add();
+                dgv.Rows[idx].Cells[ObtenerNombreColumnaIdEspecialidad(dgv)].Value = row["idEspecialidad"].ToString();
+                dgv.Rows[idx].Cells[ObtenerNombreColumnaMotivo(dgv)].Value = row["Motivo"].ToString();
+                dgv.Rows[idx].Cells[ObtenerNombreColumnaTipo(dgv)].Value = row["Tipo"].ToString();
+                dgv.Rows[idx].Cells[ObtenerNombreColumnaDescripcion(dgv)].Value = row["Descripcion"].ToString();
+                dgv.Rows[idx].Cells[ObtenerNombreColumnaIPCBase(dgv)].Value = row["IPCBase"] == DBNull.Value ? 0m : Convert.ToDecimal(row["IPCBase"]);
+
+                for (int mes = 1; mes <= 12; mes++)
+                {
+                    string colPromo = "Promo" + mes.ToString("00");
+                    string colCoef = "Coef" + mes.ToString("00");
+                    dgv.Rows[idx].Cells[colBaseMeses + (mes - 1) * 2].Value = row[colPromo] == DBNull.Value ? 0m : Convert.ToDecimal(row[colPromo]);
+                    dgv.Rows[idx].Cells[colBaseMeses + 1 + (mes - 1) * 2].Value = row[colCoef] == DBNull.Value ? 0m : Convert.ToDecimal(row[colCoef]);
+                }
+            }
+        }
+
+        private decimal[] ConstruirArrayCoeficientes(DataTable dtCoef)
+        {
+            decimal[] coeficientes = new decimal[12];
+            for (int i = 0; i < 12; i++) coeficientes[i] = 1;
+
+            if (dtCoef == null) return coeficientes;
+
+            foreach (DataRow row in dtCoef.Rows)
+            {
+                int mes = Convert.ToInt32(row["Mes"]);
+                if (mes >= 1 && mes <= 12)
+                    coeficientes[mes - 1] = Convert.ToDecimal(row["Coeficiente"]);
+            }
+
+            return coeficientes;
+        }
+
+        private void ActualizarEncabezadosCoeficientes(DataGridView dgv, decimal[] coeficientes)
+        {
+            int colBaseMeses = dgv.Columns.Contains("colPromo01")
+                ? dgv.Columns["colPromo01"].Index
+                : dgv.Columns["colPublicoPromo01"].Index;
+
+            for (int mes = 1; mes <= 12; mes++)
+            {
+                dgv.Columns[colBaseMeses + 1 + (mes - 1) * 2].HeaderText =
+                    coeficientes[mes - 1].ToString("0.##", System.Globalization.CultureInfo.CurrentCulture);
+            }
+
+            dgv.Columns[ObtenerNombreColumnaIPCBase(dgv)].HeaderText =
+                coeficientes[0].ToString("0.##", System.Globalization.CultureInfo.CurrentCulture);
+        }
+
+        private bool EsSubtipoEmpresa(string tipo, string descripcion)
+        {
+            if (string.IsNullOrWhiteSpace(tipo))
+                return false;
+
+            string tipoNormalizado = tipo.Trim().ToUpperInvariant();
+            string descripcionNormalizada = string.IsNullOrWhiteSpace(descripcion)
+                ? string.Empty
+                : descripcion.Trim().ToUpperInvariant();
+
+            if (tipoNormalizado.Contains("LICENCIAS PNA"))
+            {
+                return descripcionNormalizada.StartsWith("BUZO")
+                    || descripcionNormalizada.StartsWith("LIBRETA");
+            }
+
+            return tipoNormalizado.Contains("PRE-OCUPACIONAL")
+                || tipoNormalizado.Contains("PREOCUPACIONAL")
+                || tipoNormalizado.Contains("EGRESO");
+        }
+
+        private DataGridViewRow BuscarFilaPromoPorId(string idEspecialidad)
+        {
+            if (string.IsNullOrWhiteSpace(idEspecialidad))
+                return null;
+
+            foreach (DataGridView dgv in new[] { dgvPrecios, dgvEmpresas })
+            {
+                if (dgv == null) continue;
+
+                foreach (DataGridViewRow row in dgv.Rows)
+                {
+                    if (row.IsNewRow) continue;
+                    if (row.Cells[ObtenerNombreColumnaIdEspecialidad(dgv)].Value?.ToString() == idEspecialidad)
+                        return row;
+                }
+            }
+
+            return null;
         }
 
         private void CargarGrillaObsPre()
@@ -283,10 +413,18 @@ namespace CapaPresentacion
                     System.Globalization.CultureInfo.InvariantCulture, out v)) return;
                 
                 _coefs[mes - 1] = v;
-                dgv.Columns[e.ColumnIndex].HeaderText = v.ToString("0.##", System.Globalization.CultureInfo.CurrentCulture);
 
                 int anio = (int)nudAnio.Value;
                 GuardarCoeficientesActual(anio, _coefs);
+
+                if (EsPrecioPublico())
+                    ActualizarEncabezadosCoeficientes(dgvPrecioPublico, _coefsPublico);
+                else
+                {
+                    ActualizarEncabezadosCoeficientes(dgvPrecios, _coefsPromo);
+                    ActualizarEncabezadosCoeficientes(dgvEmpresas, _coefsPromo);
+                }
+
                 AplicarCalculoCoeficientesSucesivos(mes);
 
                 // Si estamos en la pestaña Promo, actualizar también la grilla de Público automáticamente
@@ -372,7 +510,6 @@ namespace CapaPresentacion
         {
             // ✅ LÓGICA SENIOR: Sincronizamos la grilla de Público usando los valores de la grilla Promo.
             // Esto asegura que tanto el Coeficiente Global como los Precios Forzados se trasladen correctamente.
-            DataGridView dgvPromo = dgvPrecios;
             DataGridView dgvPublico = dgvPrecioPublico;
 
             foreach (DataGridViewRow rowPublico in dgvPublico.Rows)
@@ -383,15 +520,7 @@ namespace CapaPresentacion
                 string idEsp = rowPublico.Cells[ObtenerNombreColumnaIdEspecialidad(dgvPublico)].Value?.ToString();
                 
                 // Buscar la fila correspondiente en la grilla Promo por ID
-                DataGridViewRow rowPromo = null;
-                foreach (DataGridViewRow rP in dgvPromo.Rows)
-                {
-                    if (rP.Cells[ObtenerNombreColumnaIdEspecialidad(dgvPromo)].Value?.ToString() == idEsp)
-                    {
-                        rowPromo = rP;
-                        break;
-                    }
-                }
+                DataGridViewRow rowPromo = BuscarFilaPromoPorId(idEsp);
                 
                 if (rowPromo == null) continue;
 
@@ -489,14 +618,7 @@ namespace CapaPresentacion
                     
                     // Buscar la fila Promo en la otra grilla
                     DataGridViewRow filaPromo = null;
-                    foreach (DataGridViewRow rP in dgvPrecios.Rows)
-                    {
-                        if (rP.Cells[ObtenerNombreColumnaIdEspecialidad(dgvPrecios)].Value?.ToString() == idEsp)
-                        {
-                            filaPromo = rP;
-                            break;
-                        }
-                    }
+                    filaPromo = BuscarFilaPromoPorId(idEsp);
 
                     if (filaPromo != null)
                     {
@@ -636,7 +758,7 @@ namespace CapaPresentacion
 
         private void btnGuardar_Click(object sender, EventArgs e)
         {
-            if (tabControl.SelectedTab == tabPrecioPublico || tabControl.SelectedTab == tabPrecios)
+            if (tabControl.SelectedTab == tabPrecioPublico || tabControl.SelectedTab == tabPrecios || tabControl.SelectedTab == tabEmpresas)
             {
                 GuardarPrecios();
             }
@@ -1104,27 +1226,37 @@ namespace CapaPresentacion
 
         private string ObtenerNombreColumnaIdEspecialidad(DataGridView dgv)
         {
-            return dgv.Columns.Contains("colIdEspecialidad") ? "colIdEspecialidad" : "colPublicoIdEspecialidad";
+            if (dgv.Columns.Contains("colIdEspecialidad")) return "colIdEspecialidad";
+            if (dgv.Columns.Contains("colPublicoIdEspecialidad")) return "colPublicoIdEspecialidad";
+            return "colIdEspecialidad";
         }
 
         private string ObtenerNombreColumnaIPCBase(DataGridView dgv)
         {
-            return dgv.Columns.Contains("colIPCBase") ? "colIPCBase" : "colPublicoIPCBase";
+            if (dgv.Columns.Contains("colIPCBase")) return "colIPCBase";
+            if (dgv.Columns.Contains("colPublicoIPCBase")) return "colPublicoIPCBase";
+            return "colIPCBase";
         }
 
         private string ObtenerNombreColumnaMotivo(DataGridView dgv)
         {
-            return dgv.Columns.Contains("colMotivo") ? "colMotivo" : "colPublicoMotivo";
+            if (dgv.Columns.Contains("colMotivo")) return "colMotivo";
+            if (dgv.Columns.Contains("colPublicoMotivo")) return "colPublicoMotivo";
+            return "colMotivo";
         }
 
         private string ObtenerNombreColumnaTipo(DataGridView dgv)
         {
-            return dgv.Columns.Contains("colTipo") ? "colTipo" : "colPublicoTipo";
+            if (dgv.Columns.Contains("colTipo")) return "colTipo";
+            if (dgv.Columns.Contains("colPublicoTipo")) return "colPublicoTipo";
+            return "colTipo";
         }
 
         private string ObtenerNombreColumnaDescripcion(DataGridView dgv)
         {
-            return dgv.Columns.Contains("colDescripcion") ? "colDescripcion" : "colPublicoDescripcion";
+            if (dgv.Columns.Contains("colDescripcion")) return "colDescripcion";
+            if (dgv.Columns.Contains("colPublicoDescripcion")) return "colPublicoDescripcion";
+            return "colDescripcion";
         }
 
         private void dgvPrecios_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
