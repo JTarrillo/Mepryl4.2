@@ -171,6 +171,7 @@ namespace CapaPresentacion
             this.dgvObsPre = new System.Windows.Forms.DataGridView();
             this.colObsId = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colObsTexto = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colObsAcumula = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.colObsActivo = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.colObsAcciones = new System.Windows.Forms.DataGridViewImageColumn();
             this.pnlSuperior.SuspendLayout();
@@ -1352,6 +1353,7 @@ namespace CapaPresentacion
             this.dgvObsPre.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.colObsId,
             this.colObsTexto,
+            this.colObsAcumula,
             this.colObsActivo,
             this.colObsAcciones});
             this.dgvObsPre.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -1376,6 +1378,12 @@ namespace CapaPresentacion
             this.colObsTexto.FillWeight = 300F;
             this.colObsTexto.HeaderText = "Texto de Observación";
             this.colObsTexto.Name = "colObsTexto";
+            // 
+            // colObsAcumula
+            // 
+            this.colObsAcumula.FillWeight = 70F;
+            this.colObsAcumula.HeaderText = "Acumulacion";
+            this.colObsAcumula.Name = "colObsAcumula";
             // 
             // colObsActivo
             // 
@@ -1520,6 +1528,7 @@ namespace CapaPresentacion
         private System.Windows.Forms.DataGridView dgvObsPre;
         private System.Windows.Forms.DataGridViewTextBoxColumn colObsId;
         private System.Windows.Forms.DataGridViewTextBoxColumn colObsTexto;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn colObsAcumula;
         private System.Windows.Forms.DataGridViewCheckBoxColumn colObsActivo;
         private System.Windows.Forms.DataGridViewImageColumn colObsAcciones;
     }

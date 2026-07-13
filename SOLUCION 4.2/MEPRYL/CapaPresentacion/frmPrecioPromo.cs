@@ -329,7 +329,14 @@ namespace CapaPresentacion
         private bool EsSubtipoEmpresa(string tipo, string descripcion)
         {
             if (string.IsNullOrWhiteSpace(tipo))
-                return false;
+            {
+                string descripcionSinTipo = string.IsNullOrWhiteSpace(descripcion)
+                    ? string.Empty
+                    : descripcion.Trim().ToUpperInvariant();
+
+                return descripcionSinTipo.Contains("PREOCUPACIONAL")
+                    || descripcionSinTipo.Contains("PERIODICO");
+            }
 
             string tipoNormalizado = tipo.Trim().ToUpperInvariant();
             string descripcionNormalizada = string.IsNullOrWhiteSpace(descripcion)
@@ -344,6 +351,9 @@ namespace CapaPresentacion
 
             return tipoNormalizado.Contains("PRE-OCUPACIONAL")
                 || tipoNormalizado.Contains("PREOCUPACIONAL")
+                || tipoNormalizado.Contains("PERIODICO")
+                || descripcionNormalizada.Contains("PERIODICO")
+                || descripcionNormalizada.Contains("PREOCUPACIONAL")
                 || tipoNormalizado.Contains("EGRESO");
         }
 
@@ -372,13 +382,13 @@ namespace CapaPresentacion
             try
             {
                 dgvObsPre.Rows.Clear();
-                DataTable dt = SQLConnector.obtenerTablaSegunConsultaString("SELECT id, texto, activo FROM ObservacionPredefinida ORDER BY texto");
-                
+                DataTable dt = SQLConnector.obtenerTablaSegunConsultaString("SELECT id, texto, ISNULL(AcumulaPrecioAuto, 0) AS AcumulaPrecioAuto, activo FROM ObservacionPredefinida ORDER BY texto");
+
                 Image imgEliminar = IconChar.TrashAlt.ToBitmap(Color.IndianRed, 16);
 
                 foreach (DataRow dr in dt.Rows)
                 {
-                    dgvObsPre.Rows.Add(dr["id"], dr["texto"], dr["activo"], imgEliminar);
+                    dgvObsPre.Rows.Add(dr["id"], dr["texto"], Convert.ToBoolean(dr["AcumulaPrecioAuto"]), dr["activo"], imgEliminar);
                 }
                 lblTotal.Text = $"Observaciones: {dt.Rows.Count}";
             }
@@ -876,18 +886,20 @@ namespace CapaPresentacion
 
                     string id = row.Cells["colObsId"].Value?.ToString();
                     string texto = row.Cells["colObsTexto"].Value?.ToString()?.Replace("'", "''") ?? "";
+                    bool acumulaVal = row.Cells["colObsAcumula"].Value != null && Convert.ToBoolean(row.Cells["colObsAcumula"].Value);
                     bool activoVal = row.Cells["colObsActivo"].Value != null && Convert.ToBoolean(row.Cells["colObsActivo"].Value);
+                    string acumula = acumulaVal ? "1" : "0";
                     string activo = activoVal ? "1" : "0";
 
                     if (string.IsNullOrWhiteSpace(texto)) continue;
 
                     if (string.IsNullOrEmpty(id))
                     {
-                        sb.AppendLine($"INSERT INTO ObservacionPredefinida (texto, activo) VALUES ('{texto}', {activo});");
+                        sb.AppendLine($"INSERT INTO ObservacionPredefinida (texto, AcumulaPrecioAuto, activo) VALUES ('{texto}', {acumula}, {activo});");
                     }
                     else
                     {
-                        sb.AppendLine($"UPDATE ObservacionPredefinida SET texto = '{texto}', activo = {activo} WHERE id = {id};");
+                        sb.AppendLine($"UPDATE ObservacionPredefinida SET texto = '{texto}', AcumulaPrecioAuto = {acumula}, activo = {activo} WHERE id = {id};");
                     }
                 }
 

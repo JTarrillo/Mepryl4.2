@@ -45,6 +45,20 @@ namespace CapaPresentacion
         private ComboBox cboObsPredefinidasLab;
         private System.Windows.Forms.Label lblHoy;
 
+        private sealed class ObservacionPredefinidaItem
+        {
+            public string Texto { get; set; }
+            public string Valor { get; set; }
+            public bool AcumulaPrecioAuto { get; set; }
+            public bool EsPrecioAuto { get; set; }
+            public bool EsNinguno { get; set; }
+
+            public override string ToString()
+            {
+                return Texto;
+            }
+        }
+
         public frmTurnos()
         {
             InitializeComponent();
@@ -3441,20 +3455,26 @@ namespace CapaPresentacion
         {
             try
             {
-                DataTable dt = SQLConnector.obtenerTablaSegunConsultaString("SELECT texto FROM ObservacionPredefinida WHERE activo = 1 ORDER BY texto");
+                DataTable dt = SQLConnector.obtenerTablaSegunConsultaString("SELECT texto, ISNULL(AcumulaPrecioAuto, 0) AS AcumulaPrecioAuto FROM ObservacionPredefinida WHERE activo = 1 ORDER BY texto");
 
-                // Preparar items con iconos (UX AI)
-                var items = new List<string>();
-                items.Add("--- Seleccionar Observación ---");
-                items.Add("✨ PRECIO AUTO (Generar)");
-                items.Add("🗑️ NINGUNO (Vaciar)");
+                var items = new List<ObservacionPredefinidaItem>();
+                items.Add(new ObservacionPredefinidaItem { Texto = "--- Seleccionar Observación ---" });
+                items.Add(new ObservacionPredefinidaItem { Texto = "✨ PRECIO AUTO (Generar)", EsPrecioAuto = true });
+                items.Add(new ObservacionPredefinidaItem { Texto = "🗑️ NINGUNO (Vaciar)", EsNinguno = true });
                 foreach (DataRow row in dt.Rows)
                 {
-                    items.Add("📝 " + row["texto"].ToString());
+                    bool acumula = Convert.ToBoolean(row["AcumulaPrecioAuto"]);
+                    string texto = row["texto"].ToString();
+                    items.Add(new ObservacionPredefinidaItem
+                    {
+                        Texto = acumula ? "📝 " + texto + " + AUTO" : "📝 " + texto,
+                        Valor = texto,
+                        AcumulaPrecioAuto = acumula
+                    });
                 }
 
-                cboObsPredefinidasPrev.DataSource = new List<string>(items);
-                cboObsPredefinidasLab.DataSource = new List<string>(items);
+                cboObsPredefinidasPrev.DataSource = new List<ObservacionPredefinidaItem>(items);
+                cboObsPredefinidasLab.DataSource = new List<ObservacionPredefinidaItem>(items);
             }
             catch (Exception ex)
             {
@@ -3467,25 +3487,27 @@ namespace CapaPresentacion
             ComboBox cbo = (ComboBox)sender;
             if (cbo.SelectedIndex <= 0) return;
 
-            string seleccion = cbo.SelectedItem.ToString();
+            ObservacionPredefinidaItem item = cbo.SelectedItem as ObservacionPredefinidaItem;
+            if (item == null) return;
+
             TextBox target = (cbo.Name == "cboObsPredefinidasPrev") ? tbObservPreventiva : tbObservacionesLaboral;
 
-            if (seleccion.Contains("PRECIO AUTO"))
+            if (item.EsPrecioAuto)
             {
-                if (tipoExamenActual != null)
-                {
-                    target.Text = generarObservaciones(tipoExamenActual);
-                }
+                target.Text = tipoExamenActual != null ? generarObservaciones(tipoExamenActual) : "";
             }
-            else if (seleccion.Contains("NINGUNO"))
+            else if (item.EsNinguno)
             {
                 target.Text = "";
             }
+            else if (item.AcumulaPrecioAuto)
+            {
+                string autoGenerado = tipoExamenActual != null ? generarObservaciones(tipoExamenActual) : "";
+                target.Text = string.IsNullOrWhiteSpace(autoGenerado) ? (item.Valor ?? "") : item.Valor + " | " + autoGenerado;
+            }
             else
             {
-                // Quitar el icono 📝 (primeros 2 caracteres: emoji + espacio)
-                string limpio = seleccion.Length > 3 ? seleccion.Substring(3) : seleccion;
-                target.Text = limpio;
+                target.Text = item.Valor ?? "";
             }
         }
 
