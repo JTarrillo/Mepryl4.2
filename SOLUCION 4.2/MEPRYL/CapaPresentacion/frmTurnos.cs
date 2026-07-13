@@ -1453,17 +1453,23 @@ namespace CapaPresentacion
             if (te == null)
                 return observacionActual ?? string.Empty;
 
-            if (EsObservacionAutomatica(observacionActual))
-                return generarObservaciones(te);
+            // PRIORIDAD: Siempre preservar la observación manual del turno
+            if (!string.IsNullOrWhiteSpace(observacionActual))
+            {
+                // Si es observación automática, regenerarla con datos actualizados
+                if (EsObservacionAutomatica(observacionActual))
+                    return generarObservaciones(te);
+                
+                // Si es observación manual, devolverla tal cual (prioridad absoluta)
+                return observacionActual;
+            }
 
+            // Si está vacía, generar observación automática si se requiere
             bool requiereObservacionAutomatica = te.LlevaPlanilla || te.Seña > 0 || !string.IsNullOrWhiteSpace(te.ObservacionesExtra);
-            if (!requiereObservacionAutomatica)
-                return observacionActual ?? string.Empty;
-
-            if (string.IsNullOrWhiteSpace(observacionActual))
+            if (requiereObservacionAutomatica)
                 return generarObservaciones(te);
 
-            return observacionActual;
+            return string.Empty;
         }
 
         private bool EsObservacionAutomatica(string texto)

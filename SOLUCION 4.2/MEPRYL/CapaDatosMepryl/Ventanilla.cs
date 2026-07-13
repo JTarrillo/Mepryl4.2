@@ -98,17 +98,23 @@ namespace CapaDatosMepryl
 
         private string ObtenerObservacionVigente(string observacionActual, decimal promo, decimal lista, decimal sena, bool llevaPlanilla, string observacionesExtra)
         {
-            if (EsObservacionAutomatica(observacionActual))
-                return GenerarObservaciones(promo, lista, sena, llevaPlanilla, observacionesExtra);
+            // PRIORIDAD: Siempre preservar la observación manual del turno
+            if (!string.IsNullOrWhiteSpace(observacionActual))
+            {
+                // Si es observación automática, regenerarla con datos actualizados
+                if (EsObservacionAutomatica(observacionActual))
+                    return GenerarObservaciones(promo, lista, sena, llevaPlanilla, observacionesExtra);
+                
+                // Si es observación manual, devolverla tal cual (prioridad absoluta)
+                return observacionActual;
+            }
 
+            // Si está vacía, generar observación automática si se requiere
             bool requiereObservacionAutomatica = llevaPlanilla || sena > 0 || !string.IsNullOrWhiteSpace(observacionesExtra);
-            if (!requiereObservacionAutomatica)
-                return observacionActual ?? string.Empty;
-
-            if (string.IsNullOrWhiteSpace(observacionActual))
+            if (requiereObservacionAutomatica)
                 return GenerarObservaciones(promo, lista, sena, llevaPlanilla, observacionesExtra);
 
-            return observacionActual ?? string.Empty;
+            return string.Empty;
         }
 
         private bool EsObservacionAutomatica(string texto)
@@ -272,12 +278,16 @@ namespace CapaDatosMepryl
 
                 if (tieneTipoExamenPaciente)
                 {
-                    decimal promoObservacion = teData.precioPromoVigente > 0 ? teData.precioPromoVigente : importeBruto;
+                    // PRIORIDAD: Usar precios del TipoExamenDePaciente si existen, sino usar precios vigentes
+                    decimal promoObservacion = teData.precio > 0 ? teData.precio : (teData.precioPromoVigente > 0 ? teData.precioPromoVigente : importeBruto);
+                    decimal listaObservacion = teData.precio > 0 ? (teData.precioListaVigente > 0 ? teData.precioListaVigente : 0) : teData.precioListaVigente;
+                    decimal senaObservacion = teData.precio > 0 ? teData.sena : teData.senaVigente;
+                    
                     observaciones = ObtenerObservacionVigente(
                         observaciones,
                         promoObservacion,
-                        teData.precioListaVigente,
-                        teData.senaVigente,
+                        listaObservacion,
+                        senaObservacion,
                         teData.llevaPlanilla,
                         teData.observacionesExtra);
                 }
