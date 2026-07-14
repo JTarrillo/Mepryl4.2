@@ -1,10 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using System.Globalization;
 using Comunes;
 
 namespace CapaPresentacion
@@ -45,7 +46,13 @@ namespace CapaPresentacion
         {
             lblNombre.Text = entidad.Descripcion;
             if (entidad.Modificado) { lblNombre.Text = lblNombre.Text + " MODIFICADO"; }
-            tbImporte.Text = entidad.PrecioBase.ToString();
+            double importeNeto = entidad.PrecioBase - entidad.Seña;
+            if (importeNeto < 0)
+            {
+                importeNeto = 0;
+            }
+
+            tbImporte.Text = importeNeto.ToString("N0", CultureInfo.CurrentCulture);
             cargarTextBoxs(entidad);
         }
 

@@ -59,6 +59,8 @@ namespace CapaPresentacion
             this.tabControl.SelectedIndexChanged += new System.EventHandler(this.tabControl_SelectedIndexChanged);
             this.cboMesVariacion.SelectedIndexChanged += new System.EventHandler(this.cboMesVariacion_SelectedIndexChanged);
             this.dgvObsPre.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvObsPre_CellContentClick);
+            ConfigurarFocoGrilla(dgvPrecios);
+            ConfigurarFocoGrilla(dgvPrecioPublico);
         }
 
         private void frmPrecioPromo_Load(object sender, EventArgs e)
@@ -231,6 +233,7 @@ namespace CapaPresentacion
             dgvEmpresas.CellPainting += new DataGridViewCellPaintingEventHandler(this.dgvPrecios_CellPainting);
             dgvEmpresas.ColumnHeaderMouseDoubleClick += new DataGridViewCellMouseEventHandler(this.dgvPrecios_ColumnHeaderMouseDoubleClick);
             dgvEmpresas.EditingControlShowing += new DataGridViewEditingControlShowingEventHandler(this.dgvPrecios_EditingControlShowing);
+            ConfigurarFocoGrilla(dgvEmpresas);
 
             tabEmpresas.Controls.Add(dgvEmpresas);
             dgvEmpresas.BringToFront();
@@ -1135,29 +1138,68 @@ namespace CapaPresentacion
             }
         }
 
+        private void ConfigurarFocoGrilla(DataGridView dgv)
+        {
+            if (dgv == null) return;
+
+            dgv.MultiSelect = false;
+            dgv.CurrentCellChanged += dgvPrecios_CurrentCellChanged;
+            dgv.CellClick += dgvPrecios_CellClick;
+        }
+
+        private void dgvPrecios_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0)
+                ((DataGridView)sender).Invalidate();
+        }
+
+        private void dgvPrecios_CurrentCellChanged(object sender, EventArgs e)
+        {
+            ((DataGridView)sender).Invalidate();
+        }
+
         private void dgvPrecios_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
         {
-            if (e.RowIndex != -1 || e.ColumnIndex < 0) return;
-
             DataGridView dgv = (DataGridView)sender;
-            string colName = dgv.Columns[e.ColumnIndex].Name;
-            Color backColor = (colName.Contains("Coef") || colName.Contains("IPCBase")) ? Color.FromArgb(180, 0, 0) : Color.SeaGreen;
 
-            using (var brush = new System.Drawing.SolidBrush(backColor))
-                e.Graphics.FillRectangle(brush, e.CellBounds);
-
-            string text = dgv.Columns[e.ColumnIndex].HeaderText;
-            var font = e.CellStyle.Font ?? dgv.ColumnHeadersDefaultCellStyle.Font;
-            TextRenderer.DrawText(e.Graphics, text, font, e.CellBounds, Color.White,
-                TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.WordEllipsis);
-
-            using (var pen = new System.Drawing.Pen(Color.FromArgb(100, 100, 100)))
+            if (e.RowIndex == -1 && e.ColumnIndex >= 0)
             {
-                e.Graphics.DrawLine(pen, e.CellBounds.Right - 1, e.CellBounds.Top, e.CellBounds.Right - 1, e.CellBounds.Bottom - 1);
-                e.Graphics.DrawLine(pen, e.CellBounds.Left, e.CellBounds.Bottom - 1, e.CellBounds.Right, e.CellBounds.Bottom - 1);
+                string colName = dgv.Columns[e.ColumnIndex].Name;
+                Color backColor = (colName.Contains("Coef") || colName.Contains("IPCBase")) ? Color.FromArgb(180, 0, 0) : Color.SeaGreen;
+
+                using (var brush = new SolidBrush(backColor))
+                    e.Graphics.FillRectangle(brush, e.CellBounds);
+
+                string text = dgv.Columns[e.ColumnIndex].HeaderText;
+                var font = e.CellStyle.Font ?? dgv.ColumnHeadersDefaultCellStyle.Font;
+                TextRenderer.DrawText(e.Graphics, text, font, e.CellBounds, Color.White,
+                    TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.WordEllipsis);
+
+                using (var pen = new Pen(Color.FromArgb(100, 100, 100)))
+                {
+                    e.Graphics.DrawLine(pen, e.CellBounds.Right - 1, e.CellBounds.Top, e.CellBounds.Right - 1, e.CellBounds.Bottom - 1);
+                    e.Graphics.DrawLine(pen, e.CellBounds.Left, e.CellBounds.Bottom - 1, e.CellBounds.Right, e.CellBounds.Bottom - 1);
+                }
+
+                e.Handled = true;
+                return;
             }
 
-            e.Handled = true;
+            if (e.RowIndex >= 0
+                && e.ColumnIndex >= 0
+                && dgv.CurrentCell != null
+                && dgv.CurrentCell.RowIndex == e.RowIndex
+                && dgv.CurrentCell.ColumnIndex == e.ColumnIndex)
+            {
+                e.Paint(e.CellBounds, DataGridViewPaintParts.All & ~DataGridViewPaintParts.Border);
+
+                using (var pen = new Pen(Color.FromArgb(0, 120, 215), 2))
+                {
+                    e.Graphics.DrawRectangle(pen, e.CellBounds.X + 1, e.CellBounds.Y + 1, e.CellBounds.Width - 3, e.CellBounds.Height - 3);
+                }
+
+                e.Handled = true;
+            }
         }
 
         private void dgvPrecios_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
@@ -1165,49 +1207,41 @@ namespace CapaPresentacion
             if (e.RowIndex < 0) return;
             DataGridView dgv = (DataGridView)sender;
             string col = dgv.Columns[e.ColumnIndex].Name;
+            bool filaActiva = dgv.CurrentCell != null && dgv.CurrentCell.RowIndex == e.RowIndex;
 
             if (col.Contains("Motivo") || (col.StartsWith("col") && col.Contains("Motivo")))
             {
-                e.CellStyle.BackColor = Color.FromArgb(230, 245, 235);
+                e.CellStyle.BackColor = filaActiva ? Color.FromArgb(221, 235, 247) : Color.FromArgb(230, 245, 235);
                 e.CellStyle.ForeColor = Color.FromArgb(20, 70, 40);
-                e.CellStyle.SelectionBackColor = Color.FromArgb(230, 245, 235);
-                e.CellStyle.SelectionForeColor = Color.Black;
             }
             else if (col.Contains("Tipo") || (col.StartsWith("col") && col.Contains("Tipo")))
             {
-                e.CellStyle.BackColor = Color.White;
+                e.CellStyle.BackColor = filaActiva ? Color.FromArgb(221, 235, 247) : Color.White;
                 e.CellStyle.ForeColor = Color.FromArgb(30, 30, 90);
-                e.CellStyle.SelectionBackColor = Color.White;
-                e.CellStyle.SelectionForeColor = Color.FromArgb(30, 30, 90);
             }
             else if (col.Contains("Descripcion") || (col.StartsWith("col") && col.Contains("Descripcion")))
             {
-                e.CellStyle.BackColor = Color.White;
+                e.CellStyle.BackColor = filaActiva ? Color.FromArgb(221, 235, 247) : Color.White;
                 e.CellStyle.ForeColor = Color.FromArgb(20, 20, 20);
-                e.CellStyle.SelectionBackColor = Color.White;
-                e.CellStyle.SelectionForeColor = Color.FromArgb(20, 20, 20);
             }
             else if (col.Contains("Promo") || (col.StartsWith("col") && col.Contains("Promo")))
             {
-                e.CellStyle.BackColor = Color.White;
+                e.CellStyle.BackColor = filaActiva ? Color.FromArgb(221, 235, 247) : Color.White;
                 e.CellStyle.ForeColor = Color.FromArgb(20, 20, 20);
-                e.CellStyle.SelectionBackColor = Color.White;
-                e.CellStyle.SelectionForeColor = Color.FromArgb(20, 20, 20);
             }
             else if (col == "colIPCBase" || col == "colPublicoIPCBase")
             {
-                e.CellStyle.BackColor = Color.FromArgb(240, 240, 240);
+                e.CellStyle.BackColor = filaActiva ? Color.FromArgb(210, 228, 244) : Color.FromArgb(240, 240, 240);
                 e.CellStyle.ForeColor = Color.FromArgb(0, 100, 200);
-                e.CellStyle.SelectionBackColor = Color.FromArgb(220, 230, 240);
-                e.CellStyle.SelectionForeColor = Color.FromArgb(0, 100, 200);
             }
             else if (col.Contains("Coef"))
             {
-                e.CellStyle.BackColor = Color.FromArgb(255, 210, 210);
+                e.CellStyle.BackColor = filaActiva ? Color.FromArgb(255, 225, 225) : Color.FromArgb(255, 210, 210);
                 e.CellStyle.ForeColor = Color.FromArgb(140, 0, 0);
-                e.CellStyle.SelectionBackColor = Color.FromArgb(255, 210, 210);
-                e.CellStyle.SelectionForeColor = Color.FromArgb(140, 0, 0);
             }
+
+            e.CellStyle.SelectionBackColor = e.CellStyle.BackColor;
+            e.CellStyle.SelectionForeColor = e.CellStyle.ForeColor;
         }
 
         private void ConfigurarOrdenColumnas(DataGridView dgv)
