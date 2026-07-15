@@ -272,8 +272,8 @@ namespace CapaDatosMepryl
 
             var sbIns = new StringBuilder();
             sbIns.Append("INSERT INTO dbo.PrecioPromo(idEspecialidad,Descripcion,Mes,Anio,PrecioPromo," +
-                         "Se\u00f1a,LlevaPlanilla,ObservacionesExtra,CoeficienteIndividual) " +
-                         "SELECT v.idEsp,v.Dsc,v.Mes," + anio + ",v.Promo,0,0,'',v.Coef FROM (VALUES ");
+                         "Se\u00f1a,LlevaPlanilla,ObservacionesExtra,CoeficienteIndividual,Eliminado) " +
+                         "SELECT v.idEsp,v.Dsc,v.Mes," + anio + ",v.Promo,0,0,'',v.Coef,0 FROM (VALUES ");
 
             bool first = true;
             for (int mes = 1; mes <= 12; mes++)

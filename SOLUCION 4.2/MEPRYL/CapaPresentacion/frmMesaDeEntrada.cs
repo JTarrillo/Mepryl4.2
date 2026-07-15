@@ -1,4 +1,4 @@
-﻿﻿﻿using System;
+﻿﻿﻿﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -554,6 +554,56 @@ namespace CapaPresentacion
 
         }
 
+        private void vincularTipoExamenDelTurnoAConsulta(string idTurno, string idConsulta)
+        {
+            if (string.IsNullOrEmpty(idTurno) || string.IsNullOrEmpty(idConsulta))
+                return;
+
+            SQLConnector.obtenerTablaSegunConsultaString(
+                "UPDATE dbo.TipoExamenDePaciente SET idConsulta = '" + idConsulta + "' " +
+                "WHERE idTurno = '" + idTurno + "' AND (idConsulta IS NULL OR idConsulta = '00000000-0000-0000-0000-000000000000')");
+        }
+
+        private void revertirIngresoFallido(string idTurno, string idConsulta)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(idTurno))
+                {
+                    SQLConnector.obtenerTablaSegunConsultaString(
+                        "UPDATE dbo.Turno SET mesaDeEntrada = '0' WHERE id = '" + idTurno + "'");
+                }
+            }
+            catch
+            {
+            }
+
+            try
+            {
+                if (!string.IsNullOrEmpty(idTurno) && !string.IsNullOrEmpty(idConsulta))
+                {
+                    SQLConnector.obtenerTablaSegunConsultaString(
+                        "UPDATE dbo.TipoExamenDePaciente SET idConsulta = '00000000-0000-0000-0000-000000000000' " +
+                        "WHERE idTurno = '" + idTurno + "' AND idConsulta = '" + idConsulta + "'");
+                }
+            }
+            catch
+            {
+            }
+
+            try
+            {
+                if (!string.IsNullOrEmpty(idConsulta))
+                {
+                    List<string> listaConsulta = SQLConnector.generarListaParaProcedure("@id");
+                    SQLConnector.executeProcedure("sp_Consulta_Delete", listaConsulta, new Guid(idConsulta));
+                }
+            }
+            catch
+            {
+            }
+        }
+
         private void limpiarLabels()
         {
             tbDni.Clear();
@@ -915,6 +965,7 @@ namespace CapaPresentacion
                 if (true)
                 {
                     string idPacienteTurno = dgvTurno.SelectedRows[0].Cells[10].Value.ToString();
+                    string idTurnoSeleccionado = dgvTurno.SelectedRows[0].Cells[0].Value.ToString();
                     System.Diagnostics.Debug.WriteLine($"[ingresarPaciente] idPacienteTurno: {idPacienteTurno}");
                     bool habilitado = estaHabilitado(idPacienteTurno);
                     System.Diagnostics.Debug.WriteLine($"[ingresarPaciente] estaHabilitado: {habilitado}");
@@ -937,11 +988,13 @@ namespace CapaPresentacion
                             idConsulta = insertarEnBaseDeDatosOtros("EC", 0, "");
                         System.Diagnostics.Debug.WriteLine($"[ingresarPaciente] idConsulta generado: {idConsulta}");
 
+                        vincularTipoExamenDelTurnoAConsulta(idTurnoSeleccionado, idConsulta);
+
                         List<string> lista = SQLConnector.generarListaParaProcedure("@id", "@valor");
-                        SQLConnector.executeProcedure("sp_Turno_UpdateMesaDeEntrada", lista, dgvTurno.SelectedRows[0].Cells[0].Value.ToString(), "1");
+                        SQLConnector.executeProcedure("sp_Turno_UpdateMesaDeEntrada", lista, idTurnoSeleccionado, "1");
 
                         List<string> list = SQLConnector.generarListaParaProcedure("@idTurno", "@idConsulta");
-                        SQLConnector.executeProcedure("sp_Items_UpdateItemsPorPaciente", list, dgvTurno.SelectedRows[0].Cells[0].Value.ToString(), idConsulta);
+                        SQLConnector.executeProcedure("sp_Items_UpdateItemsPorPaciente", list, idTurnoSeleccionado, idConsulta);
 
                         char tipoPaciente = mesaEntrada.verificarTipoPaciente(new Guid(idPacienteTurno));
                         System.Diagnostics.Debug.WriteLine($"[ingresarPaciente] tipoPaciente: {tipoPaciente}");
@@ -1006,8 +1059,8 @@ namespace CapaPresentacion
                             System.Diagnostics.Debug.WriteLine($"[ingresarPaciente] ERROR: {ex.Message}");
                             if (!string.IsNullOrEmpty(idConsulta))
                             {
-                                try { SQLConnector.obtenerTablaSegunConsultaString("UPDATE dbo.Consulta SET nroOrden = -1 WHERE id = '" + idConsulta + "'"); } catch { }
-                                System.Diagnostics.Debug.WriteLine($"[ingresarPaciente] nroOrden liberado, idConsulta={idConsulta}");
+                                revertirIngresoFallido(idTurnoSeleccionado, idConsulta);
+                                System.Diagnostics.Debug.WriteLine($"[ingresarPaciente] ingreso revertido, idConsulta={idConsulta}");
                             }
                             MessageBox.Show("Error al ingresar paciente. Por favor intente nuevamente.\n\nDetalle: " + ex.Message,
                                 "Error de ingreso", MessageBoxButtons.OK, MessageBoxIcon.Error);

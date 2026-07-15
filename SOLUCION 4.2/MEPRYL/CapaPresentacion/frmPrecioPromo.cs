@@ -478,7 +478,8 @@ namespace CapaPresentacion
 
                         for (int mes = mesInicio; mes <= 12; mes++)
                     {
-                        if (mes > mesInicio && originalValues[mes - 1] == 0m) continue;
+                        // AQUI ESTABA EL PROBLEMA: Si originalValues[mes - 1] == 0, se cortaba la cascada
+                        // if (mes > mesInicio && originalValues[mes - 1] == 0m) continue;
 
                         decimal valorMesAnterior = ParseDecimal(row.Cells[5 + (mes - 2) * 2].Value);
                         decimal aumentoFijoFila = ParseDecimal(row.Cells[6 + (mes - 2) * 2].Value); // El valor "del medio" en pesos
@@ -712,7 +713,10 @@ namespace CapaPresentacion
                         }
                         else
                         {
-                            if (mes > mesInicio && originalValues[mes - 1] == 0m) continue;
+                            // AQUI ESTABA EL PROBLEMA: Si originalValues[mes - 1] == 0, se cortaba la cascada,
+                            // por lo que si ponías un valor nuevo en un mes y el siguiente estaba en 0, no se copiaba.
+                            // Eliminamos esta restricción para que los valores se propaguen hacia adelante.
+                            // if (mes > mesInicio && originalValues[mes - 1] == 0m) continue;
                         }
 
                         decimal valorBase = ParseDecimal(filaActual.Cells[5 + (mes - 2) * 2].Value);

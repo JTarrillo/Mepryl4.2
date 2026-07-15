@@ -94,8 +94,12 @@ namespace CapaPresentacion
 
         private void cargarDatos()
         {
+            System.Diagnostics.Debug.WriteLine("=== INICIO CARGAR DATOS ===");
+            System.Diagnostics.Debug.WriteLine("examen.Cells[0].Value: [" + examen.Cells[0].Value + "]");
+            System.Diagnostics.Debug.WriteLine("examen.Cells[0].Value.ToString(): [" + examen.Cells[0].Value.ToString() + "]");
             //Entidades.ExamenPreventiva entidad = new Entidades.ExamenPreventiva();
             Entidades.ExamenPreventiva entidad = preventiva.cargarExamen(examen.Cells[0].Value.ToString());
+            System.Diagnostics.Debug.WriteLine("entidad.IdTipoExamen despues de cargar: " + entidad.IdTipoExamen);
             //entidad = preventiva.cargarExamen(examen.Cells[0].Value.ToString());
             tbId.Text = entidad.IdTipoExamen.ToString();
             antCli.Text = "NO REFIERE";
@@ -487,14 +491,19 @@ namespace CapaPresentacion
 
         private void guardarExamen()
         {
-            if (validarIngreso())
+            System.Diagnostics.Debug.WriteLine("=== INICIO VALIDAR INGRESO ===");
+            bool validacion = validarIngreso();
+            System.Diagnostics.Debug.WriteLine("Validacion resultado: " + validacion);
+
+            if (validacion)
             {
+                System.Diagnostics.Debug.WriteLine("Validacion OK, procediendo a guardar");
                 guardar();
                 this.Close();
                 if (frmExamen != null)
                 {
                     ActualizaEstadoReportes();
-                    frmExamen.actualizarExamenes(); 
+                    frmExamen.actualizarExamenes();
                 }
                 else if (frmPac != null)
                 {
@@ -503,8 +512,10 @@ namespace CapaPresentacion
             }
             else
             {
+                System.Diagnostics.Debug.WriteLine("Validacion FALLIDA");
                 MessageBox.Show("¡Faltan ingresar campos!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+            System.Diagnostics.Debug.WriteLine("=== FIN VALIDAR INGRESO ===");
         }
 
         private void ActualizaEstadoReportes()
@@ -640,12 +651,49 @@ namespace CapaPresentacion
 
         private void guardar()
         {
-            Entidades.Resultado result = preventiva.guardarExClinico(cargarEntidad());
+            System.Diagnostics.Debug.WriteLine("=== INICIO GUARDAR EXAMEN ===");
+            Entidades.ExamenPreventiva entidad = cargarEntidad();
+            System.Diagnostics.Debug.WriteLine("IdTipoExamen: " + entidad.IdTipoExamen);
+            System.Diagnostics.Debug.WriteLine("AntCli: " + entidad.AntCli);
+            System.Diagnostics.Debug.WriteLine("AntQui: " + entidad.AntQui);
+            System.Diagnostics.Debug.WriteLine("AntTrau: " + entidad.AntTrau);
+            System.Diagnostics.Debug.WriteLine("Talla: " + entidad.Talla);
+            System.Diagnostics.Debug.WriteLine("Peso: " + entidad.Peso);
+            System.Diagnostics.Debug.WriteLine("Biotipo: " + entidad.Biotipo);
+            System.Diagnostics.Debug.WriteLine("EntAire: " + entidad.EntAire);
+            System.Diagnostics.Debug.WriteLine("RuiAgre: " + entidad.RuiAgre);
+            System.Diagnostics.Debug.WriteLine("RuiCard: " + entidad.RuiCard);
+            System.Diagnostics.Debug.WriteLine("Silencios: " + entidad.Silencios);
+            System.Diagnostics.Debug.WriteLine("TaMax: " + entidad.TaMax);
+            System.Diagnostics.Debug.WriteLine("TaMin: " + entidad.TaMin);
+            System.Diagnostics.Debug.WriteLine("Pulso: " + entidad.Pulso);
+            System.Diagnostics.Debug.WriteLine("Abdomen: " + entidad.Abdomen);
+            System.Diagnostics.Debug.WriteLine("Hernias: " + entidad.Hernias);
+            System.Diagnostics.Debug.WriteLine("Varices: " + entidad.Varices);
+            System.Diagnostics.Debug.WriteLine("ApGenitour: " + entidad.ApGenitour);
+            System.Diagnostics.Debug.WriteLine("PielYFaneras: " + entidad.PielYFaneras);
+            System.Diagnostics.Debug.WriteLine("ApLocomotor: " + entidad.ApLocomotor);
+            System.Diagnostics.Debug.WriteLine("Snc: " + entidad.Snc);
+            System.Diagnostics.Debug.WriteLine("OjoDer: " + entidad.OjoDer);
+            System.Diagnostics.Debug.WriteLine("OjoDerLent: " + entidad.OjoDerLent);
+            System.Diagnostics.Debug.WriteLine("OjoIzq: " + entidad.OjoIzq);
+            System.Diagnostics.Debug.WriteLine("OjoIzqLent: " + entidad.OjoIzqLent);
+            System.Diagnostics.Debug.WriteLine("VisionCromatica: " + entidad.VisionCromatica);
+            System.Diagnostics.Debug.WriteLine("Odonto: " + entidad.Odonto);
+            System.Diagnostics.Debug.WriteLine("ObsFisico: " + entidad.ObsFisico);
+            System.Diagnostics.Debug.WriteLine("DictFisico: " + entidad.DictFisico);
+            System.Diagnostics.Debug.WriteLine("Medico: " + entidad.Medico);
+
+            Entidades.Resultado result = preventiva.guardarExClinico(entidad);
+            System.Diagnostics.Debug.WriteLine("Resultado.Modo: " + result.Modo);
+            System.Diagnostics.Debug.WriteLine("Resultado.Mensaje: " + result.Mensaje);
+
             if (result.Modo == -1)
             {
                 MessageBox.Show("No se puede guardar el exámen clinico.\nError: " + result.Mensaje, "Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+            System.Diagnostics.Debug.WriteLine("=== FIN GUARDAR EXAMEN ===");
         }
 
         private void frmExamenFisico_KeyDown(object sender, KeyEventArgs e)
@@ -668,8 +716,11 @@ namespace CapaPresentacion
 
         private Entidades.ExamenPreventiva cargarEntidad()
         {
+            System.Diagnostics.Debug.WriteLine("=== INICIO CARGAR ENTIDAD ===");
+            System.Diagnostics.Debug.WriteLine("tbId.Text: [" + tbId.Text + "]");
             Entidades.ExamenPreventiva examen = new Entidades.ExamenPreventiva();
             examen.IdTipoExamen = new Guid(tbId.Text);
+            System.Diagnostics.Debug.WriteLine("Guid parseado: " + examen.IdTipoExamen);
             examen.AntCli = antCli.Text;
             examen.AntQui = antQui.Text;
             examen.AntTrau = antTrau.Text;

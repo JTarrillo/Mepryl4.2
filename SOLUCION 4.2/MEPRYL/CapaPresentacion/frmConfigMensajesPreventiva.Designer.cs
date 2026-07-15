@@ -171,8 +171,8 @@
             // dgvCorreos
             // 
             this.dgvCorreos.AllowUserToAddRows = false;
-            this.dgvCorreos.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+            this.dgvCorreos.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvCorreos.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.dgvCorreos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
@@ -196,7 +196,7 @@
             // 
             // txtNombreCorreo
             // 
-            this.txtNombreCorreo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.txtNombreCorreo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtNombreCorreo.Location = new System.Drawing.Point(3, 31);
             this.txtNombreCorreo.Name = "txtNombreCorreo";
@@ -215,7 +215,7 @@
             // 
             // groupBox1
             // 
-            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.Controls.Add(this.label14);
             this.groupBox1.Controls.Add(this.label13);
@@ -368,8 +368,8 @@
             // 
             // groupBox2
             // 
-            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox2.Controls.Add(this.tableLayoutPanel4);
             this.groupBox2.Location = new System.Drawing.Point(4, 136);
@@ -383,8 +383,8 @@
             // 
             // tableLayoutPanel4
             // 
-            this.tableLayoutPanel4.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+            this.tableLayoutPanel4.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel4.ColumnCount = 2;
             this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 138F));
@@ -478,7 +478,7 @@
             // 
             // txtAsunto
             // 
-            this.txtAsunto.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.txtAsunto.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtAsunto.Location = new System.Drawing.Point(142, 32);
             this.txtAsunto.Margin = new System.Windows.Forms.Padding(4);
@@ -656,8 +656,8 @@
             // 
             // tbcCorreoE
             // 
-            this.tbcCorreoE.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+            this.tbcCorreoE.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tbcCorreoE.Controls.Add(this.tpgMensajeTurno);
             this.tbcCorreoE.Controls.Add(this.tpgWhatsApp);
@@ -712,7 +712,7 @@
             // 
             // tableLayoutPanel6
             // 
-            this.tableLayoutPanel6.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.tableLayoutPanel6.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel6.ColumnCount = 3;
             this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 22F));
@@ -734,10 +734,10 @@
             // 
             // lblMotivoConsulta
             // 
-            this.lblMotivoConsulta.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            this.lblMotivoConsulta.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblMotivoConsulta.AutoSize = true;
             this.lblMotivoConsulta.ForeColor = System.Drawing.Color.Black;
-            this.lblMotivoConsulta.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+            this.lblMotivoConsulta.Location = new System.Drawing.Point(3, 4);
             this.lblMotivoConsulta.Name = "lblMotivoConsulta";
             this.lblMotivoConsulta.Size = new System.Drawing.Size(121, 16);
             this.lblMotivoConsulta.TabIndex = 4;
@@ -745,21 +745,22 @@
             // 
             // cmbMotivoConsulta
             // 
-            this.cmbMotivoConsulta.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.cmbMotivoConsulta.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cmbMotivoConsulta.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbMotivoConsulta.Location = new System.Drawing.Point(3, 22);
             this.cmbMotivoConsulta.Margin = new System.Windows.Forms.Padding(3, 2, 8, 2);
             this.cmbMotivoConsulta.Name = "cmbMotivoConsulta";
-            this.cmbMotivoConsulta.Size = new System.Drawing.Size(220, 24);
+            this.cmbMotivoConsulta.Size = new System.Drawing.Size(221, 24);
             this.cmbMotivoConsulta.TabIndex = 5;
             this.cmbMotivoConsulta.SelectedIndexChanged += new System.EventHandler(this.cmbMotivoConsulta_SelectedIndexChanged);
             // 
             // lblTipoExamen
             // 
-            this.lblTipoExamen.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            this.lblTipoExamen.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblTipoExamen.AutoSize = true;
             this.lblTipoExamen.ForeColor = System.Drawing.Color.Black;
-            this.lblTipoExamen.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+            this.lblTipoExamen.Location = new System.Drawing.Point(235, 4);
             this.lblTipoExamen.Name = "lblTipoExamen";
             this.lblTipoExamen.Size = new System.Drawing.Size(106, 16);
             this.lblTipoExamen.TabIndex = 0;
@@ -767,21 +768,22 @@
             // 
             // cmbTipoExamen
             // 
-            this.cmbTipoExamen.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.cmbTipoExamen.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cmbTipoExamen.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbTipoExamen.Location = new System.Drawing.Point(235, 22);
             this.cmbTipoExamen.Margin = new System.Windows.Forms.Padding(3, 2, 8, 2);
             this.cmbTipoExamen.Name = "cmbTipoExamen";
-            this.cmbTipoExamen.Size = new System.Drawing.Size(300, 24);
+            this.cmbTipoExamen.Size = new System.Drawing.Size(305, 24);
             this.cmbTipoExamen.TabIndex = 1;
             this.cmbTipoExamen.SelectedIndexChanged += new System.EventHandler(this.cmbTipoExamen_SelectedIndexChanged);
             // 
             // lblSubtipo
             // 
-            this.lblSubtipo.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            this.lblSubtipo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblSubtipo.AutoSize = true;
             this.lblSubtipo.ForeColor = System.Drawing.Color.Black;
-            this.lblSubtipo.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+            this.lblSubtipo.Location = new System.Drawing.Point(551, 4);
             this.lblSubtipo.Name = "lblSubtipo";
             this.lblSubtipo.Size = new System.Drawing.Size(124, 16);
             this.lblSubtipo.TabIndex = 2;
@@ -789,18 +791,19 @@
             // 
             // cmbSubtipos
             // 
-            this.cmbSubtipos.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.cmbSubtipos.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cmbSubtipos.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbSubtipos.Location = new System.Drawing.Point(551, 22);
             this.cmbSubtipos.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.cmbSubtipos.Name = "cmbSubtipos";
-            this.cmbSubtipos.Size = new System.Drawing.Size(490, 24);
+            this.cmbSubtipos.Size = new System.Drawing.Size(502, 24);
             this.cmbSubtipos.TabIndex = 3;
             this.cmbSubtipos.SelectedIndexChanged += new System.EventHandler(this.cmbSubtipos_SelectedIndexChanged);
             // 
             // tableLayoutPanel5
             // 
-            this.tableLayoutPanel5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.tableLayoutPanel5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel5.ColumnCount = 3;
             this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 80F));
@@ -830,7 +833,7 @@
             // 
             // txtUbicacionArchivoTurno
             // 
-            this.txtUbicacionArchivoTurno.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.txtUbicacionArchivoTurno.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtUbicacionArchivoTurno.Location = new System.Drawing.Point(83, 3);
             this.txtUbicacionArchivoTurno.Name = "txtUbicacionArchivoTurno";
