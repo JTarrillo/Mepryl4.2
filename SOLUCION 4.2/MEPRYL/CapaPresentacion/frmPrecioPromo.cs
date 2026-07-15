@@ -1274,22 +1274,22 @@ namespace CapaPresentacion
 
             if (col.Contains("Motivo") || (col.StartsWith("col") && col.Contains("Motivo")))
             {
-                e.CellStyle.BackColor = filaActiva ? Color.FromArgb(221, 235, 247) : Color.FromArgb(230, 245, 235);
+                e.CellStyle.BackColor = filaActiva ? Color.FromArgb(180, 200, 220) : Color.FromArgb(230, 245, 235);
                 e.CellStyle.ForeColor = Color.FromArgb(20, 70, 40);
             }
             else if (col.Contains("Tipo") || (col.StartsWith("col") && col.Contains("Tipo")))
             {
-                e.CellStyle.BackColor = filaActiva ? Color.FromArgb(221, 235, 247) : Color.White;
+                e.CellStyle.BackColor = filaActiva ? Color.FromArgb(180, 200, 220) : Color.White;
                 e.CellStyle.ForeColor = Color.FromArgb(30, 30, 90);
             }
             else if (col.Contains("Descripcion") || (col.StartsWith("col") && col.Contains("Descripcion")))
             {
-                e.CellStyle.BackColor = filaActiva ? Color.FromArgb(221, 235, 247) : Color.White;
+                e.CellStyle.BackColor = filaActiva ? Color.FromArgb(180, 200, 220) : Color.White;
                 e.CellStyle.ForeColor = Color.FromArgb(20, 20, 20);
             }
             else if (col.Contains("Promo") || (col.StartsWith("col") && col.Contains("Promo")))
             {
-                e.CellStyle.BackColor = filaActiva ? Color.FromArgb(221, 235, 247) : Color.White;
+                e.CellStyle.BackColor = filaActiva ? Color.FromArgb(180, 200, 220) : Color.White;
                 e.CellStyle.ForeColor = Color.FromArgb(20, 20, 20);
             }
             else if (col == "colIPCBase" || col == "colPublicoIPCBase")
@@ -1303,7 +1303,14 @@ namespace CapaPresentacion
                 e.CellStyle.ForeColor = Color.FromArgb(140, 0, 0);
             }
 
-            e.CellStyle.SelectionBackColor = e.CellStyle.BackColor;
+            // Color de selección más oscuro para mejor visibilidad pero manteniendo aspecto limpio
+            Color backColor = e.CellStyle.BackColor;
+            Color selectionBackColor = Color.FromArgb(
+                Math.Max(0, backColor.R - 40),
+                Math.Max(0, backColor.G - 40),
+                Math.Max(0, backColor.B - 40)
+            );
+            e.CellStyle.SelectionBackColor = selectionBackColor;
             e.CellStyle.SelectionForeColor = e.CellStyle.ForeColor;
         }
 
