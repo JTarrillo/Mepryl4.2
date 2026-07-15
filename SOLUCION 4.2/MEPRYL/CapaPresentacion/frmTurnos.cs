@@ -1445,19 +1445,32 @@ namespace CapaPresentacion
             decimal lista = (decimal)te.PrecioLista;
             decimal seña = (decimal)te.Seña;
 
-            // Precio promo con seña
-            if (seña > 0)
-                sb.Append("$ " + promo.ToString("N0") + " - $ " + seña.ToString("N0") + " (SEÑA)");
-            else
-                sb.Append("$ " + promo.ToString("N0"));
+            bool hayPrecioMostrado = false;
 
-            // Precio lista con seña
+            // Precio promo con seña (solo si promo > 0)
+            if (promo > 0)
+            {
+                if (seña > 0)
+                    sb.Append("$ " + promo.ToString("N0") + " - $ " + seña.ToString("N0") + " (SEÑA)");
+                else
+                    sb.Append("$ " + promo.ToString("N0"));
+                hayPrecioMostrado = true;
+            }
+
+            // Precio lista con seña (solo si lista > 0)
             if (lista > 0)
             {
-                sb.Append(" | LISTA: $ " + lista.ToString("N0"));
+                if (hayPrecioMostrado)
+                    sb.Append(" | ");
+                sb.Append("LISTA: $ " + lista.ToString("N0"));
                 if (seña > 0)
                     sb.Append(" - SEÑA = $ " + (lista - seña).ToString("N0"));
+                hayPrecioMostrado = true;
             }
+
+            // Si no hay precios ni planilla ni observaciones extra, devolver string vacío
+            if (!hayPrecioMostrado && !te.LlevaPlanilla && string.IsNullOrWhiteSpace(te.ObservacionesExtra))
+                return string.Empty;
 
             return sb.ToString();
         }
@@ -1492,11 +1505,11 @@ namespace CapaPresentacion
                 return false;
 
             string normalizado = texto.Trim().ToUpperInvariant();
-            return normalizado.Contains("LISTA: $")
-                || normalizado.Contains("(SEÑA)")
-                || normalizado.Contains("- SEÑA = $")
-                || normalizado.StartsWith("PLANILLA |")
-                || normalizado.Contains(" | PLANILLA | ");
+            string generado = generarObservaciones(tipoExamenActual).Trim().ToUpperInvariant();
+            
+            // Si el texto actual es EXACTAMENTE igual al generado automáticamente, es automático
+            // Si el usuario lo modificó aunque sea un carácter, ya no es automático
+            return normalizado == generado;
         }
 
         private double obtenerDoubleDesdeTextBox(string texto, double valorDefault)

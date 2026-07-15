@@ -476,30 +476,39 @@ namespace CapaPresentacion
                         for (int m = mesInicio; m <= 12; m++)
                             originalValues[m] = ParseDecimal(row.Cells[5 + (m - 1) * 2].Value);
 
-                        for (int mes = mesInicio; mes <= 12; mes++)
-                    {
-                        // AQUI ESTABA EL PROBLEMA: Si originalValues[mes - 1] == 0, se cortaba la cascada
-                        // if (mes > mesInicio && originalValues[mes - 1] == 0m) continue;
+                        // ✅ NUEVA LÓGICA: Detectar si hay un precio forzado activo y propagarlo
+                        decimal precioForzadoActivo = 0m;
 
-                        decimal valorMesAnterior = ParseDecimal(row.Cells[5 + (mes - 2) * 2].Value);
-                        decimal aumentoFijoFila = ParseDecimal(row.Cells[6 + (mes - 2) * 2].Value); // El valor "del medio" en pesos
-                        decimal coefGlobal = _coefsPromo[mes - 2]; // El rojo de arriba del mes anterior
-                        
-                        // ✅ LÓGICA DE PRECIO FORZADO: Si el usuario pone un valor en el medio (ej. 1000), 
-                        // el precio del mes siguiente ES ese valor (fuerza de precio).
-                        // Si pone 0, se aplica el coeficiente global al precio anterior.
-                        decimal nuevoValor;
-                        if (aumentoFijoFila > 0)
+                        for (int mes = mesInicio; mes <= 12; mes++)
                         {
-                            nuevoValor = aumentoFijoFila;
+                            // AQUI ESTABA EL PROBLEMA: Si originalValues[mes - 1] == 0, se cortaba la cascada
+                            // if (mes > mesInicio && originalValues[mes - 1] == 0m) continue;
+
+                            decimal valorMesAnterior = ParseDecimal(row.Cells[5 + (mes - 2) * 2].Value);
+                            decimal aumentoFijoFila = ParseDecimal(row.Cells[6 + (mes - 2) * 2].Value); // El valor "del medio" en pesos
+                            decimal coefGlobal = _coefsPromo[mes - 2]; // El rojo de arriba del mes anterior
+                            
+                            // ✅ LÓGICA DE PRECIO FORZADO: Si hay un precio forzado activo, se propaga a todos los meses siguientes
+                            decimal nuevoValor;
+                            if (precioForzadoActivo > 0)
+                            {
+                                // Mantener el precio forzado para todos los meses siguientes
+                                nuevoValor = precioForzadoActivo;
+                            }
+                            else if (aumentoFijoFila > 0)
+                            {
+                                // Nuevo precio forzado detectado, activarlo y propagarlo
+                                nuevoValor = aumentoFijoFila;
+                                precioForzadoActivo = aumentoFijoFila;
+                            }
+                            else
+                            {
+                                // Sin precio forzado, aplicar cálculo estándar
+                                nuevoValor = valorMesAnterior * coefGlobal;
+                            }
+                            
+                            row.Cells[5 + (mes - 1) * 2].Value = nuevoValor;
                         }
-                        else
-                        {
-                            nuevoValor = valorMesAnterior * coefGlobal;
-                        }
-                        
-                        row.Cells[5 + (mes - 1) * 2].Value = nuevoValor;
-                    }
                     }
                 }
 
@@ -591,25 +600,43 @@ namespace CapaPresentacion
                     }
                     else
                     {
-                        // Si no hay fuerza de precio previa, seguimos la relación normal: Público(Mes) = Promo(Mes) * CoeficienteRojo(Mes-1)
-                        decimal valorPromo = ParseDecimal(rowPromo.Cells[5 + (mes - 1) * 2].Value);
-                        if (valorPromo == 0) continue;
-
-                        // Se respeta la lógica base intocable (Coeficiente Rojo Público)
-                        decimal factorRelacion = 1;
+                        // Si no hay fuerza de precio previa, seguimos la relación normal
+                        // AQUI ESTA LA CLAVE: En lugar de usar SIEMPRE valorPromo * CoeficienteRojoPublico,
+                        // debemos propagar el valor publico anterior si ya se aplico un factor
+                        decimal valorAnteriorPublico = 0;
                         if (mes > 1)
                         {
-                            factorRelacion = _coefsPublico[mes - 2]; 
+                            valorAnteriorPublico = ParseDecimal(rowPublico.Cells[5 + (mes - 2) * 2].Value);
                         }
-                        
-                        decimal precioPublicoCalculado = valorPromo * factorRelacion;
-                        
-                        // Y AQUÍ SE APLICA TU NUEVO FACTOR: Se multiplica el resultado por el Factor del mes actual
+
                         decimal factorDelMes = _factoresPublico[mes - 1];
-                        if (factorDelMes > 0)
+                        
+                        // Calculamos el valor propagado desde el mes anterior en Público
+                        decimal valorPropagado = 0;
+                        if (valorAnteriorPublico > 0)
                         {
-                            precioPublicoCalculado = precioPublicoCalculado * factorDelMes;
+                            decimal factorRelacion = 1;
+                            if (mes > 1) factorRelacion = _coefsPublico[mes - 2]; 
+                            
+                            // El valor anterior ya tiene el factor aplicado, así que SOLO aplicamos el coeficiente rojo
+                            valorPropagado = valorAnteriorPublico * factorRelacion;
                         }
+
+                        // Calculamos el valor basado en Promo
+                        decimal valorPromo = ParseDecimal(rowPromo.Cells[5 + (mes - 1) * 2].Value);
+                        decimal valorDesdePromo = 0;
+                        if (valorPromo > 0)
+                        {
+                            decimal factorRelacion = 1;
+                            if (mes > 1) factorRelacion = _coefsPublico[mes - 2]; 
+                            
+                            valorDesdePromo = valorPromo * factorRelacion;
+                            // Al valor de Promo SÍ le aplicamos el factor de conversión
+                            if (factorDelMes > 0) valorDesdePromo *= factorDelMes;
+                        }
+
+                        // Tomamos el mayor valor (para que el factor se propague, pero nunca sea menor que Promo)
+                        decimal precioPublicoCalculado = Math.Max(valorPropagado, valorDesdePromo);
 
                         rowPublico.Cells[5 + (mes - 1) * 2].Value = Math.Ceiling(precioPublicoCalculado / 1000m) * 1000m;
                     }
@@ -674,19 +701,40 @@ namespace CapaPresentacion
                             }
                             else
                             {
-                                decimal valorPromo = ParseDecimal(filaPromo.Cells[5 + (mes - 1) * 2].Value);
-                                if (valorPromo == 0) continue;
-
-                                // Lógica base intocable
-                                decimal factorRelacion = _coefsPublico[mes - 2];
-                                decimal precioPublicoCalculado = valorPromo * factorRelacion;
-
-                                // Aquí aplicamos el factor multiplicador nuevo
-                                decimal factorDelMes = _factoresPublico[mes - 1];
-                                if (factorDelMes > 0)
+                                // AQUI ESTA LA CLAVE PARA LA FILA:
+                                // Debemos propagar el valor publico anterior si ya existe,
+                                // en lugar de volver a traer el valor de Promo
+                                decimal valorAnteriorPublico = 0;
+                                if (mes > 1)
                                 {
-                                    precioPublicoCalculado = precioPublicoCalculado * factorDelMes;
+                                    valorAnteriorPublico = ParseDecimal(filaPublico.Cells[5 + (mes - 2) * 2].Value);
                                 }
+
+                                decimal factorDelMes = _factoresPublico[mes - 1];
+                                
+                                decimal valorPropagado = 0;
+                                if (valorAnteriorPublico > 0)
+                                {
+                                    decimal factorRelacion = 1;
+                                    if (mes > 1) factorRelacion = _coefsPublico[mes - 2];
+
+                                    // El valor anterior ya tiene el factor aplicado, así que SOLO aplicamos el coeficiente rojo
+                                    valorPropagado = valorAnteriorPublico * factorRelacion;
+                                }
+
+                                decimal valorPromo = ParseDecimal(filaPromo.Cells[5 + (mes - 1) * 2].Value);
+                                decimal valorDesdePromo = 0;
+                                if (valorPromo > 0)
+                                {
+                                    decimal factorRelacion = 1;
+                                    if (mes > 1) factorRelacion = _coefsPublico[mes - 2];
+                                    
+                                    valorDesdePromo = valorPromo * factorRelacion;
+                                    // Al valor de Promo SÍ le aplicamos el factor de conversión
+                                    if (factorDelMes > 0) valorDesdePromo *= factorDelMes;
+                                }
+
+                                decimal precioPublicoCalculado = Math.Max(valorPropagado, valorDesdePromo);
 
                                 filaPublico.Cells[5 + (mes - 1) * 2].Value = Math.Ceiling(precioPublicoCalculado / 1000m) * 1000m;
                             }
@@ -703,6 +751,9 @@ namespace CapaPresentacion
                     for (int m = mesInicio; m <= 12; m++)
                         originalValues[m] = ParseDecimal(filaActual.Cells[5 + (m - 1) * 2].Value);
 
+                    // ✅ NUEVA LÓGICA: Detectar si hay un precio forzado activo y propagarlo
+                    decimal precioForzadoActivo = 0m;
+                    
                     for (int mes = mesInicio; mes <= 12; mes++)
                     {
                         if (!filaActual.Visible) continue;
@@ -723,14 +774,22 @@ namespace CapaPresentacion
                         decimal aumentoFijoFila = ParseDecimal(filaActual.Cells[6 + (mes - 2) * 2].Value);
                         decimal coefGlobal = _coefsPromo[mes - 2];
                         
-                        // ✅ LÓGICA DE PRECIO FORZADO: Consistente con el cálculo masivo
+                        // ✅ LÓGICA DE PRECIO FORZADO: Si hay un precio forzado activo, se propaga a todos los meses siguientes
                         decimal nuevoValor;
-                        if (aumentoFijoFila > 0)
+                        if (precioForzadoActivo > 0)
                         {
+                            // Mantener el precio forzado para todos los meses siguientes
+                            nuevoValor = precioForzadoActivo;
+                        }
+                        else if (aumentoFijoFila > 0)
+                        {
+                            // Nuevo precio forzado detectado, activarlo y propagarlo
                             nuevoValor = aumentoFijoFila;
+                            precioForzadoActivo = aumentoFijoFila;
                         }
                         else
                         {
+                            // Sin precio forzado, aplicar cálculo estándar
                             nuevoValor = valorBase * coefGlobal;
                         }
                         
