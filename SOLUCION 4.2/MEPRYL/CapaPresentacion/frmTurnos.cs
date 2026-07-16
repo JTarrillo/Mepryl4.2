@@ -1707,7 +1707,8 @@ namespace CapaPresentacion
             int intFila = dgv.CurrentCell.RowIndex;
             habilitarTurnos();
             dgv.Rows[intFila].Selected = true;
-            dgv.CurrentCell = dgv.Rows[intFila].Cells[1];
+            // Seleccionar toda la fila en lugar de solo la celda 1
+            dgv.CurrentCell = dgv.Rows[intFila].Cells[0];
         }
 
         private void habilitarTurnos()
@@ -1746,7 +1747,8 @@ namespace CapaPresentacion
             }
 
             dgv.Rows[intFila].Selected = true;
-            dgv.CurrentCell = dgv.Rows[intFila].Cells[1];
+            // Seleccionar toda la fila en lugar de solo la celda 1
+            dgv.CurrentCell = dgv.Rows[intFila].Cells[0];
         }
 
         private void inhabilitarTurnos()
@@ -2219,6 +2221,7 @@ namespace CapaPresentacion
                 e.Handled = true;
                 if (botAsignar.Visible) { botAsignar.PerformClick(); }
                 if (botModificar.Visible) { botModificar.PerformClick(); }
+                if (botAceptar.Visible) { botAceptar.PerformClick(); }
             }
         }
 
@@ -2944,7 +2947,8 @@ namespace CapaPresentacion
                                 FilaIndex = dgv.CurrentCell.RowIndex;
                                 cargarGrillaTurnosSinFiltro();
                                 dgv.Rows[FilaIndex].Selected = true;
-                                dgv.CurrentCell = dgv.Rows[FilaIndex].Cells[1];
+                                // Seleccionar toda la fila en lugar de solo la celda 1
+                                dgv.CurrentCell = dgv.Rows[FilaIndex].Cells[0];
                             }
                         }
                         else
