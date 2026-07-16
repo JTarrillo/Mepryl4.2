@@ -1270,8 +1270,18 @@ namespace CapaPresentacion
             {
                 // Guardar el ID del turno en lugar del índice de la fila
                 Guid idTurnoGuardado = new Guid(dgv.Rows[dgv.CurrentCell.RowIndex].Cells[0].Value.ToString());
+                // Verificar si hay un filtro de búsqueda activo
+                bool filtroBusquedaActivo = !string.IsNullOrWhiteSpace(tbFiltro.Text.Trim());
                 modoConsulta();
-                cargarGrillaTurnosSinFiltro();
+                // Recargar la grilla manteniendo el filtro de búsqueda si estaba activo
+                if (filtroBusquedaActivo)
+                {
+                    buscarTurnosPorDNIONombre();
+                }
+                else
+                {
+                    cargarGrillaTurnosSinFiltro();
+                }
                 // Buscar y seleccionar el turno por su ID después de recargar la grilla
                 for (int i = 0; i < dgv.Rows.Count; i++)
                 {
@@ -2655,7 +2665,7 @@ namespace CapaPresentacion
         private void btnCopiarInfo_Click(object sender, EventArgs e)
         {
             // #region debug-point A:copy-click
-            try { string _u = "http://127.0.0.1:7777/event", _s = "copiar-info-turno-movido", _p = @"c:\Mepryl4.2\SOLUCION 4.2\MEPRYL\.dbg\copiar-info-turno-movido.env"; if (System.IO.File.Exists(_p)) foreach (string _l in System.IO.File.ReadAllLines(_p)) { if (_l.StartsWith("DEBUG_SERVER_URL=")) _u = _l.Substring("DEBUG_SERVER_URL=".Length); else if (_l.StartsWith("DEBUG_SESSION_ID=")) _s = _l.Substring("DEBUG_SESSION_ID=".Length); } int _row = dgv.CurrentCell == null ? -1 : dgv.CurrentCell.RowIndex; string _sub = (_row >= 0 && dgv.Rows[_row].Cells["SubTipoExamen"].Value != null ? dgv.Rows[_row].Cells["SubTipoExamen"].Value.ToString() : "").Replace("\\", "\\\\").Replace("\"", "\\\""), _ids = (_row >= 0 && dgv.Rows[_row].Cells["IdSubtipo"].Value != null ? dgv.Rows[_row].Cells["IdSubtipo"].Value.ToString() : "").Replace("\\", "\\\\").Replace("\"", "\\\""), _dni = (_row >= 0 && dgv.Rows[_row].Cells[8].Value != null ? dgv.Rows[_row].Cells[8].Value.ToString() : "").Replace("\\", "\\\\").Replace("\"", "\\\""), _panel = (panelLaboral.Visible ? "laboral" : "preventiva"); string _json = "{\"sessionId\":\"" + _s + "\",\"runId\":\"pre-fix\",\"hypothesisId\":\"A\",\"location\":\"frmTurnos.btnCopiarInfo_Click\",\"msg\":\"[DEBUG] click copiar info\",\"data\":{\"rowIndex\":\"" + _row.ToString() + "\",\"dni\":\"" + _dni + "\",\"gridSubTipo\":\"" + _sub + "\",\"gridIdSubtipo\":\"" + _ids + "\",\"panel\":\"" + _panel + "\"},\"ts\":" + DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString() + "}"; byte[] _b = System.Text.Encoding.UTF8.GetBytes(_json); var _r = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(_u); _r.Method = "POST"; _r.ContentType = "application/json"; _r.ContentLength = _b.Length; using (var _st = _r.GetRequestStream()) { _st.Write(_b, 0, _b.Length); } using ((System.Net.HttpWebResponse)_r.GetResponse()) { } } catch (Exception _ex) { try { System.IO.File.AppendAllText(@"c:\Mepryl4.2\SOLUCION 4.2\MEPRYL\.dbg\instrumentation-fallback-copiar-info-turno-movido.log", DateTime.Now.ToString("s") + " A " + _ex.GetType().Name + " " + _ex.Message + Environment.NewLine); } catch { } }
+            // try { string _u = "http://127.0.0.1:7777/event", _s = "copiar-info-turno-movido", _p = @"c:\Mepryl4.2\SOLUCION 4.2\MEPRYL\.dbg\copiar-info-turno-movido.env"; if (System.IO.File.Exists(_p)) foreach (string _l in System.IO.File.ReadAllLines(_p)) { if (_l.StartsWith("DEBUG_SERVER_URL=")) _u = _l.Substring("DEBUG_SERVER_URL=".Length); else if (_l.StartsWith("DEBUG_SESSION_ID=")) _s = _l.Substring("DEBUG_SESSION_ID=".Length); } int _row = dgv.CurrentCell == null ? -1 : dgv.CurrentCell.RowIndex; string _sub = (_row >= 0 && dgv.Rows[_row].Cells["SubTipoExamen"].Value != null ? dgv.Rows[_row].Cells["SubTipoExamen"].Value.ToString() : "").Replace("\\", "\\\\").Replace("\"", "\\\""), _ids = (_row >= 0 && dgv.Rows[_row].Cells["IdSubtipo"].Value != null ? dgv.Rows[_row].Cells["IdSubtipo"].Value.ToString() : "").Replace("\\", "\\\\").Replace("\"", "\\\""), _dni = (_row >= 0 && dgv.Rows[_row].Cells[8].Value != null ? dgv.Rows[_row].Cells[8].Value.ToString() : "").Replace("\\", "\\\\").Replace("\"", "\\\""), _panel = (panelLaboral.Visible ? "laboral" : "preventiva"); string _json = "{\"sessionId\":\"" + _s + "\",\"runId\":\"pre-fix\",\"hypothesisId\":\"A\",\"location\":\"frmTurnos.btnCopiarInfo_Click\",\"msg\":\"[DEBUG] click copiar info\",\"data\":{\"rowIndex\":\"" + _row.ToString() + "\",\"dni\":\"" + _dni + "\",\"gridSubTipo\":\"" + _sub + "\",\"gridIdSubtipo\":\"" + _ids + "\",\"panel\":\"" + _panel + "\"},\"ts\":" + DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString() + "}"; byte[] _b = System.Text.Encoding.UTF8.GetBytes(_json); var _r = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(_u); _r.Method = "POST"; _r.ContentType = "application/json"; _r.ContentLength = _b.Length; using (var _st = _r.GetRequestStream()) { _st.Write(_b, 0, _b.Length); } using ((System.Net.HttpWebResponse)_r.GetResponse()) { } } catch (Exception _ex) { try { System.IO.File.AppendAllText(@"c:\Mepryl4.2\SOLUCION 4.2\MEPRYL\.dbg\instrumentation-fallback-copiar-info-turno-movido.log", DateTime.Now.ToString("s") + " A " + _ex.GetType().Name + " " + _ex.Message + Environment.NewLine); } catch { } }
             // #endregion
             CopiarTexto();
         }
@@ -2703,7 +2713,7 @@ namespace CapaPresentacion
             strIdSubtipo = dgv.Rows[dgv.CurrentCell.RowIndex].Cells["IdSubtipo"].Value?.ToString() ?? "";
 
             // #region debug-point B:replace-text
-            try { string _u = "http://127.0.0.1:7777/event", _s = "copiar-info-turno-movido", _p = @"c:\Mepryl4.2\SOLUCION 4.2\MEPRYL\.dbg\copiar-info-turno-movido.env"; if (System.IO.File.Exists(_p)) foreach (string _l in System.IO.File.ReadAllLines(_p)) { if (_l.StartsWith("DEBUG_SERVER_URL=")) _u = _l.Substring("DEBUG_SERVER_URL=".Length); else if (_l.StartsWith("DEBUG_SESSION_ID=")) _s = _l.Substring("DEBUG_SESSION_ID=".Length); } string _pac = strPaciente.Replace("\\", "\\\\").Replace("\"", "\\\""), _ids = strIdSubtipo.Replace("\\", "\\\\").Replace("\"", "\\\""), _precio = strPrecio.Replace("\\", "\\\\").Replace("\"", "\\\""), _fecha = strFechaTurno.Replace("\\", "\\\\").Replace("\"", "\\\""), _hora = strHorario.Replace("\\", "\\\\").Replace("\"", "\\\""); string _json = "{\"sessionId\":\"" + _s + "\",\"runId\":\"pre-fix\",\"hypothesisId\":\"B\",\"location\":\"frmTurnos.reemplazarTexto\",\"msg\":\"[DEBUG] datos para plantilla\",\"data\":{\"paciente\":\"" + _pac + "\",\"idSubtipo\":\"" + _ids + "\",\"precio\":\"" + _precio + "\",\"fecha\":\"" + _fecha + "\",\"hora\":\"" + _hora + "\"},\"ts\":" + DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString() + "}"; byte[] _b = System.Text.Encoding.UTF8.GetBytes(_json); var _r = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(_u); _r.Method = "POST"; _r.ContentType = "application/json"; _r.ContentLength = _b.Length; using (var _st = _r.GetRequestStream()) { _st.Write(_b, 0, _b.Length); } using ((System.Net.HttpWebResponse)_r.GetResponse()) { } } catch (Exception _ex) { try { System.IO.File.AppendAllText(@"c:\Mepryl4.2\SOLUCION 4.2\MEPRYL\.dbg\instrumentation-fallback-copiar-info-turno-movido.log", DateTime.Now.ToString("s") + " B " + _ex.GetType().Name + " " + _ex.Message + Environment.NewLine); } catch { } }
+            // try { string _u = "http://127.0.0.1:7777/event", _s = "copiar-info-turno-movido", _p = @"c:\Mepryl4.2\SOLUCION 4.2\MEPRYL\.dbg\copiar-info-turno-movido.env"; if (System.IO.File.Exists(_p)) foreach (string _l in System.IO.File.ReadAllLines(_p)) { if (_l.StartsWith("DEBUG_SERVER_URL=")) _u = _l.Substring("DEBUG_SERVER_URL=".Length); else if (_l.StartsWith("DEBUG_SESSION_ID=")) _s = _l.Substring("DEBUG_SESSION_ID=".Length); } string _pac = strPaciente.Replace("\\", "\\\\").Replace("\"", "\\\""), _ids = strIdSubtipo.Replace("\\", "\\\\").Replace("\"", "\\\""), _precio = strPrecio.Replace("\\", "\\\\").Replace("\"", "\\\""), _fecha = strFechaTurno.Replace("\\", "\\\\").Replace("\"", "\\\""), _hora = strHorario.Replace("\\", "\\\\").Replace("\"", "\\\""); string _json = "{\"sessionId\":\"" + _s + "\",\"runId\":\"pre-fix\",\"hypothesisId\":\"B\",\"location\":\"frmTurnos.reemplazarTexto\",\"msg\":\"[DEBUG] datos para plantilla\",\"data\":{\"paciente\":\"" + _pac + "\",\"idSubtipo\":\"" + _ids + "\",\"precio\":\"" + _precio + "\",\"fecha\":\"" + _fecha + "\",\"hora\":\"" + _hora + "\"},\"ts\":" + DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString() + "}"; byte[] _b = System.Text.Encoding.UTF8.GetBytes(_json); var _r = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(_u); _r.Method = "POST"; _r.ContentType = "application/json"; _r.ContentLength = _b.Length; using (var _st = _r.GetRequestStream()) { _st.Write(_b, 0, _b.Length); } using ((System.Net.HttpWebResponse)_r.GetResponse()) { } } catch (Exception _ex) { try { System.IO.File.AppendAllText(@"c:\Mepryl4.2\SOLUCION 4.2\MEPRYL\.dbg\instrumentation-fallback-copiar-info-turno-movido.log", DateTime.Now.ToString("s") + " B " + _ex.GetType().Name + " " + _ex.Message + Environment.NewLine); } catch { } }
             // #endregion
 
             dtDiaSemana = Convert.ToDateTime(strFechaTurno);
@@ -2725,9 +2735,56 @@ namespace CapaPresentacion
 
         private void CopiarTexto()
         {
-            reemplazarTexto();
-            Clipboard.SetDataObject(strTextoPlantilla);
-            strTextoPlantilla = "";
+            System.Diagnostics.Stopwatch stopwatch = System.Diagnostics.Stopwatch.StartNew();
+            try
+            {
+                System.Diagnostics.Debug.WriteLine($"[COPIAR] Iniciando proceso de copiar - {stopwatch.ElapsedMilliseconds}ms");
+                
+                reemplazarTexto();
+                System.Diagnostics.Debug.WriteLine($"[COPIAR] Texto reemplazado - {stopwatch.ElapsedMilliseconds}ms");
+                
+                // Copiar al portapapeles de forma asíncrona para no bloquear la UI
+                System.Threading.Tasks.Task.Run(() =>
+                {
+                    try
+                    {
+                        System.Diagnostics.Debug.WriteLine($"[COPIAR] Iniciando copia al portapapeles - {stopwatch.ElapsedMilliseconds}ms");
+                        
+                        this.Invoke((MethodInvoker)delegate
+                        {
+                            System.Diagnostics.Debug.WriteLine($"[COPIAR] Ejecutando Clipboard.SetDataObject - {stopwatch.ElapsedMilliseconds}ms");
+                            Clipboard.SetDataObject(strTextoPlantilla);
+                            System.Diagnostics.Debug.WriteLine($"[COPIAR] Clipboard.SetDataObject completado - {stopwatch.ElapsedMilliseconds}ms");
+                            strTextoPlantilla = "";
+                            System.Diagnostics.Debug.WriteLine($"[COPIAR] Proceso completado exitosamente - {stopwatch.ElapsedMilliseconds}ms");
+                        });
+                    }
+                    catch (System.Runtime.InteropServices.ExternalException ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"[COPIAR] ERROR COMException: {ex.Message} - {stopwatch.ElapsedMilliseconds}ms");
+                        this.Invoke((MethodInvoker)delegate
+                        {
+                            MessageBox.Show("Error al copiar al portapapeles. Por favor, inténtelo nuevamente.\n\nError: " + ex.Message, 
+                                "Error de Portapapeles", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        });
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"[COPIAR] ERROR Exception: {ex.Message} - {stopwatch.ElapsedMilliseconds}ms");
+                        this.Invoke((MethodInvoker)delegate
+                        {
+                            MessageBox.Show("Error inesperado al copiar al portapapeles.\n\nError: " + ex.Message, 
+                                "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        });
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[COPIAR] ERROR en preparación: {ex.Message} - {stopwatch.ElapsedMilliseconds}ms");
+                MessageBox.Show("Error al preparar el texto para copiar.\n\nError: " + ex.Message, 
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void RecuperarTextoPorSubtipo(string idSubtipo)
@@ -2742,7 +2799,7 @@ namespace CapaPresentacion
                 strPathArchivo = Reporte.GetPathMensajePorSubtipo(idSubtipo);
 
             // #region debug-point C:template-path
-            try { string _u = "http://127.0.0.1:7777/event", _s = "copiar-info-turno-movido", _p = @"c:\Mepryl4.2\SOLUCION 4.2\MEPRYL\.dbg\copiar-info-turno-movido.env"; if (System.IO.File.Exists(_p)) foreach (string _l in System.IO.File.ReadAllLines(_p)) { if (_l.StartsWith("DEBUG_SERVER_URL=")) _u = _l.Substring("DEBUG_SERVER_URL=".Length); else if (_l.StartsWith("DEBUG_SESSION_ID=")) _s = _l.Substring("DEBUG_SESSION_ID=".Length); } string _ids = (idSubtipo ?? "").Replace("\\", "\\\\").Replace("\"", "\\\""), _path = (strPathArchivo ?? "").Replace("\\", "\\\\").Replace("\"", "\\\""); string _json = "{\"sessionId\":\"" + _s + "\",\"runId\":\"pre-fix\",\"hypothesisId\":\"C\",\"location\":\"frmTurnos.RecuperarTextoPorSubtipo\",\"msg\":\"[DEBUG] resolucion plantilla\",\"data\":{\"idSubtipo\":\"" + _ids + "\",\"path\":\"" + _path + "\",\"panel\":\"" + (panelLaboral.Visible ? "laboral" : "preventiva") + "\",\"exists\":\"" + (!string.IsNullOrEmpty(strPathArchivo) && System.IO.File.Exists(strPathArchivo) ? "true" : "false") + "\"},\"ts\":" + DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString() + "}"; byte[] _b = System.Text.Encoding.UTF8.GetBytes(_json); var _r = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(_u); _r.Method = "POST"; _r.ContentType = "application/json"; _r.ContentLength = _b.Length; using (var _st = _r.GetRequestStream()) { _st.Write(_b, 0, _b.Length); } using ((System.Net.HttpWebResponse)_r.GetResponse()) { } } catch (Exception _ex) { try { System.IO.File.AppendAllText(@"c:\Mepryl4.2\SOLUCION 4.2\MEPRYL\.dbg\instrumentation-fallback-copiar-info-turno-movido.log", DateTime.Now.ToString("s") + " C " + _ex.GetType().Name + " " + _ex.Message + Environment.NewLine); } catch { } }
+            // try { string _u = "http://127.0.0.1:7777/event", _s = "copiar-info-turno-movido", _p = @"c:\Mepryl4.2\SOLUCION 4.2\MEPRYL\.dbg\copiar-info-turno-movido.env"; if (System.IO.File.Exists(_p)) foreach (string _l in System.IO.File.ReadAllLines(_p)) { if (_l.StartsWith("DEBUG_SERVER_URL=")) _u = _l.Substring("DEBUG_SERVER_URL=".Length); else if (_l.StartsWith("DEBUG_SESSION_ID=")) _s = _l.Substring("DEBUG_SESSION_ID=".Length); } string _ids = (idSubtipo ?? "").Replace("\\", "\\\\").Replace("\"", "\\\""), _path = (strPathArchivo ?? "").Replace("\\", "\\\\").Replace("\"", "\\\""); string _json = "{\"sessionId\":\"" + _s + "\",\"runId\":\"pre-fix\",\"hypothesisId\":\"C\",\"location\":\"frmTurnos.RecuperarTextoPorSubtipo\",\"msg\":\"[DEBUG] resolucion plantilla\",\"data\":{\"idSubtipo\":\"" + _ids + "\",\"path\":\"" + _path + "\",\"panel\":\"" + (panelLaboral.Visible ? "laboral" : "preventiva") + "\",\"exists\":\"" + (!string.IsNullOrEmpty(strPathArchivo) && System.IO.File.Exists(strPathArchivo) ? "true" : "false") + "\"},\"ts\":" + DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString() + "}"; byte[] _b = System.Text.Encoding.UTF8.GetBytes(_json); var _r = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(_u); _r.Method = "POST"; _r.ContentType = "application/json"; _r.ContentLength = _b.Length; using (var _st = _r.GetRequestStream()) { _st.Write(_b, 0, _b.Length); } using ((System.Net.HttpWebResponse)_r.GetResponse()) { } } catch (Exception _ex) { try { System.IO.File.AppendAllText(@"c:\Mepryl4.2\SOLUCION 4.2\MEPRYL\.dbg\instrumentation-fallback-copiar-info-turno-movido.log", DateTime.Now.ToString("s") + " C " + _ex.GetType().Name + " " + _ex.Message + Environment.NewLine); } catch { } }
             // #endregion
 
             if (string.IsNullOrEmpty(strPathArchivo) || !System.IO.File.Exists(strPathArchivo))
