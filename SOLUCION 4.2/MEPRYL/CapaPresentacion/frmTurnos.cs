@@ -1502,7 +1502,7 @@ namespace CapaPresentacion
             }
 
             // Si está vacía, generar observación automática si se requiere
-            bool requiereObservacionAutomatica = te.LlevaPlanilla || te.Seña > 0 || !string.IsNullOrWhiteSpace(te.ObservacionesExtra);
+            bool requiereObservacionAutomatica = te.LlevaPlanilla || te.Seña > 0 || !string.IsNullOrWhiteSpace(te.ObservacionesExtra) || te.PrecioBase > 0 || te.PrecioLista > 0;
             if (requiereObservacionAutomatica)
                 return generarObservaciones(te);
 
