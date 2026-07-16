@@ -29,7 +29,7 @@ namespace CapaPresentacion
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmTurnos));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
             this.lbTitulo = new System.Windows.Forms.Label();
             this.labelSubTipoExamen = new System.Windows.Forms.Label();
             this.cboSubTipoExamen = new System.Windows.Forms.ComboBox();
@@ -191,6 +191,7 @@ namespace CapaPresentacion
             this.lbTitulo.Name = "lbTitulo";
             this.lbTitulo.Size = new System.Drawing.Size(1324, 50);
             this.lbTitulo.TabIndex = 128;
+            this.lbTitulo.Click += new System.EventHandler(this.lbTitulo_Click);
             // 
             // labelSubTipoExamen
             // 
@@ -199,7 +200,7 @@ namespace CapaPresentacion
             this.labelSubTipoExamen.CausesValidation = false;
             this.labelSubTipoExamen.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelSubTipoExamen.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.labelSubTipoExamen.Location = new System.Drawing.Point(904, 3);
+            this.labelSubTipoExamen.Location = new System.Drawing.Point(912, 3);
             this.labelSubTipoExamen.Name = "labelSubTipoExamen";
             this.labelSubTipoExamen.Size = new System.Drawing.Size(103, 16);
             this.labelSubTipoExamen.TabIndex = 202;
@@ -211,7 +212,7 @@ namespace CapaPresentacion
             this.cboSubTipoExamen.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.cboSubTipoExamen.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F);
             this.cboSubTipoExamen.FormattingEnabled = true;
-            this.cboSubTipoExamen.Location = new System.Drawing.Point(673, 20);
+            this.cboSubTipoExamen.Location = new System.Drawing.Point(677, 24);
             this.cboSubTipoExamen.Name = "cboSubTipoExamen";
             this.cboSubTipoExamen.Size = new System.Drawing.Size(647, 24);
             this.cboSubTipoExamen.TabIndex = 2;
@@ -259,7 +260,7 @@ namespace CapaPresentacion
             this.cboTipoExamen.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.cboTipoExamen.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F);
             this.cboTipoExamen.FormattingEnabled = true;
-            this.cboTipoExamen.Location = new System.Drawing.Point(328, 20);
+            this.cboTipoExamen.Location = new System.Drawing.Point(323, 22);
             this.cboTipoExamen.Name = "cboTipoExamen";
             this.cboTipoExamen.Size = new System.Drawing.Size(331, 24);
             this.cboTipoExamen.TabIndex = 1;
@@ -1163,14 +1164,14 @@ namespace CapaPresentacion
             this.dgvLigaYClub.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.dgvLigaYClub.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvLigaYClub.ColumnHeadersVisible = false;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Tahoma", 8.25F);
-            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(31)))), ((int)(((byte)(53)))));
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvLigaYClub.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle5.Font = new System.Drawing.Font("Tahoma", 8.25F);
+            dataGridViewCellStyle5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(31)))), ((int)(((byte)(53)))));
+            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvLigaYClub.DefaultCellStyle = dataGridViewCellStyle5;
             this.dgvLigaYClub.GridColor = System.Drawing.SystemColors.Control;
             this.dgvLigaYClub.Location = new System.Drawing.Point(15, 209);
             this.dgvLigaYClub.MultiSelect = false;
@@ -1662,7 +1663,7 @@ namespace CapaPresentacion
             // 
             this.rbcMenu.ExpandCollapseItem.Id = 0;
             this.rbcMenu.Items.AddRange(new DevExpress.XtraBars.BarItem[] {
-            this.rbcMenu.ExpandCollapseItem});
+            ((DevExpress.XtraBars.BarItem)(this.rbcMenu.ExpandCollapseItem))});
             this.rbcMenu.Location = new System.Drawing.Point(0, 358);
             this.rbcMenu.MaxItemId = 1;
             this.rbcMenu.Name = "rbcMenu";

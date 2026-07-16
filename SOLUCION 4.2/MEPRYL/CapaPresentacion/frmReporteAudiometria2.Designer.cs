@@ -631,7 +631,7 @@
             this.chkRevisar.Name = "chkRevisar";
             this.chkRevisar.Size = new System.Drawing.Size(110, 45);
             this.chkRevisar.TabIndex = 3;
-            this.chkRevisar.Text = "Revisarttt";
+            this.chkRevisar.Text = "Revisar";
             this.chkRevisar.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.chkRevisar.UseVisualStyleBackColor = true;
             this.chkRevisar.Visible = false;

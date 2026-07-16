@@ -261,7 +261,8 @@ namespace CapaPresentacion
             else
                 txtVariacion.Text = "0";
 
-            CargarFilasEnGrilla(dgvPrecioPublico, precioPublico.ListarPreciosPublicoAnio(anio), null);
+            // Aplicar el mismo filtro que en precio promo para mostrar los mismos subtipos
+            CargarFilasEnGrilla(dgvPrecioPublico, precioPublico.ListarPreciosPublicoAnio(anio), row => !EsSubtipoEmpresa(row["Tipo"]?.ToString(), row["Descripcion"]?.ToString()));
             ActualizarEncabezadosCoeficientes(dgvPrecioPublico, _coefsPublico);
         }
 

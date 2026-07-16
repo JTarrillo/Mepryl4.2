@@ -1268,10 +1268,20 @@ namespace CapaPresentacion
         {
             if (resultado.Modo == 1)
             {
-                nroFila = dgv.CurrentCell.RowIndex;
-                nroColumna = dgv.CurrentCell.ColumnIndex;
+                // Guardar el ID del turno en lugar del índice de la fila
+                Guid idTurnoGuardado = new Guid(dgv.Rows[dgv.CurrentCell.RowIndex].Cells[0].Value.ToString());
                 modoConsulta();
                 cargarGrillaTurnosSinFiltro();
+                // Buscar y seleccionar el turno por su ID después de recargar la grilla
+                for (int i = 0; i < dgv.Rows.Count; i++)
+                {
+                    if (dgv.Rows[i].Cells[0].Value != null && new Guid(dgv.Rows[i].Cells[0].Value.ToString()) == idTurnoGuardado)
+                    {
+                        dgv.CurrentCell = dgv.Rows[i].Cells[dgv.CurrentCell.ColumnIndex];
+                        break;
+                    }
+                }
+                colorearTodasLasFilas(); // Asegurar que se pinte toda la fila correctamente
                 cargarTurnoSeleccionado();
             }
             else
@@ -3522,6 +3532,11 @@ namespace CapaPresentacion
             {
                 target.Text = item.Valor ?? "";
             }
+        }
+
+        private void lbTitulo_Click(object sender, EventArgs e)
+        {
+
         }
 
         private void CboObsPredefinidas_DrawItem(object sender, DrawItemEventArgs e)
