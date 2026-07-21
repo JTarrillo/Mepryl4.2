@@ -23,6 +23,15 @@ namespace CapaPresentacion
         private decimal[] _coefsPromo = new decimal[12];
         private decimal[] _coefsPublico = new decimal[12];
         private decimal[] _factoresPublico = new decimal[12];
+        
+        // Variable para almacenar la columna seleccionada en el menú contextual
+        private string _columnaSeleccionada = string.Empty;
+        // Lista para almacenar columnas seleccionadas para ocultar múltiples
+        private List<string> _columnasSeleccionadas = new List<string>();
+        // Variables para selección arrastrando cursor
+        private bool _arrastrandoSeleccion = false;
+        private int _columnaInicioArrastre = -1;
+        private DataGridView _dgvActual = null;
         private static readonly Guid EspecialidadSinSenaFutbolMetro = new Guid("60E94892-6F59-4202-A966-884FD71A5D8B");
         private static readonly Guid EspecialidadSinSenaFutbolMetroSinLab = new Guid("C260173E-3C3C-4AB0-8FAB-822DD540A3AA");
         private static readonly Guid EspecialidadSenaManualGna3Ecografias = new Guid("185F4837-E9CF-48D9-9FDC-3D031B939B19");
@@ -59,6 +68,17 @@ namespace CapaPresentacion
             this.tabControl.SelectedIndexChanged += new System.EventHandler(this.tabControl_SelectedIndexChanged);
             this.cboMesVariacion.SelectedIndexChanged += new System.EventHandler(this.cboMesVariacion_SelectedIndexChanged);
             this.dgvObsPre.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvObsPre_CellContentClick);
+            
+            // Asignar menú contextual y eventos de arrastre a las grillas
+            dgvPrecios.ColumnHeaderMouseClick += new DataGridViewCellMouseEventHandler(this.dgvPrecios_ColumnHeaderMouseClick);
+            dgvPrecios.MouseDown += new MouseEventHandler(this.dgvPrecios_MouseDown);
+            dgvPrecios.MouseMove += new MouseEventHandler(this.dgvPrecios_MouseMove);
+            dgvPrecios.MouseUp += new MouseEventHandler(this.dgvPrecios_MouseUp);
+            dgvPrecioPublico.ColumnHeaderMouseClick += new DataGridViewCellMouseEventHandler(this.dgvPrecios_ColumnHeaderMouseClick);
+            dgvPrecioPublico.MouseDown += new MouseEventHandler(this.dgvPrecios_MouseDown);
+            dgvPrecioPublico.MouseMove += new MouseEventHandler(this.dgvPrecios_MouseMove);
+            dgvPrecioPublico.MouseUp += new MouseEventHandler(this.dgvPrecios_MouseUp);
+            
             ConfigurarFocoGrilla(dgvPrecios);
             ConfigurarFocoGrilla(dgvPrecioPublico);
         }
@@ -232,6 +252,10 @@ namespace CapaPresentacion
             dgvEmpresas.CellFormatting += new DataGridViewCellFormattingEventHandler(this.dgvPrecios_CellFormatting);
             dgvEmpresas.CellPainting += new DataGridViewCellPaintingEventHandler(this.dgvPrecios_CellPainting);
             dgvEmpresas.ColumnHeaderMouseDoubleClick += new DataGridViewCellMouseEventHandler(this.dgvPrecios_ColumnHeaderMouseDoubleClick);
+            dgvEmpresas.ColumnHeaderMouseClick += new DataGridViewCellMouseEventHandler(this.dgvPrecios_ColumnHeaderMouseClick);
+            dgvEmpresas.MouseDown += new MouseEventHandler(this.dgvPrecios_MouseDown);
+            dgvEmpresas.MouseMove += new MouseEventHandler(this.dgvPrecios_MouseMove);
+            dgvEmpresas.MouseUp += new MouseEventHandler(this.dgvPrecios_MouseUp);
             dgvEmpresas.EditingControlShowing += new DataGridViewEditingControlShowingEventHandler(this.dgvPrecios_EditingControlShowing);
             ConfigurarFocoGrilla(dgvEmpresas);
 
@@ -1230,6 +1254,12 @@ namespace CapaPresentacion
             {
                 string colName = dgv.Columns[e.ColumnIndex].Name;
                 Color backColor = (colName.Contains("Coef") || colName.Contains("IPCBase")) ? Color.FromArgb(180, 0, 0) : Color.SeaGreen;
+                
+                // Si la columna está seleccionada, cambiar el color de fondo
+                if (_columnasSeleccionadas.Contains(colName))
+                {
+                    backColor = Color.FromArgb(100, 100, 200); // Azul claro para columnas seleccionadas
+                }
 
                 using (var brush = new SolidBrush(backColor))
                     e.Graphics.FillRectangle(brush, e.CellBounds);
@@ -1639,5 +1669,265 @@ namespace CapaPresentacion
                 CargarGrilla();
             }
         }
+
+        #region Menú Contextual de Columnas
+
+        private void dgvPrecios_MouseDown(object sender, MouseEventArgs e)
+        {
+            DataGridView dgv = (DataGridView)sender;
+            _dgvActual = dgv;
+            
+            // Obtener información de la celda bajo el cursor
+            DataGridView.HitTestInfo hitInfo = dgv.HitTest(e.X, e.Y);
+            
+            if (hitInfo.Type == DataGridViewHitTestType.ColumnHeader && hitInfo.ColumnIndex >= 0)
+            {
+                // Solo iniciar arrastre si es clic izquierdo
+                if (e.Button == MouseButtons.Left)
+                {
+                    _arrastrandoSeleccion = true;
+                    _columnaInicioArrastre = hitInfo.ColumnIndex;
+                    _columnasSeleccionadas.Clear();
+                    _columnasSeleccionadas.Add(dgv.Columns[hitInfo.ColumnIndex].Name);
+                    dgv.Invalidate();
+                }
+                // Si es clic derecho, mantener la selección actual
+            }
+        }
+
+        private void dgvPrecios_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (_arrastrandoSeleccion && _dgvActual != null)
+            {
+                DataGridView dgv = (DataGridView)sender;
+                DataGridView.HitTestInfo hitInfo = dgv.HitTest(e.X, e.Y);
+                
+                if (hitInfo.Type == DataGridViewHitTestType.ColumnHeader && hitInfo.ColumnIndex >= 0)
+                {
+                    // Calcular rango desde inicio hasta posición actual
+                    int inicio = Math.Min(_columnaInicioArrastre, hitInfo.ColumnIndex);
+                    int fin = Math.Max(_columnaInicioArrastre, hitInfo.ColumnIndex);
+                    
+                    _columnasSeleccionadas.Clear();
+                    for (int i = inicio; i <= fin; i++)
+                    {
+                        string nombreColumna = dgv.Columns[i].Name;
+                        if (!_columnasSeleccionadas.Contains(nombreColumna))
+                            _columnasSeleccionadas.Add(nombreColumna);
+                    }
+                    
+                    // Redibujar para mostrar selección visual
+                    dgv.Invalidate();
+                }
+            }
+        }
+
+        private void dgvPrecios_MouseUp(object sender, MouseEventArgs e)
+        {
+            // Solo limpiar si no es clic derecho (para mantener la selección para el menú contextual)
+            if (_arrastrandoSeleccion && e.Button != MouseButtons.Right)
+            {
+                _arrastrandoSeleccion = false;
+                _columnaInicioArrastre = -1;
+            }
+        }
+
+        private void dgvPrecios_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right && e.RowIndex == -1 && e.ColumnIndex >= 0)
+            {
+                DataGridView dgv = (DataGridView)sender;
+                _columnaSeleccionada = dgv.Columns[e.ColumnIndex].Name;
+                
+                // Si no hay columnas seleccionadas, seleccionar la actual
+                if (_columnasSeleccionadas.Count == 0)
+                {
+                    _columnasSeleccionadas.Add(_columnaSeleccionada);
+                }
+                
+                // Habilitar/deshabilitar opción de ocultar seleccionadas según cantidad
+                mnuOcultarSeleccionadas.Enabled = _columnasSeleccionadas.Count > 0;
+                if (_columnasSeleccionadas.Count > 1)
+                    mnuOcultarSeleccionadas.Text = "Ocultar " + _columnasSeleccionadas.Count + " columnas seleccionadas";
+                else
+                    mnuOcultarSeleccionadas.Text = "Ocultar columnas seleccionadas";
+                
+                // Mostrar menú contextual
+                mnuColumnas.Show(Cursor.Position);
+            }
+        }
+
+        private void mnuOcultarColumna_Click(object sender, EventArgs e)
+        {
+            DataGridView dgvActual = ObtenerDGVActual();
+            if (dgvActual == null || string.IsNullOrEmpty(_columnaSeleccionada)) return;
+            
+            if (dgvActual.Columns.Contains(_columnaSeleccionada))
+            {
+                dgvActual.Columns[_columnaSeleccionada].Visible = false;
+            }
+            
+            // Sincronizar con otras grillas
+            SincronizarVisibilidadColumna(_columnaSeleccionada, false);
+        }
+
+        private void mnuOcultarSeleccionadas_Click(object sender, EventArgs e)
+        {
+            DataGridView dgvActual = ObtenerDGVActual();
+            if (dgvActual == null || _columnasSeleccionadas.Count == 0) return;
+            
+            // Ocultar todas las columnas seleccionadas
+            foreach (string columna in _columnasSeleccionadas)
+            {
+                if (dgvActual.Columns.Contains(columna))
+                {
+                    dgvActual.Columns[columna].Visible = false;
+                }
+                
+                // Sincronizar con otras grillas
+                SincronizarVisibilidadColumna(columna, false);
+            }
+            
+            // Limpiar selección después de ocultar
+            _columnasSeleccionadas.Clear();
+        }
+
+        private void mnuMostrarTodas_Click(object sender, EventArgs e)
+        {
+            DataGridView dgvActual = ObtenerDGVActual();
+            if (dgvActual == null) return;
+            
+            // Mostrar todas las columnas de meses
+            foreach (DataGridViewColumn col in dgvActual.Columns)
+            {
+                if (col.Name.Contains("Promo") || col.Name.Contains("Coef") || 
+                    col.Name.Contains("PublicoPromo") || col.Name.Contains("PublicoCoef"))
+                {
+                    col.Visible = true;
+                }
+            }
+            
+            // Sincronizar con otras grillas
+            SincronizarVisibilidadTodasColumnas(true);
+        }
+
+        private void mnuMostrarSoloEste_Click(object sender, EventArgs e)
+        {
+            DataGridView dgvActual = ObtenerDGVActual();
+            if (dgvActual == null || string.IsNullOrEmpty(_columnaSeleccionada)) return;
+            
+            // Primero ocultar todas las columnas de meses
+            foreach (DataGridViewColumn col in dgvActual.Columns)
+            {
+                if (col.Name.Contains("Promo") || col.Name.Contains("Coef") || 
+                    col.Name.Contains("PublicoPromo") || col.Name.Contains("PublicoCoef"))
+                {
+                    col.Visible = false;
+                }
+            }
+            
+            // Mostrar solo el mes seleccionado
+            string mes = ObtenerMesDeColumna(_columnaSeleccionada);
+            string colPromo = "colPromo" + mes;
+            string colCoef = "colCoef" + mes;
+            string colPublicoPromo = "colPublicoPromo" + mes;
+            string colPublicoCoef = "colPublicoCoef" + mes;
+            
+            if (dgvActual.Columns.Contains(colPromo))
+                dgvActual.Columns[colPromo].Visible = true;
+            if (dgvActual.Columns.Contains(colCoef))
+                dgvActual.Columns[colCoef].Visible = true;
+            if (dgvActual.Columns.Contains(colPublicoPromo))
+                dgvActual.Columns[colPublicoPromo].Visible = true;
+            if (dgvActual.Columns.Contains(colPublicoCoef))
+                dgvActual.Columns[colPublicoCoef].Visible = true;
+            
+            // Sincronizar con otras grillas
+            SincronizarVisibilidadSoloMes(mes);
+        }
+
+        private string ObtenerMesDeColumna(string nombreColumna)
+        {
+            for (int i = 1; i <= 12; i++)
+            {
+                string mes = i.ToString("00");
+                if (nombreColumna.Contains(mes))
+                    return mes;
+            }
+            return "";
+        }
+
+        private void SincronizarVisibilidadColumna(string nombreColumna, bool visible)
+        {
+            // Sincronizar con grilla de empresas
+            if (dgvEmpresas != null && dgvEmpresas.Columns.Contains(nombreColumna))
+                dgvEmpresas.Columns[nombreColumna].Visible = visible;
+            
+            // Sincronizar con grilla público
+            string nombreColumnaPublico = nombreColumna.Replace("colPromo", "colPublicoPromo").Replace("colCoef", "colPublicoCoef");
+            if (dgvPrecioPublico != null && dgvPrecioPublico.Columns.Contains(nombreColumnaPublico))
+                dgvPrecioPublico.Columns[nombreColumnaPublico].Visible = visible;
+        }
+
+        private void SincronizarVisibilidadTodasColumnas(bool visible)
+        {
+            // Sincronizar con grilla de empresas
+            if (dgvEmpresas != null)
+            {
+                foreach (DataGridViewColumn col in dgvEmpresas.Columns)
+                {
+                    if (col.Name.Contains("Promo") || col.Name.Contains("Coef"))
+                        col.Visible = visible;
+                }
+            }
+            
+            // Sincronizar con grilla público
+            if (dgvPrecioPublico != null)
+            {
+                foreach (DataGridViewColumn col in dgvPrecioPublico.Columns)
+                {
+                    if (col.Name.Contains("PublicoPromo") || col.Name.Contains("PublicoCoef"))
+                        col.Visible = visible;
+                }
+            }
+        }
+
+        private void SincronizarVisibilidadSoloMes(string mes)
+        {
+            // Primero ocultar todas las columnas de meses en las otras grillas
+            if (dgvEmpresas != null)
+            {
+                foreach (DataGridViewColumn col in dgvEmpresas.Columns)
+                {
+                    if (col.Name.Contains("Promo") || col.Name.Contains("Coef"))
+                        col.Visible = false;
+                }
+                // Mostrar solo el mes seleccionado
+                string colPromo = "colPromo" + mes;
+                string colCoef = "colCoef" + mes;
+                if (dgvEmpresas.Columns.Contains(colPromo))
+                    dgvEmpresas.Columns[colPromo].Visible = true;
+                if (dgvEmpresas.Columns.Contains(colCoef))
+                    dgvEmpresas.Columns[colCoef].Visible = true;
+            }
+            
+            if (dgvPrecioPublico != null)
+            {
+                foreach (DataGridViewColumn col in dgvPrecioPublico.Columns)
+                {
+                    if (col.Name.Contains("PublicoPromo") || col.Name.Contains("PublicoCoef"))
+                        col.Visible = false;
+                }
+                // Mostrar solo el mes seleccionado
+                string colPublicoPromo = "colPublicoPromo" + mes;
+                string colPublicoCoef = "colPublicoCoef" + mes;
+                if (dgvPrecioPublico.Columns.Contains(colPublicoPromo))
+                    dgvPrecioPublico.Columns[colPublicoPromo].Visible = true;
+                if (dgvPrecioPublico.Columns.Contains(colPublicoCoef))
+                    dgvPrecioPublico.Columns[colPublicoCoef].Visible = true;
+            }
+        }
+
+        #endregion
     }
 }

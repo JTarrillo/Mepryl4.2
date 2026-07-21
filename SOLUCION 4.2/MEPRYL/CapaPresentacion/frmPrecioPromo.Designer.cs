@@ -94,6 +94,11 @@ namespace CapaPresentacion
             this.btnAplicar = new System.Windows.Forms.Button();
             this.mnuAplicar = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.mnuVariacion = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuColumnas = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.mnuOcultarColumna = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuOcultarSeleccionadas = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuMostrarTodas = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuMostrarSoloEste = new System.Windows.Forms.ToolStripMenuItem();
             this.dgvPrecios = new System.Windows.Forms.DataGridView();
             this.colIdEspecialidad = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colIPCBase = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -421,6 +426,44 @@ namespace CapaPresentacion
             this.mnuVariacion.Size = new System.Drawing.Size(271, 22);
             this.mnuVariacion.Text = "Aplicar variación al mes seleccionado";
             this.mnuVariacion.Click += new System.EventHandler(this.mnuVariacion_Click);
+            // 
+            // mnuColumnas
+            // 
+            this.mnuColumnas.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnuOcultarColumna,
+            this.mnuOcultarSeleccionadas,
+            this.mnuMostrarTodas,
+            this.mnuMostrarSoloEste});
+            this.mnuColumnas.Name = "mnuColumnas";
+            this.mnuColumnas.Size = new System.Drawing.Size(180, 92);
+            // 
+            // mnuOcultarColumna
+            // 
+            this.mnuOcultarColumna.Name = "mnuOcultarColumna";
+            this.mnuOcultarColumna.Size = new System.Drawing.Size(179, 22);
+            this.mnuOcultarColumna.Text = "Ocultar esta columna";
+            this.mnuOcultarColumna.Click += new System.EventHandler(this.mnuOcultarColumna_Click);
+            // 
+            // mnuOcultarSeleccionadas
+            // 
+            this.mnuOcultarSeleccionadas.Name = "mnuOcultarSeleccionadas";
+            this.mnuOcultarSeleccionadas.Size = new System.Drawing.Size(179, 22);
+            this.mnuOcultarSeleccionadas.Text = "Ocultar columnas seleccionadas";
+            this.mnuOcultarSeleccionadas.Click += new System.EventHandler(this.mnuOcultarSeleccionadas_Click);
+            // 
+            // mnuMostrarTodas
+            // 
+            this.mnuMostrarTodas.Name = "mnuMostrarTodas";
+            this.mnuMostrarTodas.Size = new System.Drawing.Size(179, 22);
+            this.mnuMostrarTodas.Text = "Mostrar todas las columnas";
+            this.mnuMostrarTodas.Click += new System.EventHandler(this.mnuMostrarTodas_Click);
+            // 
+            // mnuMostrarSoloEste
+            // 
+            this.mnuMostrarSoloEste.Name = "mnuMostrarSoloEste";
+            this.mnuMostrarSoloEste.Size = new System.Drawing.Size(179, 22);
+            this.mnuMostrarSoloEste.Text = "Mostrar solo este mes";
+            this.mnuMostrarSoloEste.Click += new System.EventHandler(this.mnuMostrarSoloEste_Click);
             // 
             // dgvPrecios
             // 
@@ -1451,6 +1494,11 @@ namespace CapaPresentacion
         private System.Windows.Forms.Button btnAplicar;
         private System.Windows.Forms.ContextMenuStrip mnuAplicar;
         private System.Windows.Forms.ToolStripMenuItem mnuVariacion;
+        private System.Windows.Forms.ContextMenuStrip mnuColumnas;
+        private System.Windows.Forms.ToolStripMenuItem mnuOcultarColumna;
+        private System.Windows.Forms.ToolStripMenuItem mnuOcultarSeleccionadas;
+        private System.Windows.Forms.ToolStripMenuItem mnuMostrarTodas;
+        private System.Windows.Forms.ToolStripMenuItem mnuMostrarSoloEste;
         private System.Windows.Forms.TabControl tabControl;
         private System.Windows.Forms.TabPage tabEmpresas;
         private System.Windows.Forms.TabPage tabPrecios;

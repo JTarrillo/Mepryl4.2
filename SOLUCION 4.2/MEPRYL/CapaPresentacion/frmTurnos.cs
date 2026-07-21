@@ -804,6 +804,16 @@ namespace CapaPresentacion
                 }
             }
 
+            // ✅ Forzar precio 0 para CONSULTORIO LABORAL
+            Guid idConsultorio = new Guid("254110EB-0A50-47D8-89EF-118D163FCE8B");
+            if (pacienteLaboral.TipoExamen.Id == idConsultorio || 
+                pacienteLaboral.TipoExamen.IdTipoExamenPaciente == idConsultorio)
+            {
+                pacienteLaboral.TipoExamen.PrecioBase = 0;
+                pacienteLaboral.TipoExamen.PrecioLista = 0;
+                pacienteLaboral.TipoExamen.Seña = 0;
+            }
+
             llenarPanelPacienteLaboral(pacienteLaboral);
         }
 
@@ -1027,14 +1037,25 @@ namespace CapaPresentacion
                     pacienteLaboral.TipoExamen.Seña = Convert.ToDouble(ppAsigLab.Rows[0]["Seña"]);
                     pacienteLaboral.TipoExamen.LlevaPlanilla = Convert.ToBoolean(ppAsigLab.Rows[0]["LlevaPlanilla"]);
                     pacienteLaboral.TipoExamen.ObservacionesExtra = ppAsigLab.Rows[0]["ObservacionesExtra"].ToString();
-                    // Guardar precioLista actualizado en BD
-                    if (pacienteLaboral.TipoExamen.IdTipoExamenPaciente != Guid.Empty)
-                    {
-                        turno.ActualizarPrecioListaTipoExamenPaciente(
-                            pacienteLaboral.TipoExamen.IdTipoExamenPaciente,
-                            pacienteLaboral.TipoExamen.PrecioLista);
-                    }
                 }
+            }
+
+            // ✅ Forzar precio 0 para CONSULTORIO LABORAL
+            Guid idConsultorio = new Guid("254110EB-0A50-47D8-89EF-118D163FCE8B");
+            if (pacienteLaboral.TipoExamen.Id == idConsultorio || 
+                pacienteLaboral.TipoExamen.IdTipoExamenPaciente == idConsultorio)
+            {
+                pacienteLaboral.TipoExamen.PrecioBase = 0;
+                pacienteLaboral.TipoExamen.PrecioLista = 0;
+                pacienteLaboral.TipoExamen.Seña = 0;
+            }
+
+            // Guardar precioLista actualizado en BD
+            if (pacienteLaboral.TipoExamen.IdTipoExamenPaciente != Guid.Empty)
+            {
+                turno.ActualizarPrecioListaTipoExamenPaciente(
+                    pacienteLaboral.TipoExamen.IdTipoExamenPaciente,
+                    pacienteLaboral.TipoExamen.PrecioLista);
             }
 
             //GRV - Modificado Verifica si el turno esta asignado
@@ -1351,6 +1372,18 @@ namespace CapaPresentacion
                 tipoExamenActual.PrecioBase = obtenerPrecioBrutoDesdeTextBox(tbImporteLaboral.Text, tipoExamenActual.Seña, tipoExamenActual.PrecioBase);
                 tipoExamenActual.PrecioLista = obtenerPrecioBrutoDesdeTextBox(tbImporteListaLaboral.Text, tipoExamenActual.Seña, tipoExamenActual.PrecioLista);
             }
+            
+            // ✅ Forzar precio 0 para CONSULTORIO LABORAL al modificar
+            Guid idConsultorio = new Guid("254110EB-0A50-47D8-89EF-118D163FCE8B");
+            if (tipoExamenActual != null && 
+                (tipoExamenActual.Id == idConsultorio || 
+                 tipoExamenActual.IdTipoExamenPaciente == idConsultorio))
+            {
+                tipoExamenActual.PrecioBase = 0;
+                tipoExamenActual.PrecioLista = 0;
+                tipoExamenActual.Seña = 0;
+            }
+            
             retorno.TipoExamen = tipoExamenActual;
             retorno.Consulta = "LABORAL";
             return retorno;
