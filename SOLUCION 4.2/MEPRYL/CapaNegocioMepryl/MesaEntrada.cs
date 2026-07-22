@@ -181,5 +181,10 @@ namespace CapaNegocioMepryl
         {
             return mesaEntrada.cargarMesaEntradaPlanillaCompleta();
         }
+
+        public void guardarEstadoCheckbox(string idConsulta, int columna, bool estado)
+        {
+            mesaEntrada.guardarEstadoCheckbox(idConsulta, columna, estado);
+        }
     }
 }

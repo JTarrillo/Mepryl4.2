@@ -348,6 +348,10 @@ namespace CapaPresentacion
                 dgvGrilla.Columns[22].Visible = false;
                 dgvGrilla.Columns[23].Visible = false;
                 dgvGrilla.Columns[24].Visible = false;
+                dgvGrilla.Columns[25].Visible = true;
+                dgvGrilla.Columns[26].Visible = true;
+                dgvGrilla.Columns[27].Visible = true;
+                dgvGrilla.Columns[28].Visible = true;
 
                 dgvGrilla.Columns[16].DisplayIndex = 13;
 
@@ -375,6 +379,14 @@ namespace CapaPresentacion
                 dgvGrilla.Columns[15].SortMode = DataGridViewColumnSortMode.NotSortable;
                 dgvGrilla.Columns[16].Width = 88;
                 dgvGrilla.Columns[16].SortMode = DataGridViewColumnSortMode.NotSortable;
+                dgvGrilla.Columns[25].Width = 50;
+                dgvGrilla.Columns[25].SortMode = DataGridViewColumnSortMode.NotSortable;
+                dgvGrilla.Columns[26].Width = 50;
+                dgvGrilla.Columns[26].SortMode = DataGridViewColumnSortMode.NotSortable;
+                dgvGrilla.Columns[27].Width = 50;
+                dgvGrilla.Columns[27].SortMode = DataGridViewColumnSortMode.NotSortable;
+                dgvGrilla.Columns[28].Width = 50;
+                dgvGrilla.Columns[28].SortMode = DataGridViewColumnSortMode.NotSortable;
 
                 dgvGrilla.Columns[6].HeaderText = "Orden";
                 dgvGrilla.Columns[8].HeaderText = "Subtipo de Examen";
@@ -383,6 +395,10 @@ namespace CapaPresentacion
                 dgvGrilla.Columns[13].HeaderText = "Obs. Turnos";
                 dgvGrilla.Columns[14].HeaderText = "Obs. Mesa Entrada";
                 dgvGrilla.Columns[16].HeaderText = "Fecha Nacimiento";
+                dgvGrilla.Columns[25].HeaderText = "Labo";
+                dgvGrilla.Columns[26].HeaderText = "Rayos";
+                dgvGrilla.Columns[27].HeaderText = "Electro";
+                dgvGrilla.Columns[28].HeaderText = "Salida";
 
                 if (dgvGrilla.Rows.Count > 0)
                 {
@@ -424,6 +440,31 @@ namespace CapaPresentacion
         {
             intFilaSelecc = dgvGrilla.CurrentCell.RowIndex;
             intColSelecc = dgvGrilla.CurrentCell.ColumnIndex;
+
+            System.Diagnostics.Debug.WriteLine($"[CHECKBOX] CellContentClick - ColumnIndex: {e.ColumnIndex}, RowIndex: {e.RowIndex}");
+
+            // Manejar los nuevos checkboxes (columnas 25-28)
+            if (e.ColumnIndex >= 25 && e.ColumnIndex <= 28 && e.RowIndex >= 0)
+            {
+                System.Diagnostics.Debug.WriteLine($"[CHECKBOX] Detectado checkbox en columna {e.ColumnIndex}");
+
+                var valor = dgvGrilla.Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
+                System.Diagnostics.Debug.WriteLine($"[CHECKBOX] Valor antes de cambio: {valor} (Tipo: {valor?.GetType().Name})");
+
+                bool estadoActual = valor != DBNull.Value && valor != null ? Convert.ToBoolean(valor) : false;
+                bool nuevoEstado = !estadoActual; // Invertir el valor
+
+                dgvGrilla.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = nuevoEstado;
+                dgvGrilla.CommitEdit(DataGridViewDataErrorContexts.Commit);
+
+                string idConsulta = dgvGrilla.Rows[e.RowIndex].Cells[0].Value.ToString();
+                string idTipoExamen = dgvGrilla.Rows[e.RowIndex].Cells[2].Value.ToString();
+
+                System.Diagnostics.Debug.WriteLine($"[CHECKBOX] Estado cambiado de {estadoActual} a {nuevoEstado} - IdConsulta: {idConsulta}, IdTipoExamen: {idTipoExamen}");
+
+                // Guardar el estado en base de datos
+                mesaEntrada.guardarEstadoCheckbox(idTipoExamen, e.ColumnIndex, nuevoEstado);
+            }
 
             //intPosScroll = dgvGrilla.FirstDisplayedScrollingRowIndex;
         }

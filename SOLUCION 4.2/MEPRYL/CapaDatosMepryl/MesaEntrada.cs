@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Data;
+using System.IO;
 using Entidades;
 using Comunes;
 
@@ -393,7 +394,15 @@ namespace CapaDatosMepryl
 
         private bool devolverBooleano(object objeto)
         {
-            if (objeto.ToString() == "1")
+            if (objeto == null || objeto == DBNull.Value)
+            {
+                return false;
+            }
+            if (objeto is bool)
+            {
+                return (bool)objeto;
+            }
+            if (objeto.ToString() == "1" || objeto.ToString().ToLower() == "true")
             {
                 return true;
             }
@@ -1438,6 +1447,14 @@ namespace CapaDatosMepryl
             retorno.Columns.Add("ClubTarea");
             retorno.Columns.Add("Modificado");
             retorno.Columns[24].DataType = System.Type.GetType("System.Boolean");
+            retorno.Columns.Add("Labo");
+            retorno.Columns.Add("Rayos");
+            retorno.Columns.Add("Electro");
+            retorno.Columns.Add("Salida");
+            retorno.Columns[25].DataType = System.Type.GetType("System.Boolean");
+            retorno.Columns[26].DataType = System.Type.GetType("System.Boolean");
+            retorno.Columns[27].DataType = System.Type.GetType("System.Boolean");
+            retorno.Columns[28].DataType = System.Type.GetType("System.Boolean");
 
             return retorno;
         }
@@ -1460,7 +1477,7 @@ namespace CapaDatosMepryl
                 //  Nueva lìnea
                 paciente.TipoExamen.TextoClinico, paciente.TipoExamen.TextoLaboratorio, paciente.TipoExamen.TextoRx,
                 paciente.TipoExamen.TextoEstComplement, clubesOEmpresa.Rows[0][0].ToString(), clubesOEmpresa.Rows[0][1].ToString(),
-                paciente.TipoExamen.Modificado);
+                paciente.TipoExamen.Modificado, false, false, false, false);
         }
 
         public DataTable cargarMesaEntradaPlanillaCompleta()
@@ -1481,18 +1498,43 @@ namespace CapaDatosMepryl
             CASE WHEN e.Padre = 0 THEN e.descripcion ELSE NULL END,
             eReal.descripcion,
             e.descripcion
-        ) as SubtipoExamen, 
-        te.rm, te.modificado, c.revisado
+        ) as SubtipoExamen,
+        te.rm, te.modificado, c.revisado,
+        ISNULL(ec.Labo, 0) as Labo,
+        ISNULL(ec.Rayos, 0) as Rayos,
+        ISNULL(ec.Electro, 0) as Electro,
+        ISNULL(ec.Salida, 0) as Salida
         from Consulta c
         inner join dbo.TipoExamenDePaciente te on te.idConsulta = c.id
         inner join dbo.Especialidad e on te.idEspecialidad = e.id
         left join dbo.Turno t on te.idTurno = t.id
         left join dbo.Horario h on t.horarioID = h.id
         left join dbo.Especialidad eReal on h.especialidadID = eReal.id
+        left join dbo.EstadosCheckboxesMesaEntrada ec on ec.idTipoExamen = te.id
         where c.fecha >= '" + fechaDesde + @"' and c.fecha < '" + fechaHasta + "' and c.valido = '1' and c.nroOrden != '0' and c.tipo != 'V' order by c.nroOrden"
             );
             sw.Stop();
             System.Diagnostics.Debug.WriteLine($"[AGENDA-OPT] Query principal: {sw.ElapsedMilliseconds} ms ({consulta.Rows.Count} filas)");
+
+            // Log para verificar los datos de checkboxes en la consulta
+            var estadosCheckboxes = new Dictionary<string, Dictionary<string, bool>>();
+            foreach (DataRow row in consulta.Rows)
+            {
+                string idTipoExamen = row["IdTipoExamen"].ToString();
+                var laboValue = row["Labo"];
+                System.Diagnostics.Debug.WriteLine($"[CHECKBOX] SQL Query - IdTipoExamen={idTipoExamen}, Labo={laboValue} (Tipo: {laboValue?.GetType().Name})");
+
+                // Guardar los estados de checkboxes para usarlos después
+                estadosCheckboxes[idTipoExamen] = new Dictionary<string, bool>
+                {
+                    { "Labo", devolverBooleano(row["Labo"]) },
+                    { "Rayos", devolverBooleano(row["Rayos"]) },
+                    { "Electro", devolverBooleano(row["Electro"]) },
+                    { "Salida", devolverBooleano(row["Salida"]) }
+                };
+            }
+
+            System.Diagnostics.Debug.WriteLine($"[CHECKBOX] Diccionario creado con {estadosCheckboxes.Count} registros");
 
             if (consulta.Rows.Count == 0) return retorno;
 
@@ -1617,6 +1659,22 @@ namespace CapaDatosMepryl
                         modificado = te.Modificado;
                     }
 
+                    // Cargar estados de checkboxes desde el diccionario
+                    bool estadoLaboratorio = false, estadoRayos = false, estadoElectro = false, estadoSalida = false;
+                    System.Diagnostics.Debug.WriteLine($"[CHECKBOX] Buscando estado para IdTipoExamen={idTipoExamen}. Diccionario tiene {estadosCheckboxes.Count} claves");
+                    if (estadosCheckboxes.TryGetValue(idTipoExamen, out var estados))
+                    {
+                        estadoLaboratorio = estados["Labo"];
+                        estadoRayos = estados["Rayos"];
+                        estadoElectro = estados["Electro"];
+                        estadoSalida = estados["Salida"];
+                        System.Diagnostics.Debug.WriteLine($"[CHECKBOX] Cargando desde BD para IdTipoExamen={idTipoExamen}: Labo={estadoLaboratorio}, Rayos={estadoRayos}, Electro={estadoElectro}, Salida={estadoSalida}");
+                    }
+                    else
+                    {
+                        System.Diagnostics.Debug.WriteLine($"[CHECKBOX] No se encontraron estados para IdTipoExamen={idTipoExamen}, usando valores por defecto");
+                    }
+
                     DateTime fechaDt = Convert.ToDateTime(fila["Fecha"]);
 
                     retorno.Rows.Add(
@@ -1634,7 +1692,8 @@ namespace CapaDatosMepryl
                         fila["revisado"].ToString(),
                         textoClinico, textoLab, textoRx, textoComplement,
                         ligaEmpresa, clubTarea,
-                        modificado
+                        modificado,
+                        estadoLaboratorio, estadoRayos, estadoElectro, estadoSalida
                     );
                 }
                 catch (Exception ex)
@@ -1643,6 +1702,102 @@ namespace CapaDatosMepryl
                 }
             }
             return retorno;
+        }
+
+        private string rutaArchivoCheckboxes
+        {
+            get
+            {
+                string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                string meprylPath = Path.Combine(appDataPath, "MEPRYL");
+                if (!Directory.Exists(meprylPath))
+                {
+                    Directory.CreateDirectory(meprylPath);
+                }
+                return Path.Combine(meprylPath, "estados_checkboxes_mesaentrada.json");
+            }
+        }
+
+        private Dictionary<string, Dictionary<int, bool>> cargarEstadosCheckboxes()
+        {
+            Dictionary<string, Dictionary<int, bool>> estados = new Dictionary<string, Dictionary<int, bool>>();
+            try
+            {
+                System.Diagnostics.Debug.WriteLine($"[CHECKBOX] Cargando estados desde: {rutaArchivoCheckboxes}");
+                if (File.Exists(rutaArchivoCheckboxes))
+                {
+                    string[] lineas = File.ReadAllLines(rutaArchivoCheckboxes);
+                    System.Diagnostics.Debug.WriteLine($"[CHECKBOX] Archivo encontrado con {lineas.Length} líneas");
+                    foreach (string linea in lineas)
+                    {
+                        if (string.IsNullOrWhiteSpace(linea)) continue;
+                        string[] partes = linea.Split('|');
+                        if (partes.Length >= 3)
+                        {
+                            string idConsulta = partes[0];
+                            int columna = int.Parse(partes[1]);
+                            bool estado = bool.Parse(partes[2]);
+
+                            if (!estados.ContainsKey(idConsulta))
+                            {
+                                estados[idConsulta] = new Dictionary<int, bool>();
+                            }
+                            estados[idConsulta][columna] = estado;
+                            System.Diagnostics.Debug.WriteLine($"[CHECKBOX] Cargado: IdConsulta={idConsulta}, Columna={columna}, Estado={estado}");
+                        }
+                    }
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine($"[CHECKBOX] Archivo no existe, iniciando con estados vacíos");
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[CHECKBOX] Error cargando estados: {ex.Message} - StackTrace: {ex.StackTrace}");
+            }
+            System.Diagnostics.Debug.WriteLine($"[CHECKBOX] Total de consultas con estados: {estados.Count}");
+            return estados;
+        }
+
+        public void guardarEstadoCheckbox(string idTipoExamen, int columna, bool estado)
+        {
+            try
+            {
+                string nombreColumna = "";
+                switch (columna)
+                {
+                    case 25: nombreColumna = "Labo"; break;
+                    case 26: nombreColumna = "Rayos"; break;
+                    case 27: nombreColumna = "Electro"; break;
+                    case 28: nombreColumna = "Salida"; break;
+                    default: return;
+                }
+
+                // Verificar si ya existe un registro para este idTipoExamen
+                string checkSql = $"SELECT COUNT(*) FROM dbo.EstadosCheckboxesMesaEntrada WHERE idTipoExamen = '{idTipoExamen}'";
+                DataTable dt = SQLConnector.obtenerTablaSegunConsultaString(checkSql);
+                int count = Convert.ToInt32(dt.Rows[0][0]);
+
+                if (count > 0)
+                {
+                    // Actualizar registro existente
+                    string updateSql = $"UPDATE dbo.EstadosCheckboxesMesaEntrada SET {nombreColumna} = {(estado ? 1 : 0)} WHERE idTipoExamen = '{idTipoExamen}'";
+                    SQLConnector.EjecutarConsulta(updateSql);
+                }
+                else
+                {
+                    // Insertar nuevo registro
+                    string insertSql = $"INSERT INTO dbo.EstadosCheckboxesMesaEntrada (idTipoExamen, {nombreColumna}) VALUES ('{idTipoExamen}', {(estado ? 1 : 0)})";
+                    SQLConnector.EjecutarConsulta(insertSql);
+                }
+
+                System.Diagnostics.Debug.WriteLine($"[CHECKBOX] Guardado en BD: IdTipoExamen={idTipoExamen}, Columna={nombreColumna}, Estado={estado}");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[CHECKBOX] Error guardando estado: {ex.Message} - StackTrace: {ex.StackTrace}");
+            }
         }
     }
 }
