@@ -732,7 +732,8 @@ namespace CapaPresentacion
 
         private void llenarPanelPacientePreventiva(Entidades.TurnoPreventiva turnoPrev)
         {
-            if (cboObsPredefinidasPrev != null) cboObsPredefinidasPrev.SelectedIndex = 0;
+            // No resetear el dropdown de observaciones para mantener la selección del usuario
+            // if (cboObsPredefinidasPrev != null) cboObsPredefinidasPrev.SelectedIndex = 0;
             CapaNegocioMepryl.PacientePreventiva PacientePre = new PacientePreventiva();
 
             tbIdTurnoPreventiva.Text = turnoPrev.Id.ToString();
@@ -819,7 +820,8 @@ namespace CapaPresentacion
 
         private void llenarPanelPacienteLaboral(Entidades.TurnoLaboral turnoLab)
         {
-            if (cboObsPredefinidasLab != null) cboObsPredefinidasLab.SelectedIndex = 0;
+            // No resetear el dropdown de observaciones para mantener la selección del usuario
+            // if (cboObsPredefinidasLab != null) cboObsPredefinidasLab.SelectedIndex = 0;
             string strFecha = "";
             tbIdTurnoLaboral.Text = turnoLab.Id.ToString();
             tbIdPacienteLaboral.Text = turnoLab.IdPaciente.ToString();
@@ -974,6 +976,9 @@ namespace CapaPresentacion
                     pacientePreventiva.TipoExamen.Seña = Convert.ToDouble(ppAsigPrev.Rows[0]["Seña"]);
                     pacientePreventiva.TipoExamen.LlevaPlanilla = Convert.ToBoolean(ppAsigPrev.Rows[0]["LlevaPlanilla"]);
                     pacientePreventiva.TipoExamen.ObservacionesExtra = ppAsigPrev.Rows[0]["ObservacionesExtra"].ToString();
+
+                    System.Diagnostics.Debug.WriteLine($"[TURNOS] Cargando preventiva - Id={pacientePreventiva.TipoExamen.Id}, ObservacionesExtra='{pacientePreventiva.TipoExamen.ObservacionesExtra}', LlevaPlanilla={pacientePreventiva.TipoExamen.LlevaPlanilla}");
+
                     // Guardar precioLista y Seña actualizado en BD
                     if (pacientePreventiva.TipoExamen.IdTipoExamenPaciente != Guid.Empty)
                     {
@@ -1037,6 +1042,8 @@ namespace CapaPresentacion
                     pacienteLaboral.TipoExamen.Seña = Convert.ToDouble(ppAsigLab.Rows[0]["Seña"]);
                     pacienteLaboral.TipoExamen.LlevaPlanilla = Convert.ToBoolean(ppAsigLab.Rows[0]["LlevaPlanilla"]);
                     pacienteLaboral.TipoExamen.ObservacionesExtra = ppAsigLab.Rows[0]["ObservacionesExtra"].ToString();
+
+                    System.Diagnostics.Debug.WriteLine($"[TURNOS] Cargando laboral - Id={pacienteLaboral.TipoExamen.Id}, ObservacionesExtra='{pacienteLaboral.TipoExamen.ObservacionesExtra}', LlevaPlanilla={pacienteLaboral.TipoExamen.LlevaPlanilla}");
                 }
             }
 

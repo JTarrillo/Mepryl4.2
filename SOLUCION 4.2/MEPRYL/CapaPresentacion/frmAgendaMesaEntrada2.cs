@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -32,6 +33,15 @@ namespace CapaPresentacion
         {
             InitializeComponent();
             mesaEntrada = new MesaEntrada();
+            
+            // Habilitar DoubleBuffered para evitar parpadeo visual
+            typeof(DataGridView).InvokeMember(
+                "DoubleBuffered",
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.SetProperty,
+                null,
+                dgvGrilla,
+                new object[] { true });
+            
             inicializar();                                
         }
 
@@ -40,6 +50,15 @@ namespace CapaPresentacion
             InitializeComponent();
             this.MdiParent = parentForm;            
             mesaEntrada = new MesaEntrada();
+            
+            // Habilitar DoubleBuffered para evitar parpadeo visual
+            typeof(DataGridView).InvokeMember(
+                "DoubleBuffered",
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.SetProperty,
+                null,
+                dgvGrilla,
+                new object[] { true });
+            
             inicializar();
             //ActualizaTimer();
         }
@@ -54,14 +73,45 @@ namespace CapaPresentacion
             System.Diagnostics.Debug.WriteLine($"[AGENDA] CargarDatos(): {sw.ElapsedMilliseconds} ms");
 
             sw.Restart();
-            PintarFilaGrilla();
-            sw.Stop();
-            System.Diagnostics.Debug.WriteLine($"[AGENDA] PintarFilaGrilla(): {sw.ElapsedMilliseconds} ms");
-
-            sw.Restart();
             mostrarDatos();
             sw.Stop();
             System.Diagnostics.Debug.WriteLine($"[AGENDA] mostrarDatos(): {sw.ElapsedMilliseconds} ms");
+
+            sw.Restart();
+            dgvGrilla.Refresh(); // Asegurar que el DataGridView esté completamente cargado
+            PintarFilaGrilla();
+            dgvGrilla.Refresh(); // Forzar repintado visual después de colorear
+            sw.Stop();
+            System.Diagnostics.Debug.WriteLine($"[AGENDA] PintarFilaGrilla(): {sw.ElapsedMilliseconds} ms");
+
+            // Ajustar orden de columnas visualmente
+            if (dgvGrilla.Columns.Count > 31)
+            {
+                // FechaNaci antes de ObservacTurno
+                dgvGrilla.Columns[16].DisplayIndex = 13; // FechaNaci antes de ObservacTurno
+                
+                // ObservacTurno y ObservacMesaEntrada en orden correcto
+                dgvGrilla.Columns[13].DisplayIndex = 14; // ObservacTurno
+                dgvGrilla.Columns[14].DisplayIndex = 15; // ObservacMesaEntrada después de ObservacTurno
+                
+                // Nat y Continua después de ObservacMesaEntrada
+                dgvGrilla.Columns[29].DisplayIndex = 16; // Nat después de ObservacMesaEntrada
+                dgvGrilla.Columns[29].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; // Centrar Nat
+                dgvGrilla.Columns[30].DisplayIndex = 17; // Continua después de Nat
+                
+                // RM después de Continua
+                dgvGrilla.Columns[15].DisplayIndex = 18; // RM después de Continua
+                
+                // HoraSalida al final
+                dgvGrilla.Columns[31].DisplayIndex = 31; // HoraSalida al final
+                dgvGrilla.Columns[31].Width = 150; // Ancho de columna HoraSalida
+                dgvGrilla.Columns[31].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; // Centrar HoraSalida
+                dgvGrilla.Columns[31].ReadOnly = true; // HoraSalida read-only para evitar acciones al hacer click
+                
+                // Desactivar color de selección azul para evitar parpadeo visual
+                dgvGrilla.DefaultCellStyle.SelectionBackColor = dgvGrilla.DefaultCellStyle.BackColor;
+                dgvGrilla.DefaultCellStyle.SelectionForeColor = dgvGrilla.DefaultCellStyle.ForeColor;
+            }
 
             System.Diagnostics.Debug.WriteLine("[AGENDA] --- inicializar() end ---");
         }
@@ -69,9 +119,13 @@ namespace CapaPresentacion
         private void dgvGrilla_CurrentCellChanged(object sender, EventArgs e)
         {
             if (dgvGrilla.CurrentCell != null)
-            {                
-                mostrarDatos();                
-                MostrarFoto(txtDni.Text);
+            {
+                // No llamar mostrarDatos() cuando la celda actual es HoraSalida (columna 31) para evitar despintado
+                if (dgvGrilla.CurrentCell.ColumnIndex != 31)
+                {
+                    mostrarDatos();
+                    MostrarFoto(txtDni.Text);
+                }
             }
         }
         
@@ -281,7 +335,8 @@ namespace CapaPresentacion
 
         private void timerActualiza_Tick(object sender, EventArgs e)
         {
-            CargarDatos();
+            // No recargar datos, solo actualizar colores
+            // CargarDatos(); // Comentado para evitar reseteo de la grilla
 
             //if (dgvGrilla.Rows.Count > 0)
             //{
@@ -415,17 +470,80 @@ namespace CapaPresentacion
 
         private void PintarFilaGrilla()
         {
+            System.Diagnostics.Debug.WriteLine($"[PINTAR] PintarFilaGrilla llamado - Filas: {dgvGrilla.Rows.Count}");
+            
             if (dgvGrilla.Rows.Count > 0)
             {
                 for (int i = 0; i < dgvGrilla.Rows.Count; i++)
                 {
                     try
                     {
-                        // Cells[17] = Revisado, ya viene en la consulta principal — sin llamada extra a la BD
-                        var val = dgvGrilla.Rows[i].Cells[17].Value;
-                        if (val != null && val != DBNull.Value && Convert.ToBoolean(val))
+                        // Prioridad 1: Regla Roja - Si Nat está ON
+                        var natVal = dgvGrilla.Rows[i].Cells[29].Value;
+                        System.Diagnostics.Debug.WriteLine($"[PINTAR] Fila {i} - Nat: {natVal} (Tipo: {natVal?.GetType().Name})");
+                        bool natOn = natVal != null && natVal != DBNull.Value && Convert.ToBoolean(natVal);
+
+                        if (natOn)
                         {
-                            dgvGrilla.Rows[i].DefaultCellStyle.BackColor = Color.LightGreen;
+                            // Rojo suave/pastel
+                            dgvGrilla.Rows[i].DefaultCellStyle.BackColor = Color.FromArgb(255, 200, 200);
+                            System.Diagnostics.Debug.WriteLine($"[PINTAR] Fila {i} - Pintando ROJO (Nat ON)");
+                        }
+                        else
+                        {
+                            // Prioridad 2: Regla Amarilla - Si Nat está OFF y Continua está ON
+                            var continuaVal = dgvGrilla.Rows[i].Cells[30].Value;
+                            bool continuaOn = continuaVal != null && continuaVal != DBNull.Value && Convert.ToBoolean(continuaVal);
+
+                            if (continuaOn)
+                            {
+                                // Amarillo suave/pastel
+                                dgvGrilla.Rows[i].DefaultCellStyle.BackColor = Color.FromArgb(255, 255, 200);
+                            }
+                            else
+                            {
+                                // Prioridad 3: Regla Verde Oscuro - Si Salida está ON
+                                var salidaVal = dgvGrilla.Rows[i].Cells[28].Value;
+                                bool salidaOn = salidaVal != null && salidaVal != DBNull.Value && Convert.ToBoolean(salidaVal);
+
+                                if (salidaOn)
+                                {
+                                    // Verde esmeralda para indicar salida
+                                    dgvGrilla.Rows[i].DefaultCellStyle.BackColor = Color.FromArgb(46, 204, 113);
+                                    System.Diagnostics.Debug.WriteLine($"[PINTAR] Fila {i} - Pintando VERDE OSCURO (Salida ON)");
+                                }
+                                else
+                                {
+                                    // Estado por defecto - Alternancia blanco y verde claro
+                                    var val = dgvGrilla.Rows[i].Cells[17].Value;
+                                    System.Diagnostics.Debug.WriteLine($"[PINTAR] Fila {i} - Columna 17: {val} (Tipo: {val?.GetType().Name})");
+                                    
+                                    bool esVerde = false;
+                                    if (val != null && val != DBNull.Value)
+                                    {
+                                        if (val is bool boolVal)
+                                        {
+                                            esVerde = boolVal;
+                                        }
+                                        else if (val is string strVal)
+                                        {
+                                            esVerde = strVal.Equals("True", StringComparison.OrdinalIgnoreCase);
+                                        }
+                                    }
+                                    
+                                    if (esVerde)
+                                    {
+                                        dgvGrilla.Rows[i].DefaultCellStyle.BackColor = Color.LightGreen;
+                                        System.Diagnostics.Debug.WriteLine($"[PINTAR] Fila {i} - Pintando VERDE");
+                                    }
+                                    else
+                                    {
+                                        // Color por defecto (blanco)
+                                        dgvGrilla.Rows[i].DefaultCellStyle.BackColor = Color.White;
+                                        System.Diagnostics.Debug.WriteLine($"[PINTAR] Fila {i} - Pintando BLANCO");
+                                    }
+                                }
+                            }
                         }
                     }
                     catch (System.NullReferenceException)
@@ -436,15 +554,89 @@ namespace CapaPresentacion
             }
         }
 
+        private void PintarFilaEspecifica(int rowIndex)
+        {
+            if (rowIndex < 0 || rowIndex >= dgvGrilla.Rows.Count) return;
+            
+            try
+            {
+                dgvGrilla.SuspendLayout();
+                
+                var natVal = dgvGrilla.Rows[rowIndex].Cells[29].Value;
+                bool natOn = natVal != null && natVal != DBNull.Value && Convert.ToBoolean(natVal);
+
+                if (natOn)
+                {
+                    dgvGrilla.Rows[rowIndex].DefaultCellStyle.BackColor = Color.FromArgb(255, 200, 200);
+                }
+                else
+                {
+                    var continuaVal = dgvGrilla.Rows[rowIndex].Cells[30].Value;
+                    bool continuaOn = continuaVal != null && continuaVal != DBNull.Value && Convert.ToBoolean(continuaVal);
+
+                    if (continuaOn)
+                    {
+                        dgvGrilla.Rows[rowIndex].DefaultCellStyle.BackColor = Color.FromArgb(255, 255, 200);
+                    }
+                    else
+                    {
+                        var salidaVal = dgvGrilla.Rows[rowIndex].Cells[28].Value;
+                        bool salidaOn = salidaVal != null && salidaVal != DBNull.Value && Convert.ToBoolean(salidaVal);
+
+                        if (salidaOn)
+                        {
+                            dgvGrilla.Rows[rowIndex].DefaultCellStyle.BackColor = Color.FromArgb(46, 204, 113);
+                        }
+                        else
+                        {
+                            var val = dgvGrilla.Rows[rowIndex].Cells[17].Value;
+                            bool esVerde = false;
+                            if (val != null && val != DBNull.Value)
+                            {
+                                if (val is bool boolVal)
+                                {
+                                    esVerde = boolVal;
+                                }
+                                else if (val is string strVal)
+                                {
+                                    esVerde = strVal.Equals("True", StringComparison.OrdinalIgnoreCase);
+                                }
+                            }
+                            if (esVerde)
+                            {
+                                dgvGrilla.Rows[rowIndex].DefaultCellStyle.BackColor = Color.LightGreen;
+                            }
+                            else
+                            {
+                                dgvGrilla.Rows[rowIndex].DefaultCellStyle.BackColor = Color.White;
+                            }
+                        }
+                    }
+                }
+                dgvGrilla.InvalidateRow(rowIndex);
+                dgvGrilla.ResumeLayout(true);
+            }
+            catch (System.NullReferenceException)
+            {
+                // fila sin datos, ignorar
+            }
+        }
+
         private void dgvGrilla_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
+            System.Diagnostics.Debug.WriteLine($"[CHECKBOX] CellContentClick - ColumnIndex: {e.ColumnIndex}, RowIndex: {e.RowIndex}");
+
+            // No hacer nada cuando se hace click en HoraSalida (columna 31) para evitar despintado
+            if (e.ColumnIndex == 31)
+            {
+                return;
+            }
+
             intFilaSelecc = dgvGrilla.CurrentCell.RowIndex;
             intColSelecc = dgvGrilla.CurrentCell.ColumnIndex;
 
-            System.Diagnostics.Debug.WriteLine($"[CHECKBOX] CellContentClick - ColumnIndex: {e.ColumnIndex}, RowIndex: {e.RowIndex}");
-
-            // Manejar los nuevos checkboxes (columnas 25-28)
-            if (e.ColumnIndex >= 25 && e.ColumnIndex <= 28 && e.RowIndex >= 0)
+            // Manejar los nuevos checkboxes (columnas 25-30)
+            if (e.ColumnIndex >= 25 && e.ColumnIndex <= 30 && e.RowIndex >= 0)
             {
                 System.Diagnostics.Debug.WriteLine($"[CHECKBOX] Detectado checkbox en columna {e.ColumnIndex}");
 
@@ -464,6 +656,30 @@ namespace CapaPresentacion
 
                 // Guardar el estado en base de datos
                 mesaEntrada.guardarEstadoCheckbox(idTipoExamen, e.ColumnIndex, nuevoEstado);
+                
+                // Si es Salida (columna 28), actualizar HoraSalida en tiempo real
+                if (e.ColumnIndex == 28)
+                {
+                    if (nuevoEstado)
+                    {
+                        // Marcar Salida - mostrar hora actual
+                        dgvGrilla.Rows[e.RowIndex].Cells[31].Value = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
+                    }
+                    else
+                    {
+                        // Desmarcar Salida - limpiar hora
+                        dgvGrilla.Rows[e.RowIndex].Cells[31].Value = string.Empty;
+                    }
+                }
+                
+                // Actualizar coloreo en tiempo real cuando cambia Nat o Continua
+                // Solo repintar la fila específica para evitar reseteo visual de toda la grilla
+                PintarFilaEspecifica(e.RowIndex);
+            }
+            // Actualizar coloreo cuando cambia la columna 17 (controla coloreo verde)
+            else if (e.ColumnIndex == 17 && e.RowIndex >= 0)
+            {
+                PintarFilaGrilla();
             }
 
             //intPosScroll = dgvGrilla.FirstDisplayedScrollingRowIndex;
@@ -471,7 +687,75 @@ namespace CapaPresentacion
 
         private void frmAgendaMesaEntrada_Load(object sender, EventArgs e)
         {
+            dgvGrilla.Refresh(); // Asegurar que el DataGridView esté completamente cargado
             PintarFilaGrilla();
+            dgvGrilla.Refresh(); // Forzar repintado visual después de colorear
+
+            // Log para verificar HoraSalida en la grilla
+            System.Diagnostics.Debug.WriteLine($"[HORA_SALIDA_GRILLA] Total columnas en grilla: {dgvGrilla.Columns.Count}");
+            if (dgvGrilla.Columns.Count > 31)
+            {
+                System.Diagnostics.Debug.WriteLine($"[HORA_SALIDA_GRILLA] Columna 31 (HoraSalida) existe: {dgvGrilla.Columns[31].Name}");
+                
+                for (int i = 0; i < Math.Min(5, dgvGrilla.Rows.Count); i++)
+                {
+                    var horaSalidaValue = dgvGrilla.Rows[i].Cells[31].Value;
+                    System.Diagnostics.Debug.WriteLine($"[HORA_SALIDA_GRILLA] Fila {i} - HoraSalida: {horaSalidaValue} (Tipo: {horaSalidaValue?.GetType().Name})");
+                }
+            }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine($"[HORA_SALIDA_GRILLA] ERROR: La grilla solo tiene {dgvGrilla.Columns.Count} columnas, se necesitan al menos 32");
+            }
+
+            // Ajustar orden de columnas visualmente
+            if (dgvGrilla.Columns.Count > 31)
+            {
+                // FechaNaci antes de ObservacTurno
+                dgvGrilla.Columns[16].DisplayIndex = 13; // FechaNaci antes de ObservacTurno
+                
+                // ObservacTurno y ObservacMesaEntrada en orden correcto
+                dgvGrilla.Columns[13].DisplayIndex = 14; // ObservacTurno
+                dgvGrilla.Columns[14].DisplayIndex = 15; // ObservacMesaEntrada después de ObservacTurno
+                
+                // Nat y Continua después de ObservacMesaEntrada
+                dgvGrilla.Columns[29].DisplayIndex = 16; // Nat después de ObservacMesaEntrada
+                dgvGrilla.Columns[29].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; // Centrar Nat
+                dgvGrilla.Columns[30].DisplayIndex = 17; // Continua después de Nat
+                
+                // RM después de Continua
+                dgvGrilla.Columns[15].DisplayIndex = 18; // RM después de Continua
+                
+                // HoraSalida al final
+                dgvGrilla.Columns[31].DisplayIndex = 31; // HoraSalida al final
+                dgvGrilla.Columns[31].Width = 150; // Ancho de columna HoraSalida
+                dgvGrilla.Columns[31].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; // Centrar HoraSalida
+                dgvGrilla.Columns[31].ReadOnly = true; // HoraSalida read-only para evitar acciones al hacer click
+                
+                // Desactivar color de selección azul para evitar parpadeo visual
+                dgvGrilla.DefaultCellStyle.SelectionBackColor = dgvGrilla.DefaultCellStyle.BackColor;
+                dgvGrilla.DefaultCellStyle.SelectionForeColor = dgvGrilla.DefaultCellStyle.ForeColor;
+            }
+        }
+
+        private void dgvGrilla_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
+        {
+            // Nat y Continua ahora son checkboxes normales, no se personaliza como Toggle Switch
+        }
+
+        private GraphicsPath CreateRoundedRect(float x, float y, float width, float height, float radius)
+        {
+            GraphicsPath path = new GraphicsPath();
+            path.AddLine(x + radius, y, x + width - radius, y);
+            path.AddArc(x + width - radius, y, radius, radius, 270, 90);
+            path.AddLine(x + width, y + radius, x + width, y + height - radius);
+            path.AddArc(x + width - radius, y + height - radius, radius, radius, 0, 90);
+            path.AddLine(x + width - radius, y + height, x + radius, y + height);
+            path.AddArc(x, y + height - radius, radius, radius, 90, 90);
+            path.AddLine(x, y + height - radius, x, y + radius);
+            path.AddArc(x, y, radius, radius, 180, 90);
+            path.CloseFigure();
+            return path;
         }
 
         private void dgvGrilla_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -481,7 +765,12 @@ namespace CapaPresentacion
 
             //intPosScroll = dgvGrilla.FirstDisplayedScrollingRowIndex;
             //SeleccinarFilaTurno();
-            mostrarDatos();
+            
+            // No llamar mostrarDatos() cuando se hace click en HoraSalida (columna 31) para evitar despintado
+            if (e.ColumnIndex != 31)
+            {
+                mostrarDatos();
+            }
         }
 
         private void SeleccinarFilaTurno()

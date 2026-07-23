@@ -1,0 +1,5 @@
+-- Verificar estructura de la tabla ExamenLaboral
+SELECT COLUMN_NAME, DATA_TYPE 
+FROM INFORMATION_SCHEMA.COLUMNS 
+WHERE TABLE_NAME = 'ExamenLaboral'
+ORDER BY ORDINAL_POSITION

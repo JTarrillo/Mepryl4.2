@@ -104,13 +104,13 @@ namespace CapaDatosMepryl
                 // Si es observación automática, regenerarla con datos actualizados
                 if (EsObservacionAutomatica(observacionActual))
                     return GenerarObservaciones(promo, lista, sena, llevaPlanilla, observacionesExtra);
-                
+
                 // Si es observación manual, devolverla tal cual (prioridad absoluta)
                 return observacionActual;
             }
 
             // Si está vacía, generar observación automática si se requiere
-            bool requiereObservacionAutomatica = llevaPlanilla || sena > 0 || !string.IsNullOrWhiteSpace(observacionesExtra);
+            bool requiereObservacionAutomatica = llevaPlanilla || sena > 0 || !string.IsNullOrWhiteSpace(observacionesExtra) || promo > 0 || lista > 0;
             if (requiereObservacionAutomatica)
                 return GenerarObservaciones(promo, lista, sena, llevaPlanilla, observacionesExtra);
 
@@ -162,7 +162,9 @@ namespace CapaDatosMepryl
                 ISNULL(cfg.Seña, 0) as SenaVigente,
                 ISNULL(cfg.LlevaPlanilla, 0) as LlevaPlanilla,
                 ISNULL(cfg.Observaciones, '') as ObservacionesExtra,
-                e.descripcion as SubtipoReal, e.Padre
+                ISNULL(t.observaciones, '') as ObservacionesManual,
+                e.descripcion as SubtipoReal, e.Padre,
+                e.id as IdEspecialidad
                 from dbo.TipoExamenDePaciente tep
                 inner join dbo.Especialidad e on tep.idEspecialidad = e.id
                 inner join dbo.Turno t on tep.idTurno = t.id
@@ -207,13 +209,13 @@ namespace CapaDatosMepryl
             }
 
             // turnoId -> datos del examen asignado
-            var dictTE = new Dictionary<string, (string idTE, decimal precio, decimal sena, string modificado, string subtipoReal, bool esPadre, decimal precioPromoVigente, decimal precioListaVigente, decimal senaVigente, bool llevaPlanilla, string observacionesExtra)>(StringComparer.OrdinalIgnoreCase);
+            var dictTE = new Dictionary<string, (string idTE, decimal precio, decimal sena, string modificado, string subtipoReal, bool esPadre, decimal precioPromoVigente, decimal precioListaVigente, decimal senaVigente, bool llevaPlanilla, string observacionesExtra, string observacionesManual, string idEspecialidad)>(StringComparer.OrdinalIgnoreCase);
             foreach (DataRow r in tipoExamenBatch.Rows)
             {
                 string idTurno = r["idTurno"].ToString();
                 if (!dictTE.ContainsKey(idTurno))
                     dictTE[idTurno] = (
-                        r["id"].ToString(), 
+                        r["id"].ToString(),
                         convertirADecimal(r["precioExamen"]),
                         convertirADecimal(r["seña"]),
                         r["modificado"].ToString(),
@@ -223,7 +225,9 @@ namespace CapaDatosMepryl
                         convertirADecimal(r["PrecioListaVigente"]),
                         convertirADecimal(r["SenaVigente"]),
                         r["LlevaPlanilla"].ToString() == "1" || r["LlevaPlanilla"].ToString().Equals("true", StringComparison.OrdinalIgnoreCase),
-                        r["ObservacionesExtra"].ToString()
+                        r["ObservacionesExtra"].ToString(),
+                        r["ObservacionesManual"].ToString(),
+                        r["IdEspecialidad"].ToString()
                     );
             }
 
@@ -282,14 +286,19 @@ namespace CapaDatosMepryl
                     decimal promoObservacion = teData.precio > 0 ? teData.precio : (teData.precioPromoVigente > 0 ? teData.precioPromoVigente : importeBruto);
                     decimal listaObservacion = teData.precio > 0 ? (teData.precioListaVigente > 0 ? teData.precioListaVigente : 0) : teData.precioListaVigente;
                     decimal senaObservacion = teData.precio > 0 ? teData.sena : teData.senaVigente;
-                    
+
+                    System.Diagnostics.Debug.WriteLine($"[VENTANILLA] IdTurno={idTurno}, IdEspecialidad={teData.idEspecialidad}, ObservacionesManual='{teData.observacionesManual}', ObservacionesExtra='{teData.observacionesExtra}', LlevaPlanilla={teData.llevaPlanilla}");
+
+                    // PRIORIDAD: Si hay observación manual en la tabla Turno, usar esa. Si no, usar observaciones automáticas
+                    string observacionesParaVigente = !string.IsNullOrWhiteSpace(teData.observacionesManual) ? teData.observacionesManual : teData.observacionesExtra;
+
                     observaciones = ObtenerObservacionVigente(
                         observaciones,
                         promoObservacion,
                         listaObservacion,
                         senaObservacion,
                         teData.llevaPlanilla,
-                        teData.observacionesExtra);
+                        observacionesParaVigente);
                 }
 
                 // El nombre del subtipo ya viene rescatado desde el SQL mediante COALESCE

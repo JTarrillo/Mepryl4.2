@@ -27,6 +27,9 @@ namespace CapaPresentacion
         DataTable dtRequeridoMensaje;
         int intNroCol = 0;
 
+        public delegate void DelegateFormulario();
+        public DelegateFormulario objDelegateFormulario = null;
+
         int puntero;
         public frmImportarLaboratorioLaboral()
         {
@@ -99,7 +102,20 @@ namespace CapaPresentacion
                 if (valoresInvalidos.Rows.Count == 0)
                 {
                     if (!faltanResultados())
+                    {
                         MessageBox.Show("¡Importación exitosa! Registros importados correctamente: " + (puntero - 1).ToString(), "Importar", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        System.Diagnostics.Debug.WriteLine("[IMPORTAR] Llamando a delegate para recargar grilla");
+                        if (objDelegateFormulario != null)
+                        {
+                            objDelegateFormulario();
+                            System.Diagnostics.Debug.WriteLine("[IMPORTAR] Delegate ejecutado, cerrando formulario");
+                            this.Close();
+                        }
+                        else
+                        {
+                            System.Diagnostics.Debug.WriteLine("[IMPORTAR] Delegate es null, no se ejecutará recarga");
+                        }
+                    }
                 }
                 else
                 {
@@ -1286,41 +1302,45 @@ namespace CapaPresentacion
                     dtRequeridoMensaje.Rows.Add(puntero, "(No Requerido) Test Embarazo");
                 }
 
-                if ((fila.ItemArray[32].ToString() == "" || fila.ItemArray[32].ToString() == "*") && Convert.ToBoolean(row.ItemArray[8].ToString()) == true)
-                {
-                    dtRequeridoMensaje.Rows.Add(puntero, "Es requerido resultados de Col. Total");
-                }
-                else if ((fila.ItemArray[32].ToString() != "" && fila.ItemArray[32].ToString() != "*") && Convert.ToBoolean(row.ItemArray[8].ToString()) == false)
-                {
-                    dtRequeridoMensaje.Rows.Add(puntero, "(No Requerido) Col. Total");
-                }
+                // Comentado para permitir importación sin estudios de lípidos requeridos
+                // if ((fila.ItemArray[32].ToString() == "" || fila.ItemArray[32].ToString() == "*") && Convert.ToBoolean(row.ItemArray[8].ToString()) == true)
+                // {
+                //     dtRequeridoMensaje.Rows.Add(puntero, "Es requerido resultados de Col. Total");
+                // }
+                // else if ((fila.ItemArray[32].ToString() != "" && fila.ItemArray[32].ToString() != "*") && Convert.ToBoolean(row.ItemArray[8].ToString()) == false)
+                // {
+                //     dtRequeridoMensaje.Rows.Add(puntero, "(No Requerido) Col. Total");
+                // }
 
-                if ((fila.ItemArray[34].ToString() == "" || fila.ItemArray[34].ToString() == "*" || Convert.ToInt32(fila.ItemArray[34]) == 0) && Convert.ToBoolean(row.ItemArray[9].ToString()) == true)
-                {
-                    dtRequeridoMensaje.Rows.Add(puntero, "Es requerido resultados de LDL");
-                }
-                else if ((fila.ItemArray[34].ToString() != "" && fila.ItemArray[34].ToString() != "*" && Convert.ToInt32(fila.ItemArray[34]) != 0) && Convert.ToBoolean(row.ItemArray[9].ToString()) == false)
-                {
-                    dtRequeridoMensaje.Rows.Add(puntero, "(No Requerido) LDL");
-                }
+                // Comentado para permitir importación sin estudios de lípidos requeridos
+                // if ((fila.ItemArray[34].ToString() == "" || fila.ItemArray[34].ToString() == "*" || Convert.ToInt32(fila.ItemArray[34]) == 0) && Convert.ToBoolean(row.ItemArray[9].ToString()) == true)
+                // {
+                //     dtRequeridoMensaje.Rows.Add(puntero, "Es requerido resultados de LDL");
+                // }
+                // else if ((fila.ItemArray[34].ToString() != "" && fila.ItemArray[34].ToString() != "*" && Convert.ToInt32(fila.ItemArray[34]) != 0) && Convert.ToBoolean(row.ItemArray[9].ToString()) == false)
+                // {
+                //     dtRequeridoMensaje.Rows.Add(puntero, "(No Requerido) LDL");
+                // }
 
-                if ((fila.ItemArray[31].ToString() == "" || fila.ItemArray[31].ToString() == "*") && Convert.ToBoolean(row.ItemArray[10].ToString()) == true)
-                {
-                    dtRequeridoMensaje.Rows.Add(puntero, "Es requerido resultados de HDL");
-                }
-                else if ((fila.ItemArray[31].ToString() != "" && fila.ItemArray[31].ToString() != "*") && Convert.ToBoolean(row.ItemArray[10].ToString()) == false)
-                {
-                    dtRequeridoMensaje.Rows.Add(puntero, "(No Requerido) HDL");
-                }
+                // Comentado para permitir importación sin estudios de lípidos requeridos
+                // if ((fila.ItemArray[31].ToString() == "" || fila.ItemArray[31].ToString() == "*") && Convert.ToBoolean(row.ItemArray[10].ToString()) == true)
+                // {
+                //     dtRequeridoMensaje.Rows.Add(puntero, "Es requerido resultados de HDL");
+                // }
+                // else if ((fila.ItemArray[31].ToString() != "" && fila.ItemArray[31].ToString() != "*") && Convert.ToBoolean(row.ItemArray[10].ToString()) == false)
+                // {
+                //     dtRequeridoMensaje.Rows.Add(puntero, "(No Requerido) HDL");
+                // }
 
-                if ((fila.ItemArray[33].ToString() == "" || fila.ItemArray[33].ToString() == "*") && Convert.ToBoolean(row.ItemArray[11].ToString()) == true)
-                {
-                    dtRequeridoMensaje.Rows.Add(puntero, "Es requerido resultados de Triglic.");
-                }
-                else if ((fila.ItemArray[33].ToString() != "" && fila.ItemArray[33].ToString() != "*") && Convert.ToBoolean(row.ItemArray[11].ToString()) == false)
-                {
-                    dtRequeridoMensaje.Rows.Add(puntero, "(No Requerido) Triglic.");
-                }
+                // Comentado para permitir importación sin estudios de lípidos requeridos
+                // if ((fila.ItemArray[33].ToString() == "" || fila.ItemArray[33].ToString() == "*") && Convert.ToBoolean(row.ItemArray[11].ToString()) == true)
+                // {
+                //     dtRequeridoMensaje.Rows.Add(puntero, "Es requerido resultados de Triglic.");
+                // }
+                // else if ((fila.ItemArray[33].ToString() != "" && fila.ItemArray[33].ToString() != "*") && Convert.ToBoolean(row.ItemArray[11].ToString()) == false)
+                // {
+                //     dtRequeridoMensaje.Rows.Add(puntero, "(No Requerido) Triglic.");
+                // }
 
                 if (((fila.ItemArray[17].ToString() == "" || fila.ItemArray[17].ToString() == "*") ||
                     (fila.ItemArray[18].ToString() == "" || fila.ItemArray[18].ToString() == "*") ||

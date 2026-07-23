@@ -1546,7 +1546,11 @@ namespace CapaPresentacion
                     : (row.Cells[4].Tag == null ? 0m : ParseDecimal(row.Cells[4].Tag));
                 dr["Seña"] = seña;
                 dr["LlevaPlanilla"] = (row.Cells[5].Value as bool?) ?? false;
-                dr["Observaciones"] = row.Cells[6].Value?.ToString() ?? "";
+                string observaciones = row.Cells[6].Value?.ToString() ?? "";
+                dr["Observaciones"] = observaciones;
+
+                System.Diagnostics.Debug.WriteLine($"[FRM_PRECIO_PROMO] GuardarConfig - Id={idEspecialidad}, Observaciones='{observaciones}', LlevaPlanilla={dr["LlevaPlanilla"]}, Seña={seña}");
+
                 dtConfig.Rows.Add(dr);
             }
             precioPromo.GuardarConfigEspecialidades(dtConfig);

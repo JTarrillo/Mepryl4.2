@@ -656,6 +656,7 @@ namespace CapaDatosMepryl
                 // List<string> updateObservaciones = SQLConnector.generarListaParaProcedure("@idTurno", "@observaciones");
                 // SQLConnector.executeProcedure("sp_Turno_UpdateObservaciones", updateObservaciones, entidad.Id, entidad.Observaciones);
                 List<string> updateObservaciones = SQLConnector.generarListaParaProcedure("@idTurno", "@observaciones", "@consulta");
+                System.Diagnostics.Debug.WriteLine($"[TURNO] sp_Turno_UpdateObservaciones (modificarTurnoLaboral) - IdTurno={entidad.Id}, Observaciones='{entidad.Observaciones}', Consulta='{entidad.Consulta}'");
                 SQLConnector.executeProcedure("sp_Turno_UpdateObservaciones", updateObservaciones, entidad.Id, entidad.Observaciones, entidad.Consulta);
                 tipoExamen.crearEstudiosPorExamen(entidad.TipoExamen);
                 List<string> updateIdPacienteTurno = SQLConnector.generarListaParaProcedure("@id", "@idPaciente");
@@ -750,6 +751,7 @@ namespace CapaDatosMepryl
                     // List<string> updateObservaciones = SQLConnector.generarListaParaProcedure("@idTurno", "@observaciones");
                     // SQLConnector.executeProcedure("sp_Turno_UpdateObservaciones", updateObservaciones, entidad.Id, entidad.Observaciones);
                     List<string> updateObservaciones = SQLConnector.generarListaParaProcedure("@idTurno", "@observaciones", "@consulta");
+                    System.Diagnostics.Debug.WriteLine($"[TURNO] sp_Turno_UpdateObservaciones - IdTurno={entidad.Id}, Observaciones='{entidad.Observaciones}', Consulta='{entidad.Consulta}'");
                     SQLConnector.executeProcedure("sp_Turno_UpdateObservaciones", updateObservaciones, entidad.Id, entidad.Observaciones, entidad.Consulta);
                     tipoExamen.crearEstudiosPorExamen(entidad.TipoExamen);
                     List<string> updateIdPacienteTurno = SQLConnector.generarListaParaProcedure("@id", "@idPaciente");

@@ -1,0 +1,5 @@
+-- Verificar estructura de la tabla ConsultaLaboral
+SELECT COLUMN_NAME, DATA_TYPE 
+FROM INFORMATION_SCHEMA.COLUMNS 
+WHERE TABLE_NAME = 'ConsultaLaboral'
+ORDER BY ORDINAL_POSITION

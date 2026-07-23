@@ -85,6 +85,7 @@ namespace CapaPresentacion
         public void setearValores(string idConsultaLaboral, string empresa, string tarea, string paciente, string fecha, string examen,
             string identificador, string dni, string idExamen)
         {
+            System.Diagnostics.Debug.WriteLine("[EXAMENLAB] setearValores llamado - idExamenLaboral: " + idExamen + ", identificador: " + identificador);
             idConsulta = idConsultaLaboral;
             tbEmpresa.Text = empresa;
             tbTarea.Text = tarea;
@@ -95,6 +96,7 @@ namespace CapaPresentacion
             tbDni.Text = dni;
             cargarImagen(@"S:\\FOTOS\\" + dni + ".jpg");
             idExamenLaboral = idExamen;
+            System.Diagnostics.Debug.WriteLine("[EXAMENLAB] idExamenLaboral asignado: " + idExamenLaboral);
             inicializarFormulario();
             cargarExamen();
             tbAntCli.Focus();
@@ -1246,7 +1248,9 @@ namespace CapaPresentacion
 
         private void cargarExamen()
         {
+            System.Diagnostics.Debug.WriteLine("[EXAMENLAB] cargarExamen llamado - idExamenLaboral: " + idExamenLaboral);
             Entidades.ExamenLaboral ex = examenLaboral.cargarExamen(idExamenLaboral);
+            System.Diagnostics.Debug.WriteLine("[EXAMENLAB] Examen cargado - Id: " + ex.Id + ", Id vacío: " + (ex.Id == Guid.Empty));
             if (ex.Id != Guid.Empty) { cargar(ex); }
         }
 

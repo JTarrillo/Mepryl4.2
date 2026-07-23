@@ -340,6 +340,8 @@ namespace CapaDatosMepryl
         {
             if (dtDatos == null || dtDatos.Rows.Count == 0) return;
 
+            System.Diagnostics.Debug.WriteLine($"[PRECIO_PROMO] GuardarConfigEspecialidades - Filas: {dtDatos.Rows.Count}");
+
             // UPDATE set-based para registros existentes
             var sbUpd = new StringBuilder();
             sbUpd.Append("UPDATE c SET c.Se\u00f1a=v.SP,c.LlevaPlanilla=v.LP,c.Observaciones=v.Obs,c.FechaModificacion=GETDATE() " +
@@ -359,6 +361,8 @@ namespace CapaDatosMepryl
                 string planilla = (Convert.ToBoolean(dtDatos.Rows[i]["LlevaPlanilla"]) ? "1" : "0");
                 string obs      = dtDatos.Rows[i]["Observaciones"].ToString().Replace("'", "''");
 
+                System.Diagnostics.Debug.WriteLine($"[PRECIO_PROMO] Fila {i}: Id={id}, Observaciones='{obs}', LlevaPlanilla={planilla}, Seña={s}");
+
                 if (!first) { sbUpd.Append(","); sbIns.Append(","); }
                 first = false;
                 string row = "('" + id + "'," + s + "," + planilla + ",'" + obs + "')";
@@ -372,6 +376,9 @@ namespace CapaDatosMepryl
 
             sbUpd.Append(") AS v(idEsp,SP,LP,Obs) ON c.idEspecialidad=v.idEsp;");
             sbIns.Append(") AS v(idEsp,SP,LP,Obs) WHERE NOT EXISTS(SELECT 1 FROM dbo.ConfigPrecioEspecialidad c2 WHERE c2.idEspecialidad=v.idEsp);");
+
+            System.Diagnostics.Debug.WriteLine($"[PRECIO_PROMO] SQL UPDATE: {sbUpd.ToString()}");
+            System.Diagnostics.Debug.WriteLine($"[PRECIO_PROMO] SQL INSERT: {sbIns.ToString()}");
 
             SQLConnector.obtenerTablaSegunConsultaString(sbUpd.ToString());
             if (anyInsert)

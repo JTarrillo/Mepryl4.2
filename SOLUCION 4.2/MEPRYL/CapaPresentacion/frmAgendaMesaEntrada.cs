@@ -377,6 +377,7 @@ namespace CapaPresentacion
             intColSelecc = dgvGrilla.CurrentCell.ColumnIndex;
 
             //intPosScroll = dgvGrilla.FirstDisplayedScrollingRowIndex;
+            PintarFilaGrilla(); // Actualizar coloreo en tiempo real cuando cambia Nat o Continua
         }
 
         private void frmAgendaMesaEntrada_Load(object sender, EventArgs e)

@@ -1120,8 +1120,19 @@ namespace CapaPresentacion
         private void botImportar_Click(object sender, EventArgs e)
         {
             //Utilidades.abrirFormulario(this.MdiParent, new frmImportarLaboratorioLaboral(), new Configuracion());
+            System.Diagnostics.Debug.WriteLine("[BUSQUEDA] botImportar_Click - Creando frmImportarLaboratorioLaboral");
             frmImportarLaboratorioLaboral frm = new frmImportarLaboratorioLaboral();
+            frm.objDelegateFormulario = new frmImportarLaboratorioLaboral.DelegateFormulario(recargarGrilla);
+            System.Diagnostics.Debug.WriteLine("[BUSQUEDA] Delegate asignado correctamente");
             frm.ShowDialog();
+            System.Diagnostics.Debug.WriteLine("[BUSQUEDA] frmImportarLaboratorioLaboral cerrado");
+        }
+
+        private void recargarGrilla()
+        {
+            System.Diagnostics.Debug.WriteLine("[BUSQUEDA] recargarGrilla llamado - Fecha: " + tpFecha.Value.ToString());
+            cargarExamenesSinFiltro(tpFecha.Value, tpFecha.Value, obtenerFiltro());
+            System.Diagnostics.Debug.WriteLine("[BUSQUEDA] recargarGrilla completado");
         }
 
         private void GenerarReporteEspirometria(string strDNI, string strIdExamenLaboral, string strFecha, string strIdentificador, string strArchivoSalida, bool blnOlivera)

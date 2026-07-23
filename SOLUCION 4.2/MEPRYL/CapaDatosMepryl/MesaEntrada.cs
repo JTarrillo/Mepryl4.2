@@ -1451,22 +1451,55 @@ namespace CapaDatosMepryl
             retorno.Columns.Add("Rayos");
             retorno.Columns.Add("Electro");
             retorno.Columns.Add("Salida");
+            retorno.Columns.Add("Nat");
+            retorno.Columns.Add("Continua");
+            retorno.Columns.Add("HoraSalida");
             retorno.Columns[25].DataType = System.Type.GetType("System.Boolean");
             retorno.Columns[26].DataType = System.Type.GetType("System.Boolean");
             retorno.Columns[27].DataType = System.Type.GetType("System.Boolean");
             retorno.Columns[28].DataType = System.Type.GetType("System.Boolean");
+            retorno.Columns[29].DataType = System.Type.GetType("System.Boolean");
+            retorno.Columns[30].DataType = System.Type.GetType("System.Boolean");
 
             return retorno;
         }
 
         private void procesarFilaTablaGrillaPlanillaCompleta(ref DataTable retorno, DataRow fila)
         {
+            System.Diagnostics.Debug.WriteLine($"[HORA_SALIDA] procesarFilaTablaGrillaPlanillaCompleta llamado para IdTipoExamen: {fila.ItemArray[2]}");
+            
             Entidades.MesaEntrada paciente = cargarInformacionConsulta(new Guid(fila.ItemArray[0].ToString()));
             List<object> list = cargarDatosPaciente(new Guid(fila.ItemArray[1].ToString()));
             DataTable clubesOEmpresa = cargarClubesOEmpresa(new Guid(fila.ItemArray[0].ToString()));
 
             //Guid idTurno = new Guid(fila[3].ToString());
 
+
+            // Debug para verificar HoraSalida
+            System.Diagnostics.Debug.WriteLine($"[HORA_SALIDA] Total columnas en fila: {fila.ItemArray.Length}");
+            
+            string horaSalidaStr = string.Empty;
+            try
+            {
+                if (fila.ItemArray.Length > 19)
+                {
+                    var horaSalidaValue = fila.ItemArray[19];
+                    System.Diagnostics.Debug.WriteLine($"[HORA_SALIDA] IdTipoExamen: {fila.ItemArray[2]}, HoraSalida: {horaSalidaValue} (Tipo: {horaSalidaValue?.GetType().Name})");
+                    
+                    if (horaSalidaValue != DBNull.Value && horaSalidaValue != null)
+                    {
+                        horaSalidaStr = Convert.ToDateTime(horaSalidaValue).ToString("dd/MM/yyyy HH:mm:ss");
+                    }
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine($"[HORA_SALIDA] ERROR: La fila solo tiene {fila.ItemArray.Length} columnas, se necesitan al menos 20");
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[HORA_SALIDA] ERROR al procesar HoraSalida: {ex.Message}");
+            }
 
             retorno.Rows.Add(fila.ItemArray[0], fila.ItemArray[1], fila.ItemArray[2], fila.ItemArray[3],
                 Convert.ToDateTime(fila.ItemArray[4]).ToShortDateString(), String.Format("{0:HH:mm}", Convert.ToDateTime(fila.ItemArray[4])),
@@ -1477,7 +1510,8 @@ namespace CapaDatosMepryl
                 //  Nueva lìnea
                 paciente.TipoExamen.TextoClinico, paciente.TipoExamen.TextoLaboratorio, paciente.TipoExamen.TextoRx,
                 paciente.TipoExamen.TextoEstComplement, clubesOEmpresa.Rows[0][0].ToString(), clubesOEmpresa.Rows[0][1].ToString(),
-                paciente.TipoExamen.Modificado, false, false, false, false);
+                paciente.TipoExamen.Modificado, devolverBooleano(fila.ItemArray[9]), devolverBooleano(fila.ItemArray[10]), devolverBooleano(fila.ItemArray[11]), devolverBooleano(fila.ItemArray[12]),
+                horaSalidaStr); // HoraSalida
         }
 
         public DataTable cargarMesaEntradaPlanillaCompleta()
@@ -1503,7 +1537,10 @@ namespace CapaDatosMepryl
         ISNULL(ec.Labo, 0) as Labo,
         ISNULL(ec.Rayos, 0) as Rayos,
         ISNULL(ec.Electro, 0) as Electro,
-        ISNULL(ec.Salida, 0) as Salida
+        ISNULL(ec.Salida, 0) as Salida,
+        ISNULL(ec.Nat, 0) as Nat,
+        ISNULL(ec.Continua, 0) as Continua,
+        ec.HoraSalida
         from Consulta c
         inner join dbo.TipoExamenDePaciente te on te.idConsulta = c.id
         inner join dbo.Especialidad e on te.idEspecialidad = e.id
@@ -1530,7 +1567,9 @@ namespace CapaDatosMepryl
                     { "Labo", devolverBooleano(row["Labo"]) },
                     { "Rayos", devolverBooleano(row["Rayos"]) },
                     { "Electro", devolverBooleano(row["Electro"]) },
-                    { "Salida", devolverBooleano(row["Salida"]) }
+                    { "Salida", devolverBooleano(row["Salida"]) },
+                    { "Nat", devolverBooleano(row["Nat"]) },
+                    { "Continua", devolverBooleano(row["Continua"]) }
                 };
             }
 
@@ -1660,7 +1699,7 @@ namespace CapaDatosMepryl
                     }
 
                     // Cargar estados de checkboxes desde el diccionario
-                    bool estadoLaboratorio = false, estadoRayos = false, estadoElectro = false, estadoSalida = false;
+                    bool estadoLaboratorio = false, estadoRayos = false, estadoElectro = false, estadoSalida = false, estadoNat = false, estadoContinua = false;
                     System.Diagnostics.Debug.WriteLine($"[CHECKBOX] Buscando estado para IdTipoExamen={idTipoExamen}. Diccionario tiene {estadosCheckboxes.Count} claves");
                     if (estadosCheckboxes.TryGetValue(idTipoExamen, out var estados))
                     {
@@ -1668,7 +1707,9 @@ namespace CapaDatosMepryl
                         estadoRayos = estados["Rayos"];
                         estadoElectro = estados["Electro"];
                         estadoSalida = estados["Salida"];
-                        System.Diagnostics.Debug.WriteLine($"[CHECKBOX] Cargando desde BD para IdTipoExamen={idTipoExamen}: Labo={estadoLaboratorio}, Rayos={estadoRayos}, Electro={estadoElectro}, Salida={estadoSalida}");
+                        estadoNat = estados["Nat"];
+                        estadoContinua = estados["Continua"];
+                        System.Diagnostics.Debug.WriteLine($"[CHECKBOX] Cargando desde BD para IdTipoExamen={idTipoExamen}: Labo={estadoLaboratorio}, Rayos={estadoRayos}, Electro={estadoElectro}, Salida={estadoSalida}, Nat={estadoNat}, Continua={estadoContinua}");
                     }
                     else
                     {
@@ -1676,6 +1717,14 @@ namespace CapaDatosMepryl
                     }
 
                     DateTime fechaDt = Convert.ToDateTime(fila["Fecha"]);
+
+                    // Obtener HoraSalida
+                    string horaSalidaStr = string.Empty;
+                    var horaSalidaValue = fila["HoraSalida"];
+                    if (horaSalidaValue != DBNull.Value && horaSalidaValue != null)
+                    {
+                        horaSalidaStr = Convert.ToDateTime(horaSalidaValue).ToString("dd/MM/yyyy HH:mm:ss");
+                    }
 
                     retorno.Rows.Add(
                         fila["IdConsulta"], fila["IdPaciente"], fila["IdTipoExamen"], fila["IdTurno"],
@@ -1693,7 +1742,8 @@ namespace CapaDatosMepryl
                         textoClinico, textoLab, textoRx, textoComplement,
                         ligaEmpresa, clubTarea,
                         modificado,
-                        estadoLaboratorio, estadoRayos, estadoElectro, estadoSalida
+                        estadoLaboratorio, estadoRayos, estadoElectro, estadoSalida, estadoNat, estadoContinua,
+                        horaSalidaStr
                     );
                 }
                 catch (Exception ex)
@@ -1765,12 +1815,15 @@ namespace CapaDatosMepryl
             try
             {
                 string nombreColumna = "";
+                bool esSalida = false;
                 switch (columna)
                 {
                     case 25: nombreColumna = "Labo"; break;
                     case 26: nombreColumna = "Rayos"; break;
                     case 27: nombreColumna = "Electro"; break;
-                    case 28: nombreColumna = "Salida"; break;
+                    case 28: nombreColumna = "Salida"; esSalida = true; break;
+                    case 29: nombreColumna = "Nat"; break;
+                    case 30: nombreColumna = "Continua"; break;
                     default: return;
                 }
 
@@ -1782,13 +1835,37 @@ namespace CapaDatosMepryl
                 if (count > 0)
                 {
                     // Actualizar registro existente
-                    string updateSql = $"UPDATE dbo.EstadosCheckboxesMesaEntrada SET {nombreColumna} = {(estado ? 1 : 0)} WHERE idTipoExamen = '{idTipoExamen}'";
+                    string updateSql = $"UPDATE dbo.EstadosCheckboxesMesaEntrada SET {nombreColumna} = {(estado ? 1 : 0)}";
+                    
+                    // Si es Salida y se está marcando, actualizar HoraSalida
+                    if (esSalida && estado)
+                    {
+                        updateSql += $", HoraSalida = GETDATE()";
+                    }
+                    // Si es Salida y se está desmarcando, limpiar HoraSalida
+                    else if (esSalida && !estado)
+                    {
+                        updateSql += ", HoraSalida = NULL";
+                    }
+                    
+                    updateSql += $" WHERE idTipoExamen = '{idTipoExamen}'";
                     SQLConnector.EjecutarConsulta(updateSql);
                 }
                 else
                 {
                     // Insertar nuevo registro
-                    string insertSql = $"INSERT INTO dbo.EstadosCheckboxesMesaEntrada (idTipoExamen, {nombreColumna}) VALUES ('{idTipoExamen}', {(estado ? 1 : 0)})";
+                    string insertSql = $"INSERT INTO dbo.EstadosCheckboxesMesaEntrada (idTipoExamen, {nombreColumna}";
+                    
+                    // Si es Salida y se está marcando, incluir HoraSalida
+                    if (esSalida && estado)
+                    {
+                        insertSql += ", HoraSalida) VALUES ('{idTipoExamen}', {(estado ? 1 : 0)}, GETDATE())";
+                    }
+                    else
+                    {
+                        insertSql += $") VALUES ('{idTipoExamen}', {(estado ? 1 : 0)})";
+                    }
+                    
                     SQLConnector.EjecutarConsulta(insertSql);
                 }
 

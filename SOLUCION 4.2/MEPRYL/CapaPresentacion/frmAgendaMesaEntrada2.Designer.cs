@@ -516,10 +516,11 @@
             dataGridViewCellStyle4.ForeColor = System.Drawing.Color.Black;
             this.dgvGrilla.RowsDefaultCellStyle = dataGridViewCellStyle4;
             this.dgvGrilla.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
-            this.dgvGrilla.Size = new System.Drawing.Size(1180, 212);
+            this.dgvGrilla.Size = new System.Drawing.Size(1400, 212);
             this.dgvGrilla.TabIndex = 274;
             this.dgvGrilla.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvGrilla_CellClick);
             this.dgvGrilla.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvGrilla_CellContentClick);
+            this.dgvGrilla.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.dgvGrilla_CellPainting);
             this.dgvGrilla.Scroll += new System.Windows.Forms.ScrollEventHandler(this.dgvGrilla_Scroll);
             this.dgvGrilla.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dgvGrilla_KeyDown);
             this.dgvGrilla.MouseClick += new System.Windows.Forms.MouseEventHandler(this.dgvGrilla_MouseClick);
@@ -538,7 +539,7 @@
             // 
             // timerActualiza
             // 
-            this.timerActualiza.Enabled = true;
+            this.timerActualiza.Enabled = true; // Reactivado para mantener colores actualizados sin recargar datos
             this.timerActualiza.Interval = 2000;
             this.timerActualiza.Tick += new System.EventHandler(this.timerActualiza_Tick);
             // 
