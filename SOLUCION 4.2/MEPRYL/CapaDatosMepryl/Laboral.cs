@@ -1478,8 +1478,10 @@ namespace CapaDatosMepryl
                 strMotivo = "e.descripcion = '" + Motivo + "'";
             }
 
-            strSQL = "Select CONVERT(VARCHAR(10), c.fecha, 103) as fecha, c.identificador, EMP.razonSocial, e.descripcion AS 'MotivoConsulta', " +
-                     "p.dni,(p.apellido + ' ' + p.nombres) AS 'Nombre', DL.descripcion AS 'Dictamen', EL.observaciones " +
+            strSQL = "Select EMP.razonSocial, p.dni, c.identificador, (p.apellido + ' ' + p.nombres) AS 'Nombre', " +
+                     "DL.descripcion AS 'Dictamen', CONVERT(VARCHAR(10), c.fecha, 103) as fecha, " +
+                     "REPLACE(REPLACE(REPLACE(EMP.cuit, '-', ''), '.', ''), ',', '') AS 'CUIT', " +
+                     "e.descripcion AS 'Subtipo', EL.observaciones " +
                      "FROM dbo.Consulta c inner join dbo.PacienteLaboral p on c.pacienteID = p.id " +
                      "inner join dbo.TipoExamenDePaciente tep on c.id = tep.idConsulta " +
                      "inner join dbo.Especialidad e on tep.idEspecialidad = e.id " +

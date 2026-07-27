@@ -1,25 +1,33 @@
-import PyPDF2
+import openpyxl
 import sys
 
-def leer_pdf(ruta_pdf):
+def leer_excel(ruta_excel):
     try:
-        with open(ruta_pdf, 'rb') as archivo:
-            lector = PyPDF2.PdfReader(archivo)
-            print(f"El PDF tiene {len(lector.pages)} páginas")
-            print("=" * 50)
-            
-            for num_pagina in range(len(lector.pages)):
-                pagina = lector.pages[num_pagina]
-                texto = pagina.extract_text()
-                print(f"\n--- Página {num_pagina + 1} ---")
-                print(texto)
-                print("-" * 30)
+        workbook = openpyxl.load_workbook(ruta_excel)
+        sheet = workbook.active
+        print(f"El Excel tiene {sheet.max_row} filas y {sheet.max_column} columnas")
+        print("=" * 50)
+        
+        # Mostrar encabezados
+        print("\n--- ENCABEZADOS ---")
+        for col in range(1, sheet.max_column + 1):
+            header = sheet.cell(row=1, column=col).value
+            print(f"Columna {col}: {header}")
+        
+        # Mostrar primeras filas de datos
+        print("\n--- PRIMERAS 5 FILAS DE DATOS ---")
+        for row in range(2, min(7, sheet.max_row + 1)):
+            print(f"\nFila {row}:")
+            for col in range(1, sheet.max_column + 1):
+                value = sheet.cell(row=row, column=col).value
+                header = sheet.cell(row=1, column=col).value
+                print(f"  {header}: {value}")
                 
     except FileNotFoundError:
-        print(f"Error: No se encuentra el archivo en la ruta: {ruta_pdf}")
+        print(f"Error: No se encuentra el archivo en la ruta: {ruta_excel}")
     except Exception as e:
-        print(f"Error al leer el PDF: {str(e)}")
+        print(f"Error al leer el Excel: {str(e)}")
 
 if __name__ == "__main__":
-    ruta = r"p:\ESTUDIOS CONSOLIDADOS\PREVENTIVA\2025\09-SEPTIEMBRE\05-09-2025\CLINICA\208 - 55676837 - 05092025 - VARELA BENICIO WILLIAM ELIEL.pdf"
-    leer_pdf(ruta)
+    ruta = r"C:\Mepryl4.2\EXPORTACION DICTAMENES AL 30-06-2026.xlsx"
+    leer_excel(ruta)

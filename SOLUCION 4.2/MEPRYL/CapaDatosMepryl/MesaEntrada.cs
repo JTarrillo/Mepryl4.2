@@ -1488,7 +1488,7 @@ namespace CapaDatosMepryl
                     
                     if (horaSalidaValue != DBNull.Value && horaSalidaValue != null)
                     {
-                        horaSalidaStr = Convert.ToDateTime(horaSalidaValue).ToString("dd/MM/yyyy HH:mm:ss");
+                        horaSalidaStr = Convert.ToDateTime(horaSalidaValue).ToString("HH:mm:ss");
                     }
                 }
                 else
@@ -1723,7 +1723,7 @@ namespace CapaDatosMepryl
                     var horaSalidaValue = fila["HoraSalida"];
                     if (horaSalidaValue != DBNull.Value && horaSalidaValue != null)
                     {
-                        horaSalidaStr = Convert.ToDateTime(horaSalidaValue).ToString("dd/MM/yyyy HH:mm:ss");
+                        horaSalidaStr = Convert.ToDateTime(horaSalidaValue).ToString("HH:mm:ss");
                     }
 
                     retorno.Rows.Add(

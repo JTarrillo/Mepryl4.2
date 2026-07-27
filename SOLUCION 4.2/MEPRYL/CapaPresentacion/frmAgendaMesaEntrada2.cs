@@ -96,21 +96,27 @@ namespace CapaPresentacion
                 
                 // Nat y Continua después de ObservacMesaEntrada
                 dgvGrilla.Columns[29].DisplayIndex = 16; // Nat después de ObservacMesaEntrada
+                dgvGrilla.Columns[29].Width = 40; // Ancho de columna Nat
+                dgvGrilla.Columns[29].HeaderText = "NAT"; // Nombre de columna Nat
                 dgvGrilla.Columns[29].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; // Centrar Nat
                 dgvGrilla.Columns[30].DisplayIndex = 17; // Continua después de Nat
+                dgvGrilla.Columns[30].Width = 50; // Ancho de columna Continua
+                dgvGrilla.Columns[30].HeaderText = "CONT."; // Nombre de columna Continua
                 
                 // RM después de Continua
                 dgvGrilla.Columns[15].DisplayIndex = 18; // RM después de Continua
                 
                 // HoraSalida al final
                 dgvGrilla.Columns[31].DisplayIndex = 31; // HoraSalida al final
-                dgvGrilla.Columns[31].Width = 150; // Ancho de columna HoraSalida
-                dgvGrilla.Columns[31].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; // Centrar HoraSalida
+                dgvGrilla.Columns[31].Width = 70; // Ancho de columna HoraSalida
+                dgvGrilla.Columns[31].HeaderText = "Hora"; // Nombre de columna HoraSalida
+                dgvGrilla.Columns[31].HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter; // Centrar encabezado
+                dgvGrilla.Columns[31].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; // Centrar contenido
                 dgvGrilla.Columns[31].ReadOnly = true; // HoraSalida read-only para evitar acciones al hacer click
                 
-                // Desactivar color de selección azul para evitar parpadeo visual
-                dgvGrilla.DefaultCellStyle.SelectionBackColor = dgvGrilla.DefaultCellStyle.BackColor;
-                dgvGrilla.DefaultCellStyle.SelectionForeColor = dgvGrilla.DefaultCellStyle.ForeColor;
+                // Color de selección RGB(0, 120, 212) - #0078D4 (azul Windows)
+                dgvGrilla.DefaultCellStyle.SelectionBackColor = Color.FromArgb(0, 120, 212);
+                dgvGrilla.DefaultCellStyle.SelectionForeColor = Color.White;
             }
 
             System.Diagnostics.Debug.WriteLine("[AGENDA] --- inicializar() end ---");
@@ -478,27 +484,28 @@ namespace CapaPresentacion
                 {
                     try
                     {
-                        // Prioridad 1: Regla Roja - Si Nat está ON
-                        var natVal = dgvGrilla.Rows[i].Cells[29].Value;
-                        System.Diagnostics.Debug.WriteLine($"[PINTAR] Fila {i} - Nat: {natVal} (Tipo: {natVal?.GetType().Name})");
-                        bool natOn = natVal != null && natVal != DBNull.Value && Convert.ToBoolean(natVal);
+                        // Prioridad 1: Regla Amarilla - Si Continua está ON (tiene prioridad sobre Nat)
+                        var continuaVal = dgvGrilla.Rows[i].Cells[30].Value;
+                        bool continuaOn = continuaVal != null && continuaVal != DBNull.Value && Convert.ToBoolean(continuaVal);
 
-                        if (natOn)
+                        if (continuaOn)
                         {
-                            // Rojo suave/pastel
-                            dgvGrilla.Rows[i].DefaultCellStyle.BackColor = Color.FromArgb(255, 200, 200);
-                            System.Diagnostics.Debug.WriteLine($"[PINTAR] Fila {i} - Pintando ROJO (Nat ON)");
+                            // Amarillo más oscuro pero limpio
+                            dgvGrilla.Rows[i].DefaultCellStyle.BackColor = Color.FromArgb(255, 200, 50);
+                            System.Diagnostics.Debug.WriteLine($"[PINTAR] Fila {i} - Pintando AMARILLO (Continua ON)");
                         }
                         else
                         {
-                            // Prioridad 2: Regla Amarilla - Si Nat está OFF y Continua está ON
-                            var continuaVal = dgvGrilla.Rows[i].Cells[30].Value;
-                            bool continuaOn = continuaVal != null && continuaVal != DBNull.Value && Convert.ToBoolean(continuaVal);
+                            // Prioridad 2: Regla Roja - Si Nat está ON y Continua está OFF
+                            var natVal = dgvGrilla.Rows[i].Cells[29].Value;
+                            System.Diagnostics.Debug.WriteLine($"[PINTAR] Fila {i} - Nat: {natVal} (Tipo: {natVal?.GetType().Name})");
+                            bool natOn = natVal != null && natVal != DBNull.Value && Convert.ToBoolean(natVal);
 
-                            if (continuaOn)
+                            if (natOn)
                             {
-                                // Amarillo suave/pastel
-                                dgvGrilla.Rows[i].DefaultCellStyle.BackColor = Color.FromArgb(255, 255, 200);
+                                // Rojo más oscuro pero limpio
+                                dgvGrilla.Rows[i].DefaultCellStyle.BackColor = Color.FromArgb(220, 50, 50);
+                                System.Diagnostics.Debug.WriteLine($"[PINTAR] Fila {i} - Pintando ROJO (Nat ON)");
                             }
                             else
                             {
@@ -562,21 +569,23 @@ namespace CapaPresentacion
             {
                 dgvGrilla.SuspendLayout();
                 
-                var natVal = dgvGrilla.Rows[rowIndex].Cells[29].Value;
-                bool natOn = natVal != null && natVal != DBNull.Value && Convert.ToBoolean(natVal);
+                // Prioridad 1: Regla Amarilla - Si Continua está ON (tiene prioridad sobre Nat)
+                var continuaVal = dgvGrilla.Rows[rowIndex].Cells[30].Value;
+                bool continuaOn = continuaVal != null && continuaVal != DBNull.Value && Convert.ToBoolean(continuaVal);
 
-                if (natOn)
+                if (continuaOn)
                 {
-                    dgvGrilla.Rows[rowIndex].DefaultCellStyle.BackColor = Color.FromArgb(255, 200, 200);
+                    dgvGrilla.Rows[rowIndex].DefaultCellStyle.BackColor = Color.FromArgb(255, 200, 50);
                 }
                 else
                 {
-                    var continuaVal = dgvGrilla.Rows[rowIndex].Cells[30].Value;
-                    bool continuaOn = continuaVal != null && continuaVal != DBNull.Value && Convert.ToBoolean(continuaVal);
+                    // Prioridad 2: Regla Roja - Si Nat está ON y Continua está OFF
+                    var natVal = dgvGrilla.Rows[rowIndex].Cells[29].Value;
+                    bool natOn = natVal != null && natVal != DBNull.Value && Convert.ToBoolean(natVal);
 
-                    if (continuaOn)
+                    if (natOn)
                     {
-                        dgvGrilla.Rows[rowIndex].DefaultCellStyle.BackColor = Color.FromArgb(255, 255, 200);
+                        dgvGrilla.Rows[rowIndex].DefaultCellStyle.BackColor = Color.FromArgb(220, 50, 50);
                     }
                     else
                     {
@@ -662,8 +671,8 @@ namespace CapaPresentacion
                 {
                     if (nuevoEstado)
                     {
-                        // Marcar Salida - mostrar hora actual
-                        dgvGrilla.Rows[e.RowIndex].Cells[31].Value = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
+                        // Marcar Salida - mostrar hora actual (solo hora)
+                        dgvGrilla.Rows[e.RowIndex].Cells[31].Value = DateTime.Now.ToString("HH:mm:ss");
                     }
                     else
                     {
@@ -720,21 +729,27 @@ namespace CapaPresentacion
                 
                 // Nat y Continua después de ObservacMesaEntrada
                 dgvGrilla.Columns[29].DisplayIndex = 16; // Nat después de ObservacMesaEntrada
+                dgvGrilla.Columns[29].Width = 40; // Ancho de columna Nat
+                dgvGrilla.Columns[29].HeaderText = "NAT"; // Nombre de columna Nat
                 dgvGrilla.Columns[29].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; // Centrar Nat
                 dgvGrilla.Columns[30].DisplayIndex = 17; // Continua después de Nat
+                dgvGrilla.Columns[30].Width = 50; // Ancho de columna Continua
+                dgvGrilla.Columns[30].HeaderText = "CONT."; // Nombre de columna Continua
                 
                 // RM después de Continua
                 dgvGrilla.Columns[15].DisplayIndex = 18; // RM después de Continua
                 
                 // HoraSalida al final
                 dgvGrilla.Columns[31].DisplayIndex = 31; // HoraSalida al final
-                dgvGrilla.Columns[31].Width = 150; // Ancho de columna HoraSalida
-                dgvGrilla.Columns[31].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; // Centrar HoraSalida
+                dgvGrilla.Columns[31].Width = 70; // Ancho de columna HoraSalida
+                dgvGrilla.Columns[31].HeaderText = "Hora"; // Nombre de columna HoraSalida
+                dgvGrilla.Columns[31].HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter; // Centrar encabezado
+                dgvGrilla.Columns[31].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; // Centrar contenido
                 dgvGrilla.Columns[31].ReadOnly = true; // HoraSalida read-only para evitar acciones al hacer click
                 
-                // Desactivar color de selección azul para evitar parpadeo visual
-                dgvGrilla.DefaultCellStyle.SelectionBackColor = dgvGrilla.DefaultCellStyle.BackColor;
-                dgvGrilla.DefaultCellStyle.SelectionForeColor = dgvGrilla.DefaultCellStyle.ForeColor;
+                // Color de selección RGB(0, 120, 212) - #0078D4 (azul Windows)
+                dgvGrilla.DefaultCellStyle.SelectionBackColor = Color.FromArgb(0, 120, 212);
+                dgvGrilla.DefaultCellStyle.SelectionForeColor = Color.White;
             }
         }
 
@@ -930,12 +945,14 @@ namespace CapaPresentacion
             if (chkRevisado.Checked == true)
             {
                 mesaEntrada.RevisarPaciente(dgvGrilla.Rows[intFilaSelecc].Cells[0].Value.ToString(), chkRevisado.Checked);
+                dgvGrilla.Rows[intFilaSelecc].Cells[17].Value = chkRevisado.Checked;
                 dgvGrilla.Rows[intFilaSelecc].DefaultCellStyle.BackColor = Color.LightGreen;
                 chkRevisado.Image = Image.FromFile("P:\\img-system\\mCheck01_45x45.png");
             }
             else
             {
                 mesaEntrada.RevisarPaciente(dgvGrilla.Rows[intFilaSelecc].Cells[0].Value.ToString(), chkRevisado.Checked);
+                dgvGrilla.Rows[intFilaSelecc].Cells[17].Value = chkRevisado.Checked;
                 chkRevisado.Image = Image.FromFile("P:\\img-system\\mCheck02_45x45.png");
                 dgvGrilla.Rows[intFilaSelecc].DefaultCellStyle.BackColor = Color.White;
             }            

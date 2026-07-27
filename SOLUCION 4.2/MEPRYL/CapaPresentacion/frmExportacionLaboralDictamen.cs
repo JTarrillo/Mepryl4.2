@@ -145,14 +145,15 @@ namespace CapaPresentacion
             excelSheet = (Microsoft.Office.Interop.Excel.Worksheet)excelworkBook.ActiveSheet;
             excelSheet.Name = "Hoja 1";
                        
-            excelSheet.Cells[1, 1] = "FECHA";
-            excelSheet.Cells[1, 2] = "NRO. EX.";
-            excelSheet.Cells[1, 3] = "EMPRESA";
-            excelSheet.Cells[1, 4] = "MOTIVO CONSULTA";
-            excelSheet.Cells[1, 5] = "DNI";
-            excelSheet.Cells[1, 6] = "NOMBRE";
-            excelSheet.Cells[1, 7] = "DICT. FINAL";
-            excelSheet.Cells[1, 8] = "OBSERVACIONES";            
+            excelSheet.Cells[1, 1] = "EMPRESA";
+            excelSheet.Cells[1, 2] = "DNI";
+            excelSheet.Cells[1, 3] = "NRO. EX.";
+            excelSheet.Cells[1, 4] = "NOMBRE";
+            excelSheet.Cells[1, 5] = "DICT. FINAL";
+            excelSheet.Cells[1, 6] = "FECHA";
+            excelSheet.Cells[1, 7] = "CUIT";
+            excelSheet.Cells[1, 8] = "SUBTIPO";
+            excelSheet.Cells[1, 9] = "OBSERVACIONES";            
 
             DataTable dt = laboral.ExportarDictamenFinal(tpFechaDesde.Value.ToShortDateString(), tpFechaHasta.Value.ToShortDateString(), cboEmpresa.Text, cboMotivo.Text);
 
@@ -177,26 +178,34 @@ namespace CapaPresentacion
                 DateTime dtFecha;
                 foreach (DataRow dr in dt.Rows)
                 {
-                    strFecha = "";
-                    strFecha = Convert.ToDateTime(dr.ItemArray[0].ToString()).ToString("dd/MM/yyyy");
-                    dtFecha = Convert.ToDateTime(dr.ItemArray[0].ToString());
-
-                    //excelSheet.Cells[i + 1, j + 1] = dr.ItemArray[0].ToString();
-                    excelSheet.Cells[i + 1, j + 1] = dtFecha;
+                    // Columna 1: EMPRESA
+                    excelSheet.Cells[i + 1, j + 1] = dr.ItemArray[0].ToString();
                     j++;
+                    // Columna 2: DNI
                     excelSheet.Cells[i + 1, j + 1] = dr.ItemArray[1].ToString();
                     j++;
+                    // Columna 3: NRO. EX.
                     excelSheet.Cells[i + 1, j + 1] = dr.ItemArray[2].ToString();
                     j++;
+                    // Columna 4: NOMBRE
                     excelSheet.Cells[i + 1, j + 1] = dr.ItemArray[3].ToString();
                     j++;
+                    // Columna 5: DICT. FINAL
                     excelSheet.Cells[i + 1, j + 1] = dr.ItemArray[4].ToString();
                     j++;
-                    excelSheet.Cells[i + 1, j + 1] = dr.ItemArray[5].ToString();
+                    // Columna 6: FECHA
+                    strFecha = Convert.ToDateTime(dr.ItemArray[5].ToString()).ToString("dd/MM/yyyy");
+                    dtFecha = Convert.ToDateTime(dr.ItemArray[5].ToString());
+                    excelSheet.Cells[i + 1, j + 1] = dtFecha;
                     j++;
+                    // Columna 7: CUIT
                     excelSheet.Cells[i + 1, j + 1] = dr.ItemArray[6].ToString();
                     j++;
+                    // Columna 8: SUBTIPO
                     excelSheet.Cells[i + 1, j + 1] = dr.ItemArray[7].ToString();
+                    j++;
+                    // Columna 9: OBSERVACIONES
+                    excelSheet.Cells[i + 1, j + 1] = dr.ItemArray[8].ToString();
 
                     i++;
                     j = 0;
@@ -204,8 +213,8 @@ namespace CapaPresentacion
                 }
                 lblTarea.Visible = false;
                 progressBar.Visible = false;
-                excel.get_Range("A1", "H1").EntireColumn.AutoFit();
-                excel.get_Range("A1", "H1").EntireColumn.Borders.LineStyle = Excel.XlLineStyle.xlContinuous;
+                excel.get_Range("A1", "I1").EntireColumn.AutoFit();
+                excel.get_Range("A1", "I1").EntireColumn.Borders.LineStyle = Excel.XlLineStyle.xlContinuous;
                 excelworkBook.SaveAs(tbUbicacion.Text, Excel.XlFileFormat.xlAddIn,
                 Type.Missing, Type.Missing, Type.Missing, Type.Missing, Excel.XlSaveAsAccessMode.xlExclusive,
                 Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
