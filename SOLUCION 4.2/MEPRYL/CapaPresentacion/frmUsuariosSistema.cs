@@ -1088,6 +1088,9 @@ namespace CapaPresentacion
                 filtros.Add("[Fecha Creación] >= #" + desde + "# AND [Fecha Creación] < #" + hasta + "#");
             }
 
+            // Filtro fijo: solo usuarios activos
+            filtros.Add("Activo = true");
+
             dv.RowFilter = filtros.Count > 0 ? string.Join(" AND ", filtros.ToArray()) : "";
 
             dgvGestion.DataSource = dv;
