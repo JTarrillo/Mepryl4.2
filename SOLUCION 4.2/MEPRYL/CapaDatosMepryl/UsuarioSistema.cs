@@ -244,7 +244,7 @@ namespace CapaDatosMepryl
             DataTable dt = null;
             string strSQL = "";
 
-            strSQL = "SELECT TOP 50 id, password, username as 'Usuario', nombre as 'Nombre', apellido as 'Apellido', email1 as 'E-Mail', Tipo as 'Tipo Usuario', Activo, ProfesionalAsignado, dni FROM dbo.Usuario ORDER BY username";
+            strSQL = "SELECT TOP 50 id, password, username as 'Usuario', nombre as 'Nombre', apellido as 'Apellido', email1 as 'E-Mail', Tipo as 'Tipo Usuario', Activo, ProfesionalAsignado, dni FROM dbo.Usuario WHERE Activo = 1 ORDER BY username";
 
             dt = SQLConnector.obtenerTablaSegunConsultaString(strSQL);
 
@@ -411,7 +411,7 @@ namespace CapaDatosMepryl
                      "email1 as 'E-Mail', Tipo as 'Tipo Usuario', Activo, ProfesionalAsignado, " +
                      "apellido + ' ' + nombre as 'NombreApellido', Tipo as 'TipoUsuario', dni " +
                      "FROM dbo.Usuario " +
-                     "WHERE apellido like '%" + strApellido + "%' " +
+                     "WHERE apellido like '%" + strApellido + "%' AND Activo = 1 " +
                      "ORDER BY apellido";
 
             dt = SQLConnector.obtenerTablaSegunConsultaString(strSQL);

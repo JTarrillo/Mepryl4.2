@@ -186,12 +186,10 @@ namespace CapaPresentacion
             ((System.ComponentModel.ISupportInitialize)(this.nudAnio)).BeginInit();
             this.pnlMenu.SuspendLayout();
             this.mnuAplicar.SuspendLayout();
+            this.mnuColumnas.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPrecios)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPrecioPublico)).BeginInit();
             this.tabPrecioPublico.SuspendLayout();
-            this.tabPreciosRadiografias.SuspendLayout();
-            this.tabPreciosAbonos.SuspendLayout();
-            this.tabPrecioMillones.SuspendLayout();
             this.tabControl.SuspendLayout();
             this.tabPrecios.SuspendLayout();
             this.tabConfig.SuspendLayout();
@@ -342,7 +340,7 @@ namespace CapaPresentacion
             // 
             this.lblMesVariacion.AutoSize = true;
             this.lblMesVariacion.Font = new System.Drawing.Font("Segoe UI", 8F);
-            this.lblMesVariacion.Location = new System.Drawing.Point(308, 8);
+            this.lblMesVariacion.Location = new System.Drawing.Point(305, 8);
             this.lblMesVariacion.Name = "lblMesVariacion";
             this.lblMesVariacion.Size = new System.Drawing.Size(77, 13);
             this.lblMesVariacion.TabIndex = 2;
@@ -366,7 +364,7 @@ namespace CapaPresentacion
             "Octubre",
             "Noviembre",
             "Diciembre"});
-            this.cboMesVariacion.Location = new System.Drawing.Point(308, 26);
+            this.cboMesVariacion.Location = new System.Drawing.Point(308, 28);
             this.cboMesVariacion.Name = "cboMesVariacion";
             this.cboMesVariacion.Size = new System.Drawing.Size(120, 23);
             this.cboMesVariacion.TabIndex = 3;
@@ -384,7 +382,7 @@ namespace CapaPresentacion
             // txtVariacion
             // 
             this.txtVariacion.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.txtVariacion.Location = new System.Drawing.Point(440, 25);
+            this.txtVariacion.Location = new System.Drawing.Point(444, 28);
             this.txtVariacion.Name = "txtVariacion";
             this.txtVariacion.Size = new System.Drawing.Size(80, 25);
             this.txtVariacion.TabIndex = 5;
@@ -396,7 +394,7 @@ namespace CapaPresentacion
             this.chkFactor.Checked = true;
             this.chkFactor.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkFactor.Font = new System.Drawing.Font("Segoe UI", 8F);
-            this.chkFactor.Location = new System.Drawing.Point(530, 28);
+            this.chkFactor.Location = new System.Drawing.Point(535, 33);
             this.chkFactor.Name = "chkFactor";
             this.chkFactor.Size = new System.Drawing.Size(127, 17);
             this.chkFactor.TabIndex = 6;
@@ -411,7 +409,7 @@ namespace CapaPresentacion
             this.btnAplicar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnAplicar.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.btnAplicar.ForeColor = System.Drawing.Color.Black;
-            this.btnAplicar.Location = new System.Drawing.Point(668, 10);
+            this.btnAplicar.Location = new System.Drawing.Point(707, 16);
             this.btnAplicar.Name = "btnAplicar";
             this.btnAplicar.Size = new System.Drawing.Size(141, 36);
             this.btnAplicar.TabIndex = 7;
@@ -441,33 +439,33 @@ namespace CapaPresentacion
             this.mnuMostrarTodas,
             this.mnuMostrarSoloEste});
             this.mnuColumnas.Name = "mnuColumnas";
-            this.mnuColumnas.Size = new System.Drawing.Size(180, 92);
+            this.mnuColumnas.Size = new System.Drawing.Size(245, 92);
             // 
             // mnuOcultarColumna
             // 
             this.mnuOcultarColumna.Name = "mnuOcultarColumna";
-            this.mnuOcultarColumna.Size = new System.Drawing.Size(179, 22);
+            this.mnuOcultarColumna.Size = new System.Drawing.Size(244, 22);
             this.mnuOcultarColumna.Text = "Ocultar esta columna";
             this.mnuOcultarColumna.Click += new System.EventHandler(this.mnuOcultarColumna_Click);
             // 
             // mnuOcultarSeleccionadas
             // 
             this.mnuOcultarSeleccionadas.Name = "mnuOcultarSeleccionadas";
-            this.mnuOcultarSeleccionadas.Size = new System.Drawing.Size(179, 22);
+            this.mnuOcultarSeleccionadas.Size = new System.Drawing.Size(244, 22);
             this.mnuOcultarSeleccionadas.Text = "Ocultar columnas seleccionadas";
             this.mnuOcultarSeleccionadas.Click += new System.EventHandler(this.mnuOcultarSeleccionadas_Click);
             // 
             // mnuMostrarTodas
             // 
             this.mnuMostrarTodas.Name = "mnuMostrarTodas";
-            this.mnuMostrarTodas.Size = new System.Drawing.Size(179, 22);
+            this.mnuMostrarTodas.Size = new System.Drawing.Size(244, 22);
             this.mnuMostrarTodas.Text = "Mostrar todas las columnas";
             this.mnuMostrarTodas.Click += new System.EventHandler(this.mnuMostrarTodas_Click);
             // 
             // mnuMostrarSoloEste
             // 
             this.mnuMostrarSoloEste.Name = "mnuMostrarSoloEste";
-            this.mnuMostrarSoloEste.Size = new System.Drawing.Size(179, 22);
+            this.mnuMostrarSoloEste.Size = new System.Drawing.Size(244, 22);
             this.mnuMostrarSoloEste.Text = "Mostrar solo este mes";
             this.mnuMostrarSoloEste.Click += new System.EventHandler(this.mnuMostrarSoloEste_Click);
             // 
@@ -1264,6 +1262,46 @@ namespace CapaPresentacion
             this.tabPrecioPublico.Text = "  Precio Público  ";
             this.tabPrecioPublico.UseVisualStyleBackColor = true;
             // 
+            // tabControl
+            // 
+            this.tabControl.Alignment = System.Windows.Forms.TabAlignment.Bottom;
+            this.tabControl.Controls.Add(this.tabEmpresas);
+            this.tabControl.Controls.Add(this.tabPrecioPublico);
+            this.tabControl.Controls.Add(this.tabPrecios);
+            this.tabControl.Controls.Add(this.tabPreciosRadiografias);
+            this.tabControl.Controls.Add(this.tabPreciosAbonos);
+            this.tabControl.Controls.Add(this.tabPrecioMillones);
+            this.tabControl.Controls.Add(this.tabConfig);
+            this.tabControl.Controls.Add(this.tabObsPre);
+            this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabControl.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.tabControl.Location = new System.Drawing.Point(0, 148);
+            this.tabControl.Name = "tabControl";
+            this.tabControl.SelectedIndex = 0;
+            this.tabControl.Size = new System.Drawing.Size(1364, 409);
+            this.tabControl.TabIndex = 3;
+            // 
+            // tabEmpresas
+            // 
+            this.tabEmpresas.Location = new System.Drawing.Point(4, 4);
+            this.tabEmpresas.Name = "tabEmpresas";
+            this.tabEmpresas.Padding = new System.Windows.Forms.Padding(3);
+            this.tabEmpresas.Size = new System.Drawing.Size(1356, 379);
+            this.tabEmpresas.TabIndex = 0;
+            this.tabEmpresas.Text = "  Precios Empresas  ";
+            this.tabEmpresas.UseVisualStyleBackColor = true;
+            // 
+            // tabPrecios
+            // 
+            this.tabPrecios.Controls.Add(this.dgvPrecios);
+            this.tabPrecios.Location = new System.Drawing.Point(4, 4);
+            this.tabPrecios.Name = "tabPrecios";
+            this.tabPrecios.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPrecios.Size = new System.Drawing.Size(1356, 379);
+            this.tabPrecios.TabIndex = 2;
+            this.tabPrecios.Text = "  Precio Promo  ";
+            this.tabPrecios.UseVisualStyleBackColor = true;
+            // 
             // tabPreciosRadiografias
             // 
             this.tabPreciosRadiografias.Location = new System.Drawing.Point(4, 4);
@@ -1293,47 +1331,6 @@ namespace CapaPresentacion
             this.tabPrecioMillones.TabIndex = 5;
             this.tabPrecioMillones.Text = "  Precio Millones  ";
             this.tabPrecioMillones.UseVisualStyleBackColor = true;
-            // 
-            // tabControl
-            // 
-            this.tabControl.Alignment = System.Windows.Forms.TabAlignment.Bottom;
-            this.tabControl.Controls.Add(this.tabEmpresas);
-            this.tabControl.Controls.Add(this.tabPrecioPublico);
-            this.tabControl.Controls.Add(this.tabPrecios);
-            this.tabControl.Controls.Add(this.tabPreciosRadiografias);
-            this.tabControl.Controls.Add(this.tabPreciosAbonos);
-            this.tabControl.Controls.Add(this.tabPrecioMillones);
-            this.tabControl.Controls.Add(this.tabConfig);
-            this.tabControl.Controls.Add(this.tabObsPre);
-            this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabControl.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.tabControl.Location = new System.Drawing.Point(0, 148);
-            this.tabControl.Name = "tabControl";
-            this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(1364, 409);
-            this.tabControl.TabIndex = 3;
-            // 
-            // 
-            // tabEmpresas
-            // 
-            this.tabEmpresas.Location = new System.Drawing.Point(4, 4);
-            this.tabEmpresas.Name = "tabEmpresas";
-            this.tabEmpresas.Padding = new System.Windows.Forms.Padding(3);
-            this.tabEmpresas.Size = new System.Drawing.Size(1356, 379);
-            this.tabEmpresas.TabIndex = 0;
-            this.tabEmpresas.Text = "  Precios Empresas  ";
-            this.tabEmpresas.UseVisualStyleBackColor = true;
-            // 
-            // tabPrecios
-            // 
-            this.tabPrecios.Controls.Add(this.dgvPrecios);
-            this.tabPrecios.Location = new System.Drawing.Point(4, 4);
-            this.tabPrecios.Name = "tabPrecios";
-            this.tabPrecios.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPrecios.Size = new System.Drawing.Size(1356, 379);
-            this.tabPrecios.TabIndex = 2;
-            this.tabPrecios.Text = "  Precio Promo  ";
-            this.tabPrecios.UseVisualStyleBackColor = true;
             // 
             // tabConfig
             // 
@@ -1500,12 +1497,10 @@ namespace CapaPresentacion
             this.pnlMenu.ResumeLayout(false);
             this.pnlMenu.PerformLayout();
             this.mnuAplicar.ResumeLayout(false);
+            this.mnuColumnas.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvPrecios)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPrecioPublico)).EndInit();
             this.tabPrecioPublico.ResumeLayout(false);
-            this.tabPreciosRadiografias.ResumeLayout(false);
-            this.tabPreciosAbonos.ResumeLayout(false);
-            this.tabPrecioMillones.ResumeLayout(false);
             this.tabControl.ResumeLayout(false);
             this.tabPrecios.ResumeLayout(false);
             this.tabConfig.ResumeLayout(false);

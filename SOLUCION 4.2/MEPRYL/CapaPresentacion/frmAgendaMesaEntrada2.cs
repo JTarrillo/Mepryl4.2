@@ -484,29 +484,32 @@ namespace CapaPresentacion
                 {
                     try
                     {
-                        // Prioridad 1: Regla Amarilla - Si Continua está ON (tiene prioridad sobre Nat)
+                        // Prioridad 0: Regla Naranja - Si Nat y Continua están ambos ON
+                        var natVal = dgvGrilla.Rows[i].Cells[29].Value;
                         var continuaVal = dgvGrilla.Rows[i].Cells[30].Value;
+                        bool natOn = natVal != null && natVal != DBNull.Value && Convert.ToBoolean(natVal);
                         bool continuaOn = continuaVal != null && continuaVal != DBNull.Value && Convert.ToBoolean(continuaVal);
 
-                        if (continuaOn)
+                        if (natOn && continuaOn)
                         {
+                            // Naranja (combinación de amarillo y rojo según teoría del color)
+                            dgvGrilla.Rows[i].DefaultCellStyle.BackColor = Color.FromArgb(255, 140, 0);
+                            System.Diagnostics.Debug.WriteLine($"[PINTAR] Fila {i} - Pintando NARANJA (Nat ON y Continua ON)");
+                        }
+                        else if (continuaOn)
+                        {
+                            // Prioridad 1: Regla Amarilla - Si Continua está ON (tiene prioridad sobre Nat)
                             // Amarillo más oscuro pero limpio
                             dgvGrilla.Rows[i].DefaultCellStyle.BackColor = Color.FromArgb(255, 200, 50);
                             System.Diagnostics.Debug.WriteLine($"[PINTAR] Fila {i} - Pintando AMARILLO (Continua ON)");
                         }
-                        else
+                        else if (natOn)
                         {
                             // Prioridad 2: Regla Roja - Si Nat está ON y Continua está OFF
-                            var natVal = dgvGrilla.Rows[i].Cells[29].Value;
-                            System.Diagnostics.Debug.WriteLine($"[PINTAR] Fila {i} - Nat: {natVal} (Tipo: {natVal?.GetType().Name})");
-                            bool natOn = natVal != null && natVal != DBNull.Value && Convert.ToBoolean(natVal);
-
-                            if (natOn)
-                            {
-                                // Rojo más oscuro pero limpio
-                                dgvGrilla.Rows[i].DefaultCellStyle.BackColor = Color.FromArgb(220, 50, 50);
-                                System.Diagnostics.Debug.WriteLine($"[PINTAR] Fila {i} - Pintando ROJO (Nat ON)");
-                            }
+                            // Rojo más oscuro pero limpio
+                            dgvGrilla.Rows[i].DefaultCellStyle.BackColor = Color.FromArgb(220, 50, 50);
+                            System.Diagnostics.Debug.WriteLine($"[PINTAR] Fila {i} - Pintando ROJO (Nat ON)");
+                        }
                             else
                             {
                                 // Prioridad 3: Regla Verde Oscuro - Si Salida está ON
@@ -551,9 +554,9 @@ namespace CapaPresentacion
                                     }
                                 }
                             }
-                        }
+                        
                     }
-                    catch (System.NullReferenceException)
+                    catch (NullReferenceException)
                     {
                         // fila sin datos, ignorar
                     }
@@ -569,63 +572,65 @@ namespace CapaPresentacion
             {
                 dgvGrilla.SuspendLayout();
                 
-                // Prioridad 1: Regla Amarilla - Si Continua está ON (tiene prioridad sobre Nat)
+                // Prioridad 0: Regla Naranja - Si Nat y Continua están ambos ON
+                var natVal = dgvGrilla.Rows[rowIndex].Cells[29].Value;
                 var continuaVal = dgvGrilla.Rows[rowIndex].Cells[30].Value;
+                bool natOn = natVal != null && natVal != DBNull.Value && Convert.ToBoolean(natVal);
                 bool continuaOn = continuaVal != null && continuaVal != DBNull.Value && Convert.ToBoolean(continuaVal);
 
-                if (continuaOn)
+                if (natOn && continuaOn)
                 {
+                    // Naranja (combinación de amarillo y rojo según teoría del color)
+                    dgvGrilla.Rows[rowIndex].DefaultCellStyle.BackColor = Color.FromArgb(255, 140, 0);
+                }
+                else if (continuaOn)
+                {
+                    // Prioridad 1: Regla Amarilla - Si Continua está ON (tiene prioridad sobre Nat)
                     dgvGrilla.Rows[rowIndex].DefaultCellStyle.BackColor = Color.FromArgb(255, 200, 50);
+                }
+                else if (natOn)
+                {
+                    // Prioridad 2: Regla Roja - Si Nat está ON y Continua está OFF
+                    dgvGrilla.Rows[rowIndex].DefaultCellStyle.BackColor = Color.FromArgb(220, 50, 50);
                 }
                 else
                 {
-                    // Prioridad 2: Regla Roja - Si Nat está ON y Continua está OFF
-                    var natVal = dgvGrilla.Rows[rowIndex].Cells[29].Value;
-                    bool natOn = natVal != null && natVal != DBNull.Value && Convert.ToBoolean(natVal);
+                    var salidaVal = dgvGrilla.Rows[rowIndex].Cells[28].Value;
+                    bool salidaOn = salidaVal != null && salidaVal != DBNull.Value && Convert.ToBoolean(salidaVal);
 
-                    if (natOn)
+                    if (salidaOn)
                     {
-                        dgvGrilla.Rows[rowIndex].DefaultCellStyle.BackColor = Color.FromArgb(220, 50, 50);
+                        dgvGrilla.Rows[rowIndex].DefaultCellStyle.BackColor = Color.FromArgb(46, 204, 113);
                     }
                     else
                     {
-                        var salidaVal = dgvGrilla.Rows[rowIndex].Cells[28].Value;
-                        bool salidaOn = salidaVal != null && salidaVal != DBNull.Value && Convert.ToBoolean(salidaVal);
-
-                        if (salidaOn)
+                        var val = dgvGrilla.Rows[rowIndex].Cells[17].Value;
+                        bool esVerde = false;
+                        if (val != null && val != DBNull.Value)
                         {
-                            dgvGrilla.Rows[rowIndex].DefaultCellStyle.BackColor = Color.FromArgb(46, 204, 113);
+                            if (val is bool boolVal)
+                            {
+                                esVerde = boolVal;
+                            }
+                            else if (val is string strVal)
+                            {
+                                esVerde = strVal.Equals("True", StringComparison.OrdinalIgnoreCase);
+                            }
+                        }
+                        if (esVerde)
+                        {
+                            dgvGrilla.Rows[rowIndex].DefaultCellStyle.BackColor = Color.LightGreen;
                         }
                         else
                         {
-                            var val = dgvGrilla.Rows[rowIndex].Cells[17].Value;
-                            bool esVerde = false;
-                            if (val != null && val != DBNull.Value)
-                            {
-                                if (val is bool boolVal)
-                                {
-                                    esVerde = boolVal;
-                                }
-                                else if (val is string strVal)
-                                {
-                                    esVerde = strVal.Equals("True", StringComparison.OrdinalIgnoreCase);
-                                }
-                            }
-                            if (esVerde)
-                            {
-                                dgvGrilla.Rows[rowIndex].DefaultCellStyle.BackColor = Color.LightGreen;
-                            }
-                            else
-                            {
-                                dgvGrilla.Rows[rowIndex].DefaultCellStyle.BackColor = Color.White;
-                            }
+                            dgvGrilla.Rows[rowIndex].DefaultCellStyle.BackColor = Color.White;
                         }
                     }
                 }
                 dgvGrilla.InvalidateRow(rowIndex);
                 dgvGrilla.ResumeLayout(true);
             }
-            catch (System.NullReferenceException)
+            catch (NullReferenceException)
             {
                 // fila sin datos, ignorar
             }
