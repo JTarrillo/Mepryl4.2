@@ -141,5 +141,14 @@ namespace CapaNegocioMepryl
         {
             return userSistema.ExisteUsuario(strDNI);
         }
+
+        public bool EliminarUsuarioConValidacion(string strID, string nombreUsuario)
+        {
+            // Validación: no se puede eliminar si es el usuario actual
+            // (se puede agregar más lógica de negocio aquí según requerimientos)
+            
+            // Llamar a capa de datos para eliminar usando el método específico
+            return userSistema.EliminarUsuario(strID);
+        }
     }
 }

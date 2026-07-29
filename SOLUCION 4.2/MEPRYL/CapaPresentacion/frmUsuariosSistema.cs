@@ -1120,6 +1120,31 @@ namespace CapaPresentacion
                 dgvGestion.Columns.Add(btnCol);
             }
 
+            // Agregar botón "Eliminar" si no existe
+            if (!dgvGestion.Columns.Contains("btnEliminar"))
+            {
+                DataGridViewButtonColumn btnCol = new DataGridViewButtonColumn();
+                btnCol.Name = "btnEliminar";
+                btnCol.HeaderText = "Acciones";
+                btnCol.Text = "🗑️"; // Icono de basura emoji
+                btnCol.UseColumnTextForButtonValue = true;
+                btnCol.FillWeight = 40; // Reducir ancho
+                btnCol.Width = 50; // Ancho fijo más pequeño
+                btnCol.FlatStyle = FlatStyle.Flat;
+                
+                // Configurar toda la columna con fondo rojo
+                btnCol.DefaultCellStyle.BackColor = Color.FromArgb(220, 53, 69); // Rojo suave
+                btnCol.DefaultCellStyle.ForeColor = Color.White;
+                btnCol.DefaultCellStyle.SelectionBackColor = Color.FromArgb(200, 35, 51);
+                btnCol.DefaultCellStyle.Font = new Font("Segoe UI", 10F); // Fuente más pequeña
+                
+                // Configurar header de la columna también en rojo
+                btnCol.HeaderCell.Style.BackColor = Color.FromArgb(220, 53, 69);
+                btnCol.HeaderCell.Style.ForeColor = Color.White;
+                
+                dgvGestion.Columns.Add(btnCol);
+            }
+
             // Actualizar total
             txtTotalGestion.Text = "Total: " + dv.Count + " usuario(s)";
 
@@ -1128,13 +1153,16 @@ namespace CapaPresentacion
 
         private void dgvGestion_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
+            System.Diagnostics.Debug.WriteLine($"[ELIMINAR] CellContentClick - ColumnIndex: {e.ColumnIndex}, RowIndex: {e.RowIndex}");
+            
             if (e.RowIndex < 0) return;
 
             // Manejar click en columna Activo
             if (dgvGestion.Columns[e.ColumnIndex].Name == "Activo")
             {
+                System.Diagnostics.Debug.WriteLine($"[ELIMINAR] Click en columna Activo");
                 dgvGestion.CommitEdit(DataGridViewDataErrorContexts.Commit);
-                
+
                 bool nuevoEstado = Convert.ToBoolean(dgvGestion.Rows[e.RowIndex].Cells["Activo"].Value);
                 string idUsuario = dgvGestion.Rows[e.RowIndex].Cells["id"].Value.ToString();
                 string nombreUsuario = dgvGestion.Rows[e.RowIndex].Cells["Usuario"].Value.ToString();
@@ -1159,52 +1187,98 @@ namespace CapaPresentacion
 
                 // Actualizar en base de datos
                 UserSistema.ActualizaActivo(nuevoEstado ? (byte)1 : (byte)0, idUsuario);
-                
+
                 // Recargar grilla para reflejar cambios
                 CargarGrillaGestion();
                 return;
             }
 
             // Manejar click en botón Configurar
-            if (dgvGestion.Columns[e.ColumnIndex].Name != "btnConfigurar") return;
-
-            string strId = dgvGestion.Rows[e.RowIndex].Cells["id"].Value.ToString();
-            string strUsuario = dgvGestion.Rows[e.RowIndex].Cells["Usuario"].Value.ToString();
-
-            DataTable dt = UserSistema.ListaPermisoUsuarios(strId);
-            if (dt.Rows.Count == 0) return;
-            DataRow row = dt.Rows[0];
-
-            using (frmPermisosUsuario frm = new frmPermisosUsuario(strUsuario, row, UsuarioActualEsAdministrador()))
+            if (dgvGestion.Columns[e.ColumnIndex].Name == "btnConfigurar")
             {
-                if (frm.ShowDialog() == DialogResult.OK && UsuarioActualEsAdministrador())
+                System.Diagnostics.Debug.WriteLine($"[ELIMINAR] Click en botón Configurar");
+                string strId = dgvGestion.Rows[e.RowIndex].Cells["id"].Value.ToString();
+                string strUsuario = dgvGestion.Rows[e.RowIndex].Cells["Usuario"].Value.ToString();
+
+                DataTable dt = UserSistema.ListaPermisoUsuarios(strId);
+                if (dt.Rows.Count == 0) return;
+                DataRow row = dt.Rows[0];
+
+                using (frmPermisosUsuario frm = new frmPermisosUsuario(strUsuario, row, UsuarioActualEsAdministrador()))
                 {
-                    // Guardar cada permiso
-                    Dictionary<string, string> mapeo = new Dictionary<string, string>
+                    if (frm.ShowDialog() == DialogResult.OK && UsuarioActualEsAdministrador())
                     {
-                        { "Activo", "Activo" },
-                        { "VentVentanilla", "VentVentanilla" },
-                        { "VentMesa", "VentMesa" },
-                        { "VentPacientes", "VentPacientes" },
-                        { "VentExamenes", "VentExamenes" },
-                        { "VentConfiguracion", "VentConfiguracion" },
-                        { "VentTurnos", "VentTurnos" },
-                        { "VentResumen", "VentResumen" },
-                        { "VentAudiometria", "VentAudiometria" },
-                        { "VentFacturacion", "VentFacturacion" },
-                        { "PermisoVer", "PermisoVer" },
-                        { "PermisoModificar", "PermisoModificar" },
-                        { "PermisoEliminar", "PermisoEliminar" }
+                        // Guardar cada permiso
+                        Dictionary<string, string> mapeo = new Dictionary<string, string>
+                        {
+                            { "Activo", "Activo" },
+                            { "VentVentanilla", "VentVentanilla" },
+                            { "VentMesa", "VentMesa" },
+                            { "VentPacientes", "VentPacientes" },
+                            { "VentExamenes", "VentExamenes" },
+                            { "VentConfiguracion", "VentConfiguracion" },
+                            { "VentTurnos", "VentTurnos" },
+                            { "VentResumen", "VentResumen" },
+                            { "VentAudiometria", "VentAudiometria" },
+                            { "VentFacturacion", "VentFacturacion" },
+                            { "PermisoVer", "PermisoVer" },
+                            { "PermisoModificar", "PermisoModificar" },
+                            { "PermisoEliminar", "PermisoEliminar" }
                     };
 
-                    foreach (var kvp in mapeo)
-                    {
-                        string strValor = frm.Permisos[kvp.Key] ? "1" : "0";
-                        UserSistema.ActualizarCampoUsuario(strId, kvp.Value, strValor);
-                    }
+                        foreach (var kvp in mapeo)
+                        {
+                            string strValor = frm.Permisos[kvp.Key] ? "1" : "0";
+                            UserSistema.ActualizarCampoUsuario(strId, kvp.Value, strValor);
+                        }
 
-                    CargarGrillaGestion();
+                        CargarGrillaGestion();
+                    }
                 }
+            }
+
+            // Manejar click en botón Eliminar
+            if (dgvGestion.Columns[e.ColumnIndex].Name == "btnEliminar")
+            {
+                System.Diagnostics.Debug.WriteLine($"[ELIMINAR] Click en botón Eliminar - Columna detectada correctamente");
+                
+                string strIdEliminar = dgvGestion.Rows[e.RowIndex].Cells["id"].Value.ToString();
+                string nombreUsuario = dgvGestion.Rows[e.RowIndex].Cells["Usuario"].Value.ToString();
+
+                System.Diagnostics.Debug.WriteLine($"[ELIMINAR] Usuario a eliminar: {nombreUsuario}, ID: {strIdEliminar}");
+
+                DialogResult result = MessageBox.Show(
+                    $"⚠️  ¿Está seguro que desea eliminar al usuario '{nombreUsuario}'?\n\n" +
+                    $"Esta acción es irreversible y eliminará permanentemente\n" +
+                    $"todos los datos asociados al usuario.\n\n" +
+                    $"¿Desea continuar?",
+                    "⚠️  Confirmar Eliminación",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Warning);
+
+                System.Diagnostics.Debug.WriteLine($"[ELIMINAR] Resultado MessageBox: {result}");
+
+                if (result == DialogResult.Yes)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[ELIMINAR] Usuario confirmó eliminación, llamando a capa de negocio");
+                    bool resultadoEliminacion = UserSistema.EliminarUsuarioConValidacion(strIdEliminar, nombreUsuario);
+                    System.Diagnostics.Debug.WriteLine($"[ELIMINAR] Resultado eliminación: {resultadoEliminacion}");
+                    
+                    CargarGrillaGestion();
+                    MessageBox.Show(
+                        "✅ Usuario eliminado correctamente",
+                        "Eliminación Exitosa",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine($"[ELIMINAR] Usuario canceló eliminación");
+                }
+            }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine($"[ELIMINAR] Click en columna no manejada: {dgvGestion.Columns[e.ColumnIndex].Name}");
             }
         }
 

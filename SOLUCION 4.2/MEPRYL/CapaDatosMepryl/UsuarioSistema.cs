@@ -305,6 +305,18 @@ namespace CapaDatosMepryl
             return blnResultado;
         }
 
+        public bool EliminarUsuario(string strID)
+        {
+            bool blnResultado = false;
+            string strSQL = "";
+
+            strSQL = "DELETE FROM dbo.Usuario WHERE id = '" + strID + "'";
+            SQLConnector.obtenerTablaSegunConsultaString(strSQL);
+
+            blnResultado = true;
+            return blnResultado;
+        }
+
         public bool BuscaNombreUsuario(string strUsuario)
         {
             DataTable dt = null;

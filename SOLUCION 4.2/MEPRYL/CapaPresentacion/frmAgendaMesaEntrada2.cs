@@ -476,7 +476,8 @@ namespace CapaPresentacion
 
         private void PintarFilaGrilla()
         {
-            System.Diagnostics.Debug.WriteLine($"[PINTAR] PintarFilaGrilla llamado - Filas: {dgvGrilla.Rows.Count}");
+            System.Diagnostics.Debug.WriteLine($"[PINTAR] ========== PintarFilaGrilla INICIO ==========");
+            System.Diagnostics.Debug.WriteLine($"[PINTAR] Filas totales: {dgvGrilla.Rows.Count}");
             
             if (dgvGrilla.Rows.Count > 0)
             {
@@ -484,84 +485,75 @@ namespace CapaPresentacion
                 {
                     try
                     {
-                        // Prioridad 0: Regla Naranja - Si Nat y Continua están ambos ON
-                        var natVal = dgvGrilla.Rows[i].Cells[29].Value;
-                        var continuaVal = dgvGrilla.Rows[i].Cells[30].Value;
+                        // Obtener valores de los checkboxes
+                        var chkRevisadoVal = dgvGrilla.Rows[i].Cells[17].Value; // APTO
+                        var natVal = dgvGrilla.Rows[i].Cells[29].Value; // NAT
+                        var continuaVal = dgvGrilla.Rows[i].Cells[30].Value; // CONTINUA
+                        var salidaVal = dgvGrilla.Rows[i].Cells[28].Value; // SALIDA
+
+                        System.Diagnostics.Debug.WriteLine($"[PINTAR] Fila {i} - Valores crudos: APTO={chkRevisadoVal} (Tipo: {chkRevisadoVal?.GetType().Name}), NAT={natVal} (Tipo: {natVal?.GetType().Name}), CONTINUA={continuaVal} (Tipo: {continuaVal?.GetType().Name}), SALIDA={salidaVal} (Tipo: {salidaVal?.GetType().Name})");
+
+                        bool chkRevisadoOn = chkRevisadoVal != null && chkRevisadoVal != DBNull.Value && Convert.ToBoolean(chkRevisadoVal);
                         bool natOn = natVal != null && natVal != DBNull.Value && Convert.ToBoolean(natVal);
                         bool continuaOn = continuaVal != null && continuaVal != DBNull.Value && Convert.ToBoolean(continuaVal);
+                        bool salidaOn = salidaVal != null && salidaVal != DBNull.Value && Convert.ToBoolean(salidaVal);
 
+                        System.Diagnostics.Debug.WriteLine($"[PINTAR] Fila {i}: APTO={chkRevisadoOn}, NAT={natOn}, CONTINUA={continuaOn}, SALIDA={salidaOn}");
+
+                        // Nuevas reglas del doctor:
+                        
+                        // Regla 1: NAT y CONTINUA marcados → Naranja (prioridad máxima)
                         if (natOn && continuaOn)
                         {
-                            // Naranja (combinación de amarillo y rojo según teoría del color)
                             dgvGrilla.Rows[i].DefaultCellStyle.BackColor = Color.FromArgb(255, 140, 0);
-                            System.Diagnostics.Debug.WriteLine($"[PINTAR] Fila {i} - Pintando NARANJA (Nat ON y Continua ON)");
+                            System.Diagnostics.Debug.WriteLine($"[PINTAR] Fila {i} - Pintando NARANJA (NAT ON, CONTINUA ON)");
                         }
-                        else if (continuaOn)
+                        // Regla 2: Salida marcada con CONTINUA → Azul (prioridad sobre APTO)
+                        else if (salidaOn && continuaOn)
                         {
-                            // Prioridad 1: Regla Amarilla - Si Continua está ON (tiene prioridad sobre Nat)
-                            // Amarillo más oscuro pero limpio
+                            dgvGrilla.Rows[i].DefaultCellStyle.BackColor = Color.FromArgb(52, 152, 219);
+                            System.Diagnostics.Debug.WriteLine($"[PINTAR] Fila {i} - Pintando AZUL (Salida ON, CONTINUA ON)");
+                        }
+                        // Regla 3: APTO marcado, NAT NO marcado, CONTINUA NO marcado, SALIDA NO marcado → Verde oscuro
+                        else if (chkRevisadoOn && !natOn && !continuaOn && !salidaOn)
+                        {
+                            dgvGrilla.Rows[i].DefaultCellStyle.BackColor = Color.FromArgb(46, 204, 113);
+                            System.Diagnostics.Debug.WriteLine($"[PINTAR] Fila {i} - Pintando VERDE OSCURO (APTO ON, NAT OFF, CONTINUA OFF, SALIDA OFF)");
+                        }
+                        // Regla 4: APTO NO marcado, NAT NO marcado, CONTINUA marcado → Amarillo
+                        else if (!chkRevisadoOn && !natOn && continuaOn)
+                        {
                             dgvGrilla.Rows[i].DefaultCellStyle.BackColor = Color.FromArgb(255, 200, 50);
-                            System.Diagnostics.Debug.WriteLine($"[PINTAR] Fila {i} - Pintando AMARILLO (Continua ON)");
+                            System.Diagnostics.Debug.WriteLine($"[PINTAR] Fila {i} - Pintando AMARILLO (APTO OFF, NAT OFF, CONTINUA ON)");
                         }
-                        else if (natOn)
+                        // Regla 5: APTO marcado, NAT NO marcado, CONTINUA marcado → Verde claro
+                        else if (chkRevisadoOn && !natOn && continuaOn)
                         {
-                            // Prioridad 2: Regla Roja - Si Nat está ON y Continua está OFF
-                            // Rojo más oscuro pero limpio
-                            dgvGrilla.Rows[i].DefaultCellStyle.BackColor = Color.FromArgb(220, 50, 50);
-                            System.Diagnostics.Debug.WriteLine($"[PINTAR] Fila {i} - Pintando ROJO (Nat ON)");
+                            dgvGrilla.Rows[i].DefaultCellStyle.BackColor = Color.LightGreen;
+                            System.Diagnostics.Debug.WriteLine($"[PINTAR] Fila {i} - Pintando VERDE CLARO (APTO ON, NAT OFF, CONTINUA ON)");
                         }
-                            else
-                            {
-                                // Prioridad 3: Regla Verde Oscuro - Si Salida está ON
-                                var salidaVal = dgvGrilla.Rows[i].Cells[28].Value;
-                                bool salidaOn = salidaVal != null && salidaVal != DBNull.Value && Convert.ToBoolean(salidaVal);
-
-                                if (salidaOn)
-                                {
-                                    // Verde esmeralda para indicar salida
-                                    dgvGrilla.Rows[i].DefaultCellStyle.BackColor = Color.FromArgb(46, 204, 113);
-                                    System.Diagnostics.Debug.WriteLine($"[PINTAR] Fila {i} - Pintando VERDE OSCURO (Salida ON)");
-                                }
-                                else
-                                {
-                                    // Estado por defecto - Alternancia blanco y verde claro
-                                    var val = dgvGrilla.Rows[i].Cells[17].Value;
-                                    System.Diagnostics.Debug.WriteLine($"[PINTAR] Fila {i} - Columna 17: {val} (Tipo: {val?.GetType().Name})");
-                                    
-                                    bool esVerde = false;
-                                    if (val != null && val != DBNull.Value)
-                                    {
-                                        if (val is bool boolVal)
-                                        {
-                                            esVerde = boolVal;
-                                        }
-                                        else if (val is string strVal)
-                                        {
-                                            esVerde = strVal.Equals("True", StringComparison.OrdinalIgnoreCase);
-                                        }
-                                    }
-                                    
-                                    if (esVerde)
-                                    {
-                                        dgvGrilla.Rows[i].DefaultCellStyle.BackColor = Color.LightGreen;
-                                        System.Diagnostics.Debug.WriteLine($"[PINTAR] Fila {i} - Pintando VERDE");
-                                    }
-                                    else
-                                    {
-                                        // Color por defecto (blanco)
-                                        dgvGrilla.Rows[i].DefaultCellStyle.BackColor = Color.White;
-                                        System.Diagnostics.Debug.WriteLine($"[PINTAR] Fila {i} - Pintando BLANCO");
-                                    }
-                                }
-                            }
-                        
+                        // Regla 6: NAT marcado solamente → Rojo
+                        else if (natOn && !continuaOn)
+                        {
+                            dgvGrilla.Rows[i].DefaultCellStyle.BackColor = Color.FromArgb(220, 50, 50);
+                            System.Diagnostics.Debug.WriteLine($"[PINTAR] Fila {i} - Pintando ROJO (NAT ON, CONTINUA OFF)");
+                        }
+                        // Estado por defecto - Blanco
+                        else
+                        {
+                            dgvGrilla.Rows[i].DefaultCellStyle.BackColor = Color.White;
+                            System.Diagnostics.Debug.WriteLine($"[PINTAR] Fila {i} - Pintando BLANCO (Estado por defecto)");
+                        }
                     }
                     catch (NullReferenceException)
                     {
-                        // fila sin datos, ignorar
+                        // Ignorar errores de referencia nula
+                        System.Diagnostics.Debug.WriteLine($"[PINTAR] Fila {i} - Error NullReferenceException");
                     }
                 }
             }
+            
+            System.Diagnostics.Debug.WriteLine($"[PINTAR] ========== PintarFilaGrilla FIN ==========");
         }
 
         private void PintarFilaEspecifica(int rowIndex)
@@ -570,65 +562,58 @@ namespace CapaPresentacion
             
             try
             {
-                dgvGrilla.SuspendLayout();
-                
-                // Prioridad 0: Regla Naranja - Si Nat y Continua están ambos ON
-                var natVal = dgvGrilla.Rows[rowIndex].Cells[29].Value;
-                var continuaVal = dgvGrilla.Rows[rowIndex].Cells[30].Value;
+                // Obtener valores de los checkboxes
+                var chkRevisadoVal = dgvGrilla.Rows[rowIndex].Cells[17].Value; // APTO
+                var natVal = dgvGrilla.Rows[rowIndex].Cells[29].Value; // NAT
+                var continuaVal = dgvGrilla.Rows[rowIndex].Cells[30].Value; // CONTINUA
+                var salidaVal = dgvGrilla.Rows[rowIndex].Cells[28].Value; // SALIDA
+
+                bool chkRevisadoOn = chkRevisadoVal != null && chkRevisadoVal != DBNull.Value && Convert.ToBoolean(chkRevisadoVal);
                 bool natOn = natVal != null && natVal != DBNull.Value && Convert.ToBoolean(natVal);
                 bool continuaOn = continuaVal != null && continuaVal != DBNull.Value && Convert.ToBoolean(continuaVal);
+                bool salidaOn = salidaVal != null && salidaVal != DBNull.Value && Convert.ToBoolean(salidaVal);
 
+                // Nuevas reglas del doctor:
+                
+                // Regla 1: NAT y CONTINUA marcados → Naranja (prioridad máxima)
                 if (natOn && continuaOn)
                 {
-                    // Naranja (combinación de amarillo y rojo según teoría del color)
                     dgvGrilla.Rows[rowIndex].DefaultCellStyle.BackColor = Color.FromArgb(255, 140, 0);
                 }
-                else if (continuaOn)
+                // Regla 2: Salida marcada con CONTINUA → Azul (prioridad sobre APTO)
+                else if (salidaOn && continuaOn)
                 {
-                    // Prioridad 1: Regla Amarilla - Si Continua está ON (tiene prioridad sobre Nat)
+                    dgvGrilla.Rows[rowIndex].DefaultCellStyle.BackColor = Color.FromArgb(52, 152, 219);
+                }
+                // Regla 3: APTO marcado, NAT NO marcado, CONTINUA NO marcado, SALIDA NO marcado → Verde oscuro
+                else if (chkRevisadoOn && !natOn && !continuaOn && !salidaOn)
+                {
+                    dgvGrilla.Rows[rowIndex].DefaultCellStyle.BackColor = Color.FromArgb(46, 204, 113);
+                }
+                // Regla 4: APTO NO marcado, NAT NO marcado, CONTINUA marcado → Amarillo
+                else if (!chkRevisadoOn && !natOn && continuaOn)
+                {
                     dgvGrilla.Rows[rowIndex].DefaultCellStyle.BackColor = Color.FromArgb(255, 200, 50);
                 }
-                else if (natOn)
+                // Regla 5: APTO marcado, NAT NO marcado, CONTINUA marcado → Verde claro
+                else if (chkRevisadoOn && !natOn && continuaOn)
                 {
-                    // Prioridad 2: Regla Roja - Si Nat está ON y Continua está OFF
+                    dgvGrilla.Rows[rowIndex].DefaultCellStyle.BackColor = Color.LightGreen;
+                }
+                // Regla 6: NAT marcado solamente → Rojo
+                else if (natOn && !continuaOn)
+                {
                     dgvGrilla.Rows[rowIndex].DefaultCellStyle.BackColor = Color.FromArgb(220, 50, 50);
                 }
+                // Estado por defecto - Blanco
                 else
                 {
-                    var salidaVal = dgvGrilla.Rows[rowIndex].Cells[28].Value;
-                    bool salidaOn = salidaVal != null && salidaVal != DBNull.Value && Convert.ToBoolean(salidaVal);
-
-                    if (salidaOn)
-                    {
-                        dgvGrilla.Rows[rowIndex].DefaultCellStyle.BackColor = Color.FromArgb(46, 204, 113);
-                    }
-                    else
-                    {
-                        var val = dgvGrilla.Rows[rowIndex].Cells[17].Value;
-                        bool esVerde = false;
-                        if (val != null && val != DBNull.Value)
-                        {
-                            if (val is bool boolVal)
-                            {
-                                esVerde = boolVal;
-                            }
-                            else if (val is string strVal)
-                            {
-                                esVerde = strVal.Equals("True", StringComparison.OrdinalIgnoreCase);
-                            }
-                        }
-                        if (esVerde)
-                        {
-                            dgvGrilla.Rows[rowIndex].DefaultCellStyle.BackColor = Color.LightGreen;
-                        }
-                        else
-                        {
-                            dgvGrilla.Rows[rowIndex].DefaultCellStyle.BackColor = Color.White;
-                        }
-                    }
+                    dgvGrilla.Rows[rowIndex].DefaultCellStyle.BackColor = Color.White;
                 }
+                
+                // Actualizar inmediatamente sin SuspendLayout/ResumeLayout para respuesta más rápida
                 dgvGrilla.InvalidateRow(rowIndex);
-                dgvGrilla.ResumeLayout(true);
+                dgvGrilla.Refresh();
             }
             catch (NullReferenceException)
             {
@@ -947,20 +932,24 @@ namespace CapaPresentacion
 
         private void chkRevisado_Click(object sender, EventArgs e)
         {
+            // Actualizar el valor en la grilla inmediatamente
+            dgvGrilla.Rows[intFilaSelecc].Cells[17].Value = chkRevisado.Checked;
+            
+            // Actualizar el color inmediatamente para respuesta instantánea
+            PintarFilaEspecifica(intFilaSelecc);
+            
+            // Actualizar icono
             if (chkRevisado.Checked == true)
             {
-                mesaEntrada.RevisarPaciente(dgvGrilla.Rows[intFilaSelecc].Cells[0].Value.ToString(), chkRevisado.Checked);
-                dgvGrilla.Rows[intFilaSelecc].Cells[17].Value = chkRevisado.Checked;
-                dgvGrilla.Rows[intFilaSelecc].DefaultCellStyle.BackColor = Color.LightGreen;
                 chkRevisado.Image = Image.FromFile("P:\\img-system\\mCheck01_45x45.png");
             }
             else
             {
-                mesaEntrada.RevisarPaciente(dgvGrilla.Rows[intFilaSelecc].Cells[0].Value.ToString(), chkRevisado.Checked);
-                dgvGrilla.Rows[intFilaSelecc].Cells[17].Value = chkRevisado.Checked;
                 chkRevisado.Image = Image.FromFile("P:\\img-system\\mCheck02_45x45.png");
-                dgvGrilla.Rows[intFilaSelecc].DefaultCellStyle.BackColor = Color.White;
-            }            
+            }
+            
+            // Guardar en base de datos después de la actualización visual
+            mesaEntrada.RevisarPaciente(dgvGrilla.Rows[intFilaSelecc].Cells[0].Value.ToString(), chkRevisado.Checked);
         }
 
         private void chkRevisado_CheckedChanged(object sender, EventArgs e)
