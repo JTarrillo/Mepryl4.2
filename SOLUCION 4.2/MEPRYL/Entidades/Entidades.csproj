@@ -118,6 +118,7 @@
     <Compile Include="TurnoLaboral.cs" />
     <Compile Include="TurnoPreventiva.cs" />
     <Compile Include="UsuarioSistema.cs" />
+    <Compile Include="UsuarioTipoPaciente.cs" />
     <Compile Include="VisitasDomicilio.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -160,6 +160,7 @@
     <Compile Include="UbicacionFotos.cs" />
     <Compile Include="UsuarioSistema.cs" />
     <Compile Include="UsuarioTipo.cs" />
+    <Compile Include="UsuarioTipoPaciente.cs" />
     <Compile Include="UtilidadesMepryl.cs" />
     <Compile Include="Ventanilla.cs" />
     <Compile Include="VisitasDomicilio.cs" />

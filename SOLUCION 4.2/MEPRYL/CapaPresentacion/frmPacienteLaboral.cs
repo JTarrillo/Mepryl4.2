@@ -1332,6 +1332,38 @@ namespace CapaPresentacion
             return retorno;
         }
 
+        private Entidades.UsuarioTipoPaciente cargarDatosUsuarioPacienteLaboral()
+        {            
+            DataTable dt = null;
+            string strIdUsuario = "";
+            CapaNegocioMepryl.UsuarioTipoPaciente usuario = new CapaNegocioMepryl.UsuarioTipoPaciente();
+            Entidades.UsuarioTipoPaciente retorno = new Entidades.UsuarioTipoPaciente();
+
+            dt = usuario.ListarPorDNI(tbDNI.Text);
+
+            strIdUsuario = tbIdPaciente.Text;
+            retorno.Tipo = "LABORAL";
+
+            if (dt != null && dt.Rows.Count > 0)
+            {
+                strIdUsuario = dt.Rows[0].ItemArray[0].ToString();
+                retorno.Tipo = dt.Rows[0].ItemArray[6].ToString();
+                retorno.Username = dt.Rows[0].ItemArray[1].ToString();
+                retorno.Password = Utilidades.desencriptar(dt.Rows[0].ItemArray[2].ToString());
+                retorno.Activo = Convert.ToBoolean(dt.Rows[0].ItemArray[7].ToString());
+                retorno.FechaCreacion = Convert.ToDateTime(dt.Rows[0].ItemArray[8].ToString());
+            }
+            
+            if (strIdUsuario != string.Empty) { retorno.Id = new Guid(strIdUsuario); }
+            retorno.Nombre = tbNombre.Text;
+            retorno.Apellido = tbApellido.Text;
+            retorno.DNI = tbDNI.Text;
+            if (retorno.Username == string.Empty) { retorno.Username = tbNombre.Text.Replace(" ", "").ToLower(); }
+            retorno.Activo = true;
+            
+            return retorno;
+        }
+
         private Entidades.UsuarioSistema cargarDatosUsuarios()
         {            
             DataTable dt = null;
@@ -1431,18 +1463,35 @@ namespace CapaPresentacion
                     }
                 }
 
-                strIdProfesional = pacienteLaboral.idProfesional(tbDNI.Text);
-                CapaNegocioMepryl.UsuarioSistema usuarios = new CapaNegocioMepryl.UsuarioSistema();
-                Entidades.UsuarioSistema usuario = cargarDatosUsuarios();
+                // Guardar/actualizar usuario del paciente laboral en UsuarioTipoPaciente
+                CapaNegocioMepryl.UsuarioTipoPaciente usuariosPaciente = new CapaNegocioMepryl.UsuarioTipoPaciente();
+                Entidades.UsuarioTipoPaciente usuarioPaciente = cargarDatosUsuarioPacienteLaboral();
                                 
-                if (usuarios.ListarUsuarios(tbDNI.Text).Rows.Count > 0)
+                if (usuariosPaciente.ListarPorDNI(tbDNI.Text).Rows.Count > 0)
                 {
-                    usuarios.ActualizarUsuario(usuario);
+                    usuariosPaciente.Actualizar(usuarioPaciente);
                 }
                 else
                 {
-                    usuarios.GuardarUsuario(usuario);
-                }                
+                    usuariosPaciente.Guardar(usuarioPaciente);
+                }
+
+                // Guardar/actualizar profesional en Usuario (si aplica)
+                if (chkProfesional.Checked)
+                {
+                    strIdProfesional = pacienteLaboral.idProfesional(tbDNI.Text);
+                    CapaNegocioMepryl.UsuarioSistema usuarios = new CapaNegocioMepryl.UsuarioSistema();
+                    Entidades.UsuarioSistema usuario = cargarDatosUsuarios();
+                                    
+                    if (usuarios.ListarUsuarios(tbDNI.Text).Rows.Count > 0)
+                    {
+                        usuarios.ActualizarUsuario(usuario);
+                    }
+                    else
+                    {
+                        usuarios.GuardarUsuario(usuario);
+                    }
+                }
             }
         }
 

@@ -1052,7 +1052,6 @@ namespace CapaPresentacion
         // ==================== TAB GESTIONAR USUARIOS ====================
 
         private DataTable dtGestion;
-        private bool filtroFechaActivo = false;
         private string campoBusqueda = "DNI";  // Campo actual de búsqueda: DNI, Nombre, Apellido, Usuario
 
         private void tabControlUsuarios_SelectedIndexChanged(object sender, EventArgs e)
@@ -1080,14 +1079,6 @@ namespace CapaPresentacion
             if (!string.IsNullOrEmpty(filtro))
                 filtros.Add("[" + campoBusqueda + "] LIKE '%" + filtro.Replace("'", "''") + "%'");
 
-            // Filtro por rango de fechas
-            if (filtroFechaActivo)
-            {
-                string desde = dtpDesde.Value.ToString("yyyy-MM-dd");
-                string hasta = dtpHasta.Value.Date.AddDays(1).ToString("yyyy-MM-dd");
-                filtros.Add("[Fecha Creación] >= #" + desde + "# AND [Fecha Creación] < #" + hasta + "#");
-            }
-
             // Filtro fijo: solo usuarios activos
             filtros.Add("Activo = true");
 
@@ -1114,7 +1105,8 @@ namespace CapaPresentacion
             dgvGestion.Columns["Fecha Creación"].FillWeight = 80;
             dgvGestion.Columns["Fecha Creación"].DefaultCellStyle.Format = "dd/MM/yyyy";
 
-            dgvGestion.ReadOnly = true;
+            // Configurar columna Activo como editable checkbox
+            dgvGestion.Columns["Activo"].ReadOnly = false;
 
             // Agregar botón "Configurar" si no existe
             if (!dgvGestion.Columns.Contains("btnConfigurar"))
@@ -1137,6 +1129,43 @@ namespace CapaPresentacion
         private void dgvGestion_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0) return;
+
+            // Manejar click en columna Activo
+            if (dgvGestion.Columns[e.ColumnIndex].Name == "Activo")
+            {
+                dgvGestion.CommitEdit(DataGridViewDataErrorContexts.Commit);
+                
+                bool nuevoEstado = Convert.ToBoolean(dgvGestion.Rows[e.RowIndex].Cells["Activo"].Value);
+                string idUsuario = dgvGestion.Rows[e.RowIndex].Cells["id"].Value.ToString();
+                string nombreUsuario = dgvGestion.Rows[e.RowIndex].Cells["Usuario"].Value.ToString();
+
+                if (!nuevoEstado)
+                {
+                    DialogResult result = MessageBox.Show(
+                        $"¿Está seguro que desea desactivar al usuario '{nombreUsuario}'?",
+                        "Confirmar desactivación",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Question);
+
+                    if (result == DialogResult.No)
+                    {
+                        // Revertir cambio
+                        dgvGestion.Rows[e.RowIndex].Cells["Activo"].Value = true;
+                        dgvGestion.RefreshEdit();
+                        dgvGestion.InvalidateCell(e.ColumnIndex, e.RowIndex);
+                        return;
+                    }
+                }
+
+                // Actualizar en base de datos
+                UserSistema.ActualizaActivo(nuevoEstado ? (byte)1 : (byte)0, idUsuario);
+                
+                // Recargar grilla para reflejar cambios
+                CargarGrillaGestion();
+                return;
+            }
+
+            // Manejar click en botón Configurar
             if (dgvGestion.Columns[e.ColumnIndex].Name != "btnConfigurar") return;
 
             string strId = dgvGestion.Rows[e.RowIndex].Cells["id"].Value.ToString();
@@ -1179,47 +1208,13 @@ namespace CapaPresentacion
             }
         }
 
-        private void dgvGestion_CurrentCellDirtyStateChanged(object sender, EventArgs e)
-        {
-        }
-
         private void dgvGestion_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
-        }
-
-        private void btnFiltrarFecha_Click(object sender, EventArgs e)
-        {
-            filtroFechaActivo = !filtroFechaActivo;
-            if (filtroFechaActivo)
-            {
-                btnFiltrarFecha.Text = "Quitar Filtro";
-                btnFiltrarFecha.IconChar = FontAwesome.Sharp.IconChar.FilterCircleXmark;
-                btnFiltrarFecha.IconColor = System.Drawing.Color.Crimson;
-            }
-            else
-            {
-                btnFiltrarFecha.Text = "Filtrar";
-                btnFiltrarFecha.IconChar = FontAwesome.Sharp.IconChar.Filter;
-                btnFiltrarFecha.IconColor = System.Drawing.Color.FromArgb(0, 122, 204);
-            }
-            FiltrarGrillaGestion(txtBuscarGestion.Text);
         }
 
         private void txtBuscarGestion_TextChanged(object sender, EventArgs e)
         {
             FiltrarGrillaGestion(txtBuscarGestion.Text);
-        }
-
-        private void dtpFecha_ValueChanged(object sender, EventArgs e)
-        {
-            if (filtroFechaActivo)
-            {
-                filtroFechaActivo = false;
-                btnFiltrarFecha.Text = "Filtrar";
-                btnFiltrarFecha.IconChar = FontAwesome.Sharp.IconChar.Filter;
-                btnFiltrarFecha.IconColor = System.Drawing.Color.FromArgb(0, 122, 204);
-                FiltrarGrillaGestion(txtBuscarGestion.Text);
-            }
         }
 
         private void btnCambioBusqueda_Click(object sender, EventArgs e)

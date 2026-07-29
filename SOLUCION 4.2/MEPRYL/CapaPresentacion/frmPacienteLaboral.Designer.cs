@@ -469,6 +469,8 @@
             // 
             this.rpgOpciones.Name = "rpgOpciones";
             this.rpgOpciones.ShowCaptionButton = false;
+            this.rpgOpciones.ItemLinks.Add(this.bbiAnadirEmpresa);
+            this.rpgOpciones.ItemLinks.Add(this.bbiBuscarPaciente);
             // 
             // panelBusqueda
             // 

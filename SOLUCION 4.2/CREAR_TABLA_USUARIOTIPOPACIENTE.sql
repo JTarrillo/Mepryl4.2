@@ -29,9 +29,7 @@ CREATE TABLE dbo.UsuarioTipoPaciente
     Tipo VARCHAR(20) NOT NULL, -- 'LABORAL' o 'PREVENTIVA'
     Activo BIT DEFAULT 1 NOT NULL,
     fechaCreacion DATETIME DEFAULT GETDATE() NOT NULL,
-    CONSTRAINT PK_UsuarioTipoPaciente PRIMARY KEY (id),
-    CONSTRAINT UQ_UsuarioTipoPaciente_dni UNIQUE (dni),
-    CONSTRAINT UQ_UsuarioTipoPaciente_username UNIQUE (username)
+    CONSTRAINT PK_UsuarioTipoPaciente PRIMARY KEY (id)
 );
 GO
 

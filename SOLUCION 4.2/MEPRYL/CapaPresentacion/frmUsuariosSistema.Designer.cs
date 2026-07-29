@@ -83,12 +83,6 @@
             this.dgvGestion = new System.Windows.Forms.DataGridView();
             this.txtTotalGestion = new System.Windows.Forms.TextBox();
             this.pnlBuscarGestion = new System.Windows.Forms.Panel();
-            this.grpFiltroFecha = new System.Windows.Forms.GroupBox();
-            this.lblDesde = new System.Windows.Forms.Label();
-            this.dtpDesde = new System.Windows.Forms.DateTimePicker();
-            this.lblHasta = new System.Windows.Forms.Label();
-            this.dtpHasta = new System.Windows.Forms.DateTimePicker();
-            this.btnFiltrarFecha = new FontAwesome.Sharp.IconButton();
             this.btnCambioBusqueda = new FontAwesome.Sharp.IconButton();
             this.txtBuscarGestion = new System.Windows.Forms.TextBox();
             this.lblBuscarGestion = new System.Windows.Forms.Label();
@@ -118,7 +112,6 @@
             this.tabGestion.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvGestion)).BeginInit();
             this.pnlBuscarGestion.SuspendLayout();
-            this.grpFiltroFecha.SuspendLayout();
             this.lblFaltanCargar.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -691,8 +684,6 @@
             this.dgvGestion.Size = new System.Drawing.Size(1078, 425);
             this.dgvGestion.TabIndex = 0;
             this.dgvGestion.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvGestion_CellContentClick);
-            this.dgvGestion.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvGestion_CellValueChanged);
-            this.dgvGestion.CurrentCellDirtyStateChanged += new System.EventHandler(this.dgvGestion_CurrentCellDirtyStateChanged);
             // 
             // txtTotalGestion
             // 
@@ -710,7 +701,6 @@
             // 
             // pnlBuscarGestion
             // 
-            this.pnlBuscarGestion.Controls.Add(this.grpFiltroFecha);
             this.pnlBuscarGestion.Controls.Add(this.btnCambioBusqueda);
             this.pnlBuscarGestion.Controls.Add(this.txtBuscarGestion);
             this.pnlBuscarGestion.Controls.Add(this.lblBuscarGestion);
@@ -719,82 +709,6 @@
             this.pnlBuscarGestion.Name = "pnlBuscarGestion";
             this.pnlBuscarGestion.Size = new System.Drawing.Size(1078, 55);
             this.pnlBuscarGestion.TabIndex = 1;
-            // 
-            // grpFiltroFecha
-            // 
-            this.grpFiltroFecha.Controls.Add(this.lblDesde);
-            this.grpFiltroFecha.Controls.Add(this.dtpDesde);
-            this.grpFiltroFecha.Controls.Add(this.lblHasta);
-            this.grpFiltroFecha.Controls.Add(this.dtpHasta);
-            this.grpFiltroFecha.Controls.Add(this.btnFiltrarFecha);
-            this.grpFiltroFecha.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F);
-            this.grpFiltroFecha.Location = new System.Drawing.Point(469, 3);
-            this.grpFiltroFecha.Name = "grpFiltroFecha";
-            this.grpFiltroFecha.Size = new System.Drawing.Size(560, 49);
-            this.grpFiltroFecha.TabIndex = 8;
-            this.grpFiltroFecha.TabStop = false;
-            this.grpFiltroFecha.Text = "Filtrar por Período";
-            // 
-            // lblDesde
-            // 
-            this.lblDesde.AutoSize = true;
-            this.lblDesde.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F);
-            this.lblDesde.Location = new System.Drawing.Point(10, 24);
-            this.lblDesde.Name = "lblDesde";
-            this.lblDesde.Size = new System.Drawing.Size(51, 16);
-            this.lblDesde.TabIndex = 2;
-            this.lblDesde.Text = "Desde:";
-            // 
-            // dtpDesde
-            // 
-            this.dtpDesde.CalendarTitleBackColor = System.Drawing.Color.SeaGreen;
-            this.dtpDesde.CalendarTitleForeColor = System.Drawing.Color.White;
-            this.dtpDesde.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F);
-            this.dtpDesde.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dtpDesde.Location = new System.Drawing.Point(68, 21);
-            this.dtpDesde.Name = "dtpDesde";
-            this.dtpDesde.Size = new System.Drawing.Size(115, 22);
-            this.dtpDesde.TabIndex = 3;
-            this.dtpDesde.ValueChanged += new System.EventHandler(this.dtpFecha_ValueChanged);
-            // 
-            // lblHasta
-            // 
-            this.lblHasta.AutoSize = true;
-            this.lblHasta.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F);
-            this.lblHasta.Location = new System.Drawing.Point(192, 24);
-            this.lblHasta.Name = "lblHasta";
-            this.lblHasta.Size = new System.Drawing.Size(46, 16);
-            this.lblHasta.TabIndex = 4;
-            this.lblHasta.Text = "Hasta:";
-            // 
-            // dtpHasta
-            // 
-            this.dtpHasta.CalendarTitleBackColor = System.Drawing.Color.SeaGreen;
-            this.dtpHasta.CalendarTitleForeColor = System.Drawing.Color.White;
-            this.dtpHasta.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F);
-            this.dtpHasta.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dtpHasta.Location = new System.Drawing.Point(247, 21);
-            this.dtpHasta.Name = "dtpHasta";
-            this.dtpHasta.Size = new System.Drawing.Size(115, 22);
-            this.dtpHasta.TabIndex = 5;
-            this.dtpHasta.ValueChanged += new System.EventHandler(this.dtpFecha_ValueChanged);
-            // 
-            // btnFiltrarFecha
-            // 
-            this.btnFiltrarFecha.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnFiltrarFecha.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F);
-            this.btnFiltrarFecha.IconChar = FontAwesome.Sharp.IconChar.Filter;
-            this.btnFiltrarFecha.IconColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(122)))), ((int)(((byte)(204)))));
-            this.btnFiltrarFecha.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            this.btnFiltrarFecha.IconSize = 18;
-            this.btnFiltrarFecha.Location = new System.Drawing.Point(375, 16);
-            this.btnFiltrarFecha.Name = "btnFiltrarFecha";
-            this.btnFiltrarFecha.Size = new System.Drawing.Size(165, 30);
-            this.btnFiltrarFecha.TabIndex = 6;
-            this.btnFiltrarFecha.Text = "Filtrar";
-            this.btnFiltrarFecha.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.btnFiltrarFecha.UseVisualStyleBackColor = true;
-            this.btnFiltrarFecha.Click += new System.EventHandler(this.btnFiltrarFecha_Click);
             // 
             // btnCambioBusqueda
             // 
@@ -1020,8 +934,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.dgvGestion)).EndInit();
             this.pnlBuscarGestion.ResumeLayout(false);
             this.pnlBuscarGestion.PerformLayout();
-            this.grpFiltroFecha.ResumeLayout(false);
-            this.grpFiltroFecha.PerformLayout();
             this.lblFaltanCargar.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -1090,12 +1002,6 @@
         private System.Windows.Forms.Panel pnlBuscarGestion;
         private System.Windows.Forms.TextBox txtBuscarGestion;
         private System.Windows.Forms.Label lblBuscarGestion;
-        private System.Windows.Forms.GroupBox grpFiltroFecha;
-        private System.Windows.Forms.Label lblDesde;
-        private System.Windows.Forms.DateTimePicker dtpDesde;
-        private System.Windows.Forms.Label lblHasta;
-        private System.Windows.Forms.DateTimePicker dtpHasta;
-        private FontAwesome.Sharp.IconButton btnFiltrarFecha;
         private FontAwesome.Sharp.IconButton btnCambioBusqueda;
         private System.Windows.Forms.TextBox txtTotalGestion;
     }

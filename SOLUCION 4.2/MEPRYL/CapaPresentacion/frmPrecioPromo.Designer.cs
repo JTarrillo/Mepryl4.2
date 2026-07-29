@@ -163,6 +163,9 @@ namespace CapaPresentacion
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabEmpresas = new System.Windows.Forms.TabPage();
             this.tabPrecios = new System.Windows.Forms.TabPage();
+            this.tabPreciosRadiografias = new System.Windows.Forms.TabPage();
+            this.tabPreciosAbonos = new System.Windows.Forms.TabPage();
+            this.tabPrecioMillones = new System.Windows.Forms.TabPage();
             this.tabConfig = new System.Windows.Forms.TabPage();
             this.dgvConfig = new System.Windows.Forms.DataGridView();
             this.colCfgIdEsp = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -186,6 +189,9 @@ namespace CapaPresentacion
             ((System.ComponentModel.ISupportInitialize)(this.dgvPrecios)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPrecioPublico)).BeginInit();
             this.tabPrecioPublico.SuspendLayout();
+            this.tabPreciosRadiografias.SuspendLayout();
+            this.tabPreciosAbonos.SuspendLayout();
+            this.tabPrecioMillones.SuspendLayout();
             this.tabControl.SuspendLayout();
             this.tabPrecios.SuspendLayout();
             this.tabConfig.SuspendLayout();
@@ -1258,12 +1264,45 @@ namespace CapaPresentacion
             this.tabPrecioPublico.Text = "  Precio Público  ";
             this.tabPrecioPublico.UseVisualStyleBackColor = true;
             // 
+            // tabPreciosRadiografias
+            // 
+            this.tabPreciosRadiografias.Location = new System.Drawing.Point(4, 4);
+            this.tabPreciosRadiografias.Name = "tabPreciosRadiografias";
+            this.tabPreciosRadiografias.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPreciosRadiografias.Size = new System.Drawing.Size(1356, 379);
+            this.tabPreciosRadiografias.TabIndex = 3;
+            this.tabPreciosRadiografias.Text = "  Precios Radiografías  ";
+            this.tabPreciosRadiografias.UseVisualStyleBackColor = true;
+            // 
+            // tabPreciosAbonos
+            // 
+            this.tabPreciosAbonos.Location = new System.Drawing.Point(4, 4);
+            this.tabPreciosAbonos.Name = "tabPreciosAbonos";
+            this.tabPreciosAbonos.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPreciosAbonos.Size = new System.Drawing.Size(1356, 379);
+            this.tabPreciosAbonos.TabIndex = 4;
+            this.tabPreciosAbonos.Text = "  Precios Abonos  ";
+            this.tabPreciosAbonos.UseVisualStyleBackColor = true;
+            // 
+            // tabPrecioMillones
+            // 
+            this.tabPrecioMillones.Location = new System.Drawing.Point(4, 4);
+            this.tabPrecioMillones.Name = "tabPrecioMillones";
+            this.tabPrecioMillones.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPrecioMillones.Size = new System.Drawing.Size(1356, 379);
+            this.tabPrecioMillones.TabIndex = 5;
+            this.tabPrecioMillones.Text = "  Precio Millones  ";
+            this.tabPrecioMillones.UseVisualStyleBackColor = true;
+            // 
             // tabControl
             // 
             this.tabControl.Alignment = System.Windows.Forms.TabAlignment.Bottom;
             this.tabControl.Controls.Add(this.tabEmpresas);
-            this.tabControl.Controls.Add(this.tabPrecios);
             this.tabControl.Controls.Add(this.tabPrecioPublico);
+            this.tabControl.Controls.Add(this.tabPrecios);
+            this.tabControl.Controls.Add(this.tabPreciosRadiografias);
+            this.tabControl.Controls.Add(this.tabPreciosAbonos);
+            this.tabControl.Controls.Add(this.tabPrecioMillones);
             this.tabControl.Controls.Add(this.tabConfig);
             this.tabControl.Controls.Add(this.tabObsPre);
             this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -1292,7 +1331,7 @@ namespace CapaPresentacion
             this.tabPrecios.Name = "tabPrecios";
             this.tabPrecios.Padding = new System.Windows.Forms.Padding(3);
             this.tabPrecios.Size = new System.Drawing.Size(1356, 379);
-            this.tabPrecios.TabIndex = 1;
+            this.tabPrecios.TabIndex = 2;
             this.tabPrecios.Text = "  Precio Promo  ";
             this.tabPrecios.UseVisualStyleBackColor = true;
             // 
@@ -1303,7 +1342,7 @@ namespace CapaPresentacion
             this.tabConfig.Name = "tabConfig";
             this.tabConfig.Padding = new System.Windows.Forms.Padding(3);
             this.tabConfig.Size = new System.Drawing.Size(1356, 379);
-            this.tabConfig.TabIndex = 3;
+            this.tabConfig.TabIndex = 6;
             this.tabConfig.Text = "  Señas / Planilla";
             this.tabConfig.UseVisualStyleBackColor = true;
             // 
@@ -1464,6 +1503,9 @@ namespace CapaPresentacion
             ((System.ComponentModel.ISupportInitialize)(this.dgvPrecios)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPrecioPublico)).EndInit();
             this.tabPrecioPublico.ResumeLayout(false);
+            this.tabPreciosRadiografias.ResumeLayout(false);
+            this.tabPreciosAbonos.ResumeLayout(false);
+            this.tabPrecioMillones.ResumeLayout(false);
             this.tabControl.ResumeLayout(false);
             this.tabPrecios.ResumeLayout(false);
             this.tabConfig.ResumeLayout(false);
@@ -1503,6 +1545,9 @@ namespace CapaPresentacion
         private System.Windows.Forms.TabPage tabEmpresas;
         private System.Windows.Forms.TabPage tabPrecios;
         private System.Windows.Forms.TabPage tabPrecioPublico;
+        private System.Windows.Forms.TabPage tabPreciosRadiografias;
+        private System.Windows.Forms.TabPage tabPreciosAbonos;
+        private System.Windows.Forms.TabPage tabPrecioMillones;
         private System.Windows.Forms.TabPage tabConfig;
         private System.Windows.Forms.DataGridView dgvConfig;
         private System.Windows.Forms.DataGridViewTextBoxColumn colCfgIdEsp;

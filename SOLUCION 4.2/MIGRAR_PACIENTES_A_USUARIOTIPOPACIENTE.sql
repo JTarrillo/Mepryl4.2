@@ -19,7 +19,11 @@ INSERT INTO dbo.UsuarioTipoPaciente
     (id, username, password, dni, apellido, nombre, Tipo, Activo, fechaCreacion)
 SELECT 
     id,
-    username,
+    username + CASE 
+        WHEN ROW_NUMBER() OVER (PARTITION BY username ORDER BY id) > 1 
+        THEN '_' + CAST(ROW_NUMBER() OVER (PARTITION BY username ORDER BY id) AS VARCHAR)
+        ELSE '' 
+    END as username,
     password,
     dni,
     apellido,
@@ -40,7 +44,11 @@ INSERT INTO dbo.UsuarioTipoPaciente
     (id, username, password, dni, apellido, nombre, Tipo, Activo, fechaCreacion)
 SELECT 
     id,
-    username,
+    username + CASE 
+        WHEN ROW_NUMBER() OVER (PARTITION BY username ORDER BY id) > 1 
+        THEN '_' + CAST(ROW_NUMBER() OVER (PARTITION BY username ORDER BY id) AS VARCHAR)
+        ELSE '' 
+    END as username,
     password,
     dni,
     apellido,
@@ -69,7 +77,9 @@ GO
 
 PRINT '';
 PRINT '=== Migración completada ===';
-PRINT 'Total pacientes migrados: ' + CAST((SELECT COUNT(*) FROM dbo.UsuarioTipoPaciente) AS VARCHAR);
+DECLARE @totalMigrados INT;
+SELECT @totalMigrados = COUNT(*) FROM dbo.UsuarioTipoPaciente;
+PRINT 'Total pacientes migrados: ' + CAST(@totalMigrados AS VARCHAR);
 GO
 
 -- Paso 4: Opcional - Eliminar pacientes de tabla Usuario (COMENTADO POR SEGURIDAD)
