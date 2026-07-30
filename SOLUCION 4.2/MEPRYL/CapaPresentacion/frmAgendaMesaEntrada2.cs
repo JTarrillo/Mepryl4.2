@@ -514,25 +514,31 @@ namespace CapaPresentacion
                             dgvGrilla.Rows[i].DefaultCellStyle.BackColor = Color.FromArgb(52, 152, 219);
                             System.Diagnostics.Debug.WriteLine($"[PINTAR] Fila {i} - Pintando AZUL (Salida ON, CONTINUA ON)");
                         }
-                        // Regla 3: APTO marcado, NAT NO marcado, CONTINUA NO marcado, SALIDA NO marcado → Verde oscuro
+                        // Regla 3: APTO marcado y SALIDA marcada → Azul
+                        else if (chkRevisadoOn && salidaOn)
+                        {
+                            dgvGrilla.Rows[i].DefaultCellStyle.BackColor = Color.FromArgb(52, 152, 219);
+                            System.Diagnostics.Debug.WriteLine($"[PINTAR] Fila {i} - Pintando AZUL (APTO ON, Salida ON)");
+                        }
+                        // Regla 4: APTO marcado, NAT NO marcado, CONTINUA NO marcado, SALIDA NO marcado → Verde oscuro
                         else if (chkRevisadoOn && !natOn && !continuaOn && !salidaOn)
                         {
                             dgvGrilla.Rows[i].DefaultCellStyle.BackColor = Color.FromArgb(46, 204, 113);
                             System.Diagnostics.Debug.WriteLine($"[PINTAR] Fila {i} - Pintando VERDE OSCURO (APTO ON, NAT OFF, CONTINUA OFF, SALIDA OFF)");
                         }
-                        // Regla 4: APTO NO marcado, NAT NO marcado, CONTINUA marcado → Amarillo
+                        // Regla 5: APTO NO marcado, NAT NO marcado, CONTINUA marcado → Amarillo
                         else if (!chkRevisadoOn && !natOn && continuaOn)
                         {
                             dgvGrilla.Rows[i].DefaultCellStyle.BackColor = Color.FromArgb(255, 200, 50);
                             System.Diagnostics.Debug.WriteLine($"[PINTAR] Fila {i} - Pintando AMARILLO (APTO OFF, NAT OFF, CONTINUA ON)");
                         }
-                        // Regla 5: APTO marcado, NAT NO marcado, CONTINUA marcado → Verde claro
+                        // Regla 6: APTO marcado, NAT NO marcado, CONTINUA marcado → Verde claro
                         else if (chkRevisadoOn && !natOn && continuaOn)
                         {
                             dgvGrilla.Rows[i].DefaultCellStyle.BackColor = Color.LightGreen;
                             System.Diagnostics.Debug.WriteLine($"[PINTAR] Fila {i} - Pintando VERDE CLARO (APTO ON, NAT OFF, CONTINUA ON)");
                         }
-                        // Regla 6: NAT marcado solamente → Rojo
+                        // Regla 7: NAT marcado solamente → Rojo
                         else if (natOn && !continuaOn)
                         {
                             dgvGrilla.Rows[i].DefaultCellStyle.BackColor = Color.FromArgb(220, 50, 50);
@@ -585,22 +591,27 @@ namespace CapaPresentacion
                 {
                     dgvGrilla.Rows[rowIndex].DefaultCellStyle.BackColor = Color.FromArgb(52, 152, 219);
                 }
-                // Regla 3: APTO marcado, NAT NO marcado, CONTINUA NO marcado, SALIDA NO marcado → Verde oscuro
+                // Regla 3: APTO marcado y SALIDA marcada → Azul
+                else if (chkRevisadoOn && salidaOn)
+                {
+                    dgvGrilla.Rows[rowIndex].DefaultCellStyle.BackColor = Color.FromArgb(52, 152, 219);
+                }
+                // Regla 4: APTO marcado, NAT NO marcado, CONTINUA NO marcado, SALIDA NO marcado → Verde oscuro
                 else if (chkRevisadoOn && !natOn && !continuaOn && !salidaOn)
                 {
                     dgvGrilla.Rows[rowIndex].DefaultCellStyle.BackColor = Color.FromArgb(46, 204, 113);
                 }
-                // Regla 4: APTO NO marcado, NAT NO marcado, CONTINUA marcado → Amarillo
+                // Regla 5: APTO NO marcado, NAT NO marcado, CONTINUA marcado → Amarillo
                 else if (!chkRevisadoOn && !natOn && continuaOn)
                 {
                     dgvGrilla.Rows[rowIndex].DefaultCellStyle.BackColor = Color.FromArgb(255, 200, 50);
                 }
-                // Regla 5: APTO marcado, NAT NO marcado, CONTINUA marcado → Verde claro
+                // Regla 6: APTO marcado, NAT NO marcado, CONTINUA marcado → Verde claro
                 else if (chkRevisadoOn && !natOn && continuaOn)
                 {
                     dgvGrilla.Rows[rowIndex].DefaultCellStyle.BackColor = Color.LightGreen;
                 }
-                // Regla 6: NAT marcado solamente → Rojo
+                // Regla 7: NAT marcado solamente → Rojo
                 else if (natOn && !continuaOn)
                 {
                     dgvGrilla.Rows[rowIndex].DefaultCellStyle.BackColor = Color.FromArgb(220, 50, 50);

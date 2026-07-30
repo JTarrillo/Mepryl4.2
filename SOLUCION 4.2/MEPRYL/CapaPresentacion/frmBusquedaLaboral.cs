@@ -2009,8 +2009,10 @@ namespace CapaPresentacion
             Mes = Mes.Substring(0, 2);
             strFecha = Anio + Mes + Dia;
             strFecha01 = Dia + "/" + Mes + "/" + Anio;
-            //strFiltro = strFecha + "*_" + NroOrden + "_*.jpg";            
-            strFiltro = strFecha + "*_" + NroOrden + " *_?????_*.jpg";
+            
+            // Nuevo filtro para estructura cambiada de RX
+            // Busca archivos JPG que contengan el número de orden en cualquier subcarpeta
+            strFiltro = "*" + NroOrden + "*.jpg";
 
             if (Requerido)
             {

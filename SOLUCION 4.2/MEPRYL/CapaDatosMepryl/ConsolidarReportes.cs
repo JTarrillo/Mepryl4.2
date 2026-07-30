@@ -152,7 +152,7 @@ namespace CapaDatosMepryl
                                     inner join dbo.ConsultaLaboral cl on tep.id = cl.idTipoExamen
                                     INNER JOIN dbo.EstudiosPorExamen EE ON EE.idTipoExamen = tep.id
                                 where c.tipo != 'P' and convert(date, c.fecha) >= convert(date, '" + FechaInicio.ToShortDateString() + @"', 105) and convert(date, c.fecha)
-                                <= convert(date, '" + FechaFin.ToShortDateString() + @"', 105) AND c.identificador = '" + NroOrden + @"' AND p.dni = '" + DNI + @"' order by CONVERT(VARCHAR(10), c.fecha, 101), convert(int, REPLACE(REPLACE(c.identificador, 'L', ''), 'CO', ''))";
+                                <= convert(date, '" + FechaFin.ToShortDateString() + @"', 105) AND c.identificador = '" + NroOrden + @"' AND p.dni = '" + DNI + @"' order by CONVERT(VARCHAR(10), c.fecha, 101), convert(int, REPLACE(REPLACE(REPLACE(c.identificador, 'L', ''), 'CO', ''), 'EC', ''))";
 
                 dtResultado = SQLConnector.obtenerTablaSegunConsultaString(strSQL);
             }

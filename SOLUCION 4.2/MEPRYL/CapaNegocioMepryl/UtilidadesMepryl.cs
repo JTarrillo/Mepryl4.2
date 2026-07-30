@@ -70,10 +70,17 @@ namespace CapaNegocioMepryl
             List<string> Lista01 = new List<string>();
             List<string> Lista02 = new List<string>();
 
+            System.Diagnostics.Debug.WriteLine($"[CONSOLIDAR] ========== ConcatenarPDFs INICIO ==========");
+            System.Diagnostics.Debug.WriteLine($"[CONSOLIDAR] DirectorioBase: {DirectorioBase}");
+            System.Diagnostics.Debug.WriteLine($"[CONSOLIDAR] Filas en ListaArchivos: {dtLA.Rows.Count}");
+
             if (dtLA.Rows.Count > 0)
             {
+                int filaIndex = 0;
                 foreach (DataRow r in dtLA.Rows)
                 {
+                    System.Diagnostics.Debug.WriteLine($"[CONSOLIDAR] --- Procesando fila {filaIndex} ---");
+                    
                     Lista01.Add(r.ItemArray[6].ToString());
                     Lista01.Add(r.ItemArray[7].ToString());
                     Lista01.Add(r.ItemArray[8].ToString());
@@ -86,12 +93,26 @@ namespace CapaNegocioMepryl
                     Lista02.Add(r.ItemArray[4].ToString());
                     Lista02.Add(r.ItemArray[5].ToString());
 
-                    ProcesoConcatenar(PathArchivoConsolidado(Lista02, DirectorioBase), Lista01);
+                    System.Diagnostics.Debug.WriteLine($"[CONSOLIDAR] Lista02 (datos): Fecha={Lista02[0]}, NroOrden={Lista02[1]}, DNI={Lista02[2]}, Nombre={Lista02[3]}, Apellido={Lista02[4]}, Mensaje={Lista02[5]}");
+                    System.Diagnostics.Debug.WriteLine($"[CONSOLIDAR] Lista01 (archivos): Arch1={Lista01[0]}, Arch2={Lista01[1]}, Arch3={Lista01[2]}, Arch4={Lista01[3]}");
+
+                    string pathSalida = PathArchivoConsolidado(Lista02, DirectorioBase);
+                    System.Diagnostics.Debug.WriteLine($"[CONSOLIDAR] PathSalida: {pathSalida}");
+                    
+                    ProcesoConcatenar(pathSalida, Lista01);
+                    
+                    if (!string.IsNullOrEmpty(strEstado))
+                    {
+                        System.Diagnostics.Debug.WriteLine($"[CONSOLIDAR] ERROR en ProcesoConcatenar: {strEstado}");
+                    }
+                    
                     Lista01.Clear();
                     Lista02.Clear();
+                    filaIndex++;
                 }
             }
 
+            System.Diagnostics.Debug.WriteLine($"[CONSOLIDAR] ========== ConcatenarPDFs FIN ==========");
             return strEstado;
         }
 
@@ -134,6 +155,10 @@ namespace CapaNegocioMepryl
         public void ProcesoConcatenar(string PathSalida, List<string> Lista)
         {
             string strArchivoRevisado = "";
+            System.Diagnostics.Debug.WriteLine($"[CONSOLIDAR] ========== ProcesoConcatenar INICIO ==========");
+            System.Diagnostics.Debug.WriteLine($"[CONSOLIDAR] PathSalida: {PathSalida}");
+            System.Diagnostics.Debug.WriteLine($"[CONSOLIDAR] Cantidad de archivos en Lista: {Lista.Count}");
+            
             try
             {
                 iTextSharp.text.Document dcDOC = new iTextSharp.text.Document();
@@ -143,27 +168,38 @@ namespace CapaNegocioMepryl
                 string strImagen = "";
 
                 if (File.Exists(PathSalida))
+                {
+                    System.Diagnostics.Debug.WriteLine($"[CONSOLIDAR] Eliminando archivo existente: {PathSalida}");
                     File.Delete(PathSalida);
+                }
 
                 if (!ListaVacia(Lista))
                 {
+                    System.Diagnostics.Debug.WriteLine($"[CONSOLIDAR] Creando FileStream y PdfCopy");
                     FileStream fsArchivo = new FileStream(PathSalida, FileMode.Create, FileAccess.Write, FileShare.None);
                     PdfCopy pcPdf = new PdfCopy(dcDOC, fsArchivo);
                 
+                    System.Diagnostics.Debug.WriteLine($"[CONSOLIDAR] Creando imágenes PDF");
                     CrearImagenPDF(ref Lista);
+                    System.Diagnostics.Debug.WriteLine($"[CONSOLIDAR] Lista después de CrearImagenPDF: {Lista.Count} archivos");
                 
                     dcDOC.Open();
 
+                    int fileIndex = 0;
                     foreach (string file in Lista)
                     {
+                        System.Diagnostics.Debug.WriteLine($"[CONSOLIDAR] Procesando archivo {fileIndex}: {file}");
+                        
                         if (!string.IsNullOrEmpty(file))
                         {
                             if (Path.GetExtension(file).ToUpper() != ".JPG")
                             {
                                 strArchivoRevisado = file;
+                                System.Diagnostics.Debug.WriteLine($"[CONSOLIDAR] Es PDF, leyendo archivo: {file}");
                                 rdPdf = new PdfReader(file);                                
 
                                 intNroPg = rdPdf.NumberOfPages;
+                                System.Diagnostics.Debug.WriteLine($"[CONSOLIDAR] Páginas en PDF: {intNroPg}");
                                 int intPagina = 0;
 
                                 while (intPagina < intNroPg)
@@ -178,12 +214,24 @@ namespace CapaNegocioMepryl
                             else
                             {
                                 strImagen = file;
+                                System.Diagnostics.Debug.WriteLine($"[CONSOLIDAR] Es imagen JPG: {file}");
                             }
                         }
+                        else
+                        {
+                            System.Diagnostics.Debug.WriteLine($"[CONSOLIDAR] Archivo vacío o nulo en índice {fileIndex}");
+                        }
+                        
+                        fileIndex++;
                     }
 
                     pcPdf.Flush();
                     dcDOC.Close();
+                    System.Diagnostics.Debug.WriteLine($"[CONSOLIDAR] PDF consolidado creado exitosamente");
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine($"[CONSOLIDAR] Lista está vacía, no se crea PDF");
                 }
                 //IncluirImagen(PathSalida, strImagen);
                 Lista.Clear();
@@ -191,11 +239,15 @@ namespace CapaNegocioMepryl
             catch (System.IO.IOException ex)
             {
                 strEstado = "No se creó el consolidado: " + PathSalida + "\n\n" + ex.Message.ToString() + "\n** Error en Archivo: " + strArchivoRevisado;
+                System.Diagnostics.Debug.WriteLine($"[CONSOLIDAR] ERROR IOException: {strEstado}");
             }
             catch (System.ArgumentException ex)
             {
                 strEstado = "No se creó el consolidado: " + PathSalida + "\n\n** ¡DNI o Nombre de paciente contienen caracteres especiales!\n" + ex.Message.ToString() + "\n** Error en Archivo: " + strArchivoRevisado;
+                System.Diagnostics.Debug.WriteLine($"[CONSOLIDAR] ERROR ArgumentException: {strEstado}");
             }
+            
+            System.Diagnostics.Debug.WriteLine($"[CONSOLIDAR] ========== ProcesoConcatenar FIN ==========");
         }
 
         private void CrearImagenPDF(ref List<string> Lista)

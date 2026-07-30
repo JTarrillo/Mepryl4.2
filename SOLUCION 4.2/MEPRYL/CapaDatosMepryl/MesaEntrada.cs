@@ -1539,7 +1539,7 @@ namespace CapaDatosMepryl
         ISNULL(ec.Electro, 0) as Electro,
         ISNULL(ec.Salida, 0) as Salida,
         ISNULL(ec.Nat, 0) as Nat,
-        ISNULL(ec.Continua, 0) as Continua,
+        ISNULL(ec.Continua, 1) as Continua,
         ec.HoraSalida
         from Consulta c
         inner join dbo.TipoExamenDePaciente te on te.idConsulta = c.id
