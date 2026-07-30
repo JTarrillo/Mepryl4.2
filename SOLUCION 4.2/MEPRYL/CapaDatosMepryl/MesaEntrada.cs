@@ -1467,7 +1467,7 @@ namespace CapaDatosMepryl
         private void procesarFilaTablaGrillaPlanillaCompleta(ref DataTable retorno, DataRow fila)
         {
             System.Diagnostics.Debug.WriteLine($"[HORA_SALIDA] procesarFilaTablaGrillaPlanillaCompleta llamado para IdTipoExamen: {fila.ItemArray[2]}");
-            
+
             Entidades.MesaEntrada paciente = cargarInformacionConsulta(new Guid(fila.ItemArray[0].ToString()));
             List<object> list = cargarDatosPaciente(new Guid(fila.ItemArray[1].ToString()));
             DataTable clubesOEmpresa = cargarClubesOEmpresa(new Guid(fila.ItemArray[0].ToString()));
@@ -1477,7 +1477,7 @@ namespace CapaDatosMepryl
 
             // Debug para verificar HoraSalida
             System.Diagnostics.Debug.WriteLine($"[HORA_SALIDA] Total columnas en fila: {fila.ItemArray.Length}");
-            
+
             string horaSalidaStr = string.Empty;
             try
             {
@@ -1485,7 +1485,7 @@ namespace CapaDatosMepryl
                 {
                     var horaSalidaValue = fila.ItemArray[19];
                     System.Diagnostics.Debug.WriteLine($"[HORA_SALIDA] IdTipoExamen: {fila.ItemArray[2]}, HoraSalida: {horaSalidaValue} (Tipo: {horaSalidaValue?.GetType().Name})");
-                    
+
                     if (horaSalidaValue != DBNull.Value && horaSalidaValue != null)
                     {
                         horaSalidaStr = Convert.ToDateTime(horaSalidaValue).ToString("HH:mm:ss");
@@ -1539,7 +1539,7 @@ namespace CapaDatosMepryl
         ISNULL(ec.Electro, 0) as Electro,
         ISNULL(ec.Salida, 0) as Salida,
         ISNULL(ec.Nat, 0) as Nat,
-        ISNULL(ec.Continua, 0) as Continua,
+        ISNULL(ec.Continua, 1) as Continua,
         ec.HoraSalida
         from Consulta c
         inner join dbo.TipoExamenDePaciente te on te.idConsulta = c.id
@@ -1836,7 +1836,7 @@ namespace CapaDatosMepryl
                 {
                     // Actualizar registro existente
                     string updateSql = $"UPDATE dbo.EstadosCheckboxesMesaEntrada SET {nombreColumna} = {(estado ? 1 : 0)}";
-                    
+
                     // Si es Salida y se está marcando, actualizar HoraSalida
                     if (esSalida && estado)
                     {
@@ -1847,7 +1847,7 @@ namespace CapaDatosMepryl
                     {
                         updateSql += ", HoraSalida = NULL";
                     }
-                    
+
                     updateSql += $" WHERE idTipoExamen = '{idTipoExamen}'";
                     SQLConnector.EjecutarConsulta(updateSql);
                 }
@@ -1855,7 +1855,7 @@ namespace CapaDatosMepryl
                 {
                     // Insertar nuevo registro
                     string insertSql = $"INSERT INTO dbo.EstadosCheckboxesMesaEntrada (idTipoExamen, {nombreColumna}";
-                    
+
                     // Si es Salida y se está marcando, incluir HoraSalida
                     if (esSalida && estado)
                     {
@@ -1865,7 +1865,7 @@ namespace CapaDatosMepryl
                     {
                         insertSql += $") VALUES ('{idTipoExamen}', {(estado ? 1 : 0)})";
                     }
-                    
+
                     SQLConnector.EjecutarConsulta(insertSql);
                 }
 
