@@ -341,19 +341,59 @@ namespace CapaPresentacion
 
         private void timerActualiza_Tick(object sender, EventArgs e)
         {
-            // No recargar datos, solo actualizar colores
-            // CargarDatos(); // Comentado para evitar reseteo de la grilla
+            // Actualización suave en tiempo real sin parpadeo visual
+            try
+            {
+                // Guardar estado actual antes de recargar
+                int currentScroll = dgvGrilla.FirstDisplayedScrollingRowIndex;
+                int? currentRowIndex = null;
+                string currentNroOrden = null;
+                
+                if (dgvGrilla.CurrentRow != null)
+                {
+                    currentRowIndex = dgvGrilla.CurrentRow.Index;
+                    currentNroOrden = dgvGrilla.CurrentRow.Cells[5].Value?.ToString(); // Columna NroOrden
+                }
 
-            //if (dgvGrilla.Rows.Count > 0)
-            //{
-            //    dgvGrilla.Rows[intFilaSelecc].Selected = true;
-            //    dgvGrilla.CurrentCell = dgvGrilla.Rows[intFilaSelecc].Cells[4];                
-            //}
-            PintarFilaGrilla();
-            SeleccinarFilaTurno();
-            timerActualiza.Interval = 50000;
-            if(dgvGrilla.Rows.Count > 0)
-                dgvGrilla.FirstDisplayedScrollingRowIndex = intPosScroll;
+                // Suspender layout para evitar parpadeo
+                dgvGrilla.SuspendLayout();
+                
+                // Recargar datos
+                CargarDatos();
+                mostrarDatos();
+                
+                // Aplicar lógica de colores
+                PintarFilaGrilla();
+                
+                // Restaurar layout
+                dgvGrilla.ResumeLayout(true);
+                
+                // Restaurar scroll
+                if (currentScroll >= 0 && currentScroll < dgvGrilla.Rows.Count)
+                {
+                    dgvGrilla.FirstDisplayedScrollingRowIndex = currentScroll;
+                }
+                
+                // Restaurar selección si es posible
+                if (currentNroOrden != null)
+                {
+                    foreach (DataGridViewRow row in dgvGrilla.Rows)
+                    {
+                        if (row.Cells[5].Value?.ToString() == currentNroOrden)
+                        {
+                            row.Selected = true;
+                            dgvGrilla.CurrentCell = row.Cells[0];
+                            break;
+                        }
+                    }
+                }
+                
+                timerActualiza.Interval = 30000; // 30 segundos
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[AGENDA] Error en timerActualiza_Tick: {ex.Message}");
+            }
         }
 
         //void ActualizaTimer()
