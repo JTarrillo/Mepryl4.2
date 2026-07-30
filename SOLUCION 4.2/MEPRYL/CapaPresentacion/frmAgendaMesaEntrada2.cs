@@ -33,7 +33,7 @@ namespace CapaPresentacion
         {
             InitializeComponent();
             mesaEntrada = new MesaEntrada();
-            
+
             // Habilitar DoubleBuffered para evitar parpadeo visual
             typeof(DataGridView).InvokeMember(
                 "DoubleBuffered",
@@ -41,16 +41,16 @@ namespace CapaPresentacion
                 null,
                 dgvGrilla,
                 new object[] { true });
-            
-            inicializar();                                
+
+            inicializar();
         }
 
         public frmAgendaMesaEntrada2(frmBasePrincipal parentForm)
         {
             InitializeComponent();
-            this.MdiParent = parentForm;            
+            this.MdiParent = parentForm;
             mesaEntrada = new MesaEntrada();
-            
+
             // Habilitar DoubleBuffered para evitar parpadeo visual
             typeof(DataGridView).InvokeMember(
                 "DoubleBuffered",
@@ -58,7 +58,7 @@ namespace CapaPresentacion
                 null,
                 dgvGrilla,
                 new object[] { true });
-            
+
             inicializar();
             //ActualizaTimer();
         }
@@ -89,11 +89,11 @@ namespace CapaPresentacion
             {
                 // FechaNaci antes de ObservacTurno
                 dgvGrilla.Columns[16].DisplayIndex = 13; // FechaNaci antes de ObservacTurno
-                
+
                 // ObservacTurno y ObservacMesaEntrada en orden correcto
                 dgvGrilla.Columns[13].DisplayIndex = 14; // ObservacTurno
                 dgvGrilla.Columns[14].DisplayIndex = 15; // ObservacMesaEntrada después de ObservacTurno
-                
+
                 // Nat y Continua después de ObservacMesaEntrada
                 dgvGrilla.Columns[29].DisplayIndex = 16; // Nat después de ObservacMesaEntrada
                 dgvGrilla.Columns[29].Width = 40; // Ancho de columna Nat
@@ -102,10 +102,10 @@ namespace CapaPresentacion
                 dgvGrilla.Columns[30].DisplayIndex = 17; // Continua después de Nat
                 dgvGrilla.Columns[30].Width = 50; // Ancho de columna Continua
                 dgvGrilla.Columns[30].HeaderText = "CONT."; // Nombre de columna Continua
-                
+
                 // RM después de Continua
                 dgvGrilla.Columns[15].DisplayIndex = 18; // RM después de Continua
-                
+
                 // HoraSalida al final
                 dgvGrilla.Columns[31].DisplayIndex = 31; // HoraSalida al final
                 dgvGrilla.Columns[31].Width = 70; // Ancho de columna HoraSalida
@@ -113,7 +113,7 @@ namespace CapaPresentacion
                 dgvGrilla.Columns[31].HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter; // Centrar encabezado
                 dgvGrilla.Columns[31].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; // Centrar contenido
                 dgvGrilla.Columns[31].ReadOnly = true; // HoraSalida read-only para evitar acciones al hacer click
-                
+
                 // Color de selección RGB(0, 120, 212) - #0078D4 (azul Windows)
                 dgvGrilla.DefaultCellStyle.SelectionBackColor = Color.FromArgb(0, 120, 212);
                 dgvGrilla.DefaultCellStyle.SelectionForeColor = Color.White;
@@ -134,7 +134,7 @@ namespace CapaPresentacion
                 }
             }
         }
-        
+
         public void cargarGrilla()
         {
             primeraVez = true;
@@ -154,9 +154,9 @@ namespace CapaPresentacion
             //{
             //    //
             //}
-            
+
             this.ActiveControl = dgvGrilla;
-            
+
         }
 
         public void CargarGrillaEmpresaClub()
@@ -172,11 +172,12 @@ namespace CapaPresentacion
             DataTable retorno = new DataTable();
             if (isNumeric)
             {
-                
+
                 retorno.Columns.Add("Liga");
                 retorno.Columns.Add("Club");
-            }else
-            {                
+            }
+            else
+            {
                 retorno.Columns.Add("Empresa");
                 retorno.Columns.Add("Tarea");
             }
@@ -235,12 +236,12 @@ namespace CapaPresentacion
                         txtNombre.Text = dgvGrilla.Rows[intFilaSelecc].Cells[12].Value.ToString();
                         txtFechaNacimiento.Text = dgvGrilla.Rows[intFilaSelecc].Cells[16].Value.ToString();
                         txtEdad.Text = CalcularEdad(txtFechaNacimiento.Text) + " Años";
-                                               
+
                         //CargarGrillaEmpresaClub();
                         lblNroOrdenDato.Text = dgvGrilla.Rows[intFilaSelecc].Cells[6].Value.ToString();
                         lblNroExamenDato.Text = dgvGrilla.Rows[intFilaSelecc].Cells[9].Value.ToString();
                         dgvInformacionPaciente.DataSource = CargarEmpresaClub01(lblNroExamenDato.Text, dgvGrilla.Rows[intFilaSelecc].Cells[22].Value.ToString(), dgvGrilla.Rows[intFilaSelecc].Cells[23].Value.ToString());
-                        
+
                         tbClinico.Text = dgvGrilla.Rows[intFilaSelecc].Cells[18].Value.ToString();
                         tbLaboratorio.Text = dgvGrilla.Rows[intFilaSelecc].Cells[19].Value.ToString();
                         tbRx.Text = dgvGrilla.Rows[intFilaSelecc].Cells[20].Value.ToString();
@@ -259,7 +260,8 @@ namespace CapaPresentacion
                             {
                                 chkRevisado.Image = Image.FromFile("P:\\img-system\\mCheck02_45x45.png");
                             }
-                        }catch(System.IO.FileNotFoundException ex)
+                        }
+                        catch (System.IO.FileNotFoundException ex)
                         {
                             chkRevisado.Image = null;
                         }
@@ -282,13 +284,14 @@ namespace CapaPresentacion
                         }
                     }
                 }
-            }catch (System.NullReferenceException ex)
+            }
+            catch (System.NullReferenceException ex)
             {
                 //
             }
-        
+
         }
-        
+
         private void colorearFila(DataGridViewRow row)
         {
             Color color = Color.White;
@@ -327,7 +330,7 @@ namespace CapaPresentacion
                     strResultado = (DateTime.Today.AddTicks(-dtNacimiento.Ticks).Year - 1).ToString();
                 else
                 {
-                    MessageBox.Show("Fecha de nacimiento no puede ser mayor a la fecha de hoy", "Laboral", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);                    
+                    MessageBox.Show("Fecha de nacimiento no puede ser mayor a la fecha de hoy", "Laboral", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 }
 
             }
@@ -341,19 +344,59 @@ namespace CapaPresentacion
 
         private void timerActualiza_Tick(object sender, EventArgs e)
         {
-            // No recargar datos, solo actualizar colores
-            // CargarDatos(); // Comentado para evitar reseteo de la grilla
+            // Actualización suave en tiempo real sin parpadeo visual
+            try
+            {
+                // Guardar estado actual antes de recargar
+                int currentScroll = dgvGrilla.FirstDisplayedScrollingRowIndex;
+                int? currentRowIndex = null;
+                string currentNroOrden = null;
 
-            //if (dgvGrilla.Rows.Count > 0)
-            //{
-            //    dgvGrilla.Rows[intFilaSelecc].Selected = true;
-            //    dgvGrilla.CurrentCell = dgvGrilla.Rows[intFilaSelecc].Cells[4];                
-            //}
-            PintarFilaGrilla();
-            SeleccinarFilaTurno();
-            timerActualiza.Interval = 50000;
-            if(dgvGrilla.Rows.Count > 0)
-                dgvGrilla.FirstDisplayedScrollingRowIndex = intPosScroll;
+                if (dgvGrilla.CurrentRow != null)
+                {
+                    currentRowIndex = dgvGrilla.CurrentRow.Index;
+                    currentNroOrden = dgvGrilla.CurrentRow.Cells[5].Value?.ToString(); // Columna NroOrden
+                }
+
+                // Suspender layout para evitar parpadeo
+                dgvGrilla.SuspendLayout();
+
+                // Recargar datos
+                CargarDatos();
+                mostrarDatos();
+
+                // Aplicar lógica de colores
+                PintarFilaGrilla();
+
+                // Restaurar layout
+                dgvGrilla.ResumeLayout(true);
+
+                // Restaurar scroll
+                if (currentScroll >= 0 && currentScroll < dgvGrilla.Rows.Count)
+                {
+                    dgvGrilla.FirstDisplayedScrollingRowIndex = currentScroll;
+                }
+
+                // Restaurar selección si es posible
+                if (currentNroOrden != null)
+                {
+                    foreach (DataGridViewRow row in dgvGrilla.Rows)
+                    {
+                        if (row.Cells[5].Value?.ToString() == currentNroOrden)
+                        {
+                            row.Selected = true;
+                            dgvGrilla.CurrentCell = row.Cells[0];
+                            break;
+                        }
+                    }
+                }
+
+                timerActualiza.Interval = 30000; // 30 segundos
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[AGENDA] Error en timerActualiza_Tick: {ex.Message}");
+            }
         }
 
         //void ActualizaTimer()
@@ -371,17 +414,17 @@ namespace CapaPresentacion
 
         void ActualizaTimer()
         {
-            
+
             while (true)
             {
                 CargarDatos();
                 SeleccinarFilaTurno();
                 System.Threading.Thread.Sleep(5000);
             }
-            
+
         }
 
-        
+
 
         private void RefrescaRegistro()
         {
@@ -393,7 +436,7 @@ namespace CapaPresentacion
             if (dgvGrilla.Rows.Count > 0)
             {
 
-                dgvGrilla.Columns[0].Visible = false;                
+                dgvGrilla.Columns[0].Visible = false;
                 dgvGrilla.Columns[1].Visible = false;
                 dgvGrilla.Columns[2].Visible = false;
                 dgvGrilla.Columns[3].Visible = false;
@@ -470,7 +513,7 @@ namespace CapaPresentacion
                 //{
                 //    colorearFila(dgvR);
                 //}
-                
+
             }
         }
 
@@ -478,7 +521,7 @@ namespace CapaPresentacion
         {
             System.Diagnostics.Debug.WriteLine($"[PINTAR] ========== PintarFilaGrilla INICIO ==========");
             System.Diagnostics.Debug.WriteLine($"[PINTAR] Filas totales: {dgvGrilla.Rows.Count}");
-            
+
             if (dgvGrilla.Rows.Count > 0)
             {
                 for (int i = 0; i < dgvGrilla.Rows.Count; i++)
@@ -501,7 +544,7 @@ namespace CapaPresentacion
                         System.Diagnostics.Debug.WriteLine($"[PINTAR] Fila {i}: APTO={chkRevisadoOn}, NAT={natOn}, CONTINUA={continuaOn}, SALIDA={salidaOn}");
 
                         // Nuevas reglas del doctor:
-                        
+
                         // Regla 1: NAT y CONTINUA marcados → Naranja (prioridad máxima)
                         if (natOn && continuaOn)
                         {
@@ -514,25 +557,31 @@ namespace CapaPresentacion
                             dgvGrilla.Rows[i].DefaultCellStyle.BackColor = Color.FromArgb(52, 152, 219);
                             System.Diagnostics.Debug.WriteLine($"[PINTAR] Fila {i} - Pintando AZUL (Salida ON, CONTINUA ON)");
                         }
-                        // Regla 3: APTO marcado, NAT NO marcado, CONTINUA NO marcado, SALIDA NO marcado → Verde oscuro
+                        // Regla 3: APTO marcado y SALIDA marcada → Azul
+                        else if (chkRevisadoOn && salidaOn)
+                        {
+                            dgvGrilla.Rows[i].DefaultCellStyle.BackColor = Color.FromArgb(52, 152, 219);
+                            System.Diagnostics.Debug.WriteLine($"[PINTAR] Fila {i} - Pintando AZUL (APTO ON, Salida ON)");
+                        }
+                        // Regla 4: APTO marcado, NAT NO marcado, CONTINUA NO marcado, SALIDA NO marcado → Verde oscuro
                         else if (chkRevisadoOn && !natOn && !continuaOn && !salidaOn)
                         {
                             dgvGrilla.Rows[i].DefaultCellStyle.BackColor = Color.FromArgb(46, 204, 113);
                             System.Diagnostics.Debug.WriteLine($"[PINTAR] Fila {i} - Pintando VERDE OSCURO (APTO ON, NAT OFF, CONTINUA OFF, SALIDA OFF)");
                         }
-                        // Regla 4: APTO NO marcado, NAT NO marcado, CONTINUA marcado → Amarillo
+                        // Regla 5: APTO NO marcado, NAT NO marcado, CONTINUA marcado → Amarillo
                         else if (!chkRevisadoOn && !natOn && continuaOn)
                         {
                             dgvGrilla.Rows[i].DefaultCellStyle.BackColor = Color.FromArgb(255, 200, 50);
                             System.Diagnostics.Debug.WriteLine($"[PINTAR] Fila {i} - Pintando AMARILLO (APTO OFF, NAT OFF, CONTINUA ON)");
                         }
-                        // Regla 5: APTO marcado, NAT NO marcado, CONTINUA marcado → Verde claro
+                        // Regla 6: APTO marcado, NAT NO marcado, CONTINUA marcado → Verde claro
                         else if (chkRevisadoOn && !natOn && continuaOn)
                         {
                             dgvGrilla.Rows[i].DefaultCellStyle.BackColor = Color.LightGreen;
                             System.Diagnostics.Debug.WriteLine($"[PINTAR] Fila {i} - Pintando VERDE CLARO (APTO ON, NAT OFF, CONTINUA ON)");
                         }
-                        // Regla 6: NAT marcado solamente → Rojo
+                        // Regla 7: NAT marcado solamente → Rojo
                         else if (natOn && !continuaOn)
                         {
                             dgvGrilla.Rows[i].DefaultCellStyle.BackColor = Color.FromArgb(220, 50, 50);
@@ -552,14 +601,14 @@ namespace CapaPresentacion
                     }
                 }
             }
-            
+
             System.Diagnostics.Debug.WriteLine($"[PINTAR] ========== PintarFilaGrilla FIN ==========");
         }
 
         private void PintarFilaEspecifica(int rowIndex)
         {
             if (rowIndex < 0 || rowIndex >= dgvGrilla.Rows.Count) return;
-            
+
             try
             {
                 // Obtener valores de los checkboxes
@@ -574,7 +623,7 @@ namespace CapaPresentacion
                 bool salidaOn = salidaVal != null && salidaVal != DBNull.Value && Convert.ToBoolean(salidaVal);
 
                 // Nuevas reglas del doctor:
-                
+
                 // Regla 1: NAT y CONTINUA marcados → Naranja (prioridad máxima)
                 if (natOn && continuaOn)
                 {
@@ -585,22 +634,27 @@ namespace CapaPresentacion
                 {
                     dgvGrilla.Rows[rowIndex].DefaultCellStyle.BackColor = Color.FromArgb(52, 152, 219);
                 }
-                // Regla 3: APTO marcado, NAT NO marcado, CONTINUA NO marcado, SALIDA NO marcado → Verde oscuro
+                // Regla 3: APTO marcado y SALIDA marcada → Azul
+                else if (chkRevisadoOn && salidaOn)
+                {
+                    dgvGrilla.Rows[rowIndex].DefaultCellStyle.BackColor = Color.FromArgb(52, 152, 219);
+                }
+                // Regla 4: APTO marcado, NAT NO marcado, CONTINUA NO marcado, SALIDA NO marcado → Verde oscuro
                 else if (chkRevisadoOn && !natOn && !continuaOn && !salidaOn)
                 {
                     dgvGrilla.Rows[rowIndex].DefaultCellStyle.BackColor = Color.FromArgb(46, 204, 113);
                 }
-                // Regla 4: APTO NO marcado, NAT NO marcado, CONTINUA marcado → Amarillo
+                // Regla 5: APTO NO marcado, NAT NO marcado, CONTINUA marcado → Amarillo
                 else if (!chkRevisadoOn && !natOn && continuaOn)
                 {
                     dgvGrilla.Rows[rowIndex].DefaultCellStyle.BackColor = Color.FromArgb(255, 200, 50);
                 }
-                // Regla 5: APTO marcado, NAT NO marcado, CONTINUA marcado → Verde claro
+                // Regla 6: APTO marcado, NAT NO marcado, CONTINUA marcado → Verde claro
                 else if (chkRevisadoOn && !natOn && continuaOn)
                 {
                     dgvGrilla.Rows[rowIndex].DefaultCellStyle.BackColor = Color.LightGreen;
                 }
-                // Regla 6: NAT marcado solamente → Rojo
+                // Regla 7: NAT marcado solamente → Rojo
                 else if (natOn && !continuaOn)
                 {
                     dgvGrilla.Rows[rowIndex].DefaultCellStyle.BackColor = Color.FromArgb(220, 50, 50);
@@ -610,7 +664,7 @@ namespace CapaPresentacion
                 {
                     dgvGrilla.Rows[rowIndex].DefaultCellStyle.BackColor = Color.White;
                 }
-                
+
                 // Actualizar inmediatamente sin SuspendLayout/ResumeLayout para respuesta más rápida
                 dgvGrilla.InvalidateRow(rowIndex);
                 dgvGrilla.Refresh();
@@ -655,7 +709,7 @@ namespace CapaPresentacion
 
                 // Guardar el estado en base de datos
                 mesaEntrada.guardarEstadoCheckbox(idTipoExamen, e.ColumnIndex, nuevoEstado);
-                
+
                 // Si es Salida (columna 28), actualizar HoraSalida en tiempo real
                 if (e.ColumnIndex == 28)
                 {
@@ -670,7 +724,7 @@ namespace CapaPresentacion
                         dgvGrilla.Rows[e.RowIndex].Cells[31].Value = string.Empty;
                     }
                 }
-                
+
                 // Actualizar coloreo en tiempo real cuando cambia Nat o Continua
                 // Solo repintar la fila específica para evitar reseteo visual de toda la grilla
                 PintarFilaEspecifica(e.RowIndex);
@@ -695,7 +749,7 @@ namespace CapaPresentacion
             if (dgvGrilla.Columns.Count > 31)
             {
                 System.Diagnostics.Debug.WriteLine($"[HORA_SALIDA_GRILLA] Columna 31 (HoraSalida) existe: {dgvGrilla.Columns[31].Name}");
-                
+
                 for (int i = 0; i < Math.Min(5, dgvGrilla.Rows.Count); i++)
                 {
                     var horaSalidaValue = dgvGrilla.Rows[i].Cells[31].Value;
@@ -712,11 +766,11 @@ namespace CapaPresentacion
             {
                 // FechaNaci antes de ObservacTurno
                 dgvGrilla.Columns[16].DisplayIndex = 13; // FechaNaci antes de ObservacTurno
-                
+
                 // ObservacTurno y ObservacMesaEntrada en orden correcto
                 dgvGrilla.Columns[13].DisplayIndex = 14; // ObservacTurno
                 dgvGrilla.Columns[14].DisplayIndex = 15; // ObservacMesaEntrada después de ObservacTurno
-                
+
                 // Nat y Continua después de ObservacMesaEntrada
                 dgvGrilla.Columns[29].DisplayIndex = 16; // Nat después de ObservacMesaEntrada
                 dgvGrilla.Columns[29].Width = 40; // Ancho de columna Nat
@@ -725,10 +779,10 @@ namespace CapaPresentacion
                 dgvGrilla.Columns[30].DisplayIndex = 17; // Continua después de Nat
                 dgvGrilla.Columns[30].Width = 50; // Ancho de columna Continua
                 dgvGrilla.Columns[30].HeaderText = "CONT."; // Nombre de columna Continua
-                
+
                 // RM después de Continua
                 dgvGrilla.Columns[15].DisplayIndex = 18; // RM después de Continua
-                
+
                 // HoraSalida al final
                 dgvGrilla.Columns[31].DisplayIndex = 31; // HoraSalida al final
                 dgvGrilla.Columns[31].Width = 70; // Ancho de columna HoraSalida
@@ -736,7 +790,7 @@ namespace CapaPresentacion
                 dgvGrilla.Columns[31].HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter; // Centrar encabezado
                 dgvGrilla.Columns[31].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; // Centrar contenido
                 dgvGrilla.Columns[31].ReadOnly = true; // HoraSalida read-only para evitar acciones al hacer click
-                
+
                 // Color de selección RGB(0, 120, 212) - #0078D4 (azul Windows)
                 dgvGrilla.DefaultCellStyle.SelectionBackColor = Color.FromArgb(0, 120, 212);
                 dgvGrilla.DefaultCellStyle.SelectionForeColor = Color.White;
@@ -770,7 +824,7 @@ namespace CapaPresentacion
 
             //intPosScroll = dgvGrilla.FirstDisplayedScrollingRowIndex;
             //SeleccinarFilaTurno();
-            
+
             // No llamar mostrarDatos() cuando se hace click en HoraSalida (columna 31) para evitar despintado
             if (e.ColumnIndex != 31)
             {
@@ -787,7 +841,7 @@ namespace CapaPresentacion
                     if (intFilaSelecc >= 0)
                     {
                         //dgvGrilla.Rows[intFilaSelecc].Selected = true;
-                        
+
                         dgvGrilla.CurrentCell = dgvGrilla.Rows[intFilaSelecc].Cells[intColSelecc];
 
                         dgvGrilla.FirstDisplayedScrollingRowIndex = intPosScroll;
@@ -798,7 +852,7 @@ namespace CapaPresentacion
             {
                 CargarDatos();
             }
-            catch(System.InvalidOperationException ex)
+            catch (System.InvalidOperationException ex)
             {
                 CargarDatos();
             }
@@ -826,7 +880,7 @@ namespace CapaPresentacion
             CargarDirectoriosFotos();
             string strPathFotoPre = _pathFotoPre;
             string strPathFotoLab = _pathFotoLab;
-                         
+
             if (!string.IsNullOrEmpty(strPathFotoLab))
             {
                 strPathFotoLab = strPathFotoLab + "\\" + strDNI + ".jpg";
@@ -840,7 +894,7 @@ namespace CapaPresentacion
                 {
                     cargarImagen("P:\\img-system\\mUsuario300x300.jpg");
                     return;
-                }                
+                }
             }
             else
             {
@@ -886,8 +940,8 @@ namespace CapaPresentacion
             {
                 ptbFoto.Image = null;
             }
-        }        
-        
+        }
+
         private void dgvGrilla_KeyDown(object sender, KeyEventArgs e)
         {
             intColSelecc = dgvGrilla.CurrentCell.ColumnIndex;
@@ -897,27 +951,28 @@ namespace CapaPresentacion
             {
                 if ((intFilaSelecc + 1) >= dgvGrilla.Rows.Count)
                 {
-                    intFilaSelecc = dgvGrilla.Rows.Count - 1;                    
+                    intFilaSelecc = dgvGrilla.Rows.Count - 1;
                     //SeleccinarFilaTurno();
                 }
                 else
                 {
-                    intFilaSelecc = dgvGrilla.CurrentCell.RowIndex + 1;                    
+                    intFilaSelecc = dgvGrilla.CurrentCell.RowIndex + 1;
                     //SeleccinarFilaTurno();
                 }
-            }else if (e.KeyData == Keys.Up)
+            }
+            else if (e.KeyData == Keys.Up)
             {
                 if (dgvGrilla.CurrentCell.RowIndex <= 0)
                 {
-                    intFilaSelecc = 0;                    
+                    intFilaSelecc = 0;
                     //SeleccinarFilaTurno();
                 }
                 else
                 {
-                    intFilaSelecc = dgvGrilla.CurrentCell.RowIndex - 1;                    
+                    intFilaSelecc = dgvGrilla.CurrentCell.RowIndex - 1;
                     //SeleccinarFilaTurno();
                 }
-            }           
+            }
 
             mostrarDatos();
         }
@@ -925,19 +980,19 @@ namespace CapaPresentacion
         //private void chkRevisado_CheckedChanged(object sender, EventArgs e)
         //{            
         //    mesaEntrada.RevisarPaciente(dgvGrilla.Rows[intFilaSelecc].Cells[0].Value.ToString(), chkRevisado.Checked);
-            
+
         //    dgvGrilla.Rows[intFilaSelecc].DefaultCellStyle.BackColor = Color.LightGreen;
-            
+
         //}
 
         private void chkRevisado_Click(object sender, EventArgs e)
         {
             // Actualizar el valor en la grilla inmediatamente
             dgvGrilla.Rows[intFilaSelecc].Cells[17].Value = chkRevisado.Checked;
-            
+
             // Actualizar el color inmediatamente para respuesta instantánea
             PintarFilaEspecifica(intFilaSelecc);
-            
+
             // Actualizar icono
             if (chkRevisado.Checked == true)
             {
@@ -947,7 +1002,7 @@ namespace CapaPresentacion
             {
                 chkRevisado.Image = Image.FromFile("P:\\img-system\\mCheck02_45x45.png");
             }
-            
+
             // Guardar en base de datos después de la actualización visual
             mesaEntrada.RevisarPaciente(dgvGrilla.Rows[intFilaSelecc].Cells[0].Value.ToString(), chkRevisado.Checked);
         }
@@ -966,7 +1021,7 @@ namespace CapaPresentacion
             //    m.MenuItems.Add(new MenuItem("Pegar"));
 
             //    int currentMouseOverRow = dgvGrilla.HitTest(e.X, e.Y).RowIndex;
-                
+
             //    m.Show(dgvGrilla, new Point(e.X, e.Y));
 
             //}
