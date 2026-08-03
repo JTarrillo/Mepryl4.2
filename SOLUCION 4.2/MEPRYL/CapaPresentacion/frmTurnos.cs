@@ -2717,10 +2717,23 @@ namespace CapaPresentacion
             string strFechaTurno = "";
             string strCodSeg = "";
             string strPrecio = "";
+            string strPrecioPublico = "";
+            string strSeña = "";
             string strIdSubtipo = "";
             DateTime dtDiaSemana;
 
-            strPrecio = panelPacientePreventiva.Visible ? tbImportePreventiva.Text : tbImporteLaboral.Text;
+            if (panelPacientePreventiva.Visible)
+            {
+                strPrecio = tbImportePreventiva.Text; // Precio Promo (PrecioBase)
+                strPrecioPublico = tbImporteListaPreventiva.Text; // Precio Público (PrecioLista)
+                strSeña = tbSeñaPreventiva.Text; // Seña
+            }
+            else if (panelLaboral.Visible)
+            {
+                strPrecio = tbImporteLaboral.Text; // Precio Promo (PrecioBase)
+                strPrecioPublico = tbImporteListaLaboral.Text; // Precio Público (PrecioLista)
+                strSeña = tbSeñaLaboral.Text; // Seña
+            }
             strHorario = dgv.Rows[dgv.CurrentCell.RowIndex].Cells[5].Value.ToString();    // HORA [5]
             strFechaTurno = dgv.Rows[dgv.CurrentCell.RowIndex].Cells[4].Value.ToString(); // FECHA [4]
             strCodSeg = dgv.Rows[dgv.CurrentCell.RowIndex].Cells[11].Value.ToString();    // CODIGO [11]
@@ -2767,7 +2780,10 @@ namespace CapaPresentacion
                 .Replace("<<FechaTurno>>", strFechaTurno)
                 .Replace("<<horario>>", strHorario)
                 .Replace("<<codseg>>", strCodSeg)
-                .Replace("<<Precio>>", strPrecio);
+                .Replace("<<Precio>>", strPrecio) // Precio Promo (PrecioBase) - mantiene compatibilidad
+                .Replace("<<PrecioPromo>>", strPrecio) // Precio Promo (PrecioBase)
+                .Replace("<<PrecioPublico>>", strPrecioPublico) // Precio Público (PrecioLista)
+                .Replace("<<Seña>>", strSeña); // Seña
 
             // DEBUG: Mostrar el mensaje final tras el reemplazo
             System.Diagnostics.Debug.WriteLine("[WhatsApp] Mensaje tras reemplazo:\n" + strTextoPlantilla);

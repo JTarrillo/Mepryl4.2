@@ -268,8 +268,9 @@ namespace CapaPresentacion
             _coefsPromo = ConstruirArrayCoeficientes(precioPromo.ListarCoeficientesAnio(anio));
             DataTable dtPromo = precioPromo.ListarPreciosPublicoAnio(anio);
 
-            CargarFilasEnGrilla(dgvPrecios, dtPromo, row => !EsSubtipoEmpresa(row["Tipo"]?.ToString(), row["Descripcion"]?.ToString()));
-            CargarFilasEnGrilla(dgvEmpresas, dtPromo, row => EsSubtipoEmpresa(row["Tipo"]?.ToString(), row["Descripcion"]?.ToString()));
+            // BUZO y LIBRETA deben aparecer en ambas grillas
+            CargarFilasEnGrilla(dgvPrecios, dtPromo, row => !EsSubtipoEmpresa(row["Tipo"]?.ToString(), row["Descripcion"]?.ToString()) || EsBuoOLibreta(row["Tipo"]?.ToString(), row["Descripcion"]?.ToString()));
+            CargarFilasEnGrilla(dgvEmpresas, dtPromo, row => EsSubtipoEmpresa(row["Tipo"]?.ToString(), row["Descripcion"]?.ToString()) || EsBuoOLibreta(row["Tipo"]?.ToString(), row["Descripcion"]?.ToString()));
 
             ActualizarEncabezadosCoeficientes(dgvPrecios, _coefsPromo);
             ActualizarEncabezadosCoeficientes(dgvEmpresas, _coefsPromo);
@@ -285,8 +286,8 @@ namespace CapaPresentacion
             else
                 txtVariacion.Text = "0";
 
-            // Aplicar el mismo filtro que en precio promo para mostrar los mismos subtipos
-            CargarFilasEnGrilla(dgvPrecioPublico, precioPublico.ListarPreciosPublicoAnio(anio), row => !EsSubtipoEmpresa(row["Tipo"]?.ToString(), row["Descripcion"]?.ToString()));
+            // BUZO y LIBRETA deben aparecer también en Precio Público
+            CargarFilasEnGrilla(dgvPrecioPublico, precioPublico.ListarPreciosPublicoAnio(anio), row => !EsSubtipoEmpresa(row["Tipo"]?.ToString(), row["Descripcion"]?.ToString()) || EsBuoOLibreta(row["Tipo"]?.ToString(), row["Descripcion"]?.ToString()));
             ActualizarEncabezadosCoeficientes(dgvPrecioPublico, _coefsPublico);
         }
 
@@ -383,6 +384,24 @@ namespace CapaPresentacion
                 || descripcionNormalizada.Contains("PERIODICO")
                 || descripcionNormalizada.Contains("PREOCUPACIONAL")
                 || tipoNormalizado.Contains("EGRESO");
+        }
+
+        private bool EsBuoOLibreta(string tipo, string descripcion)
+        {
+            if (string.IsNullOrWhiteSpace(tipo))
+            {
+                string descripcionSinTipo = string.IsNullOrWhiteSpace(descripcion)
+                    ? string.Empty
+                    : descripcion.Trim().ToUpperInvariant();
+
+                return descripcionSinTipo.StartsWith("BUZO") || descripcionSinTipo.StartsWith("LIBRETA");
+            }
+
+            string descripcionNormalizada = string.IsNullOrWhiteSpace(descripcion)
+                ? string.Empty
+                : descripcion.Trim().ToUpperInvariant();
+
+            return descripcionNormalizada.StartsWith("BUZO") || descripcionNormalizada.StartsWith("LIBRETA");
         }
 
         private DataGridViewRow BuscarFilaPromoPorId(string idEspecialidad)
