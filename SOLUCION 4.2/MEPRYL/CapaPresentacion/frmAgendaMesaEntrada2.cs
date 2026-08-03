@@ -30,12 +30,14 @@ namespace CapaPresentacion
         int intFilaSelecc = 0;
         int intColSelecc = 4;
         int intPosScroll = 0;
+        bool _usuarioInteractuando = false;
+        System.Windows.Forms.Timer _timerInteraccion;
 
         public frmAgendaMesaEntrada2()
         {
             InitializeComponent();
             mesaEntrada = new MesaEntrada();
-            
+
             // Habilitar DoubleBuffered para evitar parpadeo visual
             typeof(DataGridView).InvokeMember(
                 "DoubleBuffered",
@@ -43,16 +45,26 @@ namespace CapaPresentacion
                 null,
                 dgvGrilla,
                 new object[] { true });
-            
-            inicializar();                                
+
+            // Inicializar timer de interacción
+            _timerInteraccion = new System.Windows.Forms.Timer();
+            _timerInteraccion.Interval = 5000; // 5 segundos
+            _timerInteraccion.Tick += (s, e) =>
+            {
+                _usuarioInteractuando = false;
+                _timerInteraccion.Stop();
+                System.Diagnostics.Debug.WriteLine("[AGENDA] Bandera de interacción desactivada");
+            };
+
+            inicializar();
         }
 
         public frmAgendaMesaEntrada2(frmBasePrincipal parentForm)
         {
             InitializeComponent();
-            this.MdiParent = parentForm;            
+            this.MdiParent = parentForm;
             mesaEntrada = new MesaEntrada();
-            
+
             // Habilitar DoubleBuffered para evitar parpadeo visual
             typeof(DataGridView).InvokeMember(
                 "DoubleBuffered",
@@ -60,7 +72,17 @@ namespace CapaPresentacion
                 null,
                 dgvGrilla,
                 new object[] { true });
-            
+
+            // Inicializar timer de interacción
+            _timerInteraccion = new System.Windows.Forms.Timer();
+            _timerInteraccion.Interval = 5000; // 5 segundos
+            _timerInteraccion.Tick += (s, e) =>
+            {
+                _usuarioInteractuando = false;
+                _timerInteraccion.Stop();
+                System.Diagnostics.Debug.WriteLine("[AGENDA] Bandera de interacción desactivada");
+            };
+
             inicializar();
             //ActualizaTimer();
         }
@@ -345,6 +367,13 @@ namespace CapaPresentacion
 
         private void timerActualiza_Tick(object sender, EventArgs e)
         {
+            // Si el usuario está interactuando, no recargar
+            if (_usuarioInteractuando)
+            {
+                System.Diagnostics.Debug.WriteLine("[AGENDA] Timer bloqueado - usuario interactuando");
+                return;
+            }
+
             // Actualización suave en tiempo real sin parpadeo visual
             try
             {
@@ -354,7 +383,7 @@ namespace CapaPresentacion
                 System.Diagnostics.Debug.WriteLine($"[AGENDA] Guardando scroll - Vertical: {currentScrollVertical}, Horizontal: {currentScrollHorizontal}");
                 int? currentRowIndex = null;
                 string currentNroOrden = null;
-                
+
                 if (dgvGrilla.CurrentRow != null)
                 {
                     currentRowIndex = dgvGrilla.CurrentRow.Index;
@@ -363,24 +392,24 @@ namespace CapaPresentacion
 
                 // Suspender layout para evitar parpadeo
                 dgvGrilla.SuspendLayout();
-                
+
                 // Recargar datos
                 CargarDatos();
                 mostrarDatos();
-                
+
                 // Aplicar lógica de colores
                 PintarFilaGrilla();
-                
+
                 // Restaurar layout
                 dgvGrilla.ResumeLayout(true);
-                
+
                 // Restaurar scroll vertical
                 if (currentScrollVertical >= 0 && currentScrollVertical < dgvGrilla.Rows.Count)
                 {
                     dgvGrilla.FirstDisplayedScrollingRowIndex = currentScrollVertical;
                     System.Diagnostics.Debug.WriteLine($"[AGENDA] Scroll vertical restaurado: {currentScrollVertical}");
                 }
-                
+
                 // Restaurar scroll horizontal solo si el usuario no lo ha movido manualmente
                 if (!scrollHorizontalConfigurado)
                 {
@@ -398,7 +427,7 @@ namespace CapaPresentacion
                 {
                     System.Diagnostics.Debug.WriteLine($"[AGENDA] Scroll horizontal NO restaurado (usuario lo movió manualmente)");
                 }
-                
+
                 // Restaurar selección si es posible
                 if (currentNroOrden != null)
                 {
@@ -412,7 +441,7 @@ namespace CapaPresentacion
                         }
                     }
                 }
-                
+
                 timerActualiza.Interval = 30000; // 30 segundos
             }
             catch (Exception ex)
@@ -711,6 +740,12 @@ namespace CapaPresentacion
                 return;
             }
 
+            // Activar bandera de interacción del usuario
+            _usuarioInteractuando = true;
+            _timerInteraccion.Stop();
+            _timerInteraccion.Start();
+            System.Diagnostics.Debug.WriteLine("[AGENDA] Usuario interactuando - Timer bloqueado por 5 segundos");
+
             intFilaSelecc = dgvGrilla.CurrentCell.RowIndex;
             intColSelecc = dgvGrilla.CurrentCell.ColumnIndex;
 
@@ -847,12 +882,18 @@ namespace CapaPresentacion
 
         private void dgvGrilla_CellClick(object sender, DataGridViewCellEventArgs e)
         {
+            // Activar bandera de interacción del usuario
+            _usuarioInteractuando = true;
+            _timerInteraccion.Stop();
+            _timerInteraccion.Start();
+            System.Diagnostics.Debug.WriteLine("[AGENDA] Usuario interactuando - Timer bloqueado por 5 segundos");
+
             intFilaSelecc = dgvGrilla.CurrentCell.RowIndex;
             intColSelecc = dgvGrilla.CurrentCell.ColumnIndex;
 
             //intPosScroll = dgvGrilla.FirstDisplayedScrollingRowIndex;
             //SeleccinarFilaTurno();
-            
+
             // No llamar mostrarDatos() cuando se hace click en HoraSalida (columna 31) para evitar despintado
             if (e.ColumnIndex != 31)
             {
@@ -972,6 +1013,12 @@ namespace CapaPresentacion
         
         private void dgvGrilla_KeyDown(object sender, KeyEventArgs e)
         {
+            // Activar bandera de interacción del usuario
+            _usuarioInteractuando = true;
+            _timerInteraccion.Stop();
+            _timerInteraccion.Start();
+            System.Diagnostics.Debug.WriteLine("[AGENDA] Usuario interactuando - Timer bloqueado por 5 segundos");
+
             intColSelecc = dgvGrilla.CurrentCell.ColumnIndex;
             intPosScroll = dgvGrilla.FirstDisplayedScrollingRowIndex;
 
