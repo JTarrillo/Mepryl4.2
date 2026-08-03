@@ -78,6 +78,7 @@
             this.btnGuardarDatosExcel = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.timerActualiza = new System.Windows.Forms.Timer(this.components);
             this.label18 = new System.Windows.Forms.Label();
             this.label17 = new System.Windows.Forms.Label();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
@@ -793,12 +794,17 @@
             this.lstListaPaciente.SelectedIndexChanged += new System.EventHandler(this.lstListaPaciente_SelectedIndexChanged);
             // 
             // dtpCalendario
-            // 
+            //
             this.dtpCalendario.Location = new System.Drawing.Point(29, 9);
             this.dtpCalendario.Name = "dtpCalendario";
             this.dtpCalendario.TabIndex = 6;
             this.dtpCalendario.DateChanged += new System.Windows.Forms.DateRangeEventHandler(this.dtpCalendario_DateChanged);
-            // 
+            //
+            // timerActualiza
+            //
+            this.timerActualiza.Interval = 30000;
+            this.timerActualiza.Tick += new System.EventHandler(this.timerActualiza_Tick);
+            //
             // spreadsheetBarController1
             // 
             this.spreadsheetBarController1.Control = this.spreadsheetControl1;
@@ -897,6 +903,7 @@
         private DevExpress.LookAndFeel.DefaultLookAndFeel defaultLookAndFeel1;
         private System.Windows.Forms.CheckBox chkRevisar;
         private System.Windows.Forms.Panel gbActualizando;
+        private System.Windows.Forms.Timer timerActualiza;
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.ProgressBar pbActualizando;
         private System.Windows.Forms.Panel panel4;

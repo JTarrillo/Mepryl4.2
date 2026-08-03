@@ -37,6 +37,8 @@ namespace CapaPresentacion
         bool blnItemsCargados = false;
         string strTipoUsuario = "";
         int intIndexLista = 0;
+        bool _usuarioInteractuando = false;
+        System.Windows.Forms.Timer _timerInteraccion;
 
         public frmReporteAudiometria2()
         {
@@ -50,14 +52,36 @@ namespace CapaPresentacion
             this.MdiParent = parentForm;
             this.WindowState = FormWindowState.Maximized;
             reporte = new CapaNegocioMepryl.Reportes();
+
+            // Inicializar timer de interacción
+            _timerInteraccion = new System.Windows.Forms.Timer();
+            _timerInteraccion.Interval = 5000; // 5 segundos
+            _timerInteraccion.Tick += (s, e) =>
+            {
+                _usuarioInteractuando = false;
+                _timerInteraccion.Stop();
+                System.Diagnostics.Debug.WriteLine("[AUDIOMETRIA] Bandera de interacción desactivada");
+            };
+
             ModoVista(blnModoVista);
-            //AbrirArchivoExcel();            
+            //AbrirArchivoExcel();
         }
 
         public frmReporteAudiometria2(bool blnModoVista)
         {
             InitializeComponent();
             reporte = new CapaNegocioMepryl.Reportes();
+
+            // Inicializar timer de interacción
+            _timerInteraccion = new System.Windows.Forms.Timer();
+            _timerInteraccion.Interval = 5000; // 5 segundos
+            _timerInteraccion.Tick += (s, e) =>
+            {
+                _usuarioInteractuando = false;
+                _timerInteraccion.Stop();
+                System.Diagnostics.Debug.WriteLine("[AUDIOMETRIA] Bandera de interacción desactivada");
+            };
+
             ModoVista(blnModoVista);
             //AbrirArchivoExcel();
 
@@ -75,10 +99,13 @@ namespace CapaPresentacion
                 this.Size = new Size(913, 611);
                 btnGuardarDatosExcel.Visible = true;
                 btnCrearReporte.Visible = true;
+                timerActualiza.Stop(); // Detener timer cuando panel no está visible
             }
             else
             {
                 chkRevisar.Visible = true;
+                timerActualiza.Start(); // Iniciar timer para actualización en tiempo real
+                System.Diagnostics.Debug.WriteLine("[AUDIOMETRIA] Timer iniciado para actualización en tiempo real");
             }
 
             PermisosUsuario();
@@ -1152,9 +1179,15 @@ namespace CapaPresentacion
 
         private void lstLista_SelectedIndexChanged(object sender, EventArgs e)
         {
+            // Activar bandera de interacción del usuario
+            _usuarioInteractuando = true;
+            _timerInteraccion.Stop();
+            _timerInteraccion.Start();
+            System.Diagnostics.Debug.WriteLine("[AUDIOMETRIA] Usuario interactuando - Timer bloqueado por 5 segundos");
+
             gbActualizando.Visible = true;
 
-            // if (panel3.Visible == true)
+            //intIndexLista = lstLista.SelectedIndices[0];ible == true)
             try
             {
                 PintarBlancoTextBox();
@@ -1481,6 +1514,30 @@ namespace CapaPresentacion
         private void btnActualizar_Click(object sender, EventArgs e)
         {
             CargarListView();
+        }
+
+        private void timerActualiza_Tick(object sender, EventArgs e)
+        {
+            // Si el usuario está interactuando, no recargar
+            if (_usuarioInteractuando)
+            {
+                System.Diagnostics.Debug.WriteLine("[AUDIOMETRIA] Timer bloqueado - usuario interactuando");
+                return;
+            }
+
+            // Actualización en tiempo real de la lista de audiometría
+            try
+            {
+                if (panel3.Visible)
+                {
+                    System.Diagnostics.Debug.WriteLine("[AUDIOMETRIA] Timer actualizando lista...");
+                    CargarListView();
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[AUDIOMETRIA] Error en timerActualiza_Tick: {ex.Message}");
+            }
         }
 
         private void MensajeDefectoDictamen()

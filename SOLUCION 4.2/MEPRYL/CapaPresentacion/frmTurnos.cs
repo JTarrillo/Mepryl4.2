@@ -2783,6 +2783,7 @@ namespace CapaPresentacion
                 .Replace("<<Precio>>", strPrecio) // Precio Promo (PrecioBase) - mantiene compatibilidad
                 .Replace("<<PrecioPromo>>", strPrecio) // Precio Promo (PrecioBase)
                 .Replace("<<PrecioPublico>>", strPrecioPublico) // Precio Público (PrecioLista)
+                .Replace("<<PrecioLista>>", strPrecioPublico) // Precio Público (PrecioLista) - alias para compatibilidad
                 .Replace("<<Seña>>", strSeña); // Seña
 
             // DEBUG: Mostrar el mensaje final tras el reemplazo
