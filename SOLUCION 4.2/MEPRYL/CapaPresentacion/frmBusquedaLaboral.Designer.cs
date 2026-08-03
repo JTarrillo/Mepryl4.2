@@ -882,13 +882,6 @@
             // 
             this.ribbonPageGroup1.Name = "ribbonPageGroup1";
             this.ribbonPageGroup1.ShowCaptionButton = false;
-            this.ribbonPageGroup1.ItemLinks.Add(this.bbiCasino);
-            this.ribbonPageGroup1.ItemLinks.Add(this.bbiLaboratorio);
-            this.ribbonPageGroup1.ItemLinks.Add(this.bbiExportarExam);
-            this.ribbonPageGroup1.ItemLinks.Add(this.bbiExportarOliv);
-            this.ribbonPageGroup1.ItemLinks.Add(this.bbiCambioEmpresa);
-            this.ribbonPageGroup1.ItemLinks.Add(this.bbiConsolidarEstudios);
-            this.ribbonPageGroup1.ItemLinks.Add(this.bbiExportarAudio);
             // 
             // timerActualizaEstados
             // 

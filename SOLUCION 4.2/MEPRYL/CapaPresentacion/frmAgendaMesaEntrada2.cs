@@ -24,6 +24,8 @@ namespace CapaPresentacion
         string _pathFotoPre = null;
 
         bool primeraVez;
+        bool columnasConfiguradas = false; // Bandera para evitar reconfigurar anchos en timer
+        bool scrollHorizontalConfigurado = false; // Bandera para evitar restaurar scroll horizontal en timer
         int puntero = -1;
         int intFilaSelecc = 0;
         int intColSelecc = 4;
@@ -84,8 +86,8 @@ namespace CapaPresentacion
             sw.Stop();
             System.Diagnostics.Debug.WriteLine($"[AGENDA] PintarFilaGrilla(): {sw.ElapsedMilliseconds} ms");
 
-            // Ajustar orden de columnas visualmente
-            if (dgvGrilla.Columns.Count > 31)
+            // Ajustar orden de columnas visualmente (solo primera vez)
+            if (dgvGrilla.Columns.Count > 31 && !columnasConfiguradas)
             {
                 // FechaNaci antes de ObservacTurno
                 dgvGrilla.Columns[16].DisplayIndex = 13; // FechaNaci antes de ObservacTurno
@@ -100,7 +102,7 @@ namespace CapaPresentacion
                 dgvGrilla.Columns[29].HeaderText = "NAT"; // Nombre de columna Nat
                 dgvGrilla.Columns[29].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; // Centrar Nat
                 dgvGrilla.Columns[30].DisplayIndex = 17; // Continua después de Nat
-                dgvGrilla.Columns[30].Width = 50; // Ancho de columna Continua
+                dgvGrilla.Columns[30].Width = 40; // Ancho de columna Continua
                 dgvGrilla.Columns[30].HeaderText = "CONT."; // Nombre de columna Continua
                 
                 // RM después de Continua
@@ -108,7 +110,7 @@ namespace CapaPresentacion
                 
                 // HoraSalida al final
                 dgvGrilla.Columns[31].DisplayIndex = 31; // HoraSalida al final
-                dgvGrilla.Columns[31].Width = 70; // Ancho de columna HoraSalida
+                dgvGrilla.Columns[31].Width = 60; // Ancho de columna HoraSalida
                 dgvGrilla.Columns[31].HeaderText = "Hora"; // Nombre de columna HoraSalida
                 dgvGrilla.Columns[31].HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter; // Centrar encabezado
                 dgvGrilla.Columns[31].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; // Centrar contenido
@@ -117,6 +119,8 @@ namespace CapaPresentacion
                 // Color de selección RGB(0, 120, 212) - #0078D4 (azul Windows)
                 dgvGrilla.DefaultCellStyle.SelectionBackColor = Color.FromArgb(0, 120, 212);
                 dgvGrilla.DefaultCellStyle.SelectionForeColor = Color.White;
+                
+                columnasConfiguradas = true; // Marcar que las columnas ya están configuradas
             }
 
             System.Diagnostics.Debug.WriteLine("[AGENDA] --- inicializar() end ---");
@@ -345,7 +349,9 @@ namespace CapaPresentacion
             try
             {
                 // Guardar estado actual antes de recargar
-                int currentScroll = dgvGrilla.FirstDisplayedScrollingRowIndex;
+                int currentScrollVertical = dgvGrilla.FirstDisplayedScrollingRowIndex;
+                int currentScrollHorizontal = dgvGrilla.FirstDisplayedScrollingColumnIndex;
+                System.Diagnostics.Debug.WriteLine($"[AGENDA] Guardando scroll - Vertical: {currentScrollVertical}, Horizontal: {currentScrollHorizontal}");
                 int? currentRowIndex = null;
                 string currentNroOrden = null;
                 
@@ -368,10 +374,29 @@ namespace CapaPresentacion
                 // Restaurar layout
                 dgvGrilla.ResumeLayout(true);
                 
-                // Restaurar scroll
-                if (currentScroll >= 0 && currentScroll < dgvGrilla.Rows.Count)
+                // Restaurar scroll vertical
+                if (currentScrollVertical >= 0 && currentScrollVertical < dgvGrilla.Rows.Count)
                 {
-                    dgvGrilla.FirstDisplayedScrollingRowIndex = currentScroll;
+                    dgvGrilla.FirstDisplayedScrollingRowIndex = currentScrollVertical;
+                    System.Diagnostics.Debug.WriteLine($"[AGENDA] Scroll vertical restaurado: {currentScrollVertical}");
+                }
+                
+                // Restaurar scroll horizontal solo si el usuario no lo ha movido manualmente
+                if (!scrollHorizontalConfigurado)
+                {
+                    if (currentScrollHorizontal >= 0 && currentScrollHorizontal < dgvGrilla.Columns.Count)
+                    {
+                        dgvGrilla.FirstDisplayedScrollingColumnIndex = currentScrollHorizontal;
+                        System.Diagnostics.Debug.WriteLine($"[AGENDA] Scroll horizontal restaurado: {currentScrollHorizontal}");
+                    }
+                    else
+                    {
+                        System.Diagnostics.Debug.WriteLine($"[AGENDA] No se restauró scroll horizontal. currentScrollHorizontal={currentScrollHorizontal}, Columns.Count={dgvGrilla.Columns.Count}");
+                    }
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine($"[AGENDA] Scroll horizontal NO restaurado (usuario lo movió manualmente)");
                 }
                 
                 // Restaurar selección si es posible
@@ -456,38 +481,42 @@ namespace CapaPresentacion
 
                 dgvGrilla.Columns[16].DisplayIndex = 13;
 
-                dgvGrilla.Columns[4].Width = 80;
-                dgvGrilla.Columns[4].SortMode = DataGridViewColumnSortMode.NotSortable;
-                dgvGrilla.Columns[5].Width = 50;
-                dgvGrilla.Columns[5].SortMode = DataGridViewColumnSortMode.NotSortable;
-                dgvGrilla.Columns[6].Width = 60;
-                dgvGrilla.Columns[6].SortMode = DataGridViewColumnSortMode.NotSortable;
-                dgvGrilla.Columns[8].Width = 170;
-                dgvGrilla.Columns[8].SortMode = DataGridViewColumnSortMode.NotSortable;
-                dgvGrilla.Columns[9].Width = 90;
-                dgvGrilla.Columns[9].SortMode = DataGridViewColumnSortMode.NotSortable;
-                dgvGrilla.Columns[10].Width = 80;
-                dgvGrilla.Columns[10].SortMode = DataGridViewColumnSortMode.NotSortable;
-                dgvGrilla.Columns[11].Width = 160;
-                dgvGrilla.Columns[11].SortMode = DataGridViewColumnSortMode.NotSortable;
-                dgvGrilla.Columns[12].Width = 160;
-                dgvGrilla.Columns[12].SortMode = DataGridViewColumnSortMode.NotSortable;
-                dgvGrilla.Columns[13].Width = 130;
-                dgvGrilla.Columns[13].SortMode = DataGridViewColumnSortMode.NotSortable;
-                dgvGrilla.Columns[14].Width = 130;
-                dgvGrilla.Columns[14].SortMode = DataGridViewColumnSortMode.NotSortable;
-                dgvGrilla.Columns[15].Width = 30;
-                dgvGrilla.Columns[15].SortMode = DataGridViewColumnSortMode.NotSortable;
-                dgvGrilla.Columns[16].Width = 88;
-                dgvGrilla.Columns[16].SortMode = DataGridViewColumnSortMode.NotSortable;
-                dgvGrilla.Columns[25].Width = 50;
-                dgvGrilla.Columns[25].SortMode = DataGridViewColumnSortMode.NotSortable;
-                dgvGrilla.Columns[26].Width = 50;
-                dgvGrilla.Columns[26].SortMode = DataGridViewColumnSortMode.NotSortable;
-                dgvGrilla.Columns[27].Width = 50;
-                dgvGrilla.Columns[27].SortMode = DataGridViewColumnSortMode.NotSortable;
-                dgvGrilla.Columns[28].Width = 50;
-                dgvGrilla.Columns[28].SortMode = DataGridViewColumnSortMode.NotSortable;
+                // Configurar anchos de columnas (solo primera vez)
+                if (!columnasConfiguradas)
+                {
+                    dgvGrilla.Columns[4].Width = 80;
+                    dgvGrilla.Columns[4].SortMode = DataGridViewColumnSortMode.NotSortable;
+                    dgvGrilla.Columns[5].Width = 50;
+                    dgvGrilla.Columns[5].SortMode = DataGridViewColumnSortMode.NotSortable;
+                    dgvGrilla.Columns[6].Width = 60;
+                    dgvGrilla.Columns[6].SortMode = DataGridViewColumnSortMode.NotSortable;
+                    dgvGrilla.Columns[8].Width = 120;
+                    dgvGrilla.Columns[8].SortMode = DataGridViewColumnSortMode.NotSortable;
+                    dgvGrilla.Columns[9].Width = 90;
+                    dgvGrilla.Columns[9].SortMode = DataGridViewColumnSortMode.NotSortable;
+                    dgvGrilla.Columns[10].Width = 80;
+                    dgvGrilla.Columns[10].SortMode = DataGridViewColumnSortMode.NotSortable;
+                    dgvGrilla.Columns[11].Width = 120;
+                    dgvGrilla.Columns[11].SortMode = DataGridViewColumnSortMode.NotSortable;
+                    dgvGrilla.Columns[12].Width = 120;
+                    dgvGrilla.Columns[12].SortMode = DataGridViewColumnSortMode.NotSortable;
+                    dgvGrilla.Columns[13].Width = 100;
+                    dgvGrilla.Columns[13].SortMode = DataGridViewColumnSortMode.NotSortable;
+                    dgvGrilla.Columns[14].Width = 100;
+                    dgvGrilla.Columns[14].SortMode = DataGridViewColumnSortMode.NotSortable;
+                    dgvGrilla.Columns[15].Width = 30;
+                    dgvGrilla.Columns[15].SortMode = DataGridViewColumnSortMode.NotSortable;
+                    dgvGrilla.Columns[16].Width = 70;
+                    dgvGrilla.Columns[16].SortMode = DataGridViewColumnSortMode.NotSortable;
+                    dgvGrilla.Columns[25].Width = 50;
+                    dgvGrilla.Columns[25].SortMode = DataGridViewColumnSortMode.NotSortable;
+                    dgvGrilla.Columns[26].Width = 50;
+                    dgvGrilla.Columns[26].SortMode = DataGridViewColumnSortMode.NotSortable;
+                    dgvGrilla.Columns[27].Width = 50;
+                    dgvGrilla.Columns[27].SortMode = DataGridViewColumnSortMode.NotSortable;
+                    dgvGrilla.Columns[28].Width = 50;
+                    dgvGrilla.Columns[28].SortMode = DataGridViewColumnSortMode.NotSortable;
+                }
 
                 dgvGrilla.Columns[6].HeaderText = "Orden";
                 dgvGrilla.Columns[8].HeaderText = "Subtipo de Examen";
@@ -758,8 +787,8 @@ namespace CapaPresentacion
                 System.Diagnostics.Debug.WriteLine($"[HORA_SALIDA_GRILLA] ERROR: La grilla solo tiene {dgvGrilla.Columns.Count} columnas, se necesitan al menos 32");
             }
 
-            // Ajustar orden de columnas visualmente
-            if (dgvGrilla.Columns.Count > 31)
+            // Ajustar orden de columnas visualmente (solo primera vez)
+            if (dgvGrilla.Columns.Count > 31 && !columnasConfiguradas)
             {
                 // FechaNaci antes de ObservacTurno
                 dgvGrilla.Columns[16].DisplayIndex = 13; // FechaNaci antes de ObservacTurno
@@ -774,7 +803,7 @@ namespace CapaPresentacion
                 dgvGrilla.Columns[29].HeaderText = "NAT"; // Nombre de columna Nat
                 dgvGrilla.Columns[29].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; // Centrar Nat
                 dgvGrilla.Columns[30].DisplayIndex = 17; // Continua después de Nat
-                dgvGrilla.Columns[30].Width = 50; // Ancho de columna Continua
+                dgvGrilla.Columns[30].Width = 40; // Ancho de columna Continua
                 dgvGrilla.Columns[30].HeaderText = "CONT."; // Nombre de columna Continua
                 
                 // RM después de Continua
@@ -782,7 +811,7 @@ namespace CapaPresentacion
                 
                 // HoraSalida al final
                 dgvGrilla.Columns[31].DisplayIndex = 31; // HoraSalida al final
-                dgvGrilla.Columns[31].Width = 70; // Ancho de columna HoraSalida
+                dgvGrilla.Columns[31].Width = 60; // Ancho de columna HoraSalida
                 dgvGrilla.Columns[31].HeaderText = "Hora"; // Nombre de columna HoraSalida
                 dgvGrilla.Columns[31].HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter; // Centrar encabezado
                 dgvGrilla.Columns[31].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; // Centrar contenido
@@ -791,6 +820,8 @@ namespace CapaPresentacion
                 // Color de selección RGB(0, 120, 212) - #0078D4 (azul Windows)
                 dgvGrilla.DefaultCellStyle.SelectionBackColor = Color.FromArgb(0, 120, 212);
                 dgvGrilla.DefaultCellStyle.SelectionForeColor = Color.White;
+                
+                columnasConfiguradas = true; // Marcar que las columnas ya están configuradas
             }
         }
 
@@ -1025,14 +1056,13 @@ namespace CapaPresentacion
 
         private void dgvGrilla_Scroll(object sender, ScrollEventArgs e)
         {
-            //if (dgvGrilla.InvokeRequired)
-            //{
-            //    MethodInvoker mi = new MethodInvoker(() => intPosScroll = dgvGrilla.FirstDisplayedScrollingRowIndex);
-            //    dgvGrilla.Invoke(mi);
-            //    return;
-            //}
-
             intPosScroll = dgvGrilla.FirstDisplayedScrollingRowIndex;
+            
+            // Si el usuario mueve el scroll horizontal manualmente, marcar la bandera
+            if (e.ScrollOrientation == ScrollOrientation.HorizontalScroll)
+            {
+                scrollHorizontalConfigurado = true;
+            }
         }
     }
 }
