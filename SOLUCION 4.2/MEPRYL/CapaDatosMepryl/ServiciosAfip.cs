@@ -6,32 +6,16 @@ using System.Text;
 namespace CapaDatosMepryl
 {
     // ═══════════════════════════════════════════════════════════════════════════
-    //  INTEGRACIÓN CON TUSFACTURAS.APP  (REST/JSON)
+    //  INTEGRACIÓN CON API LOCAL DE FACTURACIÓN ELECTRÓNICA (REST/JSON)
     //  ───────────────────────────────────────────────────────────────────────
-    //  Reemplaza la implementación SOAP directa contra AFIP (WSAA + WSFE).
-    //  TusFacturas actúa como intermediario y gestiona el certificado ARCA.
-    //  No se requiere archivo .p12 ni firma CMS.
+    //  Conexión directa con API local que se integra con AFIP (WSAA + WSFE).
+    //  La API local gestiona el certificado ARCA y la autenticación con AFIP.
     //
-    //  Documentación: https://developers.tusfacturas.app/
-    //
-    //  CONFIGURACIÓN (dbo.ConfiguracionAFIP):
-    //    tfUserToken → User Token del punto de venta
-    //    tfApiToken  → API Token
-    //    tfApiKey    → API Key (ej: "71326")
-    //    puntoVenta  → Número de PDV (ej: 1)
-    // ═══════════════════════════════════════════════════════════════════════════
-
-    // (eliminado: TicketAcceso — ya no se usa con TusFacturas)
-    // (eliminado: ItemFactura  — ya no se usa con TusFacturas)
-
-    // ─────────────────────────────────────────────────────────────────────────
-    //  Nota: ¡NO OLVIDAR! Configurar la conexión ARCA en el portal TusFacturas:
-    //    Mi cuenta → Configurar espacio de trabajo → Facturación ARCA
-    //    Sin esa conexión, las facturas no serán enviadas a AFIP.
-    // ─────────────────────────────────────────────────────────────────────────
+    //  API LOCAL: http://localhost:3000/api/comprobantes
+    //  ═══════════════════════════════════════════════════════════════════════════
 
     /// <summary>
-    /// Respuesta de TusFacturas al autorizar un comprobante.
+    /// Respuesta de la API local al autorizar un comprobante.
     /// </summary>
     public class RespuestaCAE
     {
@@ -40,31 +24,26 @@ namespace CapaDatosMepryl
         public DateTime FechaVencimientoCAE { get; set; }
         public string Observaciones { get; set; }
         public string Errores { get; set; }
-        /// <summary>Nro de comprobante asignado, ej: "00001-00000001"</summary>
+        /// <summary>Nro de comprobante asignado</summary>
         public string NroComprobante { get; set; }
-        /// <summary>URL del PDF del comprobante en TusFacturas</summary>
+        /// <summary>URL del PDF del comprobante en la API local</summary>
         public string PdfUrl { get; set; }
     }
 
     /// <summary>
-    /// Integración con TusFacturas.app API REST/JSON para facturación electrónica AFIP.
-    /// No requiere .p12 ni WSAA — TusFacturas gestiona el certificado ARCA.
+    /// Integración con API local de facturación electrónica AFIP.
+    /// La API local gestiona WSAA + WSFE y el certificado ARCA.
     /// </summary>
     public class ServiciosAfip
     {
-        private const string URL_FACTURACION = "https://www.tusfacturas.app/app/api/v2/facturacion/nuevo";
-
-        private readonly string _userToken;
-        private readonly string _apiToken;
-        private readonly string _apiKey;
-        private readonly string _puntoVenta;   // 5 dígitos con ceros a la izquierda
+        private const string URL_API_LOCAL = "http://localhost:3000/api/comprobantes";
+        private readonly int _puntoVenta;
+        private static int _numeroSecuencial = 0; // Contador local para evitar consultar AFIP
 
         public ServiciosAfip(string userToken, string apiToken, string apiKey, int puntoVenta)
         {
-            _userToken = userToken;
-            _apiToken = apiToken;
-            _apiKey = apiKey;
-            _puntoVenta = puntoVenta.ToString().PadLeft(5, '0');
+            // Los tokens ya no se usan, mantenemos el constructor por compatibilidad
+            _puntoVenta = puntoVenta;
         }
 
         // ─────────────────────────────────────────────────────────────────────
@@ -72,12 +51,11 @@ namespace CapaDatosMepryl
         // ─────────────────────────────────────────────────────────────────────
 
         /// <summary>
-        /// Emite un comprobante C (Factura, Nota de Cr�dito o Nota de D�bito) a trav�s de TusFacturas.
-        /// El n�mero de comprobante es asignado autom�ticamente (numero=0).
+        /// Emite un comprobante (Factura A, B o C) a través de la API local.
+        /// El número de comprobante es asignado automáticamente por AFIP.
         /// </summary>
-        /// <param name="tipoComprobante">FACTURA C | NOTA DE CREDITO C | NOTA DE DEBITO C</param>
-        /// <param name="nroComprobanteAsociado">Para NC/ND: nro de la factura original. 0 si no aplica.</param>
-        /// <param name="medioPago">EFECTIVO | TARJETA_CREDITO | TARJETA_DEBITO | MERCADO_PAGO | TRANSFERENCIA</param>
+        /// <param name="tipoComprobanteAFIP">1 = Factura A, 6 = Factura B, 11 = Factura C</param>
+        /// <param name="medioPago">EFECTIVO | TARJETA_CREDITO | TARJETA_DEBITO | TRANSFERENCIA</param>
         public RespuestaCAE EmitirFacturaC(
             string descripcion,
             decimal importeTotal,
@@ -86,132 +64,248 @@ namespace CapaDatosMepryl
             string tipoComprobante = "FACTURA C",
             long nroComprobanteAsociado = 0,
             string medioPago = "EFECTIVO",
-            string codArticulo = "")
+            string codArticulo = "",
+            int tipoComprobanteAFIP = 11)
         {
-            string fechaHoy = DateTime.Today.ToString("dd/MM/yyyy");
-            string fechaVencPago = DateTime.Today.AddDays(30).ToString("dd/MM/yyyy");
-            string importeStr = importeTotal.ToString("F2", System.Globalization.CultureInfo.InvariantCulture);
-
-            // Si hay CUIT real ? receptor identificado (RI); si no ? Consumidor Final
-            string docClean = System.Text.RegularExpressions.Regex.Replace(documentoReceptor ?? "", @"[^0-9]", "");
-            bool tieneCuit = docClean.Length == 11;
-            bool tieneDni = docClean.Length >= 7 && docClean.Length <= 8;
-            string docTipo = tieneCuit ? "CUIT" : (tieneDni ? "DNI" : "CONSUMIDOR_FINAL");
-            string condIva = tieneCuit ? "RI" : "CF";
-            string docNro = (tieneCuit || tieneDni) ? docClean : "0";
-
-            // Comprobantes asociados (requerido para NC y ND)
-            bool esNcNd = tipoComprobante.StartsWith("NOTA DE");
-            string asociados = "";
-            if (esNcNd && nroComprobanteAsociado > 0)
+            try
             {
-                asociados = $@",
-    ""comprobantes_asociados"": [{{
-      ""tipo"": ""FACTURA C"",
-      ""punto_venta"": ""{_puntoVenta}"",
-      ""numero"": {nroComprobanteAsociado}
-    }}]";
+                // Usar el tipo de comprobante recibido como parámetro
+
+                // Determinar tipo de documento y condición IVA según tipo de comprobante
+                int docTipo = 99; // Default: Consumidor Final sin documento
+                long docNro = 0;
+                int condicionIvaReceptorId = 5; // Default: Consumidor Final
+
+                string docClean = System.Text.RegularExpressions.Regex.Replace(documentoReceptor ?? "", @"[^0-9]", "");
+                
+                if (string.IsNullOrEmpty(docClean) || docClean == "0")
+                {
+                    // Sin documento: Consumidor Final
+                    docTipo = 99;
+                    docNro = 0;
+                    condicionIvaReceptorId = 5; // CF
+                    // Solo permite Factura B o C (no A)
+                    if (tipoComprobanteAFIP == 1)
+                    {
+                        return new RespuestaCAE
+                        {
+                            Autorizado = false,
+                            Errores = "Factura A requiere CUIT del receptor. Use Factura B o C para consumidor final."
+                        };
+                    }
+                }
+                else if (docClean.Length >= 7 && docClean.Length <= 9)
+                {
+                    // DNI (7-9 dígitos): Consumidor Final
+                    docTipo = 96; // DNI
+                    docNro = long.Parse(docClean);
+                    condicionIvaReceptorId = 5; // CF
+                    // Solo permite Factura B o C (no A)
+                    if (tipoComprobanteAFIP == 1)
+                    {
+                        return new RespuestaCAE
+                        {
+                            Autorizado = false,
+                            Errores = "Factura A requiere CUIT del receptor. Use Factura B o C para DNI."
+                        };
+                    }
+                }
+                else if (docClean.Length == 11 && docClean != "20962031006")
+                {
+                    // CUIT (11 dígitos)
+                    docTipo = 80; // CUIT
+                    docNro = long.Parse(docClean);
+                    
+                    // Asignar condición IVA según tipo de comprobante
+                    if (tipoComprobanteAFIP == 1) // Factura A: Responsable Inscripto
+                    {
+                        condicionIvaReceptorId = 1; // RI
+                    }
+                    else if (tipoComprobanteAFIP == 6) // Factura B: Exento/Monotributista
+                    {
+                        condicionIvaReceptorId = 4; // EX (Exento) - podría ser también 6 (MO)
+                    }
+                    else // Factura C: puede ser cualquier condición, pero emisor es Monotributista
+                    {
+                        condicionIvaReceptorId = 5; // CF por defecto
+                    }
+                }
+                else
+                {
+                    // Documento inválido
+                    return new RespuestaCAE
+                    {
+                        Autorizado = false,
+                        Errores = "Documento inválido. Ingrese DNI (7-9 dígitos) o CUIT (11 dígitos)."
+                    };
+                }
+
+                // Generar número secuencial local para evitar consultar AFIP
+                _numeroSecuencial++;
+                long numeroComprobante = _numeroSecuencial;
+
+                // Calcular IVA según tipo de comprobante
+                decimal netoGravado = 0m;
+                decimal importeIva = 0m;
+                decimal importeIva21 = 0m;
+                decimal importeIva105 = 0m;
+                decimal importeIvaContenido = 0m;
+                decimal alicuotaIva = 0m;
+
+                if (tipoComprobanteAFIP == 1) // Factura A: discriminar IVA
+                {
+                    // Asumir 21% de IVA para Factura A (puede ajustarse según configuración)
+                    alicuotaIva = 21m;
+                    netoGravado = importeTotal / 1.21m;
+                    importeIva21 = importeTotal - netoGravado;
+                    importeIva = importeIva21;
+                }
+                else if (tipoComprobanteAFIP == 6) // Factura B: Exento/Monotributista - SIN IVA
+                {
+                    // Factura B es exenta, no tiene IVA
+                    alicuotaIva = 0m;
+                    netoGravado = importeTotal; // Total es el neto ya que no hay IVA
+                    importeIva = 0m;
+                    importeIva21 = 0m;
+                    importeIvaContenido = 0m;
+                }
+                // Factura C: no aplica IVA
+
+                // Construir campos de IVA según tipo
+                string ivaFields = "";
+                string ivaArray = "";
+                if (tipoComprobanteAFIP == 1) // Factura A: discriminar IVA
+                {
+                    ivaFields = $@",
+  ""netoGravado"": {netoGravado.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)},
+  ""importeIva"": {importeIva.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)},
+  ""importeIva21"": {importeIva21.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)}";
+                    ivaArray = $@",
+  ""iva"": [{{
+    ""id"": 5,
+    ""baseImponible"": {netoGravado.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)},
+    ""importe"": {importeIva21.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)}
+  }}]";
+                }
+                else if (tipoComprobanteAFIP == 6) // Factura B: IVA contenido (no discriminar)
+                {
+                    ivaFields = $@",
+  ""importeIvaContenido"": {importeIvaContenido.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)}";
+                    // Factura B NO envía array IVA con alícuotas
+                }
+
+                // Construir JSON manualmente para la API local
+                string json = $@"{{
+  ""puntoVenta"": {_puntoVenta},
+  ""tipoComprobante"": {tipoComprobanteAFIP},
+  ""concepto"": 1,
+  ""docTipo"": {docTipo},
+  ""docNro"": {docNro},
+  ""condicionIvaReceptorId"": {condicionIvaReceptorId},
+  ""cbteFch"": ""{DateTime.Today:yyyyMMdd}"",
+  ""monedaId"": ""PES"",
+  ""monedaCotiz"": 1,
+  ""receptorRazonSocial"": ""{Esc(nombreReceptor)}"",
+  ""receptorDomicilio"": ""No informado"",
+  ""condicionVenta"": ""{Esc(medioPago)}"",
+  ""importeTotal"": {importeTotal.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)}{ivaFields}{ivaArray},
+  ""items"": [{{
+    ""descripcion"": ""{Esc(descripcion)}"",
+    ""cantidad"": 1,
+    ""precioUnitario"": {importeTotal.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)},
+    ""alicuotaIva"": {alicuotaIva.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)},
+    ""importeIva"": {(tipoComprobanteAFIP == 1 ? importeIva.ToString("F2", System.Globalization.CultureInfo.InvariantCulture) : "0.00")},
+    ""netoGravado"": {(tipoComprobanteAFIP == 1 ? netoGravado.ToString("F2", System.Globalization.CultureInfo.InvariantCulture) : importeTotal.ToString("F2", System.Globalization.CultureInfo.InvariantCulture))}
+  }}]
+}}";
+
+                System.Diagnostics.Debug.WriteLine("[API LOCAL] JSON ENVIADO:\n" + json);
+
+                // Hacer petición POST a la API local
+                string respuestaJson = Post(URL_API_LOCAL + "/factura-c-real", json);
+
+                System.Diagnostics.Debug.WriteLine("[API LOCAL] RESPUESTA:\n" + respuestaJson);
+                return ParsearRespuestaLocal(respuestaJson);
             }
-
-            // Forma de pago
-            string formaPago = string.IsNullOrEmpty(medioPago) ? "EFECTIVO" : medioPago;
-
-            string json = $@"{{
-  ""usertoken"": ""{_userToken}"",
-  ""apitoken"": ""{_apiToken}"",
-  ""apikey"": ""{_apiKey}"",
-  ""cliente"": {{
-    ""documento_tipo"": ""{docTipo}"",
-    ""documento_nro"": ""{Esc(docNro)}"",
-    ""razon_social"": ""{Esc(nombreReceptor)}"",
-    ""email"": """",
-    ""domicilio"": ""Sin especificar"",
-    ""provincia"": ""1"",
-    ""condicion_iva"": ""{condIva}""
-  }},
-  ""comprobante"": {{
-    ""fecha"": ""{fechaHoy}"",
-    ""vencimiento"": ""{fechaVencPago}"",
-    ""tipo"": ""{tipoComprobante}"",
-    ""operacion"": ""V"",
-    ""punto_venta"": ""{_puntoVenta}"",
-    ""numero"": 0,
-    ""periodo_facturado_desde"": ""{fechaHoy}"",
-    ""periodo_facturado_hasta"": ""{fechaHoy}"",
-    ""rubro"": ""Servicios de salud"",
-    ""rubro_grupo_contable"": """",
-    ""forma_pago"": ""{formaPago}"",
-    ""detalle"": [{{
-      ""cantidad"": 1,
-      ""producto"": {{
-        ""descripcion"": ""{Esc(descripcion)}"",
-        ""unidad_bulto"": 1,
-        ""lista_precios"": """",
-        ""codigo"": ""{Esc(codArticulo)}"",
-        ""precio_unitario_sin_iva"": {importeStr},
-        ""alicuota"": 0,
-        ""unidad_medida"": ""94""
-      }},
-      ""iva"": {{
-        ""descripcion"": ""0%"",
-        ""porcentaje"": 0
-      }},
-      ""subtotal"": {importeStr}
-    }}],
-    ""bonificacion"": 0,
-    ""iva_array"": [],
-    ""subtotal"": {importeStr},
-    ""total"": {importeStr},
-    ""importe_neto"": {importeStr}{asociados}
-  }}}}";
-
-            System.Diagnostics.Debug.WriteLine("[TUSFACTURAS] JSON ENVIADO:\n" + json);
-            string respuestaJson = Post(URL_FACTURACION, json);
-            System.Diagnostics.Debug.WriteLine("[TUSFACTURAS] RESPUESTA:\n" + respuestaJson);
-            return Parsear(respuestaJson);
+            catch (WebException ex) when (ex.Status == WebExceptionStatus.ConnectionClosed || 
+                                              ex.Status == WebExceptionStatus.Timeout ||
+                                              (ex.Response != null && ((HttpWebResponse)ex.Response).StatusCode == HttpStatusCode.ServiceUnavailable))
+            {
+                // AFIP no está disponible (horario o problema temporal)
+                return new RespuestaCAE
+                {
+                    Autorizado = false,
+                    Errores = "AFIP homologación no disponible en este momento. Horario: Lun-Vie 9:00-18:00 hora Argentina. Intente más tarde."
+                };
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("[API LOCAL] ERROR DETALLADO: " + ex.Message);
+                if (ex.InnerException != null)
+                    System.Diagnostics.Debug.WriteLine("[API LOCAL] INNER EXCEPTION: " + ex.InnerException.Message);
+                
+                return new RespuestaCAE
+                {
+                    Autorizado = false,
+                    Errores = ex.Message + (ex.InnerException != null ? " | " + ex.InnerException.Message : "")
+                };
+            }
         }
 
         /// <summary>
-        /// Anula un comprobante ya emitido via TusFacturas.
+        /// Anula un comprobante ya emitido (actualmente no implementado en API local).
         /// </summary>
-        /// <param name="tipoComprobante">FACTURA C | NOTA DE CREDITO C | NOTA DE DEBITO C</param>
         public RespuestaCAE AnularComprobante(long nroComprobante, string tipoComprobante = "FACTURA C")
         {
-            string json = $@"{{
-  ""usertoken"": ""{_userToken}"",
-  ""apitoken"": ""{_apiToken}"",
-  ""apikey"": ""{_apiKey}"",
-  ""comprobante"": {{
-    ""tipo"": ""{tipoComprobante}"",
-    ""punto_venta"": ""{_puntoVenta}"",
-    ""numero"": {nroComprobante}
-  }}}}";
-
-            string respuestaJson = Post("https://www.tusfacturas.app/app/api/v2/facturacion/anular", json);
-            return Parsear(respuestaJson);
+            // La API local aún no tiene endpoint de anulación
+            return new RespuestaCAE
+            {
+                Autorizado = false,
+                Errores = "Función de anulación no implementada en API local. Use notas de crédito en su lugar."
+            };
         }
 
         // ─────────────────────────────────────────────────────────────────────
-        // PARSEO DE RESPUESTA
+        // PARSEO DE RESPUESTA API LOCAL
         // ─────────────────────────────────────────────────────────────────────
 
-        private RespuestaCAE Parsear(string json)
+        private RespuestaCAE ParsearRespuestaLocal(string json)
         {
             var r = new RespuestaCAE();
             try
             {
-                r.Autorizado = Valor(json, "error") == "N";
-                r.CAE = Valor(json, "cae");
-                r.NroComprobante = Valor(json, "comprobante_nro");
-                r.Observaciones = Valor(json, "rta");
-                r.PdfUrl = Valor(json, "comprobante_pdf_url");
+                bool ok = Valor(json, "ok") == "true";
+                
+                if (ok)
+                {
+                    r.Autorizado = true;
+                    r.CAE = Valor(json, "cae");
+                    
+                    // Buscar numeroComprobante en diferentes estructuras posibles
+                    string nroComp = Valor(json, "numeroComprobante");
+                    if (string.IsNullOrEmpty(nroComp))
+                        nroComp = Valor(json, "nroComprobante");
+                    r.NroComprobante = nroComp;
 
-                string fechaVenc = Valor(json, "vencimiento_cae");
-                if (!string.IsNullOrEmpty(fechaVenc) && fechaVenc.Length == 8)
-                    r.FechaVencimientoCAE = DateTime.ParseExact(fechaVenc, "yyyyMMdd", null);
+                    string caeVenc = Valor(json, "caeVencimiento");
+                    if (string.IsNullOrEmpty(caeVenc))
+                        caeVenc = Valor(json, "caeVencimiento");
+                    
+                    if (!string.IsNullOrEmpty(caeVenc) && caeVenc.Length == 8)
+                        r.FechaVencimientoCAE = DateTime.ParseExact(caeVenc, "yyyyMMdd", null);
 
-                if (!r.Autorizado)
-                    r.Errores = ExtraerErrores(json);
+                    // Generar URL del PDF local
+                    string comprobanteId = Valor(json, "id");
+                    if (!string.IsNullOrEmpty(comprobanteId))
+                        r.PdfUrl = $"{URL_API_LOCAL}/{comprobanteId}/pdf";
+                }
+                else
+                {
+                    r.Autorizado = false;
+                    r.Errores = Valor(json, "message");
+                    if (string.IsNullOrEmpty(r.Errores))
+                        r.Errores = "Error desconocido en la respuesta";
+                }
             }
             catch (Exception ex)
             {

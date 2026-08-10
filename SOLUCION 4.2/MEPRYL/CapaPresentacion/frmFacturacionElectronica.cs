@@ -15,6 +15,7 @@ namespace CapaPresentacion
         private string _ultimoPdfUrl = null;
         private System.Data.DataTable _dtEspecialidades = null;
         private ComboBox _cboEspecialidad = null;
+        private string _idEmpresaSeleccionada = null; // ID de empresa cuando se factura a empresa
 
         public frmFacturacionElectronica()
         {
@@ -31,6 +32,9 @@ namespace CapaPresentacion
             CargarHistorial();
             CargarConfiguracion();
             InicializarComboEspecialidad();
+            
+            // Ocultar campos de tokens (ya no se usan con API local)
+            grpTokens.Visible = false;
         }
 
         private void InicializarComboEspecialidad()
@@ -49,7 +53,9 @@ namespace CapaPresentacion
 
                 // ComboBox de especialidades
                 _cboEspecialidad = new ComboBox();
-                _cboEspecialidad.DropDownStyle = ComboBoxStyle.DropDownList;
+                _cboEspecialidad.DropDownStyle = ComboBoxStyle.DropDown; // Permitir escribir para autocompletado
+                _cboEspecialidad.AutoCompleteMode = AutoCompleteMode.SuggestAppend; // Autocompletado rápido
+                _cboEspecialidad.AutoCompleteSource = AutoCompleteSource.ListItems; // Usar items del ComboBox
                 _cboEspecialidad.Font = new System.Drawing.Font("Segoe UI", 10f);
                 _cboEspecialidad.Location = new System.Drawing.Point(12, 38);
                 _cboEspecialidad.Size = new System.Drawing.Size(400, 28);
@@ -76,6 +82,64 @@ namespace CapaPresentacion
                     grpImporte.Height = cboMedioPago.Bottom + 20;
             }
             catch { /* Si falla no bloquea el formulario */ }
+        }
+
+        private void CargarEspecialidadesGenerales()
+        {
+            try
+            {
+                _dtEspecialidades = _negocio.ObtenerEspecialidadesConPrecio();
+                _cboEspecialidad.Items.Clear();
+                _cboEspecialidad.Items.Add("-- Ingreso manual --");
+                foreach (System.Data.DataRow row in _dtEspecialidades.Rows)
+                    _cboEspecialidad.Items.Add(row["nombre"].ToString());
+                _cboEspecialidad.SelectedIndex = 0;
+            }
+            catch { }
+        }
+
+        private void CargarEspecialidadesEmpresa(string idEmpresa)
+        {
+            try
+            {
+                System.Diagnostics.Debug.WriteLine($"[DEBUG] Cargando especialidades para empresa ID: {idEmpresa}");
+                
+                // Obtener especialidades específicas de la empresa
+                string query = "SELECT e.descripcion, e.precioBase " +
+                    "FROM dbo.empresaPorTipoDeExamen epte " +
+                    "INNER JOIN dbo.Especialidad e ON epte.idTipoExamen = e.id " +
+                    "WHERE epte.idEmpresa = '" + idEmpresa + "'";
+                
+                System.Diagnostics.Debug.WriteLine($"[DEBUG] Query: {query}");
+                
+                DataTable dtEspecialidadesEmpresa = SQLConnector.obtenerTablaSegunConsultaString(query);
+                
+                System.Diagnostics.Debug.WriteLine($"[DEBUG] Filas encontradas: {dtEspecialidadesEmpresa.Rows.Count}");
+                
+                _cboEspecialidad.Items.Clear();
+                _cboEspecialidad.Items.Add("-- Ingreso manual --");
+                
+                foreach (System.Data.DataRow row in dtEspecialidadesEmpresa.Rows)
+                {
+                    string desc = row["descripcion"].ToString();
+                    System.Diagnostics.Debug.WriteLine($"[DEBUG] Especialidad: {desc}");
+                    _cboEspecialidad.Items.Add(desc);
+                }
+                
+                _cboEspecialidad.SelectedIndex = 0;
+                
+                if (dtEspecialidadesEmpresa.Rows.Count == 0)
+                {
+                    System.Diagnostics.Debug.WriteLine("[DEBUG] No se encontraron especialidades para esta empresa. Cargando especialidades generales.");
+                    CargarEspecialidadesGenerales();
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[ERROR] Error al cargar especialidades de empresa: {ex.Message}");
+                // Si falla, cargar especialidades generales
+                CargarEspecialidadesGenerales();
+            }
         }
 
         private void cboEspecialidad_SelectedIndexChanged(object sender, EventArgs e)
@@ -151,17 +215,20 @@ namespace CapaPresentacion
                     string q = txt.Text.Trim();
                     if (string.IsNullOrEmpty(q)) return;
                     string safe = q.Replace("'", "''");
-                    string like = "%" + safe + "%";
+                    string like = safe + "%"; // Solo comodín al final para usar índices
                     try
                     {
                         dtRes = SQLConnector.obtenerTablaSegunConsultaString(
-                            "SELECT apellido + ' ' + nombres AS Paciente, dni AS Documento, '' AS CUIL, 'Preventiva' AS Tipo " +
-                            "FROM dbo.Paciente " +
-                            "WHERE dni LIKE '" + like + "' OR LTRIM(RTRIM(apellido + ' ' + nombres)) LIKE '" + like + "' " +
+                            "SELECT p.apellido + ' ' + p.nombres AS Paciente, p.dni AS Documento, '' AS CUIL, 'Preventiva' AS Tipo, '' AS Empresa, '' AS CUIT_Empresa, '' AS IdEmpresa " +
+                            "FROM dbo.Paciente p " +
+                            "WHERE p.dni LIKE '" + like + "' OR p.apellido LIKE '" + like + "' OR p.nombres LIKE '" + like + "' " +
                             "UNION ALL " +
-                            "SELECT apellido + ' ' + nombres, dni, ISNULL(cuil,''), 'Laboral' " +
-                            "FROM dbo.PacienteLaboral " +
-                            "WHERE dni LIKE '" + like + "' OR LTRIM(RTRIM(apellido + ' ' + nombres)) LIKE '" + like + "' " +
+                            "SELECT pl.apellido + ' ' + pl.nombres, pl.dni, ISNULL(pl.cuil,''), 'Laboral', " +
+                            "ISNULL(e.razonSocial, ''), ISNULL(e.cuit, ''), ISNULL(CAST(epp.idEmpresa AS VARCHAR(36)), '') " +
+                            "FROM dbo.PacienteLaboral pl " +
+                            "LEFT JOIN dbo.EmpresasPorPaciente epp ON pl.id = epp.idPaciente " +
+                            "LEFT JOIN dbo.Empresa e ON epp.idEmpresa = e.id " +
+                            "WHERE pl.dni LIKE '" + like + "' OR pl.apellido LIKE '" + like + "' OR pl.nombres LIKE '" + like + "' " +
                             "ORDER BY 1");
                         dgv.DataSource = dtRes;
                         btnOk.Enabled = false;
@@ -183,20 +250,70 @@ namespace CapaPresentacion
                     string nombre  = fila.Cells["Paciente"].Value?.ToString()  ?? "";
                     string dniVal  = fila.Cells["Documento"].Value?.ToString() ?? "";
                     string cuilVal = fila.Cells["CUIL"].Value?.ToString()      ?? "";
+                    string tipo    = fila.Cells["Tipo"].Value?.ToString()     ?? "";
+                    string empresa = fila.Cells["Empresa"].Value?.ToString()  ?? "";
+                    string cuitEmpresa = fila.Cells["CUIT_Empresa"].Value?.ToString() ?? "";
+                    string idEmpresa = fila.Cells["IdEmpresa"].Value?.ToString() ?? "";
 
-                    // Preferir CUIL si existe; si no, usar DNI
-                    string doc = !string.IsNullOrWhiteSpace(cuilVal) && cuilVal != "0" ? cuilVal : dniVal;
-
-                    txtNombreReceptor.Text = nombre;
-
-                    if (!string.IsNullOrWhiteSpace(doc) && doc != "0")
+                    // Si es laboral y tiene empresa asociada, preguntar a quién facturar
+                    if (tipo == "Laboral" && !string.IsNullOrWhiteSpace(empresa) && !string.IsNullOrWhiteSpace(cuitEmpresa))
                     {
-                        rbConCuit.Checked    = true;
-                        txtCuitReceptor.Text = doc;
+                        var result = MessageBox.Show(
+                            $"Paciente: {nombre}\nEmpresa asociada: {empresa} (CUIT: {cuitEmpresa})\n\n¿Desea facturar a la EMPRESA?\n\nSí = Facturar a empresa (CUIT)\nNo = Facturar a paciente (DNI)",
+                            "Consulta Laboral",
+                            MessageBoxButtons.YesNo,
+                            MessageBoxIcon.Question);
+
+                        if (result == DialogResult.Yes)
+                        {
+                            // Facturar a empresa
+                            txtNombreReceptor.Text = empresa;
+                            rbConCuit.Checked = true;
+                            txtCuitReceptor.Text = cuitEmpresa;
+                            _idEmpresaSeleccionada = idEmpresa;
+                            // Recargar especialidades específicas de la empresa
+                            CargarEspecialidadesEmpresa(idEmpresa);
+                        }
+                        else
+                        {
+                            // Facturar a paciente
+                            txtNombreReceptor.Text = nombre;
+                            // Preferir CUIL si existe; si no, usar DNI
+                            string doc = !string.IsNullOrWhiteSpace(cuilVal) && cuilVal != "0" ? cuilVal : dniVal;
+                            if (!string.IsNullOrWhiteSpace(doc) && doc != "0")
+                            {
+                                rbConCuit.Checked = true;
+                                txtCuitReceptor.Text = doc;
+                            }
+                            else
+                            {
+                                rbConsumidorFinal.Checked = true;
+                                txtCuitReceptor.Text = dniVal;
+                            }
+                            _idEmpresaSeleccionada = null;
+                            // Recargar especialidades generales
+                            CargarEspecialidadesGenerales();
+                        }
                     }
                     else
                     {
-                        rbConsumidorFinal.Checked = true;
+                        // Preventiva o laboral sin empresa: facturar a paciente
+                        txtNombreReceptor.Text = nombre;
+                        // Preferir CUIL si existe; si no, usar DNI
+                        string doc = !string.IsNullOrWhiteSpace(cuilVal) && cuilVal != "0" ? cuilVal : dniVal;
+                        if (!string.IsNullOrWhiteSpace(doc) && doc != "0")
+                        {
+                            rbConCuit.Checked = true;
+                            txtCuitReceptor.Text = doc;
+                        }
+                        else
+                        {
+                            rbConsumidorFinal.Checked = true;
+                            txtCuitReceptor.Text = dniVal;
+                        }
+                        _idEmpresaSeleccionada = null;
+                        // Recargar especialidades generales
+                        CargarEspecialidadesGenerales();
                     }
                 }
             }
@@ -232,9 +349,16 @@ namespace CapaPresentacion
             decimal.TryParse(txtImporte.Text.Replace(',', '.'),
                 NumberStyles.Any, CultureInfo.InvariantCulture, out importe);
 
+            // Tipo de comprobante y comprobante asociado
+            string tipoTF = cboTipoComprobante.SelectedItem?.ToString() ?? "FACTURA B";
+            int tipoComprobanteAFIP = ObtenerCodigoAFIP(tipoTF);
+            long   nroAsociado = 0;
+            if (cboTipoComprobante.SelectedIndex > 0)
+                long.TryParse(txtNroAsociado.Text.Trim(), out nroAsociado);
+
             string cuit    = rbConsumidorFinal.Checked ? "0" : txtCuitReceptor.Text.Trim();
             string nombre  = txtNombreReceptor.Text.Trim();
-            string condIVA = rbConsumidorFinal.Checked ? "CF" : "RI";
+            string condIVA = ObtenerCondicionIVA(tipoTF, rbConsumidorFinal.Checked);
 
             // Descripción y código de artículo de la especialidad seleccionada
             string descArticulo = "Prestación médica";
@@ -250,11 +374,8 @@ namespace CapaPresentacion
                 }
             }
 
-            // Tipo de comprobante y comprobante asociado
-            string tipoTF = cboTipoComprobante.SelectedItem?.ToString() ?? "FACTURA C";
-            long   nroAsociado = 0;
-            if (cboTipoComprobante.SelectedIndex > 0)
-                long.TryParse(txtNroAsociado.Text.Trim(), out nroAsociado);
+            // Para Factura B (Exento), no enviar IVA - usar valor 0
+            decimal alicuotaIVA = tipoComprobanteAFIP == 6 ? 0m : 21m;
 
             // Medio de pago
             string medioPago = (cboMedioPago.SelectedItem as string) ?? "EFECTIVO";
@@ -266,7 +387,7 @@ namespace CapaPresentacion
             try
             {
                 var res = _negocio.EmitirFactura(
-                    Guid.Empty, 11, cuit, nombre, condIVA, importe, 0m, 2,
+                    Guid.Empty, tipoComprobanteAFIP, cuit, nombre, condIVA, importe, alicuotaIVA, 2,
                     tipoTF, nroAsociado, medioPago,
                     descArticulo, codArticulo);
 
@@ -477,10 +598,7 @@ namespace CapaPresentacion
                 DataRow row         = dt.Rows[0];
                 txtCuit.Text        = row["cuitEmisor"].ToString();
                 txtRazonSocial.Text = row["razonSocial"].ToString();
-                txtPuntoVenta.Text  = row["puntoVenta"].ToString();
-                txtApiKey.Text      = dt.Columns.Contains("tfApiKey")    ? row["tfApiKey"].ToString()    : "";
-                txtApiToken.Text    = dt.Columns.Contains("tfApiToken")  ? row["tfApiToken"].ToString()  : "";
-                txtUserToken.Text   = dt.Columns.Contains("tfUserToken") ? row["tfUserToken"].ToString() : "";
+              
             }
             catch { }
         }
@@ -494,30 +612,20 @@ namespace CapaPresentacion
                 txtCuit.Focus();
                 return;
             }
-            int pdv;
-            if (!int.TryParse(txtPuntoVenta.Text.Trim(), out pdv) || pdv < 1)
-                pdv = 1;
 
             try
             {
                 var res = _negocio.GuardarConfiguracion(
                     txtCuit.Text.Trim(), txtRazonSocial.Text.Trim(), "MO",
-                    pdv, 'P', "", "", "");
+                    1, 'P', "", "", "");
 
                 if (res.Modo == 1)
                 {
-                    var resTF = _negocio.GuardarTokensTusFacturas(
-                        txtApiKey.Text.Trim(),
-                        txtApiToken.Text.Trim(),
-                        txtUserToken.Text.Trim());
-
                     MessageBox.Show(
-                        resTF.Modo == 1
-                            ? "Configuración guardada correctamente."
-                            : "Datos guardados pero tokens: " + resTF.Mensaje,
+                        "Configuración guardada correctamente. La API local usará los certificados digitales configurados.",
                         "Guardado",
                         MessageBoxButtons.OK,
-                        resTF.Modo == 1 ? MessageBoxIcon.Information : MessageBoxIcon.Warning);
+                        MessageBoxIcon.Information);
                 }
                 else
                 {
@@ -546,6 +654,61 @@ namespace CapaPresentacion
             finally
             {
                 Cursor = Cursors.Default;
+            }
+        }
+
+        private int ObtenerCodigoAFIP(string tipoTF)
+        {
+            // Mapeo de tipos de comprobantes a códigos AFIP
+            switch (tipoTF)
+            {
+                case "FACTURA A":
+                    return 1;  // Responsable Inscripto
+                case "FACTURA B":
+                    return 6;  // Exento/Monotributista
+                case "FACTURA C":
+                    return 11; // Consumidor Final
+                case "NOTA DE CREDITO A":
+                    return 3;
+                case "NOTA DE CREDITO B":
+                    return 8;
+                case "NOTA DE CREDITO C":
+                    return 13;
+                case "NOTA DE DEBITO A":
+                    return 2;
+                case "NOTA DE DEBITO B":
+                    return 7;
+                case "NOTA DE DEBITO C":
+                    return 12;
+                default:
+                    return 11; // Por defecto Factura C
+            }
+        }
+
+        private string ObtenerCondicionIVA(string tipoTF, bool esConsumidorFinal)
+        {
+            // Mapeo de condición IVA según tipo de factura
+            if (esConsumidorFinal)
+            {
+                return "CF"; // Consumidor Final para Factura C
+            }
+
+            switch (tipoTF)
+            {
+                case "FACTURA A":
+                case "NOTA DE CREDITO A":
+                case "NOTA DE DEBITO A":
+                    return "RI"; // Responsable Inscripto
+                case "FACTURA B":
+                case "NOTA DE CREDITO B":
+                case "NOTA DE DEBITO B":
+                    return "EX"; // Exento/Monotributista
+                case "FACTURA C":
+                case "NOTA DE CREDITO C":
+                case "NOTA DE DEBITO C":
+                    return "CF"; // Consumidor Final
+                default:
+                    return "RI"; // Por defecto Responsable Inscripto
             }
         }
     }

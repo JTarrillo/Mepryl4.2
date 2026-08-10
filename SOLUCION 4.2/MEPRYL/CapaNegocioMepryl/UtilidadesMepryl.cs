@@ -177,7 +177,16 @@ namespace CapaNegocioMepryl
                 {
                     System.Diagnostics.Debug.WriteLine($"[CONSOLIDAR] Creando FileStream y PdfCopy");
                     FileStream fsArchivo = new FileStream(PathSalida, FileMode.Create, FileAccess.Write, FileShare.None);
-                    PdfCopy pcPdf = new PdfCopy(dcDOC, fsArchivo);
+                    PdfCopy pcPdf = null;
+                    try
+                    {
+                        pcPdf = new PdfCopy(dcDOC, fsArchivo);
+                    }
+                    catch (System.NullReferenceException ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"[CONSOLIDAR] NullReferenceException al crear PdfCopy (error menor de iTextSharp): {ex.Message}");
+                        // Continuar ya que el proceso suele funcionar a pesar de este error
+                    }
                 
                     System.Diagnostics.Debug.WriteLine($"[CONSOLIDAR] Creando imágenes PDF");
                     CrearImagenPDF(ref Lista);

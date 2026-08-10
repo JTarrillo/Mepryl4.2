@@ -82,7 +82,9 @@
             this.ribbonPage1.Text = "Exportaciones Laboral";
             // 
             // ribbonPageGroup1
-            // 
+            //
+            this.ribbonPageGroup1.ItemLinks.Add(this.bbiExportarDictamen);
+            this.ribbonPageGroup1.ItemLinks.Add(this.barButtonItem1);
             this.ribbonPageGroup1.Name = "ribbonPageGroup1";
             this.ribbonPageGroup1.ShowCaptionButton = false;
             // 

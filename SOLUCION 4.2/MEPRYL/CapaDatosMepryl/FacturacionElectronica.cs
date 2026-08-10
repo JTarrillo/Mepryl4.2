@@ -310,8 +310,7 @@ namespace CapaDatosMepryl
         // ─────────────────────────────────────────────────────────────────────
 
         /// <summary>
-        /// Retorna las especialidades (subtipos, Padre=0) que tienen precio > 0,
-        /// para usarlas como artículos en la factura electrónica.
+        /// Retorna las especialidades (subtipos, Padre=0) para usarlas como artículos en la factura electrónica.
         /// Columnas: id, codigo, nombre, nombreFacturacion, precio
         /// </summary>
         public DataTable ObtenerEspecialidadesConPrecio()
@@ -324,7 +323,6 @@ namespace CapaDatosMepryl
                        e.precioBase  AS precio
                 FROM dbo.Especialidad e
                 WHERE e.Padre = 0
-                  AND e.precioBase > 0
                   AND e.id NOT IN (SELECT id FROM dbo.EspecialidadesEliminadas)
                 ORDER BY e.descripcion");
         }

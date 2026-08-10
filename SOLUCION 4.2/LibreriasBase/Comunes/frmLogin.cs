@@ -55,8 +55,8 @@ namespace Comunes
                     conn.Open();
                     // Leer la versión máxima disponible en la carpeta de instaladores
                     string path = @"S:\PUBLICO\INSTALADORES MEPRYL";
-                    string versionMaxima = "0.0";
-                    System.Text.RegularExpressions.Regex regex = new System.Text.RegularExpressions.Regex(@"MEPRYL(\d+\.\d+)", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+                    string versionMaxima = "0.0.0";
+                    System.Text.RegularExpressions.Regex regex = new System.Text.RegularExpressions.Regex(@"MEPRYL(\d+\.\d+\.\d+)", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
                     if (System.IO.Directory.Exists(path))
                     {
                         foreach (var dir in System.IO.Directory.GetDirectories(path))
@@ -65,7 +65,7 @@ namespace Comunes
                             if (match.Success)
                             {
                                 string version = match.Groups[1].Value;
-                                if (string.Compare(version, versionMaxima) > 0)
+                                if (CompararVersiones(version, versionMaxima) > 0)
                                     versionMaxima = version;
                             }
                         }
@@ -235,8 +235,8 @@ namespace Comunes
         private void RegistrarEquipoActualizacion()
         {
             string path = @"S:\PUBLICO\INSTALADORES MEPRYL";
-            string versionMaxima = "0.0";
-            System.Text.RegularExpressions.Regex regex = new System.Text.RegularExpressions.Regex(@"MEPRYL(\d+\.\d+)", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+            string versionMaxima = "0.0.0";
+            System.Text.RegularExpressions.Regex regex = new System.Text.RegularExpressions.Regex(@"MEPRYL(\d+\.\d+\.\d+)", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
             if (System.IO.Directory.Exists(path))
             {
                 foreach (var dir in System.IO.Directory.GetDirectories(path))
@@ -245,14 +245,14 @@ namespace Comunes
                     if (match.Success)
                     {
                         string version = match.Groups[1].Value;
-                        if (string.Compare(version, versionMaxima) > 0)
+                        if (CompararVersiones(version, versionMaxima) > 0)
                             versionMaxima = version;
                     }
                 }
             }
 
             // Solo registrar si la versión máxima es mayor que la instalada
-            if (string.Compare(VersionApp.VERSION, versionMaxima) < 0)
+            if (CompararVersiones(VersionApp.VERSION, versionMaxima) < 0)
             {
                 string nombreEquipo = Environment.MachineName;
                 string ipLocal = "";
@@ -470,10 +470,10 @@ namespace Comunes
             {
                 // Leer la versión máxima disponible en la carpeta de instaladores
                 string path = @"S:\PUBLICO\INSTALADORES MEPRYL";
-                string versionMaxima = "0.0";
+                string versionMaxima = "0.0.0";
                 string mensaje = "Actualización importante: Instale la nueva versión desde la carpeta indicada.";
                 string rutaInstalador = path;
-                System.Text.RegularExpressions.Regex regex = new System.Text.RegularExpressions.Regex(@"MEPRYL(\d+\.\d+)", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+                System.Text.RegularExpressions.Regex regex = new System.Text.RegularExpressions.Regex(@"MEPRYL(\d+\.\d+\.\d+)", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
 
                 if (System.IO.Directory.Exists(path))
                 {
@@ -483,7 +483,7 @@ namespace Comunes
                         if (match.Success)
                         {
                             string version = match.Groups[1].Value;
-                            if (string.Compare(version, versionMaxima) > 0)
+                            if (CompararVersiones(version, versionMaxima) > 0)
                                 versionMaxima = version;
                         }
                     }
@@ -493,7 +493,7 @@ namespace Comunes
                 string nombreEquipo = Environment.MachineName;
 
                 // Solo mostrar la ventana si la versión instalada es menor que la máxima y Estado = 1
-                if (string.Compare(VersionApp.VERSION, versionMaxima) < 0)
+                if (CompararVersiones(VersionApp.VERSION, versionMaxima) < 0)
                 {
                     int estado = 0;
                     try
@@ -522,6 +522,36 @@ namespace Comunes
                 }
             }
             catch { }
+        }
+
+        // Método para comparar versiones que maneja formatos de 2 y 3 dígitos
+        private int CompararVersiones(string version1, string version2)
+        {
+            // Normalizar ambas versiones a 3 dígitos
+            Version v1 = NormalizarVersion(version1);
+            Version v2 = NormalizarVersion(version2);
+            return v1.CompareTo(v2);
+        }
+
+        // Método para normalizar versión a formato de 3 dígitos
+        private Version NormalizarVersion(string version)
+        {
+            string[] partes = version.Split('.');
+            if (partes.Length == 2)
+            {
+                // Si tiene 2 dígitos, agregar .0 al final
+                return new Version(int.Parse(partes[0]), int.Parse(partes[1]), 0);
+            }
+            else if (partes.Length == 3)
+            {
+                // Si ya tiene 3 dígitos, usar directamente
+                return new Version(int.Parse(partes[0]), int.Parse(partes[1]), int.Parse(partes[2]));
+            }
+            else
+            {
+                // Fallback: intentar parsear directamente
+                return new Version(version);
+            }
         }
 
 

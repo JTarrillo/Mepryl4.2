@@ -69,21 +69,22 @@ namespace CapaPresentacion
         private void guardarExportacion()
         {
             string strDNI = "", strLiga = "", strClub = "";
+            dynamic excel = null;
+            dynamic excelworkBook = null;
+            dynamic excelSheet = null;
 
             try
             {
                 DataTable dt = mesaEntrada.exportarMesaEntrada(tpFechaDesde.Value, tpFechaHasta.Value);
-                Microsoft.Office.Interop.Excel.Application excel = new Microsoft.Office.Interop.Excel.Application();
-                Microsoft.Office.Interop.Excel.Workbook excelworkBook;
-                Microsoft.Office.Interop.Excel.Worksheet excelSheet;
+                excel = System.Activator.CreateInstance(System.Type.GetTypeFromProgID("Excel.Application"));
 
                 lblTarea.Visible = true;
 
                 excel.Visible = false;
                 excel.DisplayAlerts = false;
                 excel.SheetsInNewWorkbook = 1;
-                excelworkBook = (Microsoft.Office.Interop.Excel.Workbook)(excel.Workbooks.Add(Type.Missing));
-                excelSheet = (Microsoft.Office.Interop.Excel.Worksheet)excelworkBook.ActiveSheet;
+                excelworkBook = excel.Workbooks.Add(Type.Missing);
+                excelSheet = excelworkBook.ActiveSheet;
                 excelSheet.Name = "DATOS";
 
                 lblTarea.Visible = true;
@@ -122,7 +123,7 @@ namespace CapaPresentacion
 
                     Fecha = Convert.ToDateTime(dr.ItemArray[0]);
                     FechaNac = Convert.ToDateTime(dr.ItemArray[6]);
-                    
+
                     strFecha = "'" + Fecha.ToShortDateString();
                     strNac = "'" + FechaNac.ToShortDateString();
 
@@ -155,13 +156,12 @@ namespace CapaPresentacion
 
                 lblTarea.Visible = false;
                 progressBar.Visible = false;
-                excel.get_Range("A1", "L1").Cells.Font.Bold = true;
-                excel.get_Range("A2", "L2").Columns.AutoFit();
+                excel.Range["A1", "L1"].Cells.Font.Bold = true;
+                excel.Range["A2", "L2"].Columns.AutoFit();
                 try
                 {
-                    excelworkBook.SaveAs(tbUbicacion.Text, Excel.XlFileFormat.xlAddIn,
-                    Type.Missing, Type.Missing, Type.Missing, Type.Missing, Excel.XlSaveAsAccessMode.xlExclusive,
-                    Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
+                    // Simplificar SaveAs con parámetros mínimos
+                    excelworkBook.SaveAs(tbUbicacion.Text);
                     excel.Quit();
                     progressBar.Visible = false;
                     MessageBox.Show("Exportación guardada correctamente en: \n" + tbUbicacion.Text, "Exportar", MessageBoxButtons.OK,
@@ -178,6 +178,25 @@ namespace CapaPresentacion
             {
                 MessageBox.Show("No existen registros para la fecha señalada ", "Exportar", MessageBoxButtons.OK,
                         MessageBoxIcon.Error);
+            }
+            finally
+            {
+                // Liberar recursos COM de forma segura
+                if (excelSheet != null)
+                {
+                    try { System.Runtime.InteropServices.Marshal.ReleaseComObject(excelSheet); } catch { }
+                    excelSheet = null;
+                }
+                if (excelworkBook != null)
+                {
+                    try { System.Runtime.InteropServices.Marshal.ReleaseComObject(excelworkBook); } catch { }
+                    excelworkBook = null;
+                }
+                if (excel != null)
+                {
+                    try { System.Runtime.InteropServices.Marshal.ReleaseComObject(excel); } catch { }
+                    excel = null;
+                }
             }
 
         }

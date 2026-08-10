@@ -134,16 +134,27 @@ namespace CapaPresentacion
 
         private void guardarExportacionExcel()
         {
-            Microsoft.Office.Interop.Excel.Application excel = new Microsoft.Office.Interop.Excel.Application();
-            Microsoft.Office.Interop.Excel.Workbook excelworkBook;
-            Microsoft.Office.Interop.Excel.Worksheet excelSheet;
+            dynamic excel = null;
+            dynamic excelworkBook = null;
+            dynamic excelSheet = null;
 
-            excel.Visible = false;
-            excel.DisplayAlerts = false;
-            excel.SheetsInNewWorkbook = 1;
-            excelworkBook = (Microsoft.Office.Interop.Excel.Workbook)(excel.Workbooks.Add(Type.Missing));
-            excelSheet = (Microsoft.Office.Interop.Excel.Worksheet)excelworkBook.ActiveSheet;
-            excelSheet.Name = "Hoja 1";
+            try
+            {
+                // Crear instancia de Excel usando dynamic para evitar errores de interfaz COM
+                Type excelType = Type.GetTypeFromProgID("Excel.Application");
+                if (excelType == null)
+                {
+                    throw new Exception("Microsoft Excel no está instalado en el sistema.");
+                }
+
+                excel = System.Activator.CreateInstance(excelType);
+                
+                excel.Visible = false;
+                excel.DisplayAlerts = false;
+                excel.SheetsInNewWorkbook = 1;
+                excelworkBook = excel.Workbooks.Add(Type.Missing);
+                excelSheet = excelworkBook.ActiveSheet;
+                excelSheet.Name = "Hoja 1";
                        
             excelSheet.Cells[1, 1] = "EMPRESA";
             excelSheet.Cells[1, 2] = "DNI";
@@ -213,11 +224,9 @@ namespace CapaPresentacion
                 }
                 lblTarea.Visible = false;
                 progressBar.Visible = false;
-                excel.get_Range("A1", "I1").EntireColumn.AutoFit();
-                excel.get_Range("A1", "I1").EntireColumn.Borders.LineStyle = Excel.XlLineStyle.xlContinuous;
-                excelworkBook.SaveAs(tbUbicacion.Text, Excel.XlFileFormat.xlAddIn,
-                Type.Missing, Type.Missing, Type.Missing, Type.Missing, Excel.XlSaveAsAccessMode.xlExclusive,
-                Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
+                excel.Range["A1", "I1"].EntireColumn.AutoFit();
+                excel.Range["A1", "I1"].EntireColumn.Borders.LineStyle = 1; // xlContinuous
+                excelworkBook.SaveAs(tbUbicacion.Text);
                 excel.Quit();
                 progressBar.Visible = false;
                 MessageBox.Show("Exportación guardada correctamente en: \n" + tbUbicacion.Text, "Exportar", MessageBoxButtons.OK,
@@ -229,15 +238,150 @@ namespace CapaPresentacion
                 MessageBox.Show("No se encontraron resultados para la busqueda", "Exportar", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
                 return;
             }
+            }
+            catch (System.Runtime.InteropServices.COMException ex)
+            {
+                System.Diagnostics.Debug.WriteLine("Error COM: " + ex.Message + " - ErrorCode: " + ex.ErrorCode);
+                
+                // Para errores de COM de Excel, usar CSV automáticamente
+                try
+                {
+                    guardarExportacionCSV();
+                }
+                catch (Exception csvEx)
+                {
+                    MessageBox.Show("Error al exportar CSV: " + csvEx.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("Error general: " + ex.Message + " - " + ex.StackTrace);
+                
+                // Para cualquier error, usar CSV automáticamente
+                try
+                {
+                    guardarExportacionCSV();
+                }
+                catch (Exception csvEx)
+                {
+                    MessageBox.Show("Error al exportar CSV: " + csvEx.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            finally
+            {
+                // Liberar recursos COM en orden inverso
+                try
+                {
+                    // Liberar hoja primero
+                    if (excelSheet != null)
+                    {
+                        try
+                        {
+                            System.Runtime.InteropServices.Marshal.ReleaseComObject(excelSheet);
+                        }
+                        catch { }
+                        excelSheet = null;
+                    }
+                    
+                    // Liberar libro
+                    if (excelworkBook != null)
+                    {
+                        try
+                        {
+                            System.Runtime.InteropServices.Marshal.ReleaseComObject(excelworkBook);
+                        }
+                        catch { }
+                        excelworkBook = null;
+                    }
+                    
+                    // Cerrar y liberar aplicación Excel
+                    if (excel != null)
+                    {
+                        try
+                        {
+                            excel.Quit();
+                        }
+                        catch { }
+                        try
+                        {
+                            System.Runtime.InteropServices.Marshal.ReleaseComObject(excel);
+                        }
+                        catch { }
+                        excel = null;
+                    }
+                    
+                    // Forzar garbage collection para limpiar recursos COM
+                    GC.Collect();
+                    GC.WaitForPendingFinalizers();
+                    GC.Collect();
+                    GC.WaitForPendingFinalizers();
+                }
+                catch (Exception releaseEx)
+                {
+                    System.Diagnostics.Debug.WriteLine("Error al liberar recursos COM: " + releaseEx.Message);
+                }
+            }
         }
 
-        private void setearColorYBorde(Excel.Range rng, System.Drawing.Color color)
+        private void guardarExportacionCSV()
+        {
+            DataTable dt = laboral.ExportarDictamenFinal(tpFechaDesde.Value.ToShortDateString(), tpFechaHasta.Value.ToShortDateString(), cboEmpresa.Text, cboMotivo.Text);
+
+            if (dt.Rows.Count > 0)
+            {
+                progressBar.Minimum = 1;
+                progressBar.Maximum = dt.Rows.Count;
+                progressBar.Value = 1;
+                progressBar.Visible = true;
+
+                lblTarea.Visible = true;
+                lblTarea.Text = "GENERANDO ARCHIVO CSV...";
+
+                System.Text.StringBuilder csv = new System.Text.StringBuilder();
+                
+                // Encabezados
+                csv.AppendLine("EMPRESA;DNI;NRO. EX.;NOMBRE;DICT. FINAL;FECHA;CUIT;SUBTIPO;OBSERVACIONES");
+
+                // Datos
+                foreach (DataRow dr in dt.Rows)
+                {
+                    csv.AppendLine(string.Format("{0};{1};{2};{3};{4};{5};{6};{7};{8}",
+                        dr.ItemArray[0].ToString(),
+                        dr.ItemArray[1].ToString(),
+                        dr.ItemArray[2].ToString(),
+                        dr.ItemArray[3].ToString(),
+                        dr.ItemArray[4].ToString(),
+                        Convert.ToDateTime(dr.ItemArray[5].ToString()).ToString("dd/MM/yyyy"),
+                        dr.ItemArray[6].ToString(),
+                        dr.ItemArray[7].ToString(),
+                        dr.ItemArray[8].ToString().Replace(";", ","))); // Reemplazar ; por , en observaciones
+
+                    progressBar.PerformStep();
+                }
+
+                // Guardar como archivo CSV
+                string archivoCSV = tbUbicacion.Text.Replace(".xls", ".csv");
+                System.IO.File.WriteAllText(archivoCSV, csv.ToString(), System.Text.Encoding.UTF8);
+
+                lblTarea.Visible = false;
+                progressBar.Visible = false;
+                
+                MessageBox.Show("Exportación CSV guardada correctamente en: \n" + archivoCSV + "\n\nEste archivo puede abrirse con Excel.", "Exportar CSV", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                this.Close();
+            }
+            else
+            {
+                MessageBox.Show("No se encontraron resultados para la busqueda", "Exportar", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+            }
+        }
+
+        private void setearColorYBorde(dynamic rng, System.Drawing.Color color)
         {
             rng.Font.Bold = true;
             rng.Interior.Color = System.Drawing.ColorTranslator.ToOle(color);
-            rng.BorderAround(Excel.XlLineStyle.xlContinuous, Excel.XlBorderWeight.xlMedium,
-            Excel.XlColorIndex.xlColorIndexAutomatic, Excel.XlColorIndex.xlColorIndexAutomatic);
-            rng.HorizontalAlignment = Excel.XlHAlign.xlHAlignCenter;
+            rng.BorderAround(1, -4138, // xlContinuous, xlMedium
+            -4105, -4105); // xlColorIndexAutomatic
+            rng.HorizontalAlignment = -4108; // xlHAlignCenter
         }
 
         private DataTable cargarTablasExcel()
@@ -477,10 +621,10 @@ namespace CapaPresentacion
             excelSheet.Cells[1, 16] = "RETIRADO";
             excelSheet.Cells[1, 17] = "ENVIADO";
 
-            setearColorYBorde(excel.get_Range("A1", "G1"), System.Drawing.Color.White);
-            setearColorYBorde(excel.get_Range("H1", "K1"), System.Drawing.Color.White);
-            setearColorYBorde(excel.get_Range("L1", "L1"), System.Drawing.Color.White);
-            setearColorYBorde(excel.get_Range("M1", "Q1"), System.Drawing.Color.White);
+            setearColorYBorde(excel.Range["A1", "G1"], System.Drawing.Color.White);
+            setearColorYBorde(excel.Range["H1", "K1"], System.Drawing.Color.White);
+            setearColorYBorde(excel.Range["L1", "L1"], System.Drawing.Color.White);
+            setearColorYBorde(excel.Range["M1", "Q1"], System.Drawing.Color.White);
             
             DataTable dt = cargarTablasAcotada();
 
@@ -544,11 +688,9 @@ namespace CapaPresentacion
             }
             lblTarea.Visible = false;
             progressBar.Visible = false;
-            excel.get_Range("A1", "Q1").EntireColumn.AutoFit();
-            excel.get_Range("A1", "Q1").EntireColumn.Borders.LineStyle = Excel.XlLineStyle.xlContinuous;            
-            excelworkBook.SaveAs(tbUbicacion.Text, Excel.XlFileFormat.xlAddIn,
-            Type.Missing, Type.Missing, Type.Missing, Type.Missing, Excel.XlSaveAsAccessMode.xlExclusive,
-            Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
+            excel.Range["A1", "Q1"].EntireColumn.AutoFit();
+            excel.Range["A1", "Q1"].EntireColumn.Borders.LineStyle = 1; // xlContinuous            
+            excelworkBook.SaveAs(tbUbicacion.Text);
             excel.Quit();
             progressBar.Visible = false;
             

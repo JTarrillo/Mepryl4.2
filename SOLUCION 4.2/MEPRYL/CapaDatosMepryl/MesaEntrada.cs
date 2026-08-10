@@ -1853,19 +1853,27 @@ namespace CapaDatosMepryl
                 }
                 else
                 {
-                    // Insertar nuevo registro
-                    string insertSql = $"INSERT INTO dbo.EstadosCheckboxesMesaEntrada (idTipoExamen, {nombreColumna}";
-                    
+                    // Insertar nuevo registro con valores predeterminados y el valor específico marcado
+                    string insertSql = $"INSERT INTO dbo.EstadosCheckboxesMesaEntrada (idTipoExamen, Labo, Rayos, Electro, Salida, Nat, Continua";
+
+                    // Determinar valores según la columna que se está marcando
+                    int laboVal = (columna == 25 && estado) ? 1 : 0;
+                    int rayosVal = (columna == 26 && estado) ? 1 : 0;
+                    int electroVal = (columna == 27 && estado) ? 1 : 0;
+                    int salidaVal = (columna == 28 && estado) ? 1 : 0;
+                    int natVal = (columna == 29 && estado) ? 1 : 0;
+                    int continuaVal = (columna == 30 && estado) ? 1 : 1; // Continua siempre 1 por defecto
+
                     // Si es Salida y se está marcando, incluir HoraSalida
                     if (esSalida && estado)
                     {
-                        insertSql += ", HoraSalida) VALUES ('{idTipoExamen}', {(estado ? 1 : 0)}, GETDATE())";
+                        insertSql += $", HoraSalida) VALUES ('{idTipoExamen}', {laboVal}, {rayosVal}, {electroVal}, {salidaVal}, {natVal}, {continuaVal}, GETDATE())";
                     }
                     else
                     {
-                        insertSql += $") VALUES ('{idTipoExamen}', {(estado ? 1 : 0)})";
+                        insertSql += $") VALUES ('{idTipoExamen}', {laboVal}, {rayosVal}, {electroVal}, {salidaVal}, {natVal}, {continuaVal})";
                     }
-                    
+
                     SQLConnector.EjecutarConsulta(insertSql);
                 }
 

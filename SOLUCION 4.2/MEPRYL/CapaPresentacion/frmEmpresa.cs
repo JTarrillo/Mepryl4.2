@@ -291,8 +291,8 @@ namespace CapaPresentacion
             retorno.ApeNom2 = tbApeNom2.Text;
             retorno.ApeNom3 = tbApeNom3.Text;
             if (cboArea1.SelectedIndex != -1) { retorno.Area1 = cboArea1.SelectedItem.ToString(); }
-            if (cboArea2.SelectedIndex != -1) { retorno.Area2 = cboArea1.SelectedItem.ToString(); }
-            if (cboArea3.SelectedIndex != -1) { retorno.Area3 = cboArea1.SelectedItem.ToString(); }
+            if (cboArea2.SelectedIndex != -1) { retorno.Area2 = cboArea2.SelectedItem.ToString(); }
+            if (cboArea3.SelectedIndex != -1) { retorno.Area3 = cboArea3.SelectedItem.ToString(); }
             retorno.Telefono1 = tbTelefono1.Text;
             retorno.Telefono2 = tbTelefono2.Text;
             retorno.Telefono3 = tbTelefono3.Text;

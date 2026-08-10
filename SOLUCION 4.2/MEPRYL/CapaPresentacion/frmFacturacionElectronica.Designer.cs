@@ -79,17 +79,8 @@ namespace CapaPresentacion
         private System.Windows.Forms.TextBox txtCuit;
         private System.Windows.Forms.Label lblRazonSocialLabel;
         private System.Windows.Forms.TextBox txtRazonSocial;
-        private System.Windows.Forms.Label lblPuntoVentaLabel;
-        private System.Windows.Forms.TextBox txtPuntoVenta;
 
         private System.Windows.Forms.GroupBox grpTokens;
-        private System.Windows.Forms.Label lblApiKeyLabel;
-        private System.Windows.Forms.TextBox txtApiKey;
-        private System.Windows.Forms.Label lblApiTokenLabel;
-        private System.Windows.Forms.TextBox txtApiToken;
-        private System.Windows.Forms.Label lblUserTokenLabel;
-        private System.Windows.Forms.TextBox txtUserToken;
-        private System.Windows.Forms.Label lblUserTokenNota;
 
         private System.Windows.Forms.Button btnGuardarConfig;
         private System.Windows.Forms.Button btnProbarConexion;
@@ -153,16 +144,7 @@ namespace CapaPresentacion
             this.txtCuit = new System.Windows.Forms.TextBox();
             this.lblRazonSocialLabel = new System.Windows.Forms.Label();
             this.txtRazonSocial = new System.Windows.Forms.TextBox();
-            this.lblPuntoVentaLabel = new System.Windows.Forms.Label();
-            this.txtPuntoVenta = new System.Windows.Forms.TextBox();
             this.grpTokens = new System.Windows.Forms.GroupBox();
-            this.lblApiKeyLabel = new System.Windows.Forms.Label();
-            this.txtApiKey = new System.Windows.Forms.TextBox();
-            this.lblApiTokenLabel = new System.Windows.Forms.Label();
-            this.txtApiToken = new System.Windows.Forms.TextBox();
-            this.lblUserTokenLabel = new System.Windows.Forms.Label();
-            this.txtUserToken = new System.Windows.Forms.TextBox();
-            this.lblUserTokenNota = new System.Windows.Forms.Label();
             this.btnGuardarConfig = new System.Windows.Forms.Button();
             this.btnProbarConexion = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
@@ -243,8 +225,14 @@ namespace CapaPresentacion
             this.cboTipoComprobante.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.cboTipoComprobante.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(80)))), ((int)(((byte)(160)))));
             this.cboTipoComprobante.Items.AddRange(new object[] {
+            "FACTURA B",
+            "FACTURA A",
             "FACTURA C",
+            "NOTA DE CREDITO B",
+            "NOTA DE CREDITO A",
             "NOTA DE CREDITO C",
+            "NOTA DE DEBITO B",
+            "NOTA DE DEBITO A",
             "NOTA DE DEBITO C"});
             this.cboTipoComprobante.Location = new System.Drawing.Point(50, 25);
             this.cboTipoComprobante.Name = "cboTipoComprobante";
@@ -783,8 +771,7 @@ namespace CapaPresentacion
             this.grpEmisor.Controls.Add(this.txtCuit);
             this.grpEmisor.Controls.Add(this.lblRazonSocialLabel);
             this.grpEmisor.Controls.Add(this.txtRazonSocial);
-            this.grpEmisor.Controls.Add(this.lblPuntoVentaLabel);
-            this.grpEmisor.Controls.Add(this.txtPuntoVenta);
+      
             this.grpEmisor.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             this.grpEmisor.Location = new System.Drawing.Point(10, 10);
             this.grpEmisor.Name = "grpEmisor";
@@ -820,111 +807,23 @@ namespace CapaPresentacion
             this.lblRazonSocialLabel.Text = "Razón Social:";
             // 
             // txtRazonSocial
-            // 
+            //
             this.txtRazonSocial.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.txtRazonSocial.Location = new System.Drawing.Point(100, 58);
             this.txtRazonSocial.Name = "txtRazonSocial";
             this.txtRazonSocial.Size = new System.Drawing.Size(435, 25);
             this.txtRazonSocial.TabIndex = 1;
-            // 
-            // lblPuntoVentaLabel
-            // 
-            this.lblPuntoVentaLabel.AutoSize = true;
-            this.lblPuntoVentaLabel.Location = new System.Drawing.Point(12, 97);
-            this.lblPuntoVentaLabel.Name = "lblPuntoVentaLabel";
-            this.lblPuntoVentaLabel.Size = new System.Drawing.Size(99, 17);
-            this.lblPuntoVentaLabel.TabIndex = 2;
-            this.lblPuntoVentaLabel.Text = "Punto de Venta:";
-            // 
-            // txtPuntoVenta
-            // 
-            this.txtPuntoVenta.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.txtPuntoVenta.Location = new System.Drawing.Point(100, 93);
-            this.txtPuntoVenta.Name = "txtPuntoVenta";
-            this.txtPuntoVenta.Size = new System.Drawing.Size(80, 25);
-            this.txtPuntoVenta.TabIndex = 2;
-            this.txtPuntoVenta.Text = "1";
-            // 
+            //
             // grpTokens
-            // 
-            this.grpTokens.Controls.Add(this.lblApiKeyLabel);
-            this.grpTokens.Controls.Add(this.txtApiKey);
-            this.grpTokens.Controls.Add(this.lblApiTokenLabel);
-            this.grpTokens.Controls.Add(this.txtApiToken);
-            this.grpTokens.Controls.Add(this.lblUserTokenLabel);
-            this.grpTokens.Controls.Add(this.txtUserToken);
-            this.grpTokens.Controls.Add(this.lblUserTokenNota);
+            //
             this.grpTokens.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             this.grpTokens.Location = new System.Drawing.Point(10, 155);
             this.grpTokens.Name = "grpTokens";
             this.grpTokens.Size = new System.Drawing.Size(870, 200);
             this.grpTokens.TabIndex = 1;
             this.grpTokens.TabStop = false;
-            this.grpTokens.Text = "Credenciales TusFacturas.app  (cuenta en tusfacturas.app)";
-            // 
-            // lblApiKeyLabel
-            // 
-            this.lblApiKeyLabel.AutoSize = true;
-            this.lblApiKeyLabel.Location = new System.Drawing.Point(12, 30);
-            this.lblApiKeyLabel.Name = "lblApiKeyLabel";
-            this.lblApiKeyLabel.Size = new System.Drawing.Size(54, 17);
-            this.lblApiKeyLabel.TabIndex = 0;
-            this.lblApiKeyLabel.Text = "API Key:";
-            // 
-            // txtApiKey
-            // 
-            this.txtApiKey.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.txtApiKey.Location = new System.Drawing.Point(100, 26);
-            this.txtApiKey.Name = "txtApiKey";
-            this.txtApiKey.Size = new System.Drawing.Size(200, 25);
-            this.txtApiKey.TabIndex = 3;
-            // 
-            // lblApiTokenLabel
-            // 
-            this.lblApiTokenLabel.AutoSize = true;
-            this.lblApiTokenLabel.Location = new System.Drawing.Point(12, 66);
-            this.lblApiTokenLabel.Name = "lblApiTokenLabel";
-            this.lblApiTokenLabel.Size = new System.Drawing.Size(67, 17);
-            this.lblApiTokenLabel.TabIndex = 4;
-            this.lblApiTokenLabel.Text = "API Token:";
-            // 
-            // txtApiToken
-            // 
-            this.txtApiToken.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.txtApiToken.Location = new System.Drawing.Point(100, 62);
-            this.txtApiToken.Name = "txtApiToken";
-            this.txtApiToken.Size = new System.Drawing.Size(755, 25);
-            this.txtApiToken.TabIndex = 4;
-            // 
-            // lblUserTokenLabel
-            // 
-            this.lblUserTokenLabel.AutoSize = true;
-            this.lblUserTokenLabel.Location = new System.Drawing.Point(12, 102);
-            this.lblUserTokenLabel.Name = "lblUserTokenLabel";
-            this.lblUserTokenLabel.Size = new System.Drawing.Size(76, 17);
-            this.lblUserTokenLabel.TabIndex = 5;
-            this.lblUserTokenLabel.Text = "User Token:";
-            // 
-            // txtUserToken
-            // 
-            this.txtUserToken.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.txtUserToken.Location = new System.Drawing.Point(100, 98);
-            this.txtUserToken.Name = "txtUserToken";
-            this.txtUserToken.Size = new System.Drawing.Size(755, 25);
-            this.txtUserToken.TabIndex = 5;
-            // 
-            // lblUserTokenNota
-            // 
-            this.lblUserTokenNota.AutoSize = true;
-            this.lblUserTokenNota.Font = new System.Drawing.Font("Segoe UI", 8.5F, System.Drawing.FontStyle.Italic);
-            this.lblUserTokenNota.ForeColor = System.Drawing.Color.Gray;
-            this.lblUserTokenNota.Location = new System.Drawing.Point(12, 140);
-            this.lblUserTokenNota.Name = "lblUserTokenNota";
-            this.lblUserTokenNota.Size = new System.Drawing.Size(500, 15);
-            this.lblUserTokenNota.TabIndex = 6;
-            this.lblUserTokenNota.Text = "Estos tokens se obtienen en tu cuenta de tusfacturas.app → Mi cuenta → Datos de i" +
-    "ntegración.";
-            // 
+            this.grpTokens.Text = "Configuración API Local (servidor localhost:3000)";
+            //
             // btnGuardarConfig
             // 
             this.btnGuardarConfig.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(102)))), ((int)(((byte)(178)))));

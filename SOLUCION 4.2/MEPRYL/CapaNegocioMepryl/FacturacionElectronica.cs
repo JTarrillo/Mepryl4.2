@@ -77,7 +77,7 @@ namespace CapaNegocioMepryl
             string  nombreReceptor,
             string  condicionIVAReceptor,
             decimal importeTotal,
-            decimal alicuotaIVA    = 21m,
+            decimal alicuotaIVA    = 0m,
             int     concepto       = 2,
             string  tipoTF         = "FACTURA C",
             long    nroAsociado    = 0,
@@ -103,15 +103,15 @@ namespace CapaNegocioMepryl
                 string apiKey    = cfg["tfApiKey"].ToString();
                 int    puntoVenta = Convert.ToInt32(cfg["puntoVenta"]);
 
-                // 2. TusFacturas: siempre Factura C (Monotributo), sin IVA discriminado
+                // 2. Insertar comprobante con el tipo seleccionado por el usuario
                 // El número es asignado automáticamente por TusFacturas (nro=0)
                 Guid idFactura = _datos.InsertarComprobante(
-                    idTurno, 11, puntoVenta, 0,
+                    idTurno, tipoComprobante, puntoVenta, 0,
                     cuitReceptor, nombreReceptor, condicionIVAReceptor,
                     importeTotal, 0m, importeTotal,
                     concepto, "", tipoTF);
 
-                // 3. Llamar a TusFacturas API
+                // 3. Llamar a API local de facturación
                 var ws = new ServiciosAfip(userToken, apiToken, apiKey, puntoVenta);
                 RespuestaCAE respuesta = ws.EmitirFacturaC(
                     string.IsNullOrWhiteSpace(descripcion) ? "Prestación médica" : descripcion,
@@ -121,7 +121,8 @@ namespace CapaNegocioMepryl
                     tipoTF,
                     nroAsociado,
                     medioPago,
-                    codArticulo);
+                    codArticulo,
+                    tipoComprobante);
 
                 // 4. Guardar resultado
                 if (respuesta.Autorizado && !string.IsNullOrEmpty(respuesta.CAE))
@@ -131,7 +132,7 @@ namespace CapaNegocioMepryl
                     resultado.Modo      = 1;
                     resultado.Mensaje   = $"{tipoTF} autorizada. CAE: {respuesta.CAE} — Vence: {respuesta.FechaVencimientoCAE:dd/MM/yyyy} — Nro: {respuesta.NroComprobante}";
                     resultado.IdRetorno = idFactura;
-                    resultado.PdfUrl    = respuesta.PdfUrl ?? "";
+                    resultado.PdfUrl    = (respuesta.PdfUrl == null) ? "" : respuesta.PdfUrl;
                     // Pasar URL del PDF al formulario via Tag
                     if (!string.IsNullOrEmpty(respuesta.PdfUrl))
                         resultado.Mensaje += $" — PDF:{respuesta.PdfUrl}";
@@ -143,7 +144,7 @@ namespace CapaNegocioMepryl
                         : respuesta.Errores;
                     _datos.MarcarComoRechazado(idFactura, motivo);
                     resultado.Modo    = 0;
-                    resultado.Mensaje = "TusFacturas rechazó el comprobante: " + motivo;
+                    resultado.Mensaje = "AFIP rechazó el comprobante: " + motivo;
                 }
             }
             catch (Exception ex)
@@ -269,7 +270,10 @@ namespace CapaNegocioMepryl
                 string tipoTF = "FACTURA C";
                 DataTable dtFact = _datos.ObtenerComprobantePorId(idFactura);
                 if (dtFact.Rows.Count > 0 && dtFact.Columns.Contains("tipoTF"))
-                    tipoTF = dtFact.Rows[0]["tipoTF"]?.ToString() ?? "FACTURA C";
+                {
+                    var valor = dtFact.Rows[0]["tipoTF"];
+                    tipoTF = (valor == null || DBNull.Value.Equals(valor)) ? "FACTURA C" : valor.ToString();
+                }
 
                 var ws        = new ServiciosAfip(userToken, apiToken, apiKey, puntoVenta);
                 var respuesta = ws.AnularComprobante(nroComprobante, tipoTF);
@@ -282,8 +286,9 @@ namespace CapaNegocioMepryl
                 }
                 else
                 {
+                    string erroresObs = (respuesta.Errores == null) ? respuesta.Observaciones : respuesta.Errores;
                     resultado.Modo    = 0;
-                    resultado.Mensaje = "AFIP rechazó la anulación: " + (respuesta.Errores ?? respuesta.Observaciones);
+                    resultado.Mensaje = "AFIP rechazó la anulación: " + erroresObs;
                 }
             }
             catch (Exception ex)

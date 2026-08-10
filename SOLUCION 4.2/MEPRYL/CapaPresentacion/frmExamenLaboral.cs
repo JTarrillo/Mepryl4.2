@@ -1256,8 +1256,12 @@ namespace CapaPresentacion
 
         private void cargar(Entidades.ExamenLaboral examen)
         {
-            puntosHabilitados = false;
-            tbAntCli.Text = examen.AntCli;
+            try
+            {
+                System.Diagnostics.Debug.WriteLine("[EXAMENLAB] Iniciando método cargar()");
+                puntosHabilitados = false;
+                System.Diagnostics.Debug.WriteLine("[EXAMENLAB] Asignando tbAntCli");
+                tbAntCli.Text = examen.AntCli;
             if (tbAntCli.Text == "")
             {
                 if (lbTitulo.Text != "CASINO")
@@ -1409,9 +1413,82 @@ namespace CapaPresentacion
                 tbObservacionesCli.Text = "LOS ITEMS NO EXAMINADOS OBEDECEN A EXPRESAS DIRECTIVAS DE LA EMPRESA SOLICITANTE";
             }
             //cboMedico.SelectedValue = examen.Medico;
+            System.Diagnostics.Debug.WriteLine("[EXAMENLAB] Llamando cargarMedicos con examen.Medico: " + examen.Medico);
             cargarMedicos(examen.Medico);
-            cboMedico.SelectedValue = examen.Medico;
-            if (examen.DictamenCli != "") { cboDictClinico.SelectedValue = examen.DictamenCli; }
+            System.Diagnostics.Debug.WriteLine("[EXAMENLAB] cargarMedicos completado, cboMedico.Items.Count: " + cboMedico.Items.Count);
+            try
+            {
+                if (examen.Medico != "") 
+                {
+                    System.Diagnostics.Debug.WriteLine("[EXAMENLAB] Verificando si existe examen.Medico en lista: " + examen.Medico);
+                    // Verificar que el valor existe en la lista antes de asignar
+                    bool valorExiste = false;
+                    foreach (object item in cboMedico.Items)
+                    {
+                        try
+                        {
+                            DataRowView drv = item as DataRowView;
+                            if (drv != null && drv["id"].ToString() == examen.Medico)
+                            {
+                                valorExiste = true;
+                                System.Diagnostics.Debug.WriteLine("[EXAMENLAB] Valor encontrado en cboMedico");
+                                break;
+                            }
+                        }
+                        catch
+                        {
+                            // Si el item no es DataRowView o no tiene la columna id, continuar
+                        }
+                    }
+                    if (valorExiste)
+                    {
+                        System.Diagnostics.Debug.WriteLine("[EXAMENLAB] Asignando cboMedico.SelectedValue");
+                        cboMedico.SelectedValue = examen.Medico;
+                        System.Diagnostics.Debug.WriteLine("[EXAMENLAB] cboMedico.SelectedValue asignado correctamente");
+                    }
+                    else
+                    {
+                        System.Diagnostics.Debug.WriteLine("[EXAMENLAB] Valor NO encontrado en cboMedico, no se asigna");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("[EXAMENLAB] Error al asignar cboMedico: " + ex.Message + " - " + ex.StackTrace);
+            }
+            
+            try
+            {
+                if (examen.DictamenCli != "") 
+                { 
+                    // Verificar que el valor existe en la lista antes de asignar
+                    bool valorExiste = false;
+                    foreach (object item in cboDictClinico.Items)
+                    {
+                        try
+                        {
+                            DataRowView drv = item as DataRowView;
+                            if (drv != null && drv["id"].ToString() == examen.DictamenCli)
+                            {
+                                valorExiste = true;
+                                break;
+                            }
+                        }
+                        catch
+                        {
+                            // Si el item no es DataRowView o no tiene la columna id, continuar
+                        }
+                    }
+                    if (valorExiste)
+                    {
+                        cboDictClinico.SelectedValue = examen.DictamenCli;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("[EXAMENLAB] Error al asignar cboDictClinico: " + ex.Message);
+            }
             tbGRojos.Text = examen.GRojos;
             tbGBlancos.Text = examen.GBlancos;
             tbHemoglob.Text = examen.Hemoglobina;
@@ -1525,11 +1602,48 @@ namespace CapaPresentacion
             setearTbSegunId("103", examen.EspinogramaP, "SIN PARTICULARIDADES");
             tbObservaciones.Text = examen.Observaciones;
             txtObservacionesLaboratorio.Text = examen.ObservacionesLab;
-            if (examen.Dictamen != "") { cboDictamenFinal.SelectedValue = examen.Dictamen; }
+            
+            try
+            {
+                if (examen.Dictamen != "") 
+                {
+                    // Verificar que el valor existe en la lista antes de asignar
+                    bool valorExiste = false;
+                    foreach (object item in cboDictamenFinal.Items)
+                    {
+                        try
+                        {
+                            DataRowView drv = item as DataRowView;
+                            if (drv != null && drv["id"].ToString() == examen.Dictamen)
+                            {
+                                valorExiste = true;
+                                break;
+                            }
+                        }
+                        catch
+                        {
+                            // Si el item no es DataRowView o no tiene la columna id, continuar
+                        }
+                    }
+                    if (valorExiste)
+                    {
+                        cboDictamenFinal.SelectedValue = examen.Dictamen;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("[EXAMENLAB] Error al asignar cboDictamenFinal: " + ex.Message);
+            }
             calcularIMC();
             puntosHabilitados = true;
 
             RecuperarTextoDiagnostico("68");// GRV - recupera el diagnostico de audiometria
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("[EXAMENLAB] Error general en método cargar: " + ex.Message + " - StackTrace: " + ex.StackTrace);
+            }
         }
 
         private void calcularIMC()
