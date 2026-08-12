@@ -639,7 +639,7 @@ namespace CapaPresentacion
             // btnLimpiar
             // 
             this.btnLimpiar.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            this.btnLimpiar.Location = new System.Drawing.Point(250, 880);
+            this.btnLimpiar.Location = new System.Drawing.Point(245, 810);
             this.btnLimpiar.Name = "btnLimpiar";
             this.btnLimpiar.Size = new System.Drawing.Size(160, 50);
             this.btnLimpiar.TabIndex = 5;
@@ -654,7 +654,7 @@ namespace CapaPresentacion
             this.btnVerPdf.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnVerPdf.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.btnVerPdf.ForeColor = System.Drawing.Color.White;
-            this.btnVerPdf.Location = new System.Drawing.Point(430, 880);
+            this.btnVerPdf.Location = new System.Drawing.Point(425, 810);
             this.btnVerPdf.Name = "btnVerPdf";
             this.btnVerPdf.Size = new System.Drawing.Size(160, 50);
             this.btnVerPdf.TabIndex = 8;
@@ -670,7 +670,7 @@ namespace CapaPresentacion
             this.btnEmitir.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnEmitir.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
             this.btnEmitir.ForeColor = System.Drawing.Color.White;
-            this.btnEmitir.Location = new System.Drawing.Point(15, 880);
+            this.btnEmitir.Location = new System.Drawing.Point(15, 808);
             this.btnEmitir.Name = "btnEmitir";
             this.btnEmitir.Size = new System.Drawing.Size(220, 50);
             this.btnEmitir.TabIndex = 6;
@@ -789,7 +789,7 @@ namespace CapaPresentacion
             this.panelFiltros.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             this.panelFiltros.Location = new System.Drawing.Point(3, 3);
             this.panelFiltros.Name = "panelFiltros";
-            this.panelFiltros.Size = new System.Drawing.Size(1362, 48);
+            this.panelFiltros.Size = new System.Drawing.Size(1362, 80);
             this.panelFiltros.TabIndex = 0;
             // 
             // lblDesdeLabel
@@ -856,11 +856,13 @@ namespace CapaPresentacion
             // 
             this.dgvHistorial.AllowUserToAddRows = false;
             this.dgvHistorial.AllowUserToDeleteRows = false;
+            this.dgvHistorial.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvHistorial.BackgroundColor = System.Drawing.Color.White;
             this.dgvHistorial.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvHistorial.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvHistorial.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            this.dgvHistorial.Location = new System.Drawing.Point(3, 3);
+            this.dgvHistorial.Location = new System.Drawing.Point(3, 83);
             this.dgvHistorial.MultiSelect = false;
             this.dgvHistorial.Name = "dgvHistorial";
             this.dgvHistorial.ReadOnly = true;
@@ -868,6 +870,7 @@ namespace CapaPresentacion
             this.dgvHistorial.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvHistorial.Size = new System.Drawing.Size(1362, 737);
             this.dgvHistorial.TabIndex = 1;
+            this.dgvHistorial.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvHistorial_CellClick);
             this.dgvHistorial.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvHistorial_CellDoubleClick);
             // 
             // tabConfiguracion

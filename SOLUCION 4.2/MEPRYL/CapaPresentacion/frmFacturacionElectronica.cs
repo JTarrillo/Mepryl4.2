@@ -692,15 +692,51 @@ namespace CapaPresentacion
             foreach (DataGridViewColumn c in dgvHistorial.Columns)
                 c.Visible = false;
 
-            MostrarColumna("nroComprobante",    "Nro.",         75);
-            MostrarColumna("nombreReceptor",    "Receptor",    175);
-            MostrarColumna("cuitReceptor",      "CUIT",         110);
-            MostrarColumna("importeTotal",      "Total ($)",    90);
-            MostrarColumna("cae",               "CAE",         145);
-            MostrarColumna("fechaVencCAE",      "Venc. CAE",    90);
-            MostrarColumna("estado",            "Estado",       90);
-            MostrarColumna("fechaEmision",      "Fecha",        90);
-            MostrarColumna("pdfUrl",            "PDF",          50);
+            // Configuración de altura de filas
+            dgvHistorial.RowTemplate.Height = 35; // Altura de fila fija de 35px
+            dgvHistorial.RowTemplate.DefaultCellStyle.Padding = new Padding(8, 4, 8, 4); // Padding: izq, arriba, der, abajo
+
+            // Configuración general de la grilla
+            dgvHistorial.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(245, 245, 250);
+            dgvHistorial.AlternatingRowsDefaultCellStyle.ForeColor = Color.Black;
+            dgvHistorial.DefaultCellStyle.SelectionBackColor = Color.FromArgb(51, 102, 204);
+            dgvHistorial.DefaultCellStyle.SelectionForeColor = Color.White;
+            dgvHistorial.DefaultCellStyle.Padding = new Padding(8, 4, 8, 4);
+            dgvHistorial.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(70, 130, 180);
+            dgvHistorial.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
+            dgvHistorial.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            dgvHistorial.ColumnHeadersDefaultCellStyle.Padding = new Padding(8, 6, 8, 6);
+            dgvHistorial.EnableHeadersVisualStyles = false;
+            dgvHistorial.GridColor = Color.FromArgb(200, 200, 200);
+            dgvHistorial.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.DisplayedCells;
+            dgvHistorial.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
+            // Configurar alineación del contenido de las celdas
+            dgvHistorial.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+
+            MostrarColumna("nroComprobante",    "Nro.",         80);
+            MostrarColumna("nombreReceptor",    "Receptor",    200);
+            MostrarColumna("cuitReceptor",      "CUIT",         120);
+            MostrarColumna("importeTotal",      "Total ($)",    100);
+            MostrarColumna("cae",               "CAE",         150);
+            MostrarColumna("fechaVencCAE",      "Venc. CAE",   100);
+            MostrarColumna("estado",            "Estado",       100);
+            MostrarColumna("fechaEmision",      "Fecha",        100);
+            MostrarColumna("tipoComprobante",   "Tipo",         80);
+            MostrarColumna("puntoVenta",        "Pto. Venta",   80);
+            MostrarColumna("tipoTF",            "Tipo TF",      100);
+
+            // Configurar columna PDF como enlace
+            if (dgvHistorial.Columns.Contains("pdfUrl"))
+            {
+                var colPdf = dgvHistorial.Columns["pdfUrl"];
+                colPdf.Visible = true;
+                colPdf.HeaderText = "PDF";
+                colPdf.MinimumWidth = 80;
+                colPdf.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+                colPdf.DefaultCellStyle.ForeColor = Color.Blue;
+                colPdf.DefaultCellStyle.Font = new Font("Segoe UI", 9F, FontStyle.Underline);
+            }
         }
 
         private void dgvHistorial_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
@@ -711,6 +747,18 @@ namespace CapaPresentacion
                 : null;
             if (!string.IsNullOrEmpty(pdf))
                 Process.Start(new ProcessStartInfo(pdf) { UseShellExecute = true });
+        }
+
+        private void dgvHistorial_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            // Permitir abrir el PDF con un solo clic en la columna PDF
+            if (e.RowIndex < 0) return;
+            if (dgvHistorial.Columns.Contains("pdfUrl") && dgvHistorial.Columns[e.ColumnIndex].Name == "pdfUrl")
+            {
+                string pdf = dgvHistorial.Rows[e.RowIndex].Cells["pdfUrl"].Value?.ToString();
+                if (!string.IsNullOrEmpty(pdf))
+                    Process.Start(new ProcessStartInfo(pdf) { UseShellExecute = true });
+            }
         }
 
         private void btnAnular_Click(object sender, EventArgs e)

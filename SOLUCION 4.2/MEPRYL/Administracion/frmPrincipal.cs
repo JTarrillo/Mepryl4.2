@@ -1111,21 +1111,19 @@ namespace CapaPresentacion
             LimpiarEstadoIcono();
         }
 
-        protected override void facturacionToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            OcultarPestanasRibbon();
-            MostrarPestanaFacturacion();
-            LimpiarEstadoIcono();
-            bbiFacturacionElectronica.Down = true;
-            //Utilidades.abrirFormulario(this, new frmFacturacionElectronica(), this.configuracion);
-        }
-
         protected override void bbiFacturacionElectronica_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             OcultarPestanasRibbon();
             MostrarPestanaFacturacion();
             LimpiarEstadoIcono();
             bbiFacturacionElectronica.Down = true;
+            Utilidades.abrirFormulario(this, new frmFacturacionElectronica(), this.configuracion);
+        }
+
+        protected override void facturacionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OcultarPestanasRibbon();
+            LimpiarEstadoIcono();
             Utilidades.abrirFormulario(this, new frmFacturacionElectronica(), this.configuracion);
         }
         #endregion

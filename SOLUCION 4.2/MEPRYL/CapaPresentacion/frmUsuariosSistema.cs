@@ -1123,26 +1123,19 @@ namespace CapaPresentacion
             // Agregar botón "Eliminar" si no existe
             if (!dgvGestion.Columns.Contains("btnEliminar"))
             {
-                DataGridViewButtonColumn btnCol = new DataGridViewButtonColumn();
-                btnCol.Name = "btnEliminar";
-                btnCol.HeaderText = "Acciones";
-                btnCol.Text = "🗑️"; // Icono de basura emoji
-                btnCol.UseColumnTextForButtonValue = true;
-                btnCol.FillWeight = 40; // Reducir ancho
-                btnCol.Width = 50; // Ancho fijo más pequeño
-                btnCol.FlatStyle = FlatStyle.Flat;
-                
-                // Configurar toda la columna con fondo rojo
-                btnCol.DefaultCellStyle.BackColor = Color.FromArgb(220, 53, 69); // Rojo suave
-                btnCol.DefaultCellStyle.ForeColor = Color.White;
-                btnCol.DefaultCellStyle.SelectionBackColor = Color.FromArgb(200, 35, 51);
-                btnCol.DefaultCellStyle.Font = new Font("Segoe UI", 10F); // Fuente más pequeña
-                
-                // Configurar header de la columna también en rojo
-                btnCol.HeaderCell.Style.BackColor = Color.FromArgb(220, 53, 69);
-                btnCol.HeaderCell.Style.ForeColor = Color.White;
-                
-                dgvGestion.Columns.Add(btnCol);
+                DataGridViewImageColumn imgCol = new DataGridViewImageColumn();
+                imgCol.Name = "btnEliminar";
+                imgCol.HeaderText = "Acciones";
+                imgCol.Image = Properties.Resources.tacho;
+                imgCol.ImageLayout = DataGridViewImageCellLayout.Zoom;
+                imgCol.FillWeight = 40;
+                imgCol.Width = 50;
+                imgCol.DefaultCellStyle.BackColor = Color.White;
+                imgCol.DefaultCellStyle.SelectionBackColor = Color.FromArgb(240, 240, 240);
+                imgCol.HeaderCell.Style.BackColor = Color.FromArgb(70, 130, 180);
+                imgCol.HeaderCell.Style.ForeColor = Color.White;
+
+                dgvGestion.Columns.Add(imgCol);
             }
 
             // Actualizar total
