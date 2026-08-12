@@ -16,10 +16,49 @@ namespace CapaPresentacion
 
         public void setearParametrosReporte(DataTable t)
         {
+            System.Diagnostics.Debug.WriteLine($"[REPORTES] setearParametrosReporte - Tabla es null: {t == null}");
+            
+            if (t == null)
+            {
+                System.Diagnostics.Debug.WriteLine("[REPORTES] ERROR: La tabla de parámetros es NULL");
+                return;
+            }
+
+            System.Diagnostics.Debug.WriteLine($"[REPORTES] Filas en tabla: {t.Rows.Count}");
+            System.Diagnostics.Debug.WriteLine($"[REPORTES] Columnas en tabla: {t.Columns.Count}");
+
+            if (t.Rows.Count == 0)
+            {
+                System.Diagnostics.Debug.WriteLine("[REPORTES] La tabla no tiene filas, estableciendo parámetros vacíos");
+                // Si no hay datos, establecer parámetros vacíos para evitar el error
+                for (int i = 0; i < 20; i++) // Asumiendo máximo 20 parámetros
+                {
+                    try
+                    {
+                        rpt.SetParameterValue(i, "");
+                        System.Diagnostics.Debug.WriteLine($"[REPORTES] Parámetro {i} establecido: '' (vacío)");
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"[REPORTES] Error al establecer parámetro {i}: {ex.Message}");
+                    }
+                }
+                return;
+            }
+
+            System.Diagnostics.Debug.WriteLine("[REPORTES] Estableciendo parámetros desde la primera fila:");
             for (int i = 0; i <= t.Columns.Count - 1; i++)
             {
-                rpt.SetParameterValue(i, t.Rows[0].ItemArray[i].ToString());
-
+                string valor = t.Rows[0].ItemArray[i].ToString();
+                System.Diagnostics.Debug.WriteLine($"[REPORTES] Parámetro {i} ({t.Columns[i].ColumnName}): '{valor}'");
+                try
+                {
+                    rpt.SetParameterValue(i, valor);
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[REPORTES] Error al establecer parámetro {i}: {ex.Message}");
+                }
             }
         }
 
@@ -93,6 +132,23 @@ namespace CapaPresentacion
 
         public string exportarAPDF(DataTable parametros, DataSet ds, DataTable contenidoDs,string ubicacion)
           {
+            System.Diagnostics.Debug.WriteLine($"[REPORTES] exportarAPDF - Ubicación: {ubicacion}");
+            System.Diagnostics.Debug.WriteLine($"[REPORTES] parametros es null: {parametros == null}");
+            System.Diagnostics.Debug.WriteLine($"[REPORTES] ds es null: {ds == null}");
+            System.Diagnostics.Debug.WriteLine($"[REPORTES] contenidoDs es null: {contenidoDs == null}");
+            
+            if (parametros != null)
+            {
+                System.Diagnostics.Debug.WriteLine($"[REPORTES] Filas parametros: {parametros.Rows.Count}");
+                System.Diagnostics.Debug.WriteLine($"[REPORTES] Columnas parametros: {parametros.Columns.Count}");
+            }
+            
+            if (contenidoDs != null)
+            {
+                System.Diagnostics.Debug.WriteLine($"[REPORTES] Filas contenidoDs: {contenidoDs.Rows.Count}");
+                System.Diagnostics.Debug.WriteLine($"[REPORTES] Columnas contenidoDs: {contenidoDs.Columns.Count}");
+            }
+
             this.setearDataSource(ds, contenidoDs);
             this.setearParametrosReporte(parametros);
             rpt.ExportToDisk(CrystalDecisions.Shared.ExportFormatType.PortableDocFormat,

@@ -41,6 +41,9 @@ namespace CapaNegocioMepryl
             int puntoVenta, char ambiente,
             string rutaCertificado, string passwordCert, string domicilio)
         {
+            // LOG: Ver valor recibido en capa de negocio
+            System.Diagnostics.Debug.WriteLine($"[NEGOCIO_GUARDAR] condicionIVA recibido: {condicionIVA}");
+
             return _datos.GuardarConfiguracion(
                 cuitEmisor, razonSocial, condicionIVA,
                 puntoVenta, ambiente,
@@ -83,11 +86,15 @@ namespace CapaNegocioMepryl
             long    nroAsociado    = 0,
             string  medioPago      = "EFECTIVO",
             string  descripcion    = "Prestación médica",
-            string  codArticulo    = "")
+            string  codArticulo    = "",
+            int     condicionIvaEmisorId = 6) // Default: Monotributista
         {
             var resultado = new Entidades.Resultado();
             try
             {
+                // LOG: Ver valor recibido en capa de negocio
+                System.Diagnostics.Debug.WriteLine($"[NEGOCIO] condicionIvaEmisorId recibido: {condicionIvaEmisorId}");
+
                 // 1. Cargar configuración
                 DataTable config = _datos.ObtenerConfiguracion();
                 if (config.Rows.Count == 0)
@@ -109,7 +116,10 @@ namespace CapaNegocioMepryl
                     idTurno, tipoComprobante, puntoVenta, 0,
                     cuitReceptor, nombreReceptor, condicionIVAReceptor,
                     importeTotal, 0m, importeTotal,
-                    concepto, "", tipoTF);
+                    concepto, "", tipoTF, condicionIvaEmisorId);
+
+                // LOG: Ver valor antes de llamar a ServiciosAfip
+                System.Diagnostics.Debug.WriteLine($"[NEGOCIO] condicionIvaEmisorId antes de llamar WS: {condicionIvaEmisorId}");
 
                 // 3. Llamar a API local de facturación
                 var ws = new ServiciosAfip(userToken, apiToken, apiKey, puntoVenta);
@@ -122,7 +132,8 @@ namespace CapaNegocioMepryl
                     nroAsociado,
                     medioPago,
                     codArticulo,
-                    tipoComprobante);
+                    tipoComprobante,
+                    condicionIvaEmisorId); // IMPORTANTE: Pasar la condición IVA del emisor
 
                 // 4. Guardar resultado
                 if (respuesta.Autorizado && !string.IsNullOrEmpty(respuesta.CAE))

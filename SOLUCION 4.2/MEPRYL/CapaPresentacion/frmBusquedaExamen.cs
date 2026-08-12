@@ -47,6 +47,7 @@ namespace CapaPresentacion
         private string strDirectorioInfRadiologico = "";
         private string strDirectorioRX = "";
         private string strDirectorioConsolidar = "";
+        private string strDirectorioConsolidarAlternativo = ""; // Segunda ruta de consolidación sin fechas
         private string strArchivoPlantilla = "";
         private string strDirRXTemp = "";        
         private string strDirectorioAudioMetria = "";
@@ -1972,6 +1973,24 @@ namespace CapaPresentacion
                             //strError = UtilMepryl.ConcatenarPDFs(dtArchivosPDF, strDirecConsolTemp + "CLINICA");
                             strError = UtilMepryl.ConcatenarPDFsLaboral(dtArchivosPDF, strDirecConsolTemp + "CLINICA", ListaArchivosPdf);
                         }
+
+                        // Consolidar también en ruta alternativa sin fechas
+                        string strDirecConsolAlternativo = strDirectorioConsolidarAlternativo + "\\";
+                        try
+                        {
+                            // Crear directorio si no existe
+                            if (!System.IO.Directory.Exists(strDirecConsolAlternativo))
+                                System.IO.Directory.CreateDirectory(strDirecConsolAlternativo);
+
+                            // Consolidar en ruta alternativa (usando los mismos archivos)
+                            string strErrorAlternativo = UtilMepryl.ConcatenarPDFsLaboral(dtArchivosPDF, strDirecConsolAlternativo, ListaArchivosPdf);
+                        }
+                        catch (Exception ex)
+                        {
+                            // Si falla la consolidación alternativa, no interrumpir el proceso principal
+                            System.Diagnostics.Debug.WriteLine("Error al consolidar en ruta alternativa: " + ex.Message);
+                        }
+
                         ListaArchivosPdf.Clear();
 
                         //---
@@ -2519,6 +2538,8 @@ namespace CapaPresentacion
                     strArchivoPlantilla = r.ItemArray[6].ToString();
                     strDirectorioAudioMetria = r.ItemArray[7].ToString();
                     strDirectorioErgometria = r.ItemArray[9].ToString();
+                    // Ruta alternativa de consolidación sin estructura de fechas
+                    strDirectorioConsolidarAlternativo = r.ItemArray[5].ToString() + "\\BOLSA DE GATOS";
                 }
             }            
         }

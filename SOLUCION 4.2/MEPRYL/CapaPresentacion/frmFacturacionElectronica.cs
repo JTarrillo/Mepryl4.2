@@ -3,6 +3,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
+using System.Linq;
 using System.Windows.Forms;
 using Comunes;
 
@@ -16,6 +17,7 @@ namespace CapaPresentacion
         private System.Data.DataTable _dtEspecialidades = null;
         private ComboBox _cboEspecialidad = null;
         private string _idEmpresaSeleccionada = null; // ID de empresa cuando se factura a empresa
+        private bool _cargandoCuitPrueba = false; // Bandera para evitar limpieza en CheckedChanged
 
         public frmFacturacionElectronica()
         {
@@ -32,6 +34,7 @@ namespace CapaPresentacion
             CargarHistorial();
             CargarConfiguracion();
             InicializarComboEspecialidad();
+            InicializarCombosCondicionIVA();
             
             // Ocultar campos de tokens (ya no se usan con API local)
             grpTokens.Visible = false;
@@ -43,23 +46,25 @@ namespace CapaPresentacion
             {
                 _dtEspecialidades = _negocio.ObtenerEspecialidadesConPrecio();
 
-                // Label encima del combo
+                // Label encima del combo (ahora en la parte superior del GroupBox)
                 var lbl = new Label();
                 lbl.Text = "Especialidad / Artículo:";
                 lbl.Font = new System.Drawing.Font("Segoe UI", 9f);
                 lbl.AutoSize = true;
-                lbl.Location = new System.Drawing.Point(12, 18);
+                lbl.Location = new System.Drawing.Point(20, 20);
+                lbl.BringToFront();
                 grpImporte.Controls.Add(lbl);
 
-                // ComboBox de especialidades
+                // ComboBox de especialidades (en la parte superior)
                 _cboEspecialidad = new ComboBox();
                 _cboEspecialidad.DropDownStyle = ComboBoxStyle.DropDown; // Permitir escribir para autocompletado
                 _cboEspecialidad.AutoCompleteMode = AutoCompleteMode.SuggestAppend; // Autocompletado rápido
                 _cboEspecialidad.AutoCompleteSource = AutoCompleteSource.ListItems; // Usar items del ComboBox
                 _cboEspecialidad.Font = new System.Drawing.Font("Segoe UI", 10f);
-                _cboEspecialidad.Location = new System.Drawing.Point(12, 38);
+                _cboEspecialidad.Location = new System.Drawing.Point(20, 45);
                 _cboEspecialidad.Size = new System.Drawing.Size(400, 28);
                 _cboEspecialidad.Name = "cboEspecialidad";
+                _cboEspecialidad.BringToFront();
 
                 // item vacío al inicio
                 _cboEspecialidad.Items.Add("-- Ingreso manual --");
@@ -69,19 +74,148 @@ namespace CapaPresentacion
                 _cboEspecialidad.SelectedIndex = 0;
                 _cboEspecialidad.SelectedIndexChanged += cboEspecialidad_SelectedIndexChanged;
                 grpImporte.Controls.Add(_cboEspecialidad);
-
-                // Mover txtImporte y lblImporteLabel hacia abajo para que entren
-                lblImporteLabel.Top  = 72;
-                txtImporte.Top       = 92;
-                lblIVANota.Top       = txtImporte.Top + txtImporte.Height + 4;
-                lblMedioPagoLabel.Top = lblIVANota.Top + lblIVANota.Height + 4;
-                cboMedioPago.Top     = lblMedioPagoLabel.Top + lblMedioPagoLabel.Height + 2;
-
-                // Ampliar el GroupBox si es necesario
-                if (grpImporte.Height < cboMedioPago.Bottom + 20)
-                    grpImporte.Height = cboMedioPago.Bottom + 20;
             }
             catch { /* Si falla no bloquea el formulario */ }
+        }
+
+        private void InicializarCombosCondicionIVA()
+        {
+            try
+            {
+                // LOG: Ver valor inicial del combo
+                System.Diagnostics.Debug.WriteLine($"[INICIALIZAR_COMBO] Valor inicial de cboCondicionIvaEmisor: {cboCondicionIvaEmisor.SelectedItem?.ToString() ?? "NULL"}");
+
+                // NO auto-seleccionar la configuración del emisor - dejar que el usuario elija para simulación
+                // El combo condicionIvaEmisor queda sin selección para que el usuario pueda elegir libremente
+                
+                // Seleccionar Consumidor Final por defecto en receptor
+                cboCondicionIvaReceptor.SelectedIndex = 0;
+            }
+            catch { /* Si falla no bloquea el formulario */ }
+        }
+
+        private void BtnCuitPrueba_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var btn = sender as Button;
+                if (btn == null) return;
+
+                // Activar bandera para evitar limpieza en CheckedChanged
+                _cargandoCuitPrueba = true;
+
+                // Extraer CUIT y condición del texto del botón
+                string[] lineas = btn.Text.Split(new[] { "\r\n" }, StringSplitOptions.None);
+                string cuit = lineas[0].Trim();
+                string condicion = lineas[1].Trim();
+
+                // Cargar datos del receptor
+                txtCuitReceptor.Text = cuit;
+                txtNombreReceptor.Text = $"Cliente Test - {condicion}";
+                rbConCuit.Checked = true;
+                rbConsumidorFinal.Checked = false;
+
+                // Desactivar bandera
+                _cargandoCuitPrueba = false;
+
+                // Determinar condición IVA según el CUIT seleccionado
+                string condicionIVA = "CF"; // Default
+                int tipoComprobanteSugerido = 11; // Default Factura C
+
+                switch (condicion)
+                {
+                    case "Responsable Inscripto":
+                        condicionIVA = "RI";
+                        tipoComprobanteSugerido = 1; // Factura A
+                        break;
+                    case "Monotributista":
+                        condicionIVA = "MO";
+                        tipoComprobanteSugerido = 11; // Factura C
+                        break;
+                    case "Exento":
+                        condicionIVA = "EX";
+                        tipoComprobanteSugerido = 11; // Factura C
+                        break;
+                    case "Consumidor Final":
+                        condicionIVA = "CF";
+                        tipoComprobanteSugerido = 6; // Factura B
+                        break;
+                }
+
+                // Leer configuración del emisor
+                DataTable config = _negocio.ObtenerConfiguracion();
+                if (config.Rows.Count > 0)
+                {
+                    string condicionEmisor = config.Rows[0]["condicionIVA"].ToString().ToUpper();
+
+                    // Calcular tipo de comprobante según emisor y receptor
+                    tipoComprobanteSugerido = CalcularTipoComprobanteAutomatico(condicionEmisor, condicionIVA);
+
+                    // Seleccionar tipo de comprobante sugerido en el combo
+                    string tipoTexto = ObtenerTipoComprobanteTexto(tipoComprobanteSugerido);
+                    for (int i = 0; i < cboTipoComprobante.Items.Count; i++)
+                    {
+                        if (cboTipoComprobante.Items[i].ToString() == tipoTexto)
+                        {
+                            cboTipoComprobante.SelectedIndex = i;
+                            break;
+                        }
+                    }
+                }
+
+                MessageBox.Show($"CUIT de prueba cargado: {cuit}\nCondición: {condicion}\n" +
+                              $"Condición IVA: {condicionIVA}\nTipo sugerido: {ObtenerTipoComprobanteTexto(tipoComprobanteSugerido)}",
+                              "CUIT de Testeo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al cargar CUIT de prueba: " + ex.Message);
+            }
+        }
+
+        private int CalcularTipoComprobanteAutomatico(string condicionEmisor, string condicionReceptor)
+        {
+            // Monotributista: Siempre Factura C
+            if (condicionEmisor == "MONOTRIBUTISTA" || condicionEmisor == "MO" || condicionEmisor == "M")
+                return 11; // Factura C
+
+            // Exento: Siempre Factura C
+            if (condicionEmisor == "EXENTO" || condicionEmisor == "EX")
+                return 11; // Factura C
+
+            // Responsable Inscripto
+            if (condicionEmisor == "RESPONSABLE INSCRIPTO" || condicionEmisor == "RI")
+            {
+                // RI → RI: Factura A
+                if (condicionReceptor == "RI")
+                    return 1; // Factura A
+
+                // RI → Consumidor Final: Factura B
+                if (condicionReceptor == "CF")
+                    return 6; // Factura B;
+
+                // RI → Exento: Factura B
+                if (condicionReceptor == "EX")
+                    return 6; // Factura B
+
+                // RI → Monotributista: Factura C
+                if (condicionReceptor == "MO")
+                    return 11; // Factura C
+            }
+
+            // Default: Factura C
+            return 11;
+        }
+
+        private string ObtenerTipoComprobanteTexto(int tipoComprobante)
+        {
+            switch (tipoComprobante)
+            {
+                case 1: return "FACTURA A";
+                case 6: return "FACTURA B";
+                case 11: return "FACTURA C";
+                default: return "FACTURA C";
+            }
         }
 
         private void CargarEspecialidadesGenerales()
@@ -160,10 +294,46 @@ namespace CapaPresentacion
             bool esNcNd = cboTipoComprobante.SelectedIndex > 0;
             lblNroAsociadoLabel.Visible = esNcNd;
             txtNroAsociado.Visible      = esNcNd;
+
+            // Actualizar texto del tipo seleccionado
+            string tipo = cboTipoComprobante.SelectedItem?.ToString() ?? "FACTURA C";
+            string descripcion = ObtenerDescripcionTipoComprobante(tipo);
+            lblTipoValor.Text = $"{tipo}  —  {descripcion}";
+            lblTipoValor.Visible = true;
+        }
+
+        private string ObtenerDescripcionTipoComprobante(string tipo)
+        {
+            switch (tipo)
+            {
+                case "FACTURA A":
+                    return "Responsable Inscripto (discrimina IVA)";
+                case "FACTURA B":
+                    return "Consumidor Final (IVA contenido)";
+                case "FACTURA C":
+                    return "Monotributista (sin discriminar IVA)";
+                case "NOTA DE CREDITO A":
+                    return "NC Responsable Inscripto";
+                case "NOTA DE CREDITO B":
+                    return "NC Consumidor Final";
+                case "NOTA DE CREDITO C":
+                    return "NC Monotributista";
+                case "NOTA DE DEBITO A":
+                    return "ND Responsable Inscripto";
+                case "NOTA DE DEBITO B":
+                    return "ND Consumidor Final";
+                case "NOTA DE DEBITO C":
+                    return "ND Monotributista";
+                default:
+                    return "Comprobante electrónico";
+            }
         }
 
         private void rbConsumidorFinal_CheckedChanged(object sender, EventArgs e)
         {
+            // Si estamos cargando un CUIT de prueba, no limpiar los campos
+            if (_cargandoCuitPrueba) return;
+
             bool esCF = rbConsumidorFinal.Checked;
             txtCuitReceptor.Enabled = !esCF;
             if (esCF)
@@ -380,6 +550,23 @@ namespace CapaPresentacion
             // Medio de pago
             string medioPago = (cboMedioPago.SelectedItem as string) ?? "EFECTIVO";
 
+            // Condición IVA emisor: usar el combo seleccionado por el usuario
+            int condicionIvaEmisorId = 6; // Default: Monotributista
+            if (cboCondicionIvaEmisor.SelectedItem != null)
+            {
+                string condicion = cboCondicionIvaEmisor.SelectedItem.ToString().ToUpper();
+                if (condicion.Contains("INSCRIPTO") || condicion == "RI")
+                    condicionIvaEmisorId = 1; // Responsable Inscripto
+                else if (condicion.Contains("EXENTO") || condicion == "EX")
+                    condicionIvaEmisorId = 3; // Exento
+                else if (condicion.Contains("MONOTRIB"))
+                    condicionIvaEmisorId = 6; // Monotributista
+            }
+
+            // LOG: Ver valor que se envía desde el formulario
+            System.Diagnostics.Debug.WriteLine($"[FORMULARIO] condicionIvaEmisorId que se envía: {condicionIvaEmisorId}");
+            System.Diagnostics.Debug.WriteLine($"[FORMULARIO] Combo seleccionado: {cboCondicionIvaEmisor.SelectedItem?.ToString()}");
+
             btnEmitir.Enabled = false;
             btnEmitir.Text    = "Emitiendo...";
             Cursor = Cursors.WaitCursor;
@@ -389,7 +576,7 @@ namespace CapaPresentacion
                 var res = _negocio.EmitirFactura(
                     Guid.Empty, tipoComprobanteAFIP, cuit, nombre, condIVA, importe, alicuotaIVA, 2,
                     tipoTF, nroAsociado, medioPago,
-                    descArticulo, codArticulo);
+                    descArticulo, codArticulo, condicionIvaEmisorId);
 
                 panelResultado.Visible = true;
 
@@ -615,8 +802,25 @@ namespace CapaPresentacion
 
             try
             {
+                // Obtener condición IVA del combo seleccionado
+                string condicionIVA = "MO"; // Default: Monotributista
+                if (cboCondicionIvaEmisor.SelectedItem != null)
+                {
+                    string condicion = cboCondicionIvaEmisor.SelectedItem.ToString().ToUpper();
+                    if (condicion.Contains("INSCRIPTO") || condicion == "RI")
+                        condicionIVA = "RI"; // Responsable Inscripto
+                    else if (condicion.Contains("EXENTO") || condicion == "EX")
+                        condicionIVA = "EX"; // Exento
+                    else if (condicion.Contains("MONOTRIB"))
+                        condicionIVA = "MO"; // Monotributista
+                }
+
+                // LOG: Ver valor que se va a guardar
+                System.Diagnostics.Debug.WriteLine($"[GUARDAR_CONFIG] Condición IVA que se guardará: {condicionIVA}");
+                System.Diagnostics.Debug.WriteLine($"[GUARDAR_CONFIG] Combo seleccionado: {cboCondicionIvaEmisor.SelectedItem?.ToString()}");
+
                 var res = _negocio.GuardarConfiguracion(
-                    txtCuit.Text.Trim(), txtRazonSocial.Text.Trim(), "MO",
+                    txtCuit.Text.Trim(), txtRazonSocial.Text.Trim(), condicionIVA,
                     1, 'P', "", "", "");
 
                 if (res.Modo == 1)

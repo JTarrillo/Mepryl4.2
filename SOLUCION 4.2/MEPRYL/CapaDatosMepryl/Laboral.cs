@@ -634,6 +634,8 @@ namespace CapaDatosMepryl
 
         public DataTable cargarParametrosExamen(string idExamen, bool oliv)
         {
+            System.Diagnostics.Debug.WriteLine($"[LABORAL] cargarParametrosExamen - idExamen: {idExamen}, oliv: {oliv}");
+            
             DataTable retorno = new DataTable();
             retorno.Columns.Add("tipoExamen");
             retorno.Columns.Add("fecha");
@@ -730,12 +732,18 @@ namespace CapaDatosMepryl
             inner join dbo.Empresa emp on ete.idEmpresa = emp.id
             where el.id = '" + idExamen + "'");
 
+            if (consulta == null || consulta.Rows.Count == 0)
+            {
+                System.Diagnostics.Debug.WriteLine($"[LABORAL] cargarParametrosExamen - La consulta no devolvió resultados para idExamen: {idExamen}");
+                return retorno; // Retornar vacío si no hay resultados
+            }
+
             string nacionalidad = "";
             if (consulta.Rows[0].ItemArray[7].ToString() != "")
             {
                 DataTable nac = SQLConnector.obtenerTablaSegunConsultaString(@"select descripcion from dbo.Nacionalidad 
                 where id = '" + consulta.Rows[0].ItemArray[7].ToString() + "'");
-                if (nac.Rows.Count > 0) { nacionalidad = nac.Rows[0].ItemArray[0].ToString(); }
+                if (nac != null && nac.Rows.Count > 0) { nacionalidad = nac.Rows[0].ItemArray[0].ToString(); }
                 if (nacionalidad == "A DESIGNAR") { nacionalidad = ""; }
             }
 
@@ -744,7 +752,7 @@ namespace CapaDatosMepryl
             {
                 DataTable pres = SQLConnector.obtenerTablaSegunConsultaString(@"select pres from dbo.Prestaciones
                 where id = '" + consulta.Rows[0].ItemArray[9].ToString() + "'");
-                if (pres.Rows.Count > 0) { localidad = pres.Rows[0].ItemArray[0].ToString(); }
+                if (pres != null && pres.Rows.Count > 0) { localidad = pres.Rows[0].ItemArray[0].ToString(); }
                 if (localidad == "A DESIGNAR") { localidad = ""; }
             }
 
@@ -756,7 +764,7 @@ namespace CapaDatosMepryl
                 {
                     DataTable medicos = SQLConnector.obtenerTablaSegunConsultaString(@"select (apellido + ' ' + nombres), tipo, nroMatricula from
             Profesional where id = '" + consulta.Rows[0].ItemArray[40].ToString() + "'");
-                    if (medicos.Rows.Count > 0)
+                    if (medicos != null && medicos.Rows.Count > 0)
                     {
                         medico = medicos.Rows[0].ItemArray[1].ToString() + " " + medicos.Rows[0].ItemArray[0].ToString()
                             + " M.N: " + medicos.Rows[0].ItemArray[2].ToString();

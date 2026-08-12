@@ -43,6 +43,7 @@ namespace CapaPresentacion
         private string strDirectorioInfRadiologico = "";
         private string strDirectorioRX = "";
         private string strDirectorioConsolidar = "";
+        private string strDirectorioConsolidarAlternativo = ""; // Segunda ruta de consolidación sin fechas
         private string strDirectorioEspirometria = "";
         private string strDirectorioEEG = "";
         private string strDirectorioEcodoppler = "";
@@ -772,6 +773,13 @@ namespace CapaPresentacion
             string strDNI = r.Cells[8].Value.ToString();
             string strIdTipoExamenDePaciente = r.Cells[20].Value.ToString();
 
+            // Validar que el idExamenLaboral no esté vacío o sea un GUID vacío
+            if (string.IsNullOrWhiteSpace(strIdExamenLaboral) || strIdExamenLaboral == "00000000-0000-0000-0000-000000000000")
+            {
+                System.Diagnostics.Debug.WriteLine($"[EXPORTAR] Fila saltada - idExamenLaboral vacío o inválido: '{strIdExamenLaboral}'");
+                return; // Saltar esta fila y continuar con la siguiente
+            }
+
             string strNombreArchivo = "";
             string strNombreArchivoEspirometria = "";
 
@@ -1279,6 +1287,8 @@ namespace CapaPresentacion
                     strDirectorioPsicotecnico = r.ItemArray[8].ToString();
                     strDirectorioErgometria = r.ItemArray[9].ToString();
                     strDirectorioConsolidar = r.ItemArray[10].ToString();
+                    // Ruta alternativa de consolidación sin estructura de fechas
+                    strDirectorioConsolidarAlternativo = r.ItemArray[10].ToString() + "\\BOLSA DE GATOS";
                 }
             }
         }
@@ -1455,6 +1465,24 @@ namespace CapaPresentacion
                         //else
                         //strError = UtilMepryl.ConcatenarPDFsLaboral(dtArchivosPDF, strDirecConsolTemp + "CLINICA", ListaArchivosPdf);
                         strError = UtilMepryl.ConcatenarPDFsLaboral(dtArchivosPDF, strDirecConsolTemp, ListaArchivosPdf);
+
+                        // Consolidar también en ruta alternativa sin fechas
+                        string strDirecConsolAlternativo = strDirectorioConsolidarAlternativo + "\\";
+                        try
+                        {
+                            // Crear directorio si no existe
+                            if (!System.IO.Directory.Exists(strDirecConsolAlternativo))
+                                System.IO.Directory.CreateDirectory(strDirecConsolAlternativo);
+
+                            // Consolidar en ruta alternativa (usando los mismos archivos)
+                            string strErrorAlternativo = UtilMepryl.ConcatenarPDFsLaboral(dtArchivosPDF, strDirecConsolAlternativo, ListaArchivosPdf);
+                        }
+                        catch (Exception ex)
+                        {
+                            // Si falla la consolidación alternativa, no interrumpir el proceso principal
+                            System.Diagnostics.Debug.WriteLine("Error al consolidar en ruta alternativa: " + ex.Message);
+                        }
+
                         ListaArchivosPdf.Clear();
                         //---
                         //VerificaEstudiosComplementarios(r, r.ItemArray[1].ToString(), r.ItemArray[2].ToString());

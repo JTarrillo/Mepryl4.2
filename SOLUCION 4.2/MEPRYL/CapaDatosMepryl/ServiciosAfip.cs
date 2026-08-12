@@ -56,6 +56,7 @@ namespace CapaDatosMepryl
         /// </summary>
         /// <param name="tipoComprobanteAFIP">1 = Factura A, 6 = Factura B, 11 = Factura C</param>
         /// <param name="medioPago">EFECTIVO | TARJETA_CREDITO | TARJETA_DEBITO | TRANSFERENCIA</param>
+        /// <param name="condicionIvaEmisorId">Condición IVA del emisor para simulación (1=RI, 4=MO, 3=EX)</param>
         public RespuestaCAE EmitirFacturaC(
             string descripcion,
             decimal importeTotal,
@@ -65,10 +66,14 @@ namespace CapaDatosMepryl
             long nroComprobanteAsociado = 0,
             string medioPago = "EFECTIVO",
             string codArticulo = "",
-            int tipoComprobanteAFIP = 11)
+            int tipoComprobanteAFIP = 11,
+            int condicionIvaEmisorId = 6) // Default: Monotributista
         {
             try
             {
+                // LOG: Ver valor recibido en ServiciosAfip
+                System.Diagnostics.Debug.WriteLine($"[SERVICIOS_AFIP] condicionIvaEmisorId recibido: {condicionIvaEmisorId}");
+
                 // Usar el tipo de comprobante recibido como parámetro
 
                 // Determinar tipo de documento y condición IVA según tipo de comprobante
@@ -202,6 +207,7 @@ namespace CapaDatosMepryl
   ""docTipo"": {docTipo},
   ""docNro"": {docNro},
   ""condicionIvaReceptorId"": {condicionIvaReceptorId},
+  ""condicionIvaEmisorId"": {condicionIvaEmisorId},
   ""cbteFch"": ""{DateTime.Today:yyyyMMdd}"",
   ""monedaId"": ""PES"",
   ""monedaCotiz"": 1,

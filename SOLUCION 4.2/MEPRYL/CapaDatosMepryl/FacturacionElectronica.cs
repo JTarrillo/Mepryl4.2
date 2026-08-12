@@ -67,12 +67,18 @@ namespace CapaDatosMepryl
             var resultado = new Entidades.Resultado();
             try
             {
+                // LOG: Ver valor recibido en capa de datos
+                System.Diagnostics.Debug.WriteLine($"[DATOS_GUARDAR] condicionIVA recibido: {condicionIVA}");
+
                 string cuitSafe   = cuitEmisor.Replace("'", "''").Trim();
                 string razonSafe  = razonSocial.Replace("'", "''").Trim();
                 string condSafe   = condicionIVA.Replace("'", "''").Trim();
                 string domSafe    = domicilio.Replace("'", "''").Trim();
                 string rutaSafe   = rutaCertificado.Replace("'", "''").Trim();
                 string passSafe   = passwordCert.Replace("'", "''").Trim();
+
+                // LOG: Ver valor que se va a guardar en SQL
+                System.Diagnostics.Debug.WriteLine($"[DATOS_GUARDAR] condSafe que se guardará en SQL: {condSafe}");
 
                 // MERGE: insert si no existe, update si existe
                 string sql = $@"
@@ -156,6 +162,43 @@ namespace CapaDatosMepryl
             decimal importeNeto, decimal importeIVA, decimal importeTotal,
             int concepto, string observaciones,
             string tipoTF = "FACTURA C")
+        {
+            Guid nuevoId = Guid.NewGuid();
+
+            string cuitSafe   = cuitReceptor.Replace("'", "''");
+            string nombreSafe = nombreReceptor.Replace("'", "''");
+            string condSafe   = condicionIVAReceptor.Replace("'", "''");
+            string obsSafe    = (observaciones ?? "").Replace("'", "''");
+            string tipoTFSafe = (tipoTF ?? "FACTURA C").Replace("'", "''");
+
+            // Si no hay turno asociado (emisión manual en ventanilla), guardar NULL
+            string idTurnoSql = (idTurno == Guid.Empty) ? "NULL" : $"'{idTurno}'";
+
+            string sql = $@"
+                INSERT INTO dbo.FacturaElectronica
+                    (id, idTurno, tipoComprobante, puntoVenta, nroComprobante,
+                     cuitReceptor, nombreReceptor, condicionIVAReceptor,
+                     importeNeto, importeIVA, importeTotal,
+                     concepto, estado, observaciones, tipoTF, fechaEmision, fechaCreacion)
+                VALUES
+                    ('{nuevoId}', {idTurnoSql}, {tipoComprobante}, {puntoVenta}, {nroComprobante},
+                     '{cuitSafe}', '{nombreSafe}', '{condSafe}',
+                     {importeNeto.ToString(System.Globalization.CultureInfo.InvariantCulture)},
+                     {importeIVA.ToString(System.Globalization.CultureInfo.InvariantCulture)},
+                     {importeTotal.ToString(System.Globalization.CultureInfo.InvariantCulture)},
+                     {concepto}, 'Pendiente', '{obsSafe}', '{tipoTFSafe}', GETDATE(), GETDATE())";
+
+            SQLConnector.EjecutarConsulta(sql);
+            return nuevoId;
+        }
+
+        /// <summary>Inserta un comprobante nuevo con condición IVA emisor para simulación.</summary>
+        public Guid InsertarComprobante(
+            Guid idTurno, int tipoComprobante, int puntoVenta, long nroComprobante,
+            string cuitReceptor, string nombreReceptor, string condicionIVAReceptor,
+            decimal importeNeto, decimal importeIVA, decimal importeTotal,
+            int concepto, string observaciones,
+            string tipoTF, int condicionIvaEmisorId)
         {
             Guid nuevoId = Guid.NewGuid();
 
