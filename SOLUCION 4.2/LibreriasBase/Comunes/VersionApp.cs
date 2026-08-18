@@ -10,6 +10,6 @@ namespace Comunes
         /// <summary>
         /// Versión actual instalada de MEPRYL
         /// </summary>
-        public const string VERSION = "6.1.1";
+        public const string VERSION = "6.1.2";
     }
 }

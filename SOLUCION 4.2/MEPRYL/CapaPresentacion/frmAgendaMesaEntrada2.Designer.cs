@@ -511,6 +511,7 @@
             this.dgvGrilla.Name = "dgvGrilla";
             this.dgvGrilla.ReadOnly = true;
             this.dgvGrilla.RowHeadersWidth = 25;
+            this.dgvGrilla.ScrollBars = System.Windows.Forms.ScrollBars.Both; // Habilitar scroll horizontal y vertical
             dataGridViewCellStyle4.BackColor = System.Drawing.Color.WhiteSmoke;
             dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             dataGridViewCellStyle4.ForeColor = System.Drawing.Color.Black;
