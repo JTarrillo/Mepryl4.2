@@ -799,7 +799,29 @@ namespace CapaPresentacion
                 string idSubtipoLab = dgv.Rows[dgv.CurrentCell.RowIndex].Cells["IdSubtipo"].Value?.ToString() ?? "";
                 if (!string.IsNullOrEmpty(idSubtipoLab) && idSubtipoLab != Guid.Empty.ToString())
                 {
-                    DataTable ppLab = turno.ObtenerPrecioPromo(new Guid(idSubtipoLab), obtenerFecha());
+                    DataTable ppLab;
+                    
+                    // Verificar si la empresa es PARTICULARES
+                    string razonSocialEmpresa = ObtenerRazonSocialEmpresa(pacienteLaboral.IdEmpresa.ToString());
+                    bool esParticulares = razonSocialEmpresa.ToUpper().Contains("PARTICULAR");
+                    
+                    if (esParticulares)
+                    {
+                        // Usar PrecioPromo/PrecioPublico generales
+                        ppLab = turno.ObtenerPrecioPromo(new Guid(idSubtipoLab), obtenerFecha());
+                    }
+                    else
+                    {
+                        // Usar PrecioEmpresa (mismo precio para todas las empresas)
+                        ppLab = turno.ObtenerPrecioEmpresa(new Guid(idSubtipoLab), obtenerFecha());
+                        
+                        // Si no hay precio específico, fallback a PrecioPromo general
+                        if (ppLab.Rows.Count == 0)
+                        {
+                            ppLab = turno.ObtenerPrecioPromo(new Guid(idSubtipoLab), obtenerFecha());
+                        }
+                    }
+                    
                     if (ppLab.Rows.Count > 0 && Convert.ToDouble(ppLab.Rows[0]["PrecioLista"].ToString()) > 0)
                         pacienteLaboral.TipoExamen.PrecioLista = Convert.ToDouble(ppLab.Rows[0]["PrecioLista"].ToString());
                 }
@@ -1021,6 +1043,25 @@ namespace CapaPresentacion
             }
         }
 
+        private string ObtenerRazonSocialEmpresa(string idEmpresa)
+        {
+            string razonSocial = "";
+            try
+            {
+                CapaNegocioMepryl.Empresa empresaNegocio = new CapaNegocioMepryl.Empresa();
+                Entidades.Empresa empresaEntidad = empresaNegocio.cargarDatos(idEmpresa);
+                if (empresaEntidad != null)
+                {
+                    razonSocial = empresaEntidad.RazonSocial;
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[TURNOS] Error al obtener razonSocial: {ex.Message}");
+            }
+            return razonSocial;
+        }
+
         private void asignarPacienteLaboral(string idPaciente, string idEmpresa)
         {
             panelPacientePreventiva.Visible = false;
@@ -1034,7 +1075,29 @@ namespace CapaPresentacion
             string idSubtipoAsigLab = dgv.Rows[dgv.CurrentCell.RowIndex].Cells["IdSubtipo"].Value?.ToString() ?? "";
             if (!string.IsNullOrEmpty(idSubtipoAsigLab))
             {
-                DataTable ppAsigLab = turno.ObtenerPrecioPromo(new Guid(idSubtipoAsigLab), fechaTurno);
+                DataTable ppAsigLab;
+                
+                // Verificar si la empresa es PARTICULARES
+                string razonSocialEmpresa = ObtenerRazonSocialEmpresa(idEmpresa);
+                bool esParticulares = razonSocialEmpresa.ToUpper().Contains("PARTICULAR");
+                
+                if (esParticulares)
+                {
+                    // Usar PrecioPromo/PrecioPublico generales
+                    ppAsigLab = turno.ObtenerPrecioPromo(new Guid(idSubtipoAsigLab), fechaTurno);
+                }
+                else
+                {
+                    // Usar PrecioEmpresa (mismo precio para todas las empresas)
+                    ppAsigLab = turno.ObtenerPrecioEmpresa(new Guid(idSubtipoAsigLab), fechaTurno);
+                    
+                    // Si no hay precio específico, fallback a PrecioPromo general
+                    if (ppAsigLab.Rows.Count == 0)
+                    {
+                        ppAsigLab = turno.ObtenerPrecioPromo(new Guid(idSubtipoAsigLab), fechaTurno);
+                    }
+                }
+                
                 if (ppAsigLab.Rows.Count > 0)
                 {
                     pacienteLaboral.TipoExamen.PrecioBase = Convert.ToDouble(ppAsigLab.Rows[0]["PrecioPromo"].ToString());

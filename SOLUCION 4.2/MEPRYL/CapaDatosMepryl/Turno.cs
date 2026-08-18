@@ -1710,6 +1710,29 @@ namespace CapaDatosMepryl
             return dt;
         }
 
+        public DataTable ObtenerPrecioEmpresa(Guid idEspecialidad, DateTime fecha)
+        {
+            DataTable dt = SQLConnector.obtenerTablaSegunConsultaString(
+                "SELECT pe.PrecioPromo, pe.PrecioLista, " +
+                "ISNULL(pe.Seña, 0) AS Seña, " +
+                "ISNULL(pe.LlevaPlanilla, 0) AS LlevaPlanilla, " +
+                "ISNULL(pe.ObservacionesExtra, '') AS ObservacionesExtra " +
+                "FROM dbo.PrecioEmpresa pe " +
+                "WHERE pe.idEspecialidad = '" + idEspecialidad.ToString() +
+                "' AND pe.Mes = " + fecha.Month + " AND pe.Anio = " + fecha.Year + " AND pe.Eliminado = 0");
+
+            if (dt.Rows.Count > 0 && dt.Columns.Contains("Seña") && dt.Columns.Contains("PrecioPromo"))
+            {
+                decimal precioPromo = 0m;
+                decimal senaConfigurada = 0m;
+                decimal.TryParse(dt.Rows[0]["PrecioPromo"].ToString(), out precioPromo);
+                decimal.TryParse(dt.Rows[0]["Seña"].ToString(), out senaConfigurada);
+                dt.Rows[0]["Seña"] = CalcularSenaAutomatica(idEspecialidad, precioPromo, senaConfigurada);
+            }
+
+            return dt;
+        }
+
         private decimal CalcularSenaAutomatica(Guid idEspecialidad, decimal precioPromo, decimal senaConfigurada)
         {
             if (precioPromo <= 0)

@@ -212,6 +212,11 @@ namespace CapaNegocioMepryl
             return turno.ObtenerPrecioPromo(idEspecialidad, fecha);
         }
 
+        public DataTable ObtenerPrecioEmpresa(Guid idEspecialidad, DateTime fecha)
+        {
+            return turno.ObtenerPrecioEmpresa(idEspecialidad, fecha);
+        }
+
         public void ActualizarPrecioListaTipoExamenPaciente(Guid idTipoExamenPaciente, double precioLista)
         {
             turno.ActualizarPrecioListaTipoExamenPaciente(idTipoExamenPaciente, precioLista);
