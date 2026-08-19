@@ -113,61 +113,61 @@ namespace CapaPresentacion
             {
                 // FechaNaci antes de ObservacTurno
                 dgvGrilla.Columns[16].DisplayIndex = 13; // FechaNaci antes de ObservacTurno
-                
+
                 // ObservacTurno y ObservacMesaEntrada en orden correcto
                 dgvGrilla.Columns[13].DisplayIndex = 14; // ObservacTurno
                 dgvGrilla.Columns[14].DisplayIndex = 15; // ObservacMesaEntrada después de ObservacTurno
-                
+
                 // Nat y Continua después de ObservacMesaEntrada
                 dgvGrilla.Columns[28].DisplayIndex = 16; // Nat después de ObservacMesaEntrada
                 dgvGrilla.Columns[28].Width = 55; // Ancho suficiente para título y checkbox
-                dgvGrilla.Columns[28].HeaderText = "NAT"; // Nombre de columna Nat
+                dgvGrilla.Columns[28].HeaderText = "Nat"; // Nombre de columna Nat
                 dgvGrilla.Columns[28].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; // Centrar Nat
                 dgvGrilla.Columns[29].DisplayIndex = 17; // Continua después de Nat
                 dgvGrilla.Columns[29].Width = 55; // Ancho suficiente para título y checkbox
-                dgvGrilla.Columns[29].HeaderText = "CONT."; // Nombre de columna Continua
-                
+                dgvGrilla.Columns[29].HeaderText = "Cont."; // Nombre de columna Continua
+
                 // Nuevas columnas: Audio, EEG, Odon, Ergo, Psico (solo configurar ancho/alineación, no mover orden)
                 if (dgvGrilla.Columns.Contains("Audio"))
                 {
                     dgvGrilla.Columns["Audio"].Width = 55; // Ancho suficiente para título y checkbox
-                    dgvGrilla.Columns["Audio"].HeaderText = "AUDIO";
+                    dgvGrilla.Columns["Audio"].HeaderText = "Audio";
                     dgvGrilla.Columns["Audio"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
                 }
                 if (dgvGrilla.Columns.Contains("EEG"))
                 {
                     dgvGrilla.Columns["EEG"].Width = 55; // Ancho suficiente para título y checkbox
-                    dgvGrilla.Columns["EEG"].HeaderText = "EEG";
+                    dgvGrilla.Columns["EEG"].HeaderText = "Eeg";
                     dgvGrilla.Columns["EEG"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
                 }
                 if (dgvGrilla.Columns.Contains("Odon"))
                 {
                     dgvGrilla.Columns["Odon"].Width = 55; // Ancho suficiente para título y checkbox
-                    dgvGrilla.Columns["Odon"].HeaderText = "ODON";
+                    dgvGrilla.Columns["Odon"].HeaderText = "Odon";
                     dgvGrilla.Columns["Odon"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
                 }
                 if (dgvGrilla.Columns.Contains("Ergo"))
                 {
                     dgvGrilla.Columns["Ergo"].Width = 55; // Ancho suficiente para título y checkbox
-                    dgvGrilla.Columns["Ergo"].HeaderText = "ERGO";
+                    dgvGrilla.Columns["Ergo"].HeaderText = "Ergo";
                     dgvGrilla.Columns["Ergo"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
                 }
                 if (dgvGrilla.Columns.Contains("Psico"))
                 {
                     dgvGrilla.Columns["Psico"].Width = 55; // Ancho suficiente para título y checkbox
-                    dgvGrilla.Columns["Psico"].HeaderText = "PSICO";
+                    dgvGrilla.Columns["Psico"].HeaderText = "Psico";
                     dgvGrilla.Columns["Psico"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
                 }
-                
+
                 // Salida penúltima (antes de HoraSalida)
                 dgvGrilla.Columns[35].DisplayIndex = 35; // Salida penúltima
                 dgvGrilla.Columns[35].Width = 55; // Ancho suficiente para título y checkbox
-                dgvGrilla.Columns[35].HeaderText = "SALIDA";
+                dgvGrilla.Columns[35].HeaderText = "Salida";
                 dgvGrilla.Columns[35].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                
+
                 // RM después de Continua
                 dgvGrilla.Columns[15].DisplayIndex = 18; // RM después de Continua
-                
+
                 // HoraSalida al final
                 dgvGrilla.Columns[36].DisplayIndex = 36; // HoraSalida al final
                 dgvGrilla.Columns[36].Width = 60; // Ancho de columna HoraSalida
@@ -175,11 +175,11 @@ namespace CapaPresentacion
                 dgvGrilla.Columns[36].HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter; // Centrar encabezado
                 dgvGrilla.Columns[36].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; // Centrar contenido
                 dgvGrilla.Columns[36].ReadOnly = true; // HoraSalida read-only para evitar acciones al hacer click
-                
+
                 // Color de selección RGB(0, 120, 212) - #0078D4 (azul Windows)
                 dgvGrilla.DefaultCellStyle.SelectionBackColor = Color.FromArgb(0, 120, 212);
                 dgvGrilla.DefaultCellStyle.SelectionForeColor = Color.White;
-                
+
                 // Configurar modo de ajuste automático para columnas de texto
                 // Las columnas de checkboxes mantienen ancho fijo, las de texto pueden expandirse
                 dgvGrilla.Columns[8].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill; // Subtipo de Examen
@@ -188,7 +188,7 @@ namespace CapaPresentacion
                 dgvGrilla.Columns[13].MinimumWidth = 150; // Ancho mínimo
                 dgvGrilla.Columns[14].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill; // Obs. Mesa Entrada
                 dgvGrilla.Columns[14].MinimumWidth = 150; // Ancho mínimo
-                
+
                 columnasConfiguradas = true; // Marcar que las columnas ya están configuradas
             }
 
@@ -207,7 +207,7 @@ namespace CapaPresentacion
                 }
             }
         }
-        
+
         public void cargarGrilla()
         {
             primeraVez = true;
@@ -227,9 +227,9 @@ namespace CapaPresentacion
             //{
             //    //
             //}
-            
+
             this.ActiveControl = dgvGrilla;
-            
+
         }
 
         public void CargarGrillaEmpresaClub()
@@ -245,11 +245,12 @@ namespace CapaPresentacion
             DataTable retorno = new DataTable();
             if (isNumeric)
             {
-                
+
                 retorno.Columns.Add("Liga");
                 retorno.Columns.Add("Club");
-            }else
-            {                
+            }
+            else
+            {
                 retorno.Columns.Add("Empresa");
                 retorno.Columns.Add("Tarea");
             }
@@ -308,12 +309,12 @@ namespace CapaPresentacion
                         txtNombre.Text = dgvGrilla.Rows[intFilaSelecc].Cells[12].Value.ToString();
                         txtFechaNacimiento.Text = dgvGrilla.Rows[intFilaSelecc].Cells[16].Value.ToString();
                         txtEdad.Text = CalcularEdad(txtFechaNacimiento.Text) + " Años";
-                                               
+
                         //CargarGrillaEmpresaClub();
                         lblNroOrdenDato.Text = dgvGrilla.Rows[intFilaSelecc].Cells[6].Value.ToString();
                         lblNroExamenDato.Text = dgvGrilla.Rows[intFilaSelecc].Cells[9].Value.ToString();
                         dgvInformacionPaciente.DataSource = CargarEmpresaClub01(lblNroExamenDato.Text, dgvGrilla.Rows[intFilaSelecc].Cells[22].Value.ToString(), dgvGrilla.Rows[intFilaSelecc].Cells[23].Value.ToString());
-                        
+
                         tbClinico.Text = dgvGrilla.Rows[intFilaSelecc].Cells[18].Value.ToString();
                         tbLaboratorio.Text = dgvGrilla.Rows[intFilaSelecc].Cells[19].Value.ToString();
                         tbRx.Text = dgvGrilla.Rows[intFilaSelecc].Cells[20].Value.ToString();
@@ -332,7 +333,8 @@ namespace CapaPresentacion
                             {
                                 chkRevisado.Image = Image.FromFile("P:\\img-system\\mCheck02_45x45.png");
                             }
-                        }catch(System.IO.FileNotFoundException ex)
+                        }
+                        catch (System.IO.FileNotFoundException ex)
                         {
                             chkRevisado.Image = null;
                         }
@@ -355,13 +357,14 @@ namespace CapaPresentacion
                         }
                     }
                 }
-            }catch (System.NullReferenceException ex)
+            }
+            catch (System.NullReferenceException ex)
             {
                 //
             }
-        
+
         }
-        
+
         private void colorearFila(DataGridViewRow row)
         {
             Color color = Color.White;
@@ -400,7 +403,7 @@ namespace CapaPresentacion
                     strResultado = (DateTime.Today.AddTicks(-dtNacimiento.Ticks).Year - 1).ToString();
                 else
                 {
-                    MessageBox.Show("Fecha de nacimiento no puede ser mayor a la fecha de hoy", "Laboral", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);                    
+                    MessageBox.Show("Fecha de nacimiento no puede ser mayor a la fecha de hoy", "Laboral", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 }
 
             }
@@ -415,7 +418,7 @@ namespace CapaPresentacion
         private void timerActualiza_Tick(object sender, EventArgs e)
         {
             System.Diagnostics.Debug.WriteLine($"[AGENDA] Timer disparado - scrollHorizontalConfigurado: {scrollHorizontalConfigurado}");
-            
+
             // Si el usuario está interactuando, no recargar
             if (_usuarioInteractuando)
             {
@@ -461,7 +464,7 @@ namespace CapaPresentacion
 
                 // Restaurar scroll horizontal solo si el usuario no lo ha movido manualmente
                 System.Diagnostics.Debug.WriteLine($"[AGENDA] Verificando scroll horizontal - Bandera: {scrollHorizontalConfigurado}, currentScrollHorizontal: {currentScrollHorizontal}");
-                
+
                 if (!scrollHorizontalConfigurado)
                 {
                     if (currentScrollHorizontal >= 0 && currentScrollHorizontal < dgvGrilla.Columns.Count)
@@ -532,17 +535,17 @@ namespace CapaPresentacion
 
         void ActualizaTimer()
         {
-            
+
             while (true)
             {
                 CargarDatos();
                 SeleccinarFilaTurno();
                 System.Threading.Thread.Sleep(5000);
             }
-            
+
         }
 
-        
+
 
         private void RefrescaRegistro()
         {
@@ -554,7 +557,7 @@ namespace CapaPresentacion
             if (dgvGrilla.Rows.Count > 0)
             {
 
-                dgvGrilla.Columns[0].Visible = false;                
+                dgvGrilla.Columns[0].Visible = false;
                 dgvGrilla.Columns[1].Visible = false;
                 dgvGrilla.Columns[2].Visible = false;
                 dgvGrilla.Columns[3].Visible = false;
@@ -635,7 +638,7 @@ namespace CapaPresentacion
                 //{
                 //    colorearFila(dgvR);
                 //}
-                
+
             }
         }
 
@@ -643,7 +646,7 @@ namespace CapaPresentacion
         {
             System.Diagnostics.Debug.WriteLine($"[PINTAR] ========== PintarFilaGrilla INICIO ==========");
             System.Diagnostics.Debug.WriteLine($"[PINTAR] Filas totales: {dgvGrilla.Rows.Count}");
-            
+
             if (dgvGrilla.Rows.Count > 0)
             {
                 for (int i = 0; i < dgvGrilla.Rows.Count; i++)
@@ -666,7 +669,7 @@ namespace CapaPresentacion
                         System.Diagnostics.Debug.WriteLine($"[PINTAR] Fila {i}: APTO={chkRevisadoOn}, NAT={natOn}, CONTINUA={continuaOn}, SALIDA={salidaOn}");
 
                         // Nuevas reglas del doctor:
-                        
+
                         // Regla 1: NAT y CONTINUA marcados → Naranja (prioridad máxima)
                         if (natOn && continuaOn)
                         {
@@ -723,14 +726,14 @@ namespace CapaPresentacion
                     }
                 }
             }
-            
+
             System.Diagnostics.Debug.WriteLine($"[PINTAR] ========== PintarFilaGrilla FIN ==========");
         }
 
         private void PintarFilaEspecifica(int rowIndex)
         {
             if (rowIndex < 0 || rowIndex >= dgvGrilla.Rows.Count) return;
-            
+
             try
             {
                 // Obtener valores de los checkboxes
@@ -745,7 +748,7 @@ namespace CapaPresentacion
                 bool salidaOn = salidaVal != null && salidaVal != DBNull.Value && Convert.ToBoolean(salidaVal);
 
                 // Nuevas reglas del doctor:
-                
+
                 // Regla 1: NAT y CONTINUA marcados → Naranja (prioridad máxima)
                 if (natOn && continuaOn)
                 {
@@ -786,7 +789,7 @@ namespace CapaPresentacion
                 {
                     dgvGrilla.Rows[rowIndex].DefaultCellStyle.BackColor = Color.White;
                 }
-                
+
                 // Actualizar inmediatamente sin SuspendLayout/ResumeLayout para respuesta más rápida
                 dgvGrilla.InvalidateRow(rowIndex);
                 dgvGrilla.Refresh();
@@ -837,7 +840,7 @@ namespace CapaPresentacion
 
                 // Guardar el estado en base de datos
                 mesaEntrada.guardarEstadoCheckbox(idTipoExamen, e.ColumnIndex, nuevoEstado);
-                
+
                 // Si es Salida (columna 35), actualizar HoraSalida en tiempo real
                 if (e.ColumnIndex == 35)
                 {
@@ -852,7 +855,7 @@ namespace CapaPresentacion
                         dgvGrilla.Rows[e.RowIndex].Cells[36].Value = string.Empty;
                     }
                 }
-                
+
                 // Actualizar coloreo en tiempo real cuando cambia Nat o Continua
                 // Solo repintar la fila específica para evitar reseteo visual de toda la grilla
                 PintarFilaEspecifica(e.RowIndex);
@@ -877,7 +880,7 @@ namespace CapaPresentacion
             if (dgvGrilla.Columns.Count > 36)
             {
                 System.Diagnostics.Debug.WriteLine($"[HORA_SALIDA_GRILLA] Columna 36 (HoraSalida) existe: {dgvGrilla.Columns[36].Name}");
-                
+
                 for (int i = 0; i < Math.Min(5, dgvGrilla.Rows.Count); i++)
                 {
                     var horaSalidaValue = dgvGrilla.Rows[i].Cells[36].Value;
@@ -894,61 +897,61 @@ namespace CapaPresentacion
             {
                 // FechaNaci antes de ObservacTurno
                 dgvGrilla.Columns[16].DisplayIndex = 13; // FechaNaci antes de ObservacTurno
-                
+
                 // ObservacTurno y ObservacMesaEntrada en orden correcto
                 dgvGrilla.Columns[13].DisplayIndex = 14; // ObservacTurno
                 dgvGrilla.Columns[14].DisplayIndex = 15; // ObservacMesaEntrada después de ObservacTurno
-                
+
                 // Nat y Continua después de ObservacMesaEntrada
                 dgvGrilla.Columns[28].DisplayIndex = 16; // Nat después de ObservacMesaEntrada
                 dgvGrilla.Columns[28].Width = 55; // Ancho suficiente para título y checkbox
-                dgvGrilla.Columns[28].HeaderText = "NAT"; // Nombre de columna Nat
+                dgvGrilla.Columns[28].HeaderText = "Nat"; // Nombre de columna Nat
                 dgvGrilla.Columns[28].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; // Centrar Nat
                 dgvGrilla.Columns[29].DisplayIndex = 17; // Continua después de Nat
                 dgvGrilla.Columns[29].Width = 55; // Ancho suficiente para título y checkbox
-                dgvGrilla.Columns[29].HeaderText = "CONT."; // Nombre de columna Continua
-                
+                dgvGrilla.Columns[29].HeaderText = "Cont."; // Nombre de columna Continua
+
                 // Nuevas columnas: Audio, EEG, Odon, Ergo, Psico (solo configurar ancho/alineación, no mover orden)
                 if (dgvGrilla.Columns.Contains("Audio"))
                 {
                     dgvGrilla.Columns["Audio"].Width = 55; // Ancho suficiente para título y checkbox
-                    dgvGrilla.Columns["Audio"].HeaderText = "AUDIO";
+                    dgvGrilla.Columns["Audio"].HeaderText = "Audio";
                     dgvGrilla.Columns["Audio"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
                 }
                 if (dgvGrilla.Columns.Contains("EEG"))
                 {
                     dgvGrilla.Columns["EEG"].Width = 55; // Ancho suficiente para título y checkbox
-                    dgvGrilla.Columns["EEG"].HeaderText = "EEG";
+                    dgvGrilla.Columns["EEG"].HeaderText = "Eeg";
                     dgvGrilla.Columns["EEG"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
                 }
                 if (dgvGrilla.Columns.Contains("Odon"))
                 {
                     dgvGrilla.Columns["Odon"].Width = 55; // Ancho suficiente para título y checkbox
-                    dgvGrilla.Columns["Odon"].HeaderText = "ODON";
+                    dgvGrilla.Columns["Odon"].HeaderText = "Odon";
                     dgvGrilla.Columns["Odon"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
                 }
                 if (dgvGrilla.Columns.Contains("Ergo"))
                 {
                     dgvGrilla.Columns["Ergo"].Width = 55; // Ancho suficiente para título y checkbox
-                    dgvGrilla.Columns["Ergo"].HeaderText = "ERGO";
+                    dgvGrilla.Columns["Ergo"].HeaderText = "Ergo";
                     dgvGrilla.Columns["Ergo"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
                 }
                 if (dgvGrilla.Columns.Contains("Psico"))
                 {
                     dgvGrilla.Columns["Psico"].Width = 55; // Ancho suficiente para título y checkbox
-                    dgvGrilla.Columns["Psico"].HeaderText = "PSICO";
+                    dgvGrilla.Columns["Psico"].HeaderText = "Psico";
                     dgvGrilla.Columns["Psico"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
                 }
-                
+
                 // Salida penúltima (antes de HoraSalida)
                 dgvGrilla.Columns[35].DisplayIndex = 35; // Salida penúltima
                 dgvGrilla.Columns[35].Width = 55; // Ancho suficiente para título y checkbox
-                dgvGrilla.Columns[35].HeaderText = "SALIDA";
+                dgvGrilla.Columns[35].HeaderText = "Salida";
                 dgvGrilla.Columns[35].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                
+
                 // RM después de Continua
                 dgvGrilla.Columns[15].DisplayIndex = 18; // RM después de Continua
-                
+
                 // HoraSalida al final
                 dgvGrilla.Columns[36].DisplayIndex = 36; // HoraSalida al final
                 dgvGrilla.Columns[36].Width = 60; // Ancho de columna HoraSalida
@@ -956,11 +959,11 @@ namespace CapaPresentacion
                 dgvGrilla.Columns[36].HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter; // Centrar encabezado
                 dgvGrilla.Columns[36].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; // Centrar contenido
                 dgvGrilla.Columns[36].ReadOnly = true; // HoraSalida read-only para evitar acciones al hacer click
-                
+
                 // Color de selección RGB(0, 120, 212) - #0078D4 (azul Windows)
                 dgvGrilla.DefaultCellStyle.SelectionBackColor = Color.FromArgb(0, 120, 212);
                 dgvGrilla.DefaultCellStyle.SelectionForeColor = Color.White;
-                
+
                 // Configurar modo de ajuste automático para columnas de texto
                 // Las columnas de checkboxes mantienen ancho fijo, las de texto pueden expandirse
                 dgvGrilla.Columns[8].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill; // Subtipo de Examen
@@ -969,7 +972,7 @@ namespace CapaPresentacion
                 dgvGrilla.Columns[13].MinimumWidth = 150; // Ancho mínimo
                 dgvGrilla.Columns[14].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill; // Obs. Mesa Entrada
                 dgvGrilla.Columns[14].MinimumWidth = 150; // Ancho mínimo
-                
+
                 columnasConfiguradas = true; // Marcar que las columnas ya están configuradas
             }
         }
@@ -1024,7 +1027,7 @@ namespace CapaPresentacion
                     if (intFilaSelecc >= 0)
                     {
                         //dgvGrilla.Rows[intFilaSelecc].Selected = true;
-                        
+
                         dgvGrilla.CurrentCell = dgvGrilla.Rows[intFilaSelecc].Cells[intColSelecc];
 
                         dgvGrilla.FirstDisplayedScrollingRowIndex = intPosScroll;
@@ -1035,7 +1038,7 @@ namespace CapaPresentacion
             {
                 CargarDatos();
             }
-            catch(System.InvalidOperationException ex)
+            catch (System.InvalidOperationException ex)
             {
                 CargarDatos();
             }
@@ -1063,7 +1066,7 @@ namespace CapaPresentacion
             CargarDirectoriosFotos();
             string strPathFotoPre = _pathFotoPre;
             string strPathFotoLab = _pathFotoLab;
-                         
+
             if (!string.IsNullOrEmpty(strPathFotoLab))
             {
                 strPathFotoLab = strPathFotoLab + "\\" + strDNI + ".jpg";
@@ -1077,7 +1080,7 @@ namespace CapaPresentacion
                 {
                     cargarImagen("P:\\img-system\\mUsuario300x300.jpg");
                     return;
-                }                
+                }
             }
             else
             {
@@ -1123,8 +1126,8 @@ namespace CapaPresentacion
             {
                 ptbFoto.Image = null;
             }
-        }        
-        
+        }
+
         private void dgvGrilla_KeyDown(object sender, KeyEventArgs e)
         {
             // Activar bandera de interacción del usuario
@@ -1140,27 +1143,28 @@ namespace CapaPresentacion
             {
                 if ((intFilaSelecc + 1) >= dgvGrilla.Rows.Count)
                 {
-                    intFilaSelecc = dgvGrilla.Rows.Count - 1;                    
+                    intFilaSelecc = dgvGrilla.Rows.Count - 1;
                     //SeleccinarFilaTurno();
                 }
                 else
                 {
-                    intFilaSelecc = dgvGrilla.CurrentCell.RowIndex + 1;                    
+                    intFilaSelecc = dgvGrilla.CurrentCell.RowIndex + 1;
                     //SeleccinarFilaTurno();
                 }
-            }else if (e.KeyData == Keys.Up)
+            }
+            else if (e.KeyData == Keys.Up)
             {
                 if (dgvGrilla.CurrentCell.RowIndex <= 0)
                 {
-                    intFilaSelecc = 0;                    
+                    intFilaSelecc = 0;
                     //SeleccinarFilaTurno();
                 }
                 else
                 {
-                    intFilaSelecc = dgvGrilla.CurrentCell.RowIndex - 1;                    
+                    intFilaSelecc = dgvGrilla.CurrentCell.RowIndex - 1;
                     //SeleccinarFilaTurno();
                 }
-            }           
+            }
 
             mostrarDatos();
         }
@@ -1168,19 +1172,19 @@ namespace CapaPresentacion
         //private void chkRevisado_CheckedChanged(object sender, EventArgs e)
         //{            
         //    mesaEntrada.RevisarPaciente(dgvGrilla.Rows[intFilaSelecc].Cells[0].Value.ToString(), chkRevisado.Checked);
-            
+
         //    dgvGrilla.Rows[intFilaSelecc].DefaultCellStyle.BackColor = Color.LightGreen;
-            
+
         //}
 
         private void chkRevisado_Click(object sender, EventArgs e)
         {
             // Actualizar el valor en la grilla inmediatamente
             dgvGrilla.Rows[intFilaSelecc].Cells[17].Value = chkRevisado.Checked;
-            
+
             // Actualizar el color inmediatamente para respuesta instantánea
             PintarFilaEspecifica(intFilaSelecc);
-            
+
             // Actualizar icono
             if (chkRevisado.Checked == true)
             {
@@ -1190,7 +1194,7 @@ namespace CapaPresentacion
             {
                 chkRevisado.Image = Image.FromFile("P:\\img-system\\mCheck02_45x45.png");
             }
-            
+
             // Guardar en base de datos después de la actualización visual
             mesaEntrada.RevisarPaciente(dgvGrilla.Rows[intFilaSelecc].Cells[0].Value.ToString(), chkRevisado.Checked);
         }
@@ -1209,7 +1213,7 @@ namespace CapaPresentacion
             //    m.MenuItems.Add(new MenuItem("Pegar"));
 
             //    int currentMouseOverRow = dgvGrilla.HitTest(e.X, e.Y).RowIndex;
-                
+
             //    m.Show(dgvGrilla, new Point(e.X, e.Y));
 
             //}
@@ -1218,9 +1222,9 @@ namespace CapaPresentacion
         private void dgvGrilla_Scroll(object sender, ScrollEventArgs e)
         {
             intPosScroll = dgvGrilla.FirstDisplayedScrollingRowIndex;
-            
+
             System.Diagnostics.Debug.WriteLine($"[SCROLL] Evento disparado - Orientation: {e.ScrollOrientation}, OldValue: {e.OldValue}, NewValue: {e.NewValue}");
-            
+
             // Si el usuario mueve el scroll horizontal manualmente, marcar la bandera
             if (e.ScrollOrientation == ScrollOrientation.HorizontalScroll)
             {

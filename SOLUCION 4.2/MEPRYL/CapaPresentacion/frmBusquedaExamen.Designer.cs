@@ -206,21 +206,6 @@ namespace CapaPresentacion
             this.gbFiltros.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.rbcMenu)).BeginInit();
             this.SuspendLayout();
-
-            this.ribbonPageGroup1.ItemLinks.Add(this.bbiImportarJugador);
-            this.ribbonPageGroup1.ItemLinks.Add(this.bbiImportarLaboratorio);
-            this.ribbonPageGroup1.ItemLinks.Add(this.bbiHabilitar);
-            this.ribbonPageGroup1.ItemLinks.Add(this.bbiCambioClub);
-            this.ribbonPageGroup1.ItemLinks.Add(this.bbiRevalidacion);
-            this.ribbonPageGroup1.ItemLinks.Add(this.bbiRXAutomatico);
-            this.ribbonPageGroup1.ItemLinks.Add(this.bbiEcgAutomatico);
-            this.ribbonPageGroup1.ItemLinks.Add(this.bbiConsolidarEstudios);
-            this.ribbonPageGroup1.ItemLinks.Add(this.bbiExportarPDF);
-            this.ribbonPageGroup1.ItemLinks.Add(this.bbiAudiometria);
-            this.ribbonPageGroup1.ItemLinks.Add(this.bbiEnviarEmail);
-            this.ribbonPageGroup1.ItemLinks.Add(this.bbiEditarPaciente);
-            this.ribbonPageGroup1.ItemLinks.Add(this.bbiEliminar);
-            this.ribbonPageGroup1.ItemLinks.Add(this.bbiImprimir);
             // 
             // panCentro
             // 
