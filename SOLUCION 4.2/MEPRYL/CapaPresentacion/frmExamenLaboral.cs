@@ -373,7 +373,6 @@ namespace CapaPresentacion
             cambiarVisibilidadComboBox(itemsPorExamen, cboGrupo, "id = 6");
             cambiarVisibilidadComboBox(itemsPorExamen, cboFactor, "id = 6");
             cambiarVisibilidadTextBox(itemsPorExamen, tbUricemia, "id = 21");
-            cambiarVisibilidadTextBox(itemsPorExamen, tbTe, "id = 28");
 
             cambiarVisibilidadTextBox(itemsPorExamen, tbColTotal, "id = 30");
             cambiarVisibilidadTextBox(itemsPorExamen, tbHdl, "id = 32");
@@ -490,7 +489,6 @@ namespace CapaPresentacion
             cambiarVisibilidadComboBox(itemsPorExamen, cboGrupo, "id = 6");
             cambiarVisibilidadComboBox(itemsPorExamen, cboFactor, "id = 6");
             cambiarVisibilidadTextBox(itemsPorExamen, tbUricemia, "id = 21");
-            cambiarVisibilidadTextBox(itemsPorExamen, tbTe, "id = 28");
 
             cambiarVisibilidadTextBox(itemsPorExamen, tbColTotal, "id = 30");
             cambiarVisibilidadTextBox(itemsPorExamen, tbHdl, "id = 32");
@@ -1077,7 +1075,6 @@ namespace CapaPresentacion
             if (cboGrupo.SelectedIndex != -1) { examen.Grupo = cboGrupo.Items[cboGrupo.SelectedIndex].ToString(); }
             if (cboFactor.SelectedIndex != -1) { examen.Factor = cboFactor.Items[cboFactor.SelectedIndex].ToString(); }
             examen.Uricemia = tbUricemia.Text;
-            examen.Te = tbTe.Text;
             examen.OtrosQuimicaHemat = tbOtrosQuimicaHematica.Text;
             examen.ColTotal = tbColTotal.Text;
             examen.Hdl = tbHdl.Text;
@@ -1259,6 +1256,26 @@ namespace CapaPresentacion
             try
             {
                 System.Diagnostics.Debug.WriteLine("[EXAMENLAB] Iniciando método cargar()");
+                System.Diagnostics.Debug.WriteLine("[EXAMENLAB] DATOS DEL EXAMEN CARGADO:");
+                System.Diagnostics.Debug.WriteLine("[EXAMENLAB] Id: " + examen.Id);
+                System.Diagnostics.Debug.WriteLine("[EXAMENLAB] GRojos: " + examen.GRojos);
+                System.Diagnostics.Debug.WriteLine("[EXAMENLAB] GBlancos: " + examen.GBlancos);
+                System.Diagnostics.Debug.WriteLine("[EXAMENLAB] Hemoglobina: " + examen.Hemoglobina);
+                System.Diagnostics.Debug.WriteLine("[EXAMENLAB] Hematocrito: " + examen.Hematocrito);
+                System.Diagnostics.Debug.WriteLine("[EXAMENLAB] Glucemia: " + examen.Glucemia);
+                System.Diagnostics.Debug.WriteLine("[EXAMENLAB] Uremia: " + examen.Uremia);
+                System.Diagnostics.Debug.WriteLine("[EXAMENLAB] Chagas: " + examen.Chagas);
+                System.Diagnostics.Debug.WriteLine("[EXAMENLAB] Vdrl: " + examen.Vdrl);
+                System.Diagnostics.Debug.WriteLine("[EXAMENLAB] Grupo: " + examen.Grupo);
+                System.Diagnostics.Debug.WriteLine("[EXAMENLAB] Factor: " + examen.Factor);
+                System.Diagnostics.Debug.WriteLine("[EXAMENLAB] colTotal: " + examen.ColTotal);
+                System.Diagnostics.Debug.WriteLine("[EXAMENLAB] HDL: " + examen.Hdl);
+                System.Diagnostics.Debug.WriteLine("[EXAMENLAB] LDL: " + examen.Ldl);
+                System.Diagnostics.Debug.WriteLine("[EXAMENLAB] Triglic: " + examen.Triglic);
+                System.Diagnostics.Debug.WriteLine("[EXAMENLAB] Densidad: " + examen.Densidad);
+                System.Diagnostics.Debug.WriteLine("[EXAMENLAB] Ph: " + examen.Ph);
+                System.Diagnostics.Debug.WriteLine("[EXAMENLAB] ObservacionesLab: " + examen.ObservacionesLab);
+                
                 puntosHabilitados = false;
                 System.Diagnostics.Debug.WriteLine("[EXAMENLAB] Asignando tbAntCli");
                 tbAntCli.Text = examen.AntCli;
@@ -1489,10 +1506,20 @@ namespace CapaPresentacion
             {
                 System.Diagnostics.Debug.WriteLine("[EXAMENLAB] Error al asignar cboDictClinico: " + ex.Message);
             }
+            System.Diagnostics.Debug.WriteLine("[EXAMENLAB] ASIGNANDO VALORES A CONTROLES DE LABORATORIO:");
+            
             tbGRojos.Text = examen.GRojos;
+            System.Diagnostics.Debug.WriteLine("[EXAMENLAB] tbGRojos.Text asignado: " + tbGRojos.Text);
+            
             tbGBlancos.Text = examen.GBlancos;
+            System.Diagnostics.Debug.WriteLine("[EXAMENLAB] tbGBlancos.Text asignado: " + tbGBlancos.Text);
+            
             tbHemoglob.Text = examen.Hemoglobina;
+            System.Diagnostics.Debug.WriteLine("[EXAMENLAB] tbHemoglob.Text asignado: " + tbHemoglob.Text);
+            
             tbHemato.Text = examen.Hematocrito;
+            System.Diagnostics.Debug.WriteLine("[EXAMENLAB] tbHemato.Text asignado: " + tbHemato.Text);
+            
             tbEritro.Text = examen.Eritro;
             tbPlaquetas.Text = examen.Plaquetas;
             tbObsSerieRoja.Text = examen.ObsSerieRoja;
@@ -1505,26 +1532,48 @@ namespace CapaPresentacion
             tbMono.Text = examen.Monoc;
             tbObsSerieBlanca.Text = examen.ObsSerieBlanca;
             if (tbObsSerieBlanca.Text == "") { tbObsSerieBlanca.Text = "NO SE OBSERVAN ATIPIAS"; }
+            
             tbGlucemia.Text = examen.Glucemia;
+            System.Diagnostics.Debug.WriteLine("[EXAMENLAB] tbGlucemia.Text asignado: " + tbGlucemia.Text);
+            
             tbUremia.Text = examen.Uremia;
+            System.Diagnostics.Debug.WriteLine("[EXAMENLAB] tbUremia.Text asignado: " + tbUremia.Text);
+            
             tbChagas.Text = examen.Chagas;
             tbVdrl.Text = examen.Vdrl;
+            System.Diagnostics.Debug.WriteLine("[EXAMENLAB] tbVdrl.Text asignado: " + tbVdrl.Text);
+            
             if (examen.Grupo != "") { cboGrupo.SelectedItem = examen.Grupo; }
             if (examen.Factor != "") { cboFactor.SelectedItem = examen.Factor; }
+            System.Diagnostics.Debug.WriteLine("[EXAMENLAB] Grupo: " + examen.Grupo + ", Factor: " + examen.Factor);
+            
             tbUricemia.Text = examen.Uricemia;
-            tbTe.Text = examen.Te;
             tbOtrosQuimicaHematica.Text = examen.OtrosQuimicaHemat;
+            
             tbColTotal.Text = examen.ColTotal;
+            System.Diagnostics.Debug.WriteLine("[EXAMENLAB] tbColTotal.Text asignado: " + tbColTotal.Text);
+            
             tbHdl.Text = examen.Hdl;
+            System.Diagnostics.Debug.WriteLine("[EXAMENLAB] tbHdl.Text asignado: " + tbHdl.Text);
+            
             tbLdl.Text = examen.Ldl;
+            System.Diagnostics.Debug.WriteLine("[EXAMENLAB] tbLdl.Text asignado: " + tbLdl.Text);
+            
             tbTriglic.Text = examen.Triglic;
+            System.Diagnostics.Debug.WriteLine("[EXAMENLAB] tbTriglic.Text asignado: " + tbTriglic.Text);
+            
             tbOtrosPerfilLipidico.Text = examen.OtrosPerfilLipidico;
             tbColor.Text = examen.Color;
             if (tbColor.Text == "") { tbColor.Text = "AMBAR"; }
             tbAspecto.Text = examen.Aspecto;
             if (tbAspecto.Text == "") { tbAspecto.Text = "LIMPIDO"; }
+            
             tbDensidad.Text = examen.Densidad;
+            System.Diagnostics.Debug.WriteLine("[EXAMENLAB] tbDensidad.Text asignado: " + tbDensidad.Text);
+            
             tbPh.Text = examen.Ph;
+            System.Diagnostics.Debug.WriteLine("[EXAMENLAB] tbPh.Text asignado: " + tbPh.Text);
+            
             tbCelulas.Text = examen.Celulas;
             if (tbCelulas.Text == "") { tbCelulas.Text = "ESCASAS"; }
             tbLeuco.Text = examen.Leuco;
@@ -1557,6 +1606,7 @@ namespace CapaPresentacion
             // Arbitros
             tbDictLab.Text = examen.DictamenLab;
             txtObservacionesLaboratorio.Text = examen.ObservacionesLab;
+            System.Diagnostics.Debug.WriteLine("[EXAMENLAB] txtObservacionesLaboratorio.Text asignado: " + txtObservacionesLaboratorio.Text);
             if (tbDictLab.Text == "") { tbDictLab.Text = "SIN PARTICULARIDADES"; }
             setearTbSegunId("38", examen.ToraxF, "SIN LESIONES PLEURO-PULMONARES ACTIVAS");
             setearTbSegunId("39", examen.LumbarF, "SIN PARTICULARIDADES");
@@ -2121,12 +2171,31 @@ namespace CapaPresentacion
 
             if (dtConsulta.Rows.Count > 0)
             {
-                bool blnPerfilLipidico01 = string.IsNullOrEmpty(dtConsulta.Rows[0].ItemArray[31].ToString());
-                bool blnPerfilLipidico02 = string.IsNullOrEmpty(dtConsulta.Rows[0].ItemArray[32].ToString());
-                bool blnCreatininaArbitro = string.IsNullOrEmpty(dtConsulta.Rows[0].ItemArray[66].ToString());
-                bool blnTieneOrina = string.IsNullOrEmpty(dtConsulta.Rows[0].ItemArray[48].ToString());
+                DataRow row = dtConsulta.Rows[0];
+                
+                // Método auxiliar para obtener valores de forma segura
+                Func<string, string> getSafeValue = (columnName) => 
+                {
+                    try
+                    {
+                        if (row.Table.Columns.Contains(columnName) && row[columnName] != DBNull.Value)
+                        {
+                            return row[columnName].ToString();
+                        }
+                        return "";
+                    }
+                    catch
+                    {
+                        return "";
+                    }
+                };
 
-                if (dtConsulta.Rows[0].ItemArray[31].ToString() != "0" && dtConsulta.Rows[0].ItemArray[31].ToString() != "0")
+                bool blnPerfilLipidico01 = string.IsNullOrEmpty(getSafeValue("hdl"));
+                bool blnPerfilLipidico02 = string.IsNullOrEmpty(getSafeValue("ldl"));
+                bool blnCreatininaArbitro = string.IsNullOrEmpty(getSafeValue("creat"));
+                bool blnTieneOrina = string.IsNullOrEmpty(getSafeValue("densidad"));
+
+                if (getSafeValue("hdl") != "0" && getSafeValue("ldl") != "0")
                 {
                     if (blnPerfilLipidico01 && blnPerfilLipidico02)
                     {
@@ -2136,7 +2205,7 @@ namespace CapaPresentacion
 
                 if (!blnCreatininaArbitro)
                 {
-                    if (dtConsulta.Rows[0].ItemArray[66].ToString() != "0")
+                    if (getSafeValue("creat") != "0")
                     {
                         strTipoLaboratorio = "ARBITRO";
                     }

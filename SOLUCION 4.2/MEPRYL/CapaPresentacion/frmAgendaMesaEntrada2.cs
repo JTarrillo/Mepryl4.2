@@ -121,7 +121,7 @@ namespace CapaPresentacion
                 // Nat y Continua después de ObservacMesaEntrada
                 dgvGrilla.Columns[28].DisplayIndex = 16; // Nat después de ObservacMesaEntrada
                 dgvGrilla.Columns[28].Width = 55; // Ancho suficiente para título y checkbox
-                dgvGrilla.Columns[28].HeaderText = "Nat"; // Nombre de columna Nat
+                dgvGrilla.Columns[28].HeaderText = "NAT"; // Nombre de columna Nat
                 dgvGrilla.Columns[28].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; // Centrar Nat
                 dgvGrilla.Columns[29].DisplayIndex = 17; // Continua después de Nat
                 dgvGrilla.Columns[29].Width = 55; // Ancho suficiente para título y checkbox
@@ -181,13 +181,13 @@ namespace CapaPresentacion
                 dgvGrilla.DefaultCellStyle.SelectionForeColor = Color.White;
 
                 // Configurar modo de ajuste automático para columnas de texto
-                // Las columnas de checkboxes mantienen ancho fijo, las de texto pueden expandirse
-                dgvGrilla.Columns[8].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill; // Subtipo de Examen
-                dgvGrilla.Columns[8].MinimumWidth = 120; // Ancho mínimo
-                dgvGrilla.Columns[13].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill; // Obs. Turnos
-                dgvGrilla.Columns[13].MinimumWidth = 150; // Ancho mínimo
-                dgvGrilla.Columns[14].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill; // Obs. Mesa Entrada
-                dgvGrilla.Columns[14].MinimumWidth = 150; // Ancho mínimo
+                // Permitir que el usuario modifique el ancho manualmente
+                dgvGrilla.Columns[8].AutoSizeMode = DataGridViewAutoSizeColumnMode.NotSet; // Subtipo de Examen
+                dgvGrilla.Columns[8].Width = 150; // Ancho inicial
+                dgvGrilla.Columns[13].AutoSizeMode = DataGridViewAutoSizeColumnMode.NotSet; // Obs. Turnos
+                dgvGrilla.Columns[13].Width = 200; // Ancho inicial
+                dgvGrilla.Columns[14].AutoSizeMode = DataGridViewAutoSizeColumnMode.NotSet; // Obs. Mesa Entrada
+                dgvGrilla.Columns[14].Width = 200; // Ancho inicial
 
                 columnasConfiguradas = true; // Marcar que las columnas ya están configuradas
             }
@@ -905,7 +905,7 @@ namespace CapaPresentacion
                 // Nat y Continua después de ObservacMesaEntrada
                 dgvGrilla.Columns[28].DisplayIndex = 16; // Nat después de ObservacMesaEntrada
                 dgvGrilla.Columns[28].Width = 55; // Ancho suficiente para título y checkbox
-                dgvGrilla.Columns[28].HeaderText = "Nat"; // Nombre de columna Nat
+                dgvGrilla.Columns[28].HeaderText = "NAT"; // Nombre de columna Nat
                 dgvGrilla.Columns[28].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; // Centrar Nat
                 dgvGrilla.Columns[29].DisplayIndex = 17; // Continua después de Nat
                 dgvGrilla.Columns[29].Width = 55; // Ancho suficiente para título y checkbox
@@ -965,13 +965,13 @@ namespace CapaPresentacion
                 dgvGrilla.DefaultCellStyle.SelectionForeColor = Color.White;
 
                 // Configurar modo de ajuste automático para columnas de texto
-                // Las columnas de checkboxes mantienen ancho fijo, las de texto pueden expandirse
-                dgvGrilla.Columns[8].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill; // Subtipo de Examen
-                dgvGrilla.Columns[8].MinimumWidth = 120; // Ancho mínimo
-                dgvGrilla.Columns[13].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill; // Obs. Turnos
-                dgvGrilla.Columns[13].MinimumWidth = 150; // Ancho mínimo
-                dgvGrilla.Columns[14].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill; // Obs. Mesa Entrada
-                dgvGrilla.Columns[14].MinimumWidth = 150; // Ancho mínimo
+                // Permitir que el usuario modifique el ancho manualmente
+                dgvGrilla.Columns[8].AutoSizeMode = DataGridViewAutoSizeColumnMode.NotSet; // Subtipo de Examen
+                dgvGrilla.Columns[8].Width = 150; // Ancho inicial
+                dgvGrilla.Columns[13].AutoSizeMode = DataGridViewAutoSizeColumnMode.NotSet; // Obs. Turnos
+                dgvGrilla.Columns[13].Width = 200; // Ancho inicial
+                dgvGrilla.Columns[14].AutoSizeMode = DataGridViewAutoSizeColumnMode.NotSet; // Obs. Mesa Entrada
+                dgvGrilla.Columns[14].Width = 200; // Ancho inicial
 
                 columnasConfiguradas = true; // Marcar que las columnas ya están configuradas
             }

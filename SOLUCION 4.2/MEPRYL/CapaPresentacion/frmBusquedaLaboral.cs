@@ -104,23 +104,6 @@ namespace CapaPresentacion
         private void cargarExamenesSinFiltro(DateTime desde, DateTime hasta, List<string> filtro)
         {
             DataTable laborales = laboral.cargarListadoSinFiltro(desde, hasta, filtro);
-
-            bool encontrado = false;
-            foreach (DataRow row in laborales.Rows)
-            {
-                if (row["Ident."].ToString() == "L29")
-                {
-                    //System.Diagnostics.Debugger.Break();
-                    encontrado = true;
-                    break;
-                }
-            }
-
-            if (!encontrado)
-            {
-                System.Diagnostics.Debug.WriteLine("No se encontró el registro L29");
-            }
-
             llenarDgv(laborales);
         }
 
@@ -274,6 +257,37 @@ namespace CapaPresentacion
             }
         }
 
+        private bool verificarExamenExiste(string idExamen)
+        {
+            string strSQL = "SELECT id FROM dbo.ExamenLaboral WHERE id = CONVERT(uniqueidentifier, '" + idExamen + "')";
+            DataTable dtConsulta = SQLConnector.obtenerTablaSegunConsultaString(strSQL);
+            
+            if (dtConsulta.Rows.Count > 0 && dtConsulta.Rows[0]["id"] != DBNull.Value)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private void crearExamenLaboral(string idExamen)
+        {
+            try
+            {
+                string strSQL = "INSERT INTO dbo.ExamenLaboral (id) VALUES (CONVERT(uniqueidentifier, '" + idExamen + "'))";
+                SQLConnector.obtenerTablaSegunConsultaString(strSQL);
+                
+                // Actualizar ConsultaLaboral para consistencia
+                strSQL = "UPDATE dbo.ConsultaLaboral SET idExamenLaboral = CONVERT(uniqueidentifier, '" + idExamen + "') WHERE idTipoExamen = '" + idExamen + "'";
+                SQLConnector.obtenerTablaSegunConsultaString(strSQL);
+                
+                System.Diagnostics.Debug.WriteLine("[ABRIR EXAMEN] ExamenLaboral creado exitosamente: " + idExamen);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("[ABRIR EXAMEN] ERROR al crear ExamenLaboral: " + ex.ToString());
+            }
+        }
+
         private void cambiarEnabled(bool estPanel1, bool estPanel2)
         {
             panel1.Enabled = estPanel1;
@@ -315,11 +329,39 @@ namespace CapaPresentacion
                 frm.setearLabelTitulo(dgv.Rows[c.RowIndex].Cells[4].Value.ToString());
                 if (dgv.Rows[c.RowIndex].Cells[3].Value.ToString().Contains("L"))
                 {
+                    // Prioridad: Usar IdTipoExamen (columna 19) porque ahora ExamenLaboral.id se relaciona con TipoExamenDePaciente.id
+                    string idTipoExamen = dgv.Rows[c.RowIndex].Cells[19].Value.ToString();
+                    string idExamenLaboralAntiguo = dgv.Rows[c.RowIndex].Cells[17].Value.ToString();
+                    
+                    System.Diagnostics.Debug.WriteLine("[ABRIR EXAMEN] Columna 17 (IdExamenLaboral antiguo): " + idExamenLaboralAntiguo);
+                    System.Diagnostics.Debug.WriteLine("[ABRIR EXAMEN] Columna 19 (IdTipoExamen): " + idTipoExamen);
+                    
+                    string idExamenParaUsar = idTipoExamen;
+                    
+                    // Si IdTipoExamen está vacío, usar IdExamenLaboral antiguo (compatibilidad con sistema anterior)
+                    if (string.IsNullOrEmpty(idExamenParaUsar) || idExamenParaUsar == Guid.Empty.ToString())
+                    {
+                        idExamenParaUsar = idExamenLaboralAntiguo;
+                        System.Diagnostics.Debug.WriteLine("[ABRIR EXAMEN] Usando sistema antiguo (columna 17): " + idExamenParaUsar);
+                    }
+                    else
+                    {
+                        // Verificar si el registro existe en ExamenLaboral con el IdTipoExamen
+                        bool existeExamen = verificarExamenExiste(idTipoExamen);
+                        if (!existeExamen)
+                        {
+                            System.Diagnostics.Debug.WriteLine("[ABRIR EXAMEN] No existe ExamenLaboral con IdTipoExamen, creando...");
+                            crearExamenLaboral(idTipoExamen);
+                        }
+                    }
+                    
+                    System.Diagnostics.Debug.WriteLine("[ABRIR EXAMEN] ID final a usar: " + idExamenParaUsar);
+                    
                     frm.setearValores(dgv.Rows[c.RowIndex].Cells[11].Value.ToString(), dgv.Rows[c.RowIndex].Cells[6].Value.ToString(),
                 dgv.Rows[c.RowIndex].Cells[7].Value.ToString(), dgv.Rows[c.RowIndex].Cells[8].Value.ToString() + " - " +
                 dgv.Rows[c.RowIndex].Cells[9].Value.ToString(), dgv.Rows[c.RowIndex].Cells[1].Value.ToString(),
                 dgv.Rows[c.RowIndex].Cells[4].Value.ToString(), dgv.Rows[c.RowIndex].Cells[3].Value.ToString(),
-                dgv.Rows[c.RowIndex].Cells[8].Value.ToString(), dgv.Rows[c.RowIndex].Cells[17].Value.ToString());
+                dgv.Rows[c.RowIndex].Cells[8].Value.ToString(), idExamenParaUsar);
                 }
                 else if (dgv.Rows[c.RowIndex].Cells[3].Value.ToString().Contains("EC"))
                 {
@@ -1138,8 +1180,12 @@ namespace CapaPresentacion
 
         private void recargarGrilla()
         {
-            System.Diagnostics.Debug.WriteLine("[BUSQUEDA] recargarGrilla llamado - Fecha: " + tpFecha.Value.ToString());
-            cargarExamenesSinFiltro(tpFecha.Value, tpFecha.Value, obtenerFiltro());
+            System.Diagnostics.Debug.WriteLine("[BUSQUEDA] recargarGrilla llamado");
+            
+            // Para la importación, siempre usar el método de actualización general
+            // que maneja correctamente ambos paneles
+            actualizar();
+            
             System.Diagnostics.Debug.WriteLine("[BUSQUEDA] recargarGrilla completado");
         }
 

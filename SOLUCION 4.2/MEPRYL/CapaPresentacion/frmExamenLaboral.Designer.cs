@@ -172,8 +172,6 @@
             this.label97 = new System.Windows.Forms.Label();
             this.tbOtrosQuimicaHematica = new System.Windows.Forms.TextBox();
             this.label59 = new System.Windows.Forms.Label();
-            this.tbTe = new System.Windows.Forms.TextBox();
-            this.label58 = new System.Windows.Forms.Label();
             this.tbUricemia = new System.Windows.Forms.TextBox();
             this.label57 = new System.Windows.Forms.Label();
             this.tbVdrl = new System.Windows.Forms.TextBox();
@@ -2037,8 +2035,6 @@
             this.groupBox3.Controls.Add(this.label97);
             this.groupBox3.Controls.Add(this.tbOtrosQuimicaHematica);
             this.groupBox3.Controls.Add(this.label59);
-            this.groupBox3.Controls.Add(this.tbTe);
-            this.groupBox3.Controls.Add(this.label58);
             this.groupBox3.Controls.Add(this.tbUricemia);
             this.groupBox3.Controls.Add(this.label57);
             this.groupBox3.Controls.Add(this.tbVdrl);
@@ -2100,27 +2096,6 @@
             this.label59.Size = new System.Drawing.Size(39, 16);
             this.label59.TabIndex = 378;
             this.label59.Text = "Otros";
-            // 
-            // tbTe
-            // 
-            this.tbTe.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-            this.tbTe.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbTe.Location = new System.Drawing.Point(367, 131);
-            this.tbTe.MaxLength = 3;
-            this.tbTe.Name = "tbTe";
-            this.tbTe.Size = new System.Drawing.Size(88, 22);
-            this.tbTe.TabIndex = 7;
-            this.tbTe.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // label58
-            // 
-            this.label58.AutoSize = true;
-            this.label58.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label58.Location = new System.Drawing.Point(281, 133);
-            this.label58.Name = "label58";
-            this.label58.Size = new System.Drawing.Size(31, 16);
-            this.label58.TabIndex = 376;
-            this.label58.Text = "T.E.";
             // 
             // tbUricemia
             // 
@@ -5270,8 +5245,6 @@
         private System.Windows.Forms.Label label55;
         private System.Windows.Forms.TextBox tbOtrosQuimicaHematica;
         private System.Windows.Forms.Label label59;
-        private System.Windows.Forms.TextBox tbTe;
-        private System.Windows.Forms.Label label58;
         private System.Windows.Forms.TextBox tbUricemia;
         private System.Windows.Forms.Label label57;
         private System.Windows.Forms.GroupBox groupBox2;

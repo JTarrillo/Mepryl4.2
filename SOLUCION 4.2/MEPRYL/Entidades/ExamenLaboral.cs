@@ -364,13 +364,6 @@ namespace Entidades
             get { return uricemia; }
             set { uricemia = value; }
         }
-        private string te;
-
-        public string Te
-        {
-            get { return te; }
-            set { te = value; }
-        }
         private string otrosQuimicaHemat;
 
         public string OtrosQuimicaHemat
@@ -973,7 +966,6 @@ namespace Entidades
             this.grupo = string.Empty;
             this.factor = string.Empty;
             this.uricemia = string.Empty;
-            this.te = string.Empty;
             this.otrosQuimicaHemat = string.Empty;
             this.colTotal = string.Empty;
             this.hdl = string.Empty;

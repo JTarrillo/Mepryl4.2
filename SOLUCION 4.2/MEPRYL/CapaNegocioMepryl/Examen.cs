@@ -77,6 +77,16 @@ namespace CapaNegocioMepryl
             return laboral.ActualizarExamenLaboral(Fecha, Identificador, valores);
         }
 
+        public bool ActualizarExamenLaboralPorId(string idExamenLaboral, List<string> valores)
+        {
+            return laboral.ActualizarExamenLaboralPorId(idExamenLaboral, valores);
+        }
+
+        public bool CrearExamenLaboral(string idTipoExamen)
+        {
+            return laboral.CrearExamenLaboral(idTipoExamen);
+        }
+
         public DataTable ComprobarEstudioPorExamen(string idTipoExamen)
         {
             return laboral.ComprobarEstudioPorExamen(idTipoExamen);

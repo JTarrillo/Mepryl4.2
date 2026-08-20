@@ -38,7 +38,8 @@ namespace CapaPresentacion
             examen = new CapaNegocioMepryl.Examen();
             UtilMepryl = new CapaNegocioMepryl.UtilidadesMepryl();
             preventiva = new CapaNegocioMepryl.ExamenPreventiva();
-            validaciones = SQLConnector.obtenerTablaSegunConsultaString("Select * from dbo.Validaciones");
+            // Consulta explícita con columnas reales de la tabla Validaciones
+            validaciones = SQLConnector.obtenerTablaSegunConsultaString("SELECT id, codigo, codigoInterno, descripcion, rangoDesde, rangoHasta, idClasif FROM dbo.Validaciones");
         }
 
 
@@ -122,8 +123,8 @@ namespace CapaPresentacion
                     string detalles = "";
                     foreach (DataRow r in valoresInvalidos.Rows)
                     {
-                        detalles = detalles + "\n Fila " + (Convert.ToInt32(r.ItemArray[0].ToString()) + 1).ToString() + " del archivo de EXCEL. --> Error en la Columna: " +
-                            r.ItemArray[1].ToString();
+                        detalles = detalles + "\n Fila " + (Convert.ToInt32(GetSafeValue(r, 0)) + 1).ToString() + " del archivo de EXCEL. --> Error en la Columna: " +
+                            GetSafeValue(r, 1);
 
                     }
 
@@ -151,8 +152,8 @@ namespace CapaPresentacion
 
                 foreach (DataRow t in dtRequeridoMensaje.Rows)
                 {
-                    detalles = detalles + "\nPara el Nº Orden: L-" + t.ItemArray[0].ToString() + ". --> " + //Es requerido resultados de " +
-                        t.ItemArray[1].ToString();
+                    detalles = detalles + "\nPara el Nº Orden: L-" + GetSafeValue(t, 0) + ". --> " + //Es requerido resultados de " +
+                        GetSafeValue(t, 1);
                 }
 
                 MessageBox.Show("¡Importación incompleta, los siguientes resultados de examen son o no requeridos y no se han encontrado en el archivo de Excel.\n" + detalles, "Atención",
@@ -169,7 +170,7 @@ namespace CapaPresentacion
             puntero = 1;
             foreach (DataRow row in ds.Rows)
             {
-                if (row.ItemArray[0].ToString() != "")
+                if (GetSafeValue(row, 0) != "")
                 {
                     procesarFila(row);
                     progressBar.PerformStep();
@@ -242,13 +243,52 @@ namespace CapaPresentacion
                     fecha = string.Empty;
                 }
 
-                string examen01 = CorregirIdentificador(row.ItemArray[1].ToString());
-                // Modificado: buscar solo por identificador, ignorar fecha del Excel
-                // Usar la fecha que ya tiene el registro en la base de datos
+                string examen01 = CorregirIdentificador(GetSafeValue(row, 1));
+                
+                Debug.WriteLine("[ImportLaboralLaboral] Fecha leída del Excel columna 0: " + fecha);
+                Debug.WriteLine("[ImportLaboralLaboral] Identificador del Excel columna 1: " + examen01);
+                
+                // Construir SQL filtrando por fecha si está disponible en el Excel
                 string strSQL = "Select tep.id, Convert(date,c.fecha) as FechaReal from dbo.TipoExamenDePaciente " +
                     "tep inner join dbo.Consulta c on tep.idConsulta = c.id " +
-                    "where c.identificador = '" + examen01.ToString() + "' AND c.valido = '1' AND c.nroOrden != '0' AND c.tipo != 'V' " +
-                    "ORDER BY c.fecha DESC";
+                    "where c.identificador = '" + examen01.ToString() + "' AND c.valido = '1' AND c.nroOrden != '0' AND c.tipo != 'V' ";
+                
+                // Si el Excel tiene una fecha válida, agregar filtro de fecha
+                if (!string.IsNullOrEmpty(fecha))
+                {
+                    // Convertir DDMMYY a YYYY-MM-DD para el filtro
+                    string fechaFiltro = fecha.Replace("-", "");
+                    if (fechaFiltro.Length == 6)
+                    {
+                        // DDMMYY -> YYYY-MM-DD
+                        string dia = fechaFiltro.Substring(0, 2);
+                        string mes = fechaFiltro.Substring(2, 2);
+                        string anio = fechaFiltro.Substring(4, 2);
+                        // Asumir años 2000s para 00-26, 1900s para 27-99
+                        int anioNum = int.Parse(anio);
+                        anioNum = anioNum >= 27 ? 1900 + anioNum : 2000 + anioNum;
+                        string fechaCompleta = anioNum + "-" + mes + "-" + dia;
+                        strSQL += "AND CONVERT(VARCHAR(8), c.fecha, 112) = '" + anioNum + mes + dia + "' ";
+                        Debug.WriteLine("[ImportLaboralLaboral] Fecha DDMMYY convertida: " + fechaFiltro + " -> " + fechaCompleta);
+                        Debug.WriteLine("[ImportLaboralLaboral] Filtrando por fecha YYYYMMDD: " + anioNum + mes + dia);
+                    }
+                    else if (fechaFiltro.Length == 8)
+                    {
+                        // Formato YYYYMMDD - usar CONVERT directamente
+                        strSQL += "AND CONVERT(VARCHAR(8), c.fecha, 112) = '" + fechaFiltro + "' ";
+                        Debug.WriteLine("[ImportLaboralLaboral] Filtrando por fecha YYYYMMDD: " + fechaFiltro);
+                    }
+                    else
+                    {
+                        Debug.WriteLine("[ImportLaboralLaboral] Formato de fecha no reconocido: " + fechaFiltro);
+                    }
+                }
+                else
+                {
+                    Debug.WriteLine("[ImportLaboralLaboral] No hay fecha en Excel, usando registro más reciente");
+                }
+                
+                strSQL += "ORDER BY c.fecha DESC";
 
                 Debug.WriteLine("[ImportLaboralLaboral] Buscando: Identificador=" + examen01);
                 Debug.WriteLine("[ImportLaboralLaboral] SQL: " + strSQL);
@@ -266,12 +306,13 @@ namespace CapaPresentacion
                 if (tipoExamen.Rows.Count > 0)
                 {
                     dtDatoRequerido.Clear();
-                    test = tipoExamen.Rows[0][0].ToString();
-                    dtDatoRequerido = examen.ComprobarEstudioPorExamen(tipoExamen.Rows[0][0].ToString());
+                    string idTipoExamen = tipoExamen.Rows[0][0].ToString();
+                    test = idTipoExamen;
+                    dtDatoRequerido = examen.ComprobarEstudioPorExamen(idTipoExamen);
 
-                    procesarLaboratorio(examen01, fecha, row);
+                    procesarLaboratorio(examen01, fecha, row, idTipoExamen);
                     //CampoRequerido(puntero, row);                
-                    CampoRequerido(ObtieneNroOrden(row.ItemArray[1].ToString()), row);
+                    CampoRequerido(ObtieneNroOrden(GetSafeValue(row, 1)), row);
                     puntero++;
                 }
             }
@@ -339,34 +380,74 @@ namespace CapaPresentacion
             string digits = Regex.Replace(fechaSinProcesar, "\\D", "");
             if (digits.Length == 6)
             {
-                // SIEMPRE interpretar como yyyyMMdd (año-mes-día) para este sistema
-                // Formato: 230326 → 2023-03-26
-                string año = "20" + digits.Substring(0, 2);
-                string mes = digits.Substring(2, 2);
-                string dia = digits.Substring(4, 2);
-                return año + "-" + mes + "-" + dia;
+                // Interpretar como DDMMYY (día-mes-año) para este sistema
+                // Formato: 180826 → 18-08-2026
+                string strDia = digits.Substring(0, 2);
+                string strMes = digits.Substring(2, 2);
+                string año2 = digits.Substring(4, 2);
+                
+                // Asumir años 2000s para 00-26, 1900s para 27-99
+                int añoNum = int.Parse(año2);
+                añoNum = añoNum >= 27 ? 1900 + añoNum : 2000 + añoNum;
+                
+                return añoNum + "-" + strMes + "-" + strDia;
             }
             else if (digits.Length == 8)
             {
-                // SIEMPRE interpretar como yyyyMMdd (año-mes-día) para este sistema
-                // Formato: 20230326 → 2023-03-26
-                string año = digits.Substring(0, 4);
-                string mes = digits.Substring(4, 2);
-                string dia = digits.Substring(6, 2);
-                return año + "-" + mes + "-" + dia;
+                // Verificar si es DDMMYYYY o YYYYMMDD
+                // Si los primeros 2 dígitos > 31, es YYYYMMDD, de lo contrario es DDMMYYYY
+                int primerosDos = int.Parse(digits.Substring(0, 2));
+                if (primerosDos > 31)
+                {
+                    // YYYYMMDD (año-mes-día)
+                    // Formato: 20230826 → 2023-08-26
+                    string año = digits.Substring(0, 4);
+                    string strMes = digits.Substring(4, 2);
+                    string strDia = digits.Substring(6, 2);
+                    return año + "-" + strMes + "-" + strDia;
+                }
+                else
+                {
+                    // DDMMYYYY (día-mes-año)
+                    // Formato: 26082023 → 26-08-2023
+                    string strDia = digits.Substring(0, 2);
+                    string strMes = digits.Substring(2, 2);
+                    string año = digits.Substring(4, 4);
+                    return año + "-" + strMes + "-" + strDia;
+                }
             }
 
             // Fallback: devolver la cadena original si no se pudo parsear
             return fechaSinProcesar;
         }
 
-        private void procesarLaboratorio(string Identificador, string Fecha, DataRow fila)
+        private void procesarLaboratorio(string Identificador, string Fecha, DataRow fila, string idTipoExamen)
         {
+            System.Diagnostics.Debug.WriteLine("[IMPORTAR] procesarLaboratorio llamado - Identificador: " + Identificador + ", Fecha: " + Fecha);
+            System.Diagnostics.Debug.WriteLine("[IMPORTAR] CONTENIDO DEL EXCEL (Índices 31-39):");
+            for (int i = 31; i < Math.Min(40, fila.ItemArray.Length); i++)
+            {
+                System.Diagnostics.Debug.WriteLine("[IMPORTAR] fila.ItemArray[" + i + "] = '" + fila.ItemArray[i].ToString() + "'");
+            }
+            
             List<string> valores = new List<string>();
             Int32 multiplicacion;
-            if (fila.ItemArray[2].ToString() != "" && fila.ItemArray[2].ToString() != "*")
+            
+            // ORDEN ESPERADO POR cargarEntidad:
+            // [0]: GRojos, [1]: GBlancos, [2]: Hemoglob, [3]: Hemato, [4]: Eritro
+            // [5]: Cayado, [6]: Segmentado, [7]: Eosinof, [8]: Basof, [9]: Linfoc
+            // [10]: Monoc, [11]: Glucemia, [12]: Uremia, [13]: Chagas, [14]: Vdrl
+            // [15]: Grupo, [16]: Factor, [17]: Color, [18]: Aspecto, [19]: Densidad
+            // [20]: Ph, [21]: Glucosa, [22]: Proteinas, [23]: HemoglobOrina, [24]: Bilirrubina
+            // [25]: Celulas, [26]: Leucocitos, [27]: Hematies, [28]: Piocitos, [29]: Mucus
+            // [30]: DictLab, [31]: ObsSerieRoja, [32]: ObsSerieBlanca, [33]: OtrosOrina1
+            // [34]: OtrosOrina2, [35]: ObsLaborat
+            
+            // [0] GRojos - Excel [2] GR
+            string valorGRojos = GetSafeValue(fila, 2);
+            if (valorGRojos != "")
             {
-                if ((fila.ItemArray[2].ToString()).Replace(",", ".").Replace(".", "").Length < 3)
+                if (valorGRojos.Replace(",", ".").Replace(".", "").Length < 3)
                 {
                     multiplicacion = 100000;
                 }
@@ -376,7 +457,7 @@ namespace CapaPresentacion
                 }
                 Int32 laboratorio;
 
-                object strGRojo = fila.ItemArray[2].ToString().Replace(",", ".").Replace(".", "");
+                object strGRojo = valorGRojos.Replace(",", ".").Replace(".", "");
                 laboratorio = Convert.ToInt32(strGRojo);
 
                 if (laboratorio > 999)
@@ -388,312 +469,397 @@ namespace CapaPresentacion
                 else if (laboratorio < 10)
                     laboratorio *= 1000000;
 
-                //laboratorio = Convert.ToInt32((fila.ItemArray[2].ToString()).Replace(",", ".").Replace(".", "")) * multiplicacion;
                 valores.Add(puntosAGlobulosBlancos("###,###", laboratorio.ToString()));
             }
             else
             {
                 valores.Add("");
-                marcarComoInvalido(ObtieneNroOrden(fila.ItemArray[1].ToString()), 2);
+                marcarComoInvalido(ObtieneNroOrden(GetSafeValue(fila, 1)), 2);
             }
 
-            if ((fila.ItemArray[3].ToString() != "" && fila.ItemArray[3].ToString() != "*"))
+            // [1] GBlancos - Excel [3] GB
+            string valorGBlancos = GetSafeValue(fila, 3);
+            if (valorGBlancos != "")
             {
-                valores.Add((puntosAGlobulosBlancos("###,###", fila.ItemArray[3].ToString())).Replace(",", "."));
+                valores.Add((puntosAGlobulosBlancos("###,###", valorGBlancos)).Replace(",", "."));
             }
             else
             {
                 valores.Add("");
-                marcarComoInvalido(ObtieneNroOrden(fila.ItemArray[1].ToString()), 3);
+                marcarComoInvalido(ObtieneNroOrden(GetSafeValue(fila, 1)), 3);
             }
-            if (fila.ItemArray[4].ToString() != "" && fila.ItemArray[4].ToString() != "*")
+            
+            // [2] Hemoglob - Excel [4] HGB
+            string valorHemoglob = GetSafeValue(fila, 4);
+            if (valorHemoglob != "")
             {
-                valores.Add(fila.ItemArray[4].ToString().Replace(".", ","));
-            }
-            else
-            {
-                valores.Add("");
-                marcarComoInvalido(ObtieneNroOrden(fila.ItemArray[1].ToString()), 4);
-
-            }
-            if (fila.ItemArray[5].ToString() != "" && fila.ItemArray[5].ToString() != "*")
-            {
-                valores.Add(fila.ItemArray[5].ToString().Replace(".", ","));
+                valores.Add(valorHemoglob.Replace(".", ","));
             }
             else
             {
                 valores.Add("");
-                marcarComoInvalido(ObtieneNroOrden(fila.ItemArray[1].ToString()), 5);
+                marcarComoInvalido(ObtieneNroOrden(GetSafeValue(fila, 1)), 4);
             }
-            if (fila.ItemArray[6].ToString() != "" && fila.ItemArray[6].ToString() != "*")
+            
+            // [3] Hemato - Excel [5] HTC
+            string valorHemato = GetSafeValue(fila, 5);
+            if (valorHemato != "")
             {
-                valores.Add(fila.ItemArray[6].ToString());
-            }
-            else
-            {
-                valores.Add("");
-                marcarComoInvalido(ObtieneNroOrden(fila.ItemArray[1].ToString()), 6);
-
-            }
-            if (fila.ItemArray[7].ToString() != "" && fila.ItemArray[7].ToString() != "*")
-            {
-                valores.Add(fila.ItemArray[7].ToString());
+                valores.Add(valorHemato.Replace(".", ","));
             }
             else
             {
                 valores.Add("");
-                marcarComoInvalido(ObtieneNroOrden(fila.ItemArray[1].ToString()), 7);
+                marcarComoInvalido(ObtieneNroOrden(GetSafeValue(fila, 1)), 5);
             }
-            if (fila.ItemArray[8].ToString() != "" && fila.ItemArray[8].ToString() != "*")
+            
+            // [4] Eritro - Excel [6] ERI
+            string valorEritro = GetSafeValue(fila, 6);
+            if (valorEritro != "")
             {
-                valores.Add(fila.ItemArray[8].ToString());
-            }
-            else
-            {
-                valores.Add("");
-                marcarComoInvalido(ObtieneNroOrden(fila.ItemArray[1].ToString()), 8);
-            }
-            if (fila.ItemArray[9].ToString() != "" && fila.ItemArray[9].ToString() != "*")
-            {
-                valores.Add(fila.ItemArray[9].ToString());
+                valores.Add(valorEritro);
             }
             else
             {
                 valores.Add("");
-                marcarComoInvalido(ObtieneNroOrden(fila.ItemArray[1].ToString()), 9);
             }
-            if (fila.ItemArray[10].ToString() != "" && fila.ItemArray[10].ToString() != "*")
+            
+            // [5] Cayado - Excel [7] NC
+            string valorCayado = GetSafeValue(fila, 7);
+            if (valorCayado != "")
             {
-                valores.Add(fila.ItemArray[10].ToString());
-            }
-            else
-            {
-                valores.Add("");
-                marcarComoInvalido(ObtieneNroOrden(fila.ItemArray[1].ToString()), 10);
-            }
-            if (fila.ItemArray[11].ToString() != "" && fila.ItemArray[11].ToString() != "*")
-            {
-                valores.Add(fila.ItemArray[11].ToString());
+                valores.Add(valorCayado);
             }
             else
             {
                 valores.Add("");
-                marcarComoInvalido(ObtieneNroOrden(fila.ItemArray[1].ToString()), 11);
             }
-            if (fila.ItemArray[12].ToString() != "" && fila.ItemArray[12].ToString() != "*")
+            
+            // [6] Segmentado - Excel [8] NS
+            string valorSegmentado = GetSafeValue(fila, 8);
+            if (valorSegmentado != "")
             {
-                valores.Add(fila.ItemArray[12].ToString());
-            }
-            else
-            {
-                valores.Add("");
-                marcarComoInvalido(ObtieneNroOrden(fila.ItemArray[1].ToString()), 12);
-            }
-
-            if (fila.ItemArray[14].ToString() != "" && fila.ItemArray[14].ToString() != "*")
-            {
-                valores.Add(fila.ItemArray[14].ToString());
+                valores.Add(valorSegmentado);
             }
             else
             {
                 valores.Add("");
-                //marcarComoInvalido(puntero, 14);                
             }
-            if (fila.ItemArray[15].ToString() != "" && fila.ItemArray[15].ToString() != "*")
+            
+            // [7] Eosinof - Excel [9] EOS
+            string valorEosinof = GetSafeValue(fila, 9);
+            if (valorEosinof != "")
             {
-                valores.Add(fila.ItemArray[15].ToString());
-            }
-            else
-            {
-                valores.Add("");
-                //marcarComoInvalido(puntero, 15);                
-            }
-
-            valores.Add(obtenerIdValorChagas(fila.ItemArray[16].ToString(), validaciones));
-            valores.Add(obtenerIdColor(fila.ItemArray[17].ToString(), validaciones));
-            valores.Add(obtenerIdAspecto(fila.ItemArray[18].ToString(), validaciones));
-
-            if (fila.ItemArray[19].ToString() != "" && fila.ItemArray[19].ToString() != "*")
-            {
-                valores.Add("1,0" + fila.ItemArray[19].ToString());
+                valores.Add(valorEosinof);
             }
             else
             {
                 valores.Add("");
-                //marcarComoInvalido(puntero, 19);
+                marcarComoInvalido(ObtieneNroOrden(GetSafeValue(fila, 1)), 9);
+            }
+            
+            // [8] Basof - Excel [10] BAS
+            string valorBasof = GetSafeValue(fila, 10);
+            if (valorBasof != "")
+            {
+                valores.Add(valorBasof);
+            }
+            else
+            {
+                valores.Add("");
+                marcarComoInvalido(ObtieneNroOrden(GetSafeValue(fila, 1)), 10);
+            }
+            
+            // [9] Linfoc - Excel [11] LIN
+            string valorLinfoc = GetSafeValue(fila, 11);
+            if (valorLinfoc != "")
+            {
+                valores.Add(valorLinfoc);
+            }
+            else
+            {
+                valores.Add("");
+                marcarComoInvalido(ObtieneNroOrden(GetSafeValue(fila, 1)), 11);
+            }
+            
+            // [10] Monoc - Excel [12] MON
+            string valorMonoc = GetSafeValue(fila, 12);
+            if (valorMonoc != "")
+            {
+                valores.Add(valorMonoc);
+            }
+            else
+            {
+                valores.Add("");
+                marcarComoInvalido(ObtieneNroOrden(GetSafeValue(fila, 1)), 12);
             }
 
-            if (fila.ItemArray[20].ToString() != "" && fila.ItemArray[20].ToString() != "*")
+            // [11] Glucemia - Excel [14] GLU
+            string valorGlucemia = GetSafeValue(fila, 14);
+            if (valorGlucemia != "")
             {
-                valores.Add((fila.ItemArray[20].ToString()).Substring(0, 1));
-            }
-            else
-            {
-                valores.Add("");
-                //marcarComoInvalido(puntero, 20);
-            }
-            valores.Add(obtenerId(fila.ItemArray[21].ToString(), "51", validaciones, 21));
-            valores.Add(obtenerId(fila.ItemArray[22].ToString(), "52", validaciones, 22));
-            valores.Add(obtenerId(fila.ItemArray[23].ToString(), "53", validaciones, 23));
-            valores.Add(obtenerId(fila.ItemArray[24].ToString(), "53", validaciones, 24));
-            valores.Add(obtenerId(fila.ItemArray[25].ToString(), "54", validaciones, 25));
-            valores.Add(obtenerIdCelulas(fila.ItemArray[26].ToString(), "55", validaciones, 26)); // Celulas
-            valores.Add(obtenerIdLeucocitos(fila.ItemArray[27].ToString(), "56", validaciones, 27)); // Leucocitos
-            valores.Add(obtenerId(fila.ItemArray[28].ToString(), "57", validaciones, 28));
-            valores.Add(obtenerId(fila.ItemArray[29].ToString(), "58", validaciones, 29));
-            valores.Add(obtenerId(fila.ItemArray[30].ToString(), "59", validaciones, 30));
-            //valores.Add(filtrarTabla(validaciones, "60", "01"));
-            if (fila.ItemArray[31].ToString() != "" && fila.ItemArray[31].ToString() != "*")
-            {
-                valores.Add(Convert.ToString(Convert.ToInt32(fila.ItemArray[31])));
+                valores.Add(valorGlucemia);
             }
             else
             {
                 valores.Add("");
             }
-            if (fila.ItemArray[32].ToString() != "" && fila.ItemArray[32].ToString() != "*")
+            
+            // [12] Uremia - Excel [15] URE
+            string valorUremia = GetSafeValue(fila, 15);
+            if (valorUremia != "")
             {
-                valores.Add(Convert.ToString(Convert.ToInt32(fila.ItemArray[32])));
-            }
-            else
-            {
-                valores.Add("");
-            }
-            if (fila.ItemArray[33].ToString() != "" && fila.ItemArray[33].ToString() != "*")
-            {
-                valores.Add(Convert.ToString(Convert.ToInt32(fila.ItemArray[33])));
-            }
-            else
-            {
-                valores.Add("");
-            }
-            if (fila.ItemArray[34].ToString() != "" && fila.ItemArray[34].ToString() != "*")
-            {
-                valores.Add(Convert.ToString(Convert.ToInt32((fila.ItemArray[34]))));
-            }
-            else
-            {
-                valores.Add("");
-            }
-            if (fila.ItemArray[35].ToString() != "" && fila.ItemArray[35].ToString() != "*")
-            {
-                valores.Add(fila.ItemArray[35].ToString());
+                valores.Add(valorUremia);
             }
             else
             {
                 valores.Add("");
             }
 
-            valores.Add(obtenerIdValorFactor(fila.ItemArray[36].ToString()));
-            valores.Add(obtenerIdValorVDRL(fila.ItemArray[37].ToString(), validaciones));
-            valores.Add(obtenerIdValorEmbarazo(fila.ItemArray[38].ToString(), validaciones));
-
-            if (fila.ItemArray[39].ToString() != "" && fila.ItemArray[39].ToString() != "*")
+            // [13] Chagas - YA NO EXISTE en el nuevo Excel
+            valores.Add(""); // Chagas ya no existe
+            
+            // [14] color - YA NO EXISTE en el nuevo Excel
+            valores.Add(""); // Color ya no existe
+            
+            // [15] aspecto - YA NO EXISTE en el nuevo Excel
+            valores.Add(""); // Aspecto ya no existe
+            
+            // [16] densidad - Excel [19] DEN
+            string valorDensidad = GetSafeValue(fila, 19);
+            if (valorDensidad != "")
             {
-                valores.Add(fila.ItemArray[39].ToString());
+                valores.Add(valorDensidad);
+            }
+            else
+            {
+                valores.Add("");
+            }
+            
+            // [17] ph - Excel [20] PH
+            string valorPh = GetSafeValue(fila, 20);
+            if (valorPh != "")
+            {
+                valores.Add(valorPh);
+            }
+            else
+            {
+                valores.Add("");
+            }
+            
+            // [18] gluc - Excel [21] GLU
+            string valorGlucOrina = GetSafeValue(fila, 21);
+            if (valorGlucOrina != "")
+            {
+                valores.Add(valorGlucOrina);
+            }
+            else
+            {
+                valores.Add("");
+            }
+            
+            // [19] prot - Excel [22] PRO
+            string valorProt = GetSafeValue(fila, 22);
+            if (valorProt != "")
+            {
+                valores.Add(valorProt);
+            }
+            else
+            {
+                valores.Add("");
+            }
+            
+            // [20] hemogOrina - Excel [23] HGB
+            string valorHemogOrina = GetSafeValue(fila, 23);
+            if (valorHemogOrina != "")
+            {
+                valores.Add(valorHemogOrina);
+            }
+            else
+            {
+                valores.Add("");
+            }
+            
+            // [21] cetonas - Excel [24] CC
+            string valorCetonas = GetSafeValue(fila, 24);
+            if (valorCetonas != "")
+            {
+                valores.Add(valorCetonas);
+            }
+            else
+            {
+                valores.Add("");
+            }
+            
+            // [22] bilirrubina - Excel [25] BIL
+            string valorBilirrubina = GetSafeValue(fila, 25);
+            if (valorBilirrubina != "")
+            {
+                valores.Add(valorBilirrubina);
+            }
+            else
+            {
+                valores.Add("");
+            }
+            
+            // [23] celulas - Excel [26] CEL
+            string valorCelulas = GetSafeValue(fila, 26);
+            if (valorCelulas != "")
+            {
+                valores.Add(valorCelulas);
+            }
+            else
+            {
+                valores.Add("");
+            }
+            
+            // [24] leuco - Excel [27] LEU
+            string valorLeuco = GetSafeValue(fila, 27);
+            if (valorLeuco != "")
+            {
+                valores.Add(valorLeuco);
+            }
+            else
+            {
+                valores.Add("");
+            }
+            
+            // [25] hematies - Excel [28] HEM
+            string valorHematies = GetSafeValue(fila, 28);
+            if (valorHematies != "")
+            {
+                valores.Add(valorHematies);
+            }
+            else
+            {
+                valores.Add("");
+            }
+            
+            // [26] NO USADO - Se salta en el SQL
+            valores.Add(""); // Índice no usado en SQL
+            
+            // [27] NO USADO - Se salta en el SQL
+            valores.Add(""); // Índice no usado en SQL
+            
+            // [28] HDL - Excel [31] HDL
+            string valorHDL = GetSafeValue(fila, 31);
+            if (valorHDL != "")
+            {
+                valores.Add(valorHDL);
+            }
+            else
+            {
+                valores.Add("");
+            }
+            
+            // [29] colTotal - Excel [32] COL.1 (Colesterol total)
+            string valorColTotal = GetSafeValue(fila, 32);
+            if (valorColTotal != "")
+            {
+                valores.Add(valorColTotal);
+            }
+            else
+            {
+                valores.Add("");
+            }
+            
+            // [30] trig - Excel [33] TGL (Triglicéridos)
+            string valorTrig = GetSafeValue(fila, 33);
+            if (valorTrig != "")
+            {
+                valores.Add(valorTrig);
+            }
+            else
+            {
+                valores.Add("");
+            }
+            
+            // [31] ldl - Excel [34] LDL
+            string valorLDL = GetSafeValue(fila, 34);
+            if (valorLDL != "")
+            {
+                valores.Add(valorLDL);
+            }
+            else
+            {
+                valores.Add("");
+            }
+            
+            // [32] grupo - Excel [35] GS (Grupo Sanguíneo)
+            string valorGrupo = GetSafeValue(fila, 35);
+            if (valorGrupo != "")
+            {
+                valores.Add(valorGrupo);
+            }
+            else
+            {
+                valores.Add("");
+            }
+            
+            // [33] factor - Excel [36] RH (Factor RH)
+            string valorFactor = GetSafeValue(fila, 36);
+            if (valorFactor != "")
+            {
+                valores.Add(valorFactor);
+            }
+            else
+            {
+                valores.Add("");
+            }
+            
+            // [34] vdrl - Excel [37] VDRCU (VDRL)
+            string valorVDRL = GetSafeValue(fila, 37);
+            if (valorVDRL != "")
+            {
+                valores.Add(obtenerIdValorVDRL(valorVDRL, validaciones));
+            }
+            else
+            {
+                valores.Add("");
+            }
+            
+            // [35] te - Excel [38] T. EMB. (Test embarazo)
+            string valorTE = GetSafeValue(fila, 38);
+            if (valorTE != "")
+            {
+                valores.Add(valorTE);
+            }
+            else
+            {
+                valores.Add("");
+            }
+            
+            // [36] observacionesLab - Excel [39] OBS. (Observaciones)
+            string valorObsLab = GetSafeValue(fila, 39);
+            if (valorObsLab != "")
+            {
+                valores.Add(valorObsLab);
             }
             else
             {
                 valores.Add("");
             }
 
-            // Arbitros Inicio
-            if (intNroCol > 40)
-            {
-                if (fila.ItemArray[40].ToString() != "" && fila.ItemArray[40].ToString() != "*")
-                {
-                    valores.Add(fila.ItemArray[40].ToString());
-                }
-                else
-                {
-                    valores.Add("");
-                }
-                if (fila.ItemArray[41].ToString() != "" && fila.ItemArray[41].ToString() != "*")
-                {
-                    valores.Add(fila.ItemArray[41].ToString());
-                }
-                else
-                {
-                    valores.Add("");
-                }
-                if (fila.ItemArray[42].ToString() != "" && fila.ItemArray[42].ToString() != "*")
-                {
-                    valores.Add(fila.ItemArray[42].ToString());
-                }
-                else
-                {
-                    valores.Add("");
-                }
-                if (fila.ItemArray[43].ToString() != "" && fila.ItemArray[43].ToString() != "*")
-                {
-                    valores.Add(fila.ItemArray[43].ToString());
-                }
-                else
-                {
-                    valores.Add("");
-                }
-                if (fila.ItemArray[44].ToString() != "" && fila.ItemArray[44].ToString() != "*")
-                {
-                    valores.Add(fila.ItemArray[44].ToString());
-                }
-                else
-                {
-                    valores.Add("");
-                }
-                if (fila.ItemArray[45].ToString() != "" && fila.ItemArray[45].ToString() != "*")
-                {
-                    valores.Add(fila.ItemArray[45].ToString());
-                }
-                else
-                {
-                    valores.Add("");
-                }
-                if (fila.ItemArray[46].ToString() != "" && fila.ItemArray[46].ToString() != "*")
-                {
-                    valores.Add(fila.ItemArray[46].ToString());
-                }
-                else
-                {
-                    valores.Add("");
-                }
-                if (fila.ItemArray[47].ToString() != "" && fila.ItemArray[47].ToString() != "*")
-                {
-                    valores.Add(fila.ItemArray[47].ToString());
-                }
-                else
-                {
-                    valores.Add("");
-                }
-                if (fila.ItemArray[48].ToString() != "" && fila.ItemArray[48].ToString() != "*")
-                {
-                    valores.Add(fila.ItemArray[48].ToString());
-                }
-                else
-                {
-                    valores.Add("");
-                }
-                if (fila.ItemArray[49].ToString() != "" && fila.ItemArray[49].ToString() != "*")
-                {
-                    valores.Add(fila.ItemArray[49].ToString());
-                }
-                else
-                {
-                    valores.Add("");
-                }
-                if (fila.ItemArray[50].ToString() != "" && fila.ItemArray[50].ToString() != "*")
-                {
-                    valores.Add(fila.ItemArray[50].ToString());
-                }
-                else
-                {
-                    valores.Add("");
-                }
-            }
-            // Arbitros Fin
+            // Arbitros - ELIMINADOS (el nuevo Excel solo tiene 39 columnas)
+            // if (intNroCol > 39) { ... }
 
             //if (dtRequeridoMensaje.Rows.Count < 1 && valoresInvalidos.Rows.Count < 1)
+            System.Diagnostics.Debug.WriteLine("[IMPORTAR] valoresInvalidos.Rows.Count: " + valoresInvalidos.Rows.Count);
+            System.Diagnostics.Debug.WriteLine("[IMPORTAR] VALORES A ENVIAR (Total: " + valores.Count + "):");
+            for (int i = 0; i < valores.Count; i++)
+            {
+                System.Diagnostics.Debug.WriteLine("[IMPORTAR] valores[" + i + "] = '" + valores[i] + "'");
+            }
+            
             if (valoresInvalidos.Rows.Count < 1)
-                ActualizaEstudioLaboratorio(Fecha, Identificador, valores);
+            {
+                System.Diagnostics.Debug.WriteLine("[IMPORTAR] Llamando a ActualizaEstudioLaboratorio para orden: " + Identificador);
+                ActualizaEstudioLaboratorio(idTipoExamen, valores);
+            }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine("[IMPORTAR] NO se llamó a ActualizaEstudioLaboratorio por valores inválidos");
+            }
         }
 
 
@@ -767,6 +933,37 @@ namespace CapaPresentacion
         private void actualizarValores(string idTipoExamen, List<string> valores)
         {
             preventiva.guardarExLaboratorio(cargarEntidad(idTipoExamen, valores));
+        }
+
+        /// <summary>
+        /// Método auxiliar para obtener valores de forma segura desde DataRow con validación de DBNull y nulos
+        /// </summary>
+        private string GetSafeValue(DataRow row, int index)
+        {
+            try
+            {
+                if (index >= row.ItemArray.Length || index < 0)
+                    return "";
+
+                object value = row.ItemArray[index];
+                
+                if (value == DBNull.Value || value == null)
+                    return "";
+
+                string stringValue = value.ToString();
+                
+                // Validar valores comunes de Excel que indican celda vacía
+                if (string.IsNullOrWhiteSpace(stringValue) || 
+                    stringValue.ToLower() == "nan" || 
+                    stringValue == "*")
+                    return "";
+
+                return stringValue.Trim();
+            }
+            catch
+            {
+                return "";
+            }
         }
 
         private string obtenerIdColor(string valor, DataTable validaciones)
@@ -894,45 +1091,28 @@ namespace CapaPresentacion
             return idValidacion;
         }
 
-        private string obtenerIdValorEmbarazo(string valor, DataTable validaciones)
-        {
-            string idValidacion = "";
-            if (valor == "POS" || valor == "(+)" || valor == "+")
-            {
-                idValidacion = filtrarTablaDescripcion(validaciones, "43", "2");
-            }
-            else if (valor == "NEG" || valor == "(-)" || valor == "-")
-            {
-                idValidacion = filtrarTablaDescripcion(validaciones, "43", "1");
-            }
-            else if (valor == "*")
-            {
-                //idValidacion = filtrarTablaDescripcion(validaciones, "43", "3");
-                idValidacion = "";
-            }
-            else if (valor == "")
-            {
-                //idValidacion = filtrarTablaDescripcion(validaciones, "43", "3");
-                idValidacion = "";
-            }
-            else
-            {
-                idValidacion = "";
-                marcarComoInvalido(puntero, 38);
-            }
-            return idValidacion;
-        }
-
         private string filtrarTabla(DataTable valid, string codigo, string codigoInterno)
         {
             DataRow[] r = valid.Select("codigo = '" + codigo + "' and codigoInterno = '" + codigoInterno + "'");
-            return r[0][0].ToString();
+            if (r.Length > 0)
+            {
+                // Acceso seguro por nombre de columna (retorna el id)
+                object idValue = r[0]["id"];
+                return (idValue != DBNull.Value && idValue != null) ? idValue.ToString() : "";
+            }
+            return "";
         }
 
         private string filtrarTablaDescripcion(DataTable valid, string codigo, string codigoInterno)
         {
             DataRow[] r = valid.Select("codigo = '" + codigo + "' and codigoInterno = '" + codigoInterno + "'");
-            return r[0][3].ToString();
+            if (r.Length > 0)
+            {
+                // Acceso seguro por nombre de columna
+                object descripcionValue = r[0]["descripcion"];
+                return (descripcionValue != DBNull.Value && descripcionValue != null) ? descripcionValue.ToString() : "";
+            }
+            return "";
         }
 
         private string puntosAGlobulosBlancos(string forma, string cadena)
@@ -1083,9 +1263,68 @@ namespace CapaPresentacion
             return -1;
         }
 
-        private bool ActualizaEstudioLaboratorio(string Fecha, string Identificador, List<string> valores)
+        private bool ActualizaEstudioLaboratorio(string idTipoExamen, List<string> valores)
         {
-            return examen.ActualizarExamenLaboral(Fecha, Identificador, valores);
+            System.Diagnostics.Debug.WriteLine("[IMPORTAR] ActualizaEstudioLaboratorio llamado - idTipoExamen: " + idTipoExamen);
+            System.Diagnostics.Debug.WriteLine("[IMPORTAR] Cantidad de valores: " + valores.Count);
+            
+            // Según la estructura: ExamenLaboral.id se relaciona directamente con TipoExamenDePaciente.id
+            // Por lo tanto, usamos el idTipoExamen directamente como idExamenLaboral
+            string idExamenLaboral = idTipoExamen;
+            
+            System.Diagnostics.Debug.WriteLine("[IMPORTAR] Usando idTipoExamen como idExamenLaboral: " + idExamenLaboral);
+            
+            // Verificar si el registro existe en ExamenLaboral
+            string idExistente = verificarExamenLaboralExistente(idExamenLaboral);
+            
+            if (string.IsNullOrEmpty(idExistente))
+            {
+                System.Diagnostics.Debug.WriteLine("[IMPORTAR] NO se encontró ExamenLaboral, creando nuevo registro");
+                
+                // Crear el registro en ExamenLaboral usando el idTipoExamen como ID
+                bool creado = examen.CrearExamenLaboral(idTipoExamen);
+                
+                if (!creado)
+                {
+                    System.Diagnostics.Debug.WriteLine("[IMPORTAR] ERROR al crear ExamenLaboral");
+                    return false;
+                }
+                
+                System.Diagnostics.Debug.WriteLine("[IMPORTAR] ExamenLaboral creado exitosamente");
+            }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine("[IMPORTAR] ExamenLaboral ya existe, actualizando");
+            }
+            
+            bool resultado = examen.ActualizarExamenLaboralPorId(idExamenLaboral, valores);
+            
+            System.Diagnostics.Debug.WriteLine("[IMPORTAR] Resultado de ActualizarExamenLaboral: " + resultado);
+            return resultado;
+        }
+
+        private string verificarExamenLaboralExistente(string idExamenLaboral)
+        {
+            string strSQL = "SELECT id FROM dbo.ExamenLaboral WHERE id = CONVERT(uniqueidentifier, '" + idExamenLaboral + "')";
+            DataTable dtConsulta = SQLConnector.obtenerTablaSegunConsultaString(strSQL);
+            
+            if (dtConsulta.Rows.Count > 0 && dtConsulta.Rows[0]["id"] != DBNull.Value)
+            {
+                return dtConsulta.Rows[0]["id"].ToString();
+            }
+            return "";
+        }
+
+        private string obtenerIdExamenLaboralPorTipoExamen(string idTipoExamen)
+        {
+            string strSQL = "SELECT idExamenLaboral FROM dbo.ConsultaLaboral WHERE idTipoExamen = '" + idTipoExamen + "'";
+            DataTable dtConsulta = SQLConnector.obtenerTablaSegunConsultaString(strSQL);
+            
+            if (dtConsulta.Rows.Count > 0 && dtConsulta.Rows[0]["idExamenLaboral"] != DBNull.Value)
+            {
+                return dtConsulta.Rows[0]["idExamenLaboral"].ToString();
+            }
+            return "";
         }
 
         private void ValidarValores()
@@ -1212,9 +1451,6 @@ namespace CapaPresentacion
                             valoresInvalidos.Rows[i][1] = "VDRCU";
                             break;
                         case "38":
-                            valoresInvalidos.Rows[i][1] = "T. EMB. (Test Embarazo)";
-                            break;
-                        case "39":
                             valoresInvalidos.Rows[i][1] = "OBD (Observaciones)";
                             break;
                         default:
@@ -1228,6 +1464,7 @@ namespace CapaPresentacion
         {
             foreach (DataRow row in dtDatoRequerido.Rows)
             {
+                // [4] HGB (Hemoglobina) - MANTENIDO
                 if ((fila.ItemArray[4].ToString() == "" || fila.ItemArray[4].ToString() == "*") && Convert.ToBoolean(row.ItemArray[0].ToString()) == true)
                 {
                     dtRequeridoMensaje.Rows.Add(puntero, "Es requerido resultados de Hemoglobina");
@@ -1237,6 +1474,7 @@ namespace CapaPresentacion
                     dtRequeridoMensaje.Rows.Add(puntero, "(No Requerido) Hemoglobina ");
                 }
 
+                // [6] ERI (Eritrosedimentación) - MANTENIDO
                 if ((fila.ItemArray[6].ToString() == "" || fila.ItemArray[6].ToString() == "*") && Convert.ToBoolean(row.ItemArray[1].ToString()) == true)
                 {
                     dtRequeridoMensaje.Rows.Add(puntero, "Es requerido resultados de Eritrosedimentación");
@@ -1246,17 +1484,17 @@ namespace CapaPresentacion
                     dtRequeridoMensaje.Rows.Add(puntero, "(No Requerido) Eritrosedimentación");
                 }
 
-                if (((fila.ItemArray[35].ToString() == "" || fila.ItemArray[35].ToString() == "*") || (fila.ItemArray[36].ToString() == "" || fila.ItemArray[36].ToString() == "*"))
-                    && Convert.ToBoolean(row.ItemArray[2].ToString()))
+                // [35] GS (Grupo y Factor combinados) - ANTES ERA [33] Grupo y [34] Factor
+                if ((fila.ItemArray[35].ToString() == "" || fila.ItemArray[35].ToString() == "*") && Convert.ToBoolean(row.ItemArray[2].ToString()))
                 {
                     dtRequeridoMensaje.Rows.Add(puntero, "Es requerido resultados de Grupo y Factor");
                 }
-                else if (((fila.ItemArray[35].ToString() != "" && fila.ItemArray[35].ToString() != "*") || (fila.ItemArray[36].ToString() != "" && fila.ItemArray[36].ToString() != "*"))
-                    && !Convert.ToBoolean(row.ItemArray[2].ToString()))
+                else if ((fila.ItemArray[35].ToString() != "" && fila.ItemArray[35].ToString() != "*") && !Convert.ToBoolean(row.ItemArray[2].ToString()))
                 {
                     dtRequeridoMensaje.Rows.Add(puntero, "(No Requerido) Grupo y Factor");
                 }
 
+                // [14] GLU (Glucemia) - MANTENIDO
                 if ((fila.ItemArray[14].ToString() == "" || fila.ItemArray[14].ToString() == "*") && Convert.ToBoolean(row.ItemArray[3].ToString()) == true)
                 {
                     dtRequeridoMensaje.Rows.Add(puntero, "Es requerido resultados de Glucemia");
@@ -1266,6 +1504,7 @@ namespace CapaPresentacion
                     dtRequeridoMensaje.Rows.Add(puntero, "(No Requerido) Glucemia");
                 }
 
+                // [15] URE (Uremia) - MANTENIDO
                 if ((fila.ItemArray[15].ToString() == "" || fila.ItemArray[15].ToString() == "*") && Convert.ToBoolean(row.ItemArray[4].ToString()) == true)
                 {
                     dtRequeridoMensaje.Rows.Add(puntero, "Es requerido resultados de Uremia");
@@ -1275,15 +1514,18 @@ namespace CapaPresentacion
                     dtRequeridoMensaje.Rows.Add(puntero, "(No Requerido) Uremia");
                 }
 
-                if ((fila.ItemArray[16].ToString() == "" || fila.ItemArray[16].ToString() == "*") && Convert.ToBoolean(row.ItemArray[5].ToString()) == true)
-                {
-                    dtRequeridoMensaje.Rows.Add(puntero, "Es requerido resultados de Chagas");
-                }
-                else if ((fila.ItemArray[16].ToString() != "" && fila.ItemArray[16].ToString() != "*") && Convert.ToBoolean(row.ItemArray[5].ToString()) == false)
-                {
-                    dtRequeridoMensaje.Rows.Add(puntero, "(No Requerido) Chagas");
-                }
+                // [16] Chagas - YA NO EXISTE en el nuevo Excel
+                // Comentado ya que Chagas ya no está en el nuevo formato
+                // if ((fila.ItemArray[16].ToString() == "" || fila.ItemArray[16].ToString() == "*") && Convert.ToBoolean(row.ItemArray[5].ToString()) == true)
+                // {
+                //     dtRequeridoMensaje.Rows.Add(puntero, "Es requerido resultados de Chagas");
+                // }
+                // else if ((fila.ItemArray[16].ToString() != "" && fila.ItemArray[16].ToString() != "*") && Convert.ToBoolean(row.ItemArray[5].ToString()) == false)
+                // {
+                //     dtRequeridoMensaje.Rows.Add(puntero, "(No Requerido) Chagas");
+                // }
 
+                // [37] VDRCU (VDRL) - ANTES ERA [35] VDRL
                 if ((fila.ItemArray[37].ToString() == "" || fila.ItemArray[37].ToString() == "*") && Convert.ToBoolean(row.ItemArray[6].ToString()) == true)
                 {
                     dtRequeridoMensaje.Rows.Add(puntero, "Es requerido resultados de VDRL");
@@ -1293,26 +1535,19 @@ namespace CapaPresentacion
                     dtRequeridoMensaje.Rows.Add(puntero, "(No Requerido) VDRL");
                 }
 
-                if ((fila.ItemArray[38].ToString() == "" || fila.ItemArray[38].ToString() == "*") && Convert.ToBoolean(row.ItemArray[7].ToString()) == true)
-                {
-                    dtRequeridoMensaje.Rows.Add(puntero, "Es requerido resultados de Test Embarazo");
-                }
-                else if ((fila.ItemArray[38].ToString() != "" && fila.ItemArray[38].ToString() != "*") && Convert.ToBoolean(row.ItemArray[7].ToString()) == false)
-                {
-                    dtRequeridoMensaje.Rows.Add(puntero, "(No Requerido) Test Embarazo");
-                }
-
                 // Comentado para permitir importación sin estudios de lípidos requeridos
-                // if ((fila.ItemArray[32].ToString() == "" || fila.ItemArray[32].ToString() == "*") && Convert.ToBoolean(row.ItemArray[8].ToString()) == true)
+                // [17] COL (Colesterol) - ANTES ERA [32] Col. Total
+                // if ((fila.ItemArray[17].ToString() == "" || fila.ItemArray[17].ToString() == "*") && Convert.ToBoolean(row.ItemArray[8].ToString()) == true)
                 // {
                 //     dtRequeridoMensaje.Rows.Add(puntero, "Es requerido resultados de Col. Total");
                 // }
-                // else if ((fila.ItemArray[32].ToString() != "" && fila.ItemArray[32].ToString() != "*") && Convert.ToBoolean(row.ItemArray[8].ToString()) == false)
+                // else if ((fila.ItemArray[17].ToString() != "" && fila.ItemArray[17].ToString() != "*") && Convert.ToBoolean(row.ItemArray[8].ToString()) == false)
                 // {
                 //     dtRequeridoMensaje.Rows.Add(puntero, "(No Requerido) Col. Total");
                 // }
 
                 // Comentado para permitir importación sin estudios de lípidos requeridos
+                // [34] LDL - MANTENIDO
                 // if ((fila.ItemArray[34].ToString() == "" || fila.ItemArray[34].ToString() == "*" || Convert.ToInt32(fila.ItemArray[34]) == 0) && Convert.ToBoolean(row.ItemArray[9].ToString()) == true)
                 // {
                 //     dtRequeridoMensaje.Rows.Add(puntero, "Es requerido resultados de LDL");
@@ -1323,6 +1558,7 @@ namespace CapaPresentacion
                 // }
 
                 // Comentado para permitir importación sin estudios de lípidos requeridos
+                // [31] HDL - MANTENIDO
                 // if ((fila.ItemArray[31].ToString() == "" || fila.ItemArray[31].ToString() == "*") && Convert.ToBoolean(row.ItemArray[10].ToString()) == true)
                 // {
                 //     dtRequeridoMensaje.Rows.Add(puntero, "Es requerido resultados de HDL");
@@ -1333,6 +1569,7 @@ namespace CapaPresentacion
                 // }
 
                 // Comentado para permitir importación sin estudios de lípidos requeridos
+                // [33] TGL (Triglicéridos) - MANTENIDO
                 // if ((fila.ItemArray[33].ToString() == "" || fila.ItemArray[33].ToString() == "*") && Convert.ToBoolean(row.ItemArray[11].ToString()) == true)
                 // {
                 //     dtRequeridoMensaje.Rows.Add(puntero, "Es requerido resultados de Triglic.");
@@ -1342,28 +1579,17 @@ namespace CapaPresentacion
                 //     dtRequeridoMensaje.Rows.Add(puntero, "(No Requerido) Triglic.");
                 // }
 
-                if (((fila.ItemArray[17].ToString() == "" || fila.ItemArray[17].ToString() == "*") ||
-                    (fila.ItemArray[18].ToString() == "" || fila.ItemArray[18].ToString() == "*") ||
-                    (fila.ItemArray[19].ToString() == "" || fila.ItemArray[19].ToString() == "*") ||
+                // Orina: [19] DEN, [20] PH, [21] GLU, [22] PRO, [25] BIL - Simplificado
+                if (((fila.ItemArray[19].ToString() == "" || fila.ItemArray[19].ToString() == "*") ||
                     (fila.ItemArray[20].ToString() == "" || fila.ItemArray[20].ToString() == "*") ||
-                    (fila.ItemArray[21].ToString() == "" || fila.ItemArray[21].ToString() == "*") ||
-                    (fila.ItemArray[22].ToString() == "" || fila.ItemArray[22].ToString() == "*") ||
-                    (fila.ItemArray[23].ToString() == "" || fila.ItemArray[23].ToString() == "*") ||
-                    (fila.ItemArray[24].ToString() == "" || fila.ItemArray[24].ToString() == "*") ||
-                    (fila.ItemArray[25].ToString() == "" || fila.ItemArray[25].ToString() == "*")) &&
+                    (fila.ItemArray[21].ToString() == "" || fila.ItemArray[21].ToString() == "*")) &&
                     Convert.ToBoolean(row.ItemArray[12].ToString()) == true)
                 {
                     dtRequeridoMensaje.Rows.Add(puntero, "Incompleto Análisis de Orina");
                 }
-                else if (((fila.ItemArray[17].ToString() != "" && fila.ItemArray[17].ToString() != "*") ||
-                    (fila.ItemArray[18].ToString() != "" && fila.ItemArray[18].ToString() != "*") ||
-                    (fila.ItemArray[19].ToString() != "" && fila.ItemArray[19].ToString() != "*") ||
+                else if (((fila.ItemArray[19].ToString() != "" && fila.ItemArray[19].ToString() != "*") ||
                     (fila.ItemArray[20].ToString() != "" && fila.ItemArray[20].ToString() != "*") ||
-                    (fila.ItemArray[21].ToString() != "" && fila.ItemArray[21].ToString() != "*") ||
-                    (fila.ItemArray[22].ToString() != "" && fila.ItemArray[22].ToString() != "*") ||
-                    (fila.ItemArray[23].ToString() != "" && fila.ItemArray[23].ToString() != "*") ||
-                    (fila.ItemArray[24].ToString() != "" && fila.ItemArray[24].ToString() != "*") ||
-                    (fila.ItemArray[25].ToString() != "" && fila.ItemArray[25].ToString() != "*")) &&
+                    (fila.ItemArray[21].ToString() != "" && fila.ItemArray[21].ToString() != "*")) &&
                     Convert.ToBoolean(row.ItemArray[12].ToString()) == false)
                 {
                     dtRequeridoMensaje.Rows.Add(puntero, "(No Requerido) Análisis de Orina");
