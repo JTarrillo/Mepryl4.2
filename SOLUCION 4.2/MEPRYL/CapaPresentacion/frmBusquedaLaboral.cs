@@ -219,42 +219,75 @@ namespace CapaPresentacion
         {
             try
             {
-                if (puntero != -1)
+                if (dgv.Rows.Count == 0)
                 {
-                    dgv.Rows[puntero].Cells[celda].Selected = true;
-                    //dgv.Rows[puntero].Selected = true;
-                    dgv.CurrentCell = dgv.Rows[puntero].Cells[14];
+                    return; // No hay filas, no seleccionar nada
+                }
+
+                if (puntero != -1 && puntero < dgv.Rows.Count)
+                {
+                    // Verificar que la celda exista antes de acceder
+                    if (celda >= 0 && celda < dgv.Columns.Count)
+                    {
+                        dgv.Rows[puntero].Cells[celda].Selected = true;
+                    }
+                    // Siempre seleccionar la columna 14 como celda actual
+                    if (14 < dgv.Columns.Count)
+                    {
+                        dgv.CurrentCell = dgv.Rows[puntero].Cells[14];
+                    }
                 }
                 else
                 {
-                    dgv.Rows[0].Cells[1].Selected = true;
+                    // Fallback: seleccionar primera fila, columna 1
+                    if (dgv.Columns.Count > 1)
+                    {
+                        dgv.Rows[0].Cells[1].Selected = true;
+                    }
                 }
             }
             catch (System.ArgumentOutOfRangeException ex)
             {
-                if (dgv.Rows.Count > 0)
+                System.Diagnostics.Debug.WriteLine("[BUSQUEDA] Exception en seleccionarCelda: " + ex.ToString());
+                if (dgv.Rows.Count > 0 && dgv.Columns.Count > 1)
                 {
-                    dgv.Rows[0].Cells[1].Selected = true;
+                    try
+                    {
+                        dgv.Rows[0].Cells[1].Selected = true;
+                    }
+                    catch { }
                 }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("[BUSQUEDA] Exception general en seleccionarCelda: " + ex.ToString());
             }
         }
 
         public void actualizar()
         {
+            System.Diagnostics.Debug.WriteLine("[BUSQUEDA] actualizar() llamado");
+            
             if (!string.IsNullOrEmpty(tbBusqueda.Text))
             {
+                System.Diagnostics.Debug.WriteLine("[BUSQUEDA] Usando filtro de búsqueda: " + tbBusqueda.Text);
                 DataTable laborales = laboral.cargarListadoConFiltro(tbBusqueda.Text);
                 llenarDgv(laborales);
                 return;
             }
+            
             if (panel1.Enabled)
             {
+                System.Diagnostics.Debug.WriteLine("[BUSQUEDA] Modo fecha única: " + tpFecha.Value.ToString("yyyy-MM-dd"));
                 cargarExamenesSinFiltro(tpFecha.Value, tpFecha.Value, obtenerFiltro());
             }
             else
             {
+                System.Diagnostics.Debug.WriteLine("[BUSQUEDA] Modo rango: " + tpDesde.Value.ToString("yyyy-MM-dd") + " a " + tpHasta.Value.ToString("yyyy-MM-dd"));
                 cargarExamenesSinFiltro(tpDesde.Value, tpHasta.Value, obtenerFiltro());
             }
+            
+            System.Diagnostics.Debug.WriteLine("[BUSQUEDA] actualizar() completado");
         }
 
         private bool verificarExamenExiste(string idExamen)
@@ -296,6 +329,14 @@ namespace CapaPresentacion
 
         private void abrirVentanaCarga(DataGridViewCellEventArgs c)
         {
+            System.Diagnostics.Debug.WriteLine("[ABRIR EXAMEN] Columna 17 (IdExamenLaboral): " + dgv.Rows[c.RowIndex].Cells[17].Value.ToString());
+            System.Diagnostics.Debug.WriteLine("[ABRIR EXAMEN] Columna 19 (IdTipoExamen): " + dgv.Rows[c.RowIndex].Cells[19].Value.ToString());
+            
+            // Usar directamente la columna 17 que ya tiene el ID correcto (unificado)
+            string idExamenParaUsar = dgv.Rows[c.RowIndex].Cells[17].Value.ToString();
+            
+            System.Diagnostics.Debug.WriteLine("[ABRIR EXAMEN] ID final a usar: " + idExamenParaUsar);
+            
             intFilaSelecc = dgv.CurrentCell.RowIndex; // GRV - Modificado
             puntero = intFilaSelecc;
             //celda = dgv.CurrentCell.ColumnIndex;            
@@ -329,30 +370,17 @@ namespace CapaPresentacion
                 frm.setearLabelTitulo(dgv.Rows[c.RowIndex].Cells[4].Value.ToString());
                 if (dgv.Rows[c.RowIndex].Cells[3].Value.ToString().Contains("L"))
                 {
-                    // Prioridad: Usar IdTipoExamen (columna 19) porque ahora ExamenLaboral.id se relaciona con TipoExamenDePaciente.id
-                    string idTipoExamen = dgv.Rows[c.RowIndex].Cells[19].Value.ToString();
-                    string idExamenLaboralAntiguo = dgv.Rows[c.RowIndex].Cells[17].Value.ToString();
+                    // Usar directamente la columna 17 que ya tiene el ID unificado correcto
+                    string idExamenParaUsar = dgv.Rows[c.RowIndex].Cells[17].Value.ToString();
                     
-                    System.Diagnostics.Debug.WriteLine("[ABRIR EXAMEN] Columna 17 (IdExamenLaboral antiguo): " + idExamenLaboralAntiguo);
-                    System.Diagnostics.Debug.WriteLine("[ABRIR EXAMEN] Columna 19 (IdTipoExamen): " + idTipoExamen);
+                    System.Diagnostics.Debug.WriteLine("[ABRIR EXAMEN] Usando columna 17 (ID unificado): " + idExamenParaUsar);
                     
-                    string idExamenParaUsar = idTipoExamen;
-                    
-                    // Si IdTipoExamen está vacío, usar IdExamenLaboral antiguo (compatibilidad con sistema anterior)
-                    if (string.IsNullOrEmpty(idExamenParaUsar) || idExamenParaUsar == Guid.Empty.ToString())
+                    // Verificar si el registro existe en ExamenLaboral
+                    bool existeExamen = verificarExamenExiste(idExamenParaUsar);
+                    if (!existeExamen)
                     {
-                        idExamenParaUsar = idExamenLaboralAntiguo;
-                        System.Diagnostics.Debug.WriteLine("[ABRIR EXAMEN] Usando sistema antiguo (columna 17): " + idExamenParaUsar);
-                    }
-                    else
-                    {
-                        // Verificar si el registro existe en ExamenLaboral con el IdTipoExamen
-                        bool existeExamen = verificarExamenExiste(idTipoExamen);
-                        if (!existeExamen)
-                        {
-                            System.Diagnostics.Debug.WriteLine("[ABRIR EXAMEN] No existe ExamenLaboral con IdTipoExamen, creando...");
-                            crearExamenLaboral(idTipoExamen);
-                        }
+                        System.Diagnostics.Debug.WriteLine("[ABRIR EXAMEN] No existe ExamenLaboral, creando...");
+                        crearExamenLaboral(idExamenParaUsar);
                     }
                     
                     System.Diagnostics.Debug.WriteLine("[ABRIR EXAMEN] ID final a usar: " + idExamenParaUsar);

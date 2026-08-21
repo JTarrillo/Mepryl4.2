@@ -65,7 +65,7 @@ namespace CapaDatosMepryl
                     }
                 }
 
-                DataTable tablaLaborales = SQLConnector.obtenerTablaSegunConsultaString(@"select c.id, c.fecha, c.identificador, 
+                string strSQL = @"select c.id, c.fecha, c.identificador, 
             p.id, p.dni,(p.apellido + ' ' + p.nombres), tep.id, e.descripcion, cl.id, cl.tipo, cl.idExamenLaboral, cl.idConsultorioLaboral,
             tep.imp, tep.impLab, cons, tep.mail 
             from dbo.Consulta c inner join dbo.PacienteLaboral p on c.pacienteID = p.id
@@ -73,7 +73,18 @@ namespace CapaDatosMepryl
                             inner join dbo.Especialidad e on tep.idEspecialidad = e.id
                             inner join dbo.ConsultaLaboral cl on tep.id = cl.idTipoExamen
             where c.tipo != 'P' " + consulta + " and convert(date,c.fecha) >= '" + desdeSql + @"' and convert(date,c.fecha)
-            <= '" + hastaSql + "' order by CONVERT(VARCHAR(10),c.fecha,101), convert(int,REPLACE(REPLACE(REPLACE(REPLACE(c.identificador, 'L', ''), 'CO',''), 'EC', ''),'R',''))");
+            <= '" + hastaSql + "' order by CONVERT(VARCHAR(10),c.fecha,101), convert(int,REPLACE(REPLACE(REPLACE(REPLACE(c.identificador, 'L', ''), 'CO',''), 'EC', ''),'R',''))";
+                
+                System.Diagnostics.Debug.WriteLine("[LABORAL] consultasSinFiltro SQL: " + strSQL);
+                DataTable tablaLaborales = SQLConnector.obtenerTablaSegunConsultaString(strSQL);
+                System.Diagnostics.Debug.WriteLine("[LABORAL] consultasSinFiltro Rows: " + tablaLaborales.Rows.Count);
+                
+                foreach (DataRow row in tablaLaborales.Rows)
+                {
+                    System.Diagnostics.Debug.WriteLine("[LABORAL] Fila: identificador=" + row["identificador"].ToString() + 
+                        ", idExamenLaboral(cl)=" + row["idExamenLaboral"].ToString() + 
+                        ", tep.id=" + row["id"].ToString());
+                }
 
                 if (listaFiltro.Contains("L"))
                 {
@@ -146,6 +157,7 @@ namespace CapaDatosMepryl
             retorno.Columns.Add("ImpLaboratorio");
             retorno.Columns.Add("Consolidado");
             retorno.Columns.Add("Enviado");
+            retorno.Columns.Add("IdTipoExamenGrilla"); // Nueva columna para la grilla
 
             foreach (DataRow r in tablaLaborales.Rows)
             {
@@ -192,7 +204,7 @@ namespace CapaDatosMepryl
                         Convert.ToDateTime(r.ItemArray[1]).ToString("HH:mm"), r.ItemArray[2], r.ItemArray[7].ToString(),
                         idEmp, emp, tarea, r.ItemArray[4], r.ItemArray[5], r.ItemArray[6],
                         r.ItemArray[8], r.ItemArray[9], estAtenc, "", fechaAltaCitacion, "",
-                        r.ItemArray[10], r.ItemArray[11], "", r.ItemArray[6], r.ItemArray[12], r.ItemArray[13], r.ItemArray[14]);
+                        r.ItemArray[6], r.ItemArray[11], r.ItemArray[6], r.ItemArray[12], r.ItemArray[13], r.ItemArray[14], r.ItemArray[15], r.ItemArray[6]);
                     }
                     else
                     {
@@ -224,7 +236,7 @@ namespace CapaDatosMepryl
                         Convert.ToDateTime(r.ItemArray[1]).ToString("HH:mm"), r.ItemArray[2], r.ItemArray[7].ToString(),
                         idEmp, emp, tarea, r.ItemArray[4], r.ItemArray[5], r.ItemArray[6],
                         r.ItemArray[8], r.ItemArray[9], "", "", fechaAltaCitacion, dictamen,
-                        r.ItemArray[10], r.ItemArray[11], dictamenClinico, r.ItemArray[6], r.ItemArray[12], r.ItemArray[13], r.ItemArray[14], r.ItemArray[15]);
+                        r.ItemArray[6], r.ItemArray[11], dictamenClinico, r.ItemArray[6], r.ItemArray[12], r.ItemArray[13], r.ItemArray[14], r.ItemArray[15], r.ItemArray[6]);
                     }
                 }
 
