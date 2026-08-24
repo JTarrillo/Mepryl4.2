@@ -87,6 +87,34 @@ namespace CapaPresentacion
             //ActualizaTimer();
         }
 
+        private bool ConvertirABoolSeguro(object valor)
+        {
+            if (valor == null || valor == DBNull.Value)
+                return false;
+            
+            try
+            {
+                // Si ya es booleano
+                if (valor is bool)
+                    return (bool)valor;
+                
+                // Si es string, intentar conversiones comunes
+                string strValor = valor.ToString().Trim().ToLower();
+                if (strValor == "true" || strValor == "1" || strValor == "verdadero")
+                    return true;
+                if (strValor == "false" || strValor == "0" || strValor == "falso")
+                    return false;
+                
+                // Intentar conversión directa
+                return Convert.ToBoolean(valor);
+            }
+            catch
+            {
+                System.Diagnostics.Debug.WriteLine($"[AGENDA-DEBUG] Error convirtiendo '{valor}' a booleano, retornando false");
+                return false;
+            }
+        }
+
         private void inicializar()
         {
             var sw = System.Diagnostics.Stopwatch.StartNew();
@@ -109,7 +137,7 @@ namespace CapaPresentacion
             System.Diagnostics.Debug.WriteLine($"[AGENDA] PintarFilaGrilla(): {sw.ElapsedMilliseconds} ms");
 
             // Ajustar orden de columnas visualmente (solo primera vez)
-            if (dgvGrilla.Columns.Count > 36 && !columnasConfiguradas)
+            if (dgvGrilla.Columns.Count > 37 && !columnasConfiguradas)
             {
                 // FechaNaci antes de ObservacTurno
                 dgvGrilla.Columns[16].DisplayIndex = 13; // FechaNaci antes de ObservacTurno
@@ -139,42 +167,54 @@ namespace CapaPresentacion
                     dgvGrilla.Columns["EEG"].Width = 55; // Ancho suficiente para título y checkbox
                     dgvGrilla.Columns["EEG"].HeaderText = "Eeg";
                     dgvGrilla.Columns["EEG"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                    dgvGrilla.Columns["EEG"].DisplayIndex = 32; // Después de Espiro (31)
                 }
                 if (dgvGrilla.Columns.Contains("Odon"))
                 {
                     dgvGrilla.Columns["Odon"].Width = 55; // Ancho suficiente para título y checkbox
                     dgvGrilla.Columns["Odon"].HeaderText = "Odon";
                     dgvGrilla.Columns["Odon"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                    dgvGrilla.Columns["Odon"].DisplayIndex = 33; // Después de EEG (32)
                 }
                 if (dgvGrilla.Columns.Contains("Ergo"))
                 {
                     dgvGrilla.Columns["Ergo"].Width = 55; // Ancho suficiente para título y checkbox
                     dgvGrilla.Columns["Ergo"].HeaderText = "Ergo";
                     dgvGrilla.Columns["Ergo"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                    dgvGrilla.Columns["Ergo"].DisplayIndex = 34; // Después de Odon (33)
                 }
                 if (dgvGrilla.Columns.Contains("Psico"))
                 {
                     dgvGrilla.Columns["Psico"].Width = 55; // Ancho suficiente para título y checkbox
                     dgvGrilla.Columns["Psico"].HeaderText = "Psico";
                     dgvGrilla.Columns["Psico"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                    dgvGrilla.Columns["Psico"].DisplayIndex = 35; // Después de Ergo (34)
+                }
+                if (dgvGrilla.Columns.Contains("Espiro"))
+                {
+                    dgvGrilla.Columns["Espiro"].Width = 55; // Ancho suficiente para título y checkbox
+                    dgvGrilla.Columns["Espiro"].HeaderText = "Espiro";
+                    dgvGrilla.Columns["Espiro"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                    // Espiro entre Audio y EEG visualmente
+                    dgvGrilla.Columns["Espiro"].DisplayIndex = 31; // Después de Audio (30)
                 }
 
                 // Salida penúltima (antes de HoraSalida)
-                dgvGrilla.Columns[35].DisplayIndex = 35; // Salida penúltima
-                dgvGrilla.Columns[35].Width = 55; // Ancho suficiente para título y checkbox
-                dgvGrilla.Columns[35].HeaderText = "Salida";
-                dgvGrilla.Columns[35].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                dgvGrilla.Columns[36].DisplayIndex = 36; // Salida penúltima
+                dgvGrilla.Columns[36].Width = 55; // Ancho suficiente para título y checkbox
+                dgvGrilla.Columns[36].HeaderText = "Salida";
+                dgvGrilla.Columns[36].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
                 // RM después de Continua
                 dgvGrilla.Columns[15].DisplayIndex = 18; // RM después de Continua
 
                 // HoraSalida al final
-                dgvGrilla.Columns[36].DisplayIndex = 36; // HoraSalida al final
-                dgvGrilla.Columns[36].Width = 60; // Ancho de columna HoraSalida
-                dgvGrilla.Columns[36].HeaderText = "Hora"; // Nombre de columna HoraSalida
-                dgvGrilla.Columns[36].HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter; // Centrar encabezado
-                dgvGrilla.Columns[36].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; // Centrar contenido
-                dgvGrilla.Columns[36].ReadOnly = true; // HoraSalida read-only para evitar acciones al hacer click
+                dgvGrilla.Columns[37].DisplayIndex = 37; // HoraSalida al final
+                dgvGrilla.Columns[37].Width = 60; // Ancho de columna HoraSalida
+                dgvGrilla.Columns[37].HeaderText = "Hora"; // Nombre de columna HoraSalida
+                dgvGrilla.Columns[37].HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter; // Centrar encabezado
+                dgvGrilla.Columns[37].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; // Centrar contenido
+                dgvGrilla.Columns[37].ReadOnly = true; // HoraSalida read-only para evitar acciones al hacer click
 
                 // Color de selección RGB(0, 120, 212) - #0078D4 (azul Windows)
                 dgvGrilla.DefaultCellStyle.SelectionBackColor = Color.FromArgb(0, 120, 212);
@@ -262,20 +302,30 @@ namespace CapaPresentacion
 
         private void CargarDatos()
         {
+            System.Diagnostics.Debug.WriteLine($"[AGENDA-DEBUG] ========== CargarDatos INICIO ==========");
+            
             var sw = System.Diagnostics.Stopwatch.StartNew();
             DataTable dt = mesaEntrada.cargarMesaEntradaPlanillaCompleta();
             sw.Stop();
             System.Diagnostics.Debug.WriteLine($"[AGENDA]   SQL cargarMesaEntradaPlanillaCompleta: {sw.ElapsedMilliseconds} ms ({dt.Rows.Count} filas)");
-
-            if (dt.Rows.Count > 0)
+            
+            System.Diagnostics.Debug.WriteLine($"[AGENDA-DEBUG] DataTable recibido - Filas: {dt.Rows.Count}, Columnas: {dt.Columns.Count}");
+            
+            if (dt != null && dt.Rows.Count > 0)
             {
+                System.Diagnostics.Debug.WriteLine($"[AGENDA-DEBUG] DataTable tiene datos, procediendo a asignar a DataSource");
+                
                 sw.Restart();
                 dgvGrilla.DataSource = dt;
                 sw.Stop();
                 System.Diagnostics.Debug.WriteLine($"[AGENDA]   dgvGrilla.DataSource asignado: {sw.ElapsedMilliseconds} ms");
+                
+                System.Diagnostics.Debug.WriteLine($"[AGENDA-DEBUG] Después de asignar DataSource - dgvGrilla.Rows.Count: {dgvGrilla.Rows.Count}");
+                System.Diagnostics.Debug.WriteLine($"[AGENDA-DEBUG] Después de asignar DataSource - dgvGrilla.Columns.Count: {dgvGrilla.Columns.Count}");
 
                 if (dgvGrilla.Rows.Count > 0)
                 {
+                    System.Diagnostics.Debug.WriteLine($"[AGENDA-DEBUG] Grilla tiene filas, llamando cargarGrilla()");
                     sw.Restart();
                     cargarGrilla();
                     sw.Stop();
@@ -283,13 +333,26 @@ namespace CapaPresentacion
                 }
                 else
                 {
+                    System.Diagnostics.Debug.WriteLine($"[AGENDA-DEBUG] ERROR: dgvGrilla.Rows.Count es 0 después de asignar DataSource");
                     dgvGrilla.DataSource = null;
                 }
             }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine($"[AGENDA-DEBUG] ERROR: DataTable es null o no tiene filas");
+                dgvGrilla.DataSource = null;
+            }
+            
+            System.Diagnostics.Debug.WriteLine($"[AGENDA-DEBUG] ========== CargarDatos FIN ==========");
         }
 
         public void mostrarDatos()
         {
+            System.Diagnostics.Debug.WriteLine($"[AGENDA-DEBUG] ========== mostrarDatos INICIO ==========");
+            System.Diagnostics.Debug.WriteLine($"[AGENDA-DEBUG] dgvGrilla.Rows.Count: {dgvGrilla.Rows.Count}");
+            System.Diagnostics.Debug.WriteLine($"[AGENDA-DEBUG] dgvGrilla.Columns.Count: {dgvGrilla.Columns.Count}");
+            System.Diagnostics.Debug.WriteLine($"[AGENDA-DEBUG] intFilaSelecc: {intFilaSelecc}");
+            
             try
             {
                 if (dgvGrilla.Rows.Count > 0)
@@ -321,7 +384,7 @@ namespace CapaPresentacion
                         tbEstudiosComplementarios.Text = dgvGrilla.Rows[intFilaSelecc].Cells[21].Value.ToString();
                         tbTipoExamen.Text = dgvGrilla.Rows[intFilaSelecc].Cells[8].Value.ToString();
 
-                        chkRevisado.Checked = Convert.ToBoolean(dgvGrilla.Rows[intFilaSelecc].Cells[17].Value.ToString());
+                        chkRevisado.Checked = ConvertirABoolSeguro(dgvGrilla.Rows[intFilaSelecc].Cells[17].Value);
 
                         try
                         {
@@ -356,12 +419,26 @@ namespace CapaPresentacion
                             primeraVez = false;
                         }
                     }
+                    else
+                    {
+                        System.Diagnostics.Debug.WriteLine($"[AGENDA-DEBUG] ERROR: Cells[0].Value es null en fila {intFilaSelecc}");
+                    }
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine($"[AGENDA-DEBUG] ERROR: dgvGrilla.Rows.Count es 0");
                 }
             }
             catch (System.NullReferenceException ex)
             {
-                //
+                System.Diagnostics.Debug.WriteLine($"[AGENDA-DEBUG] ERROR en mostrarDatos: {ex.Message}");
             }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[AGENDA-DEBUG] ERROR inesperado en mostrarDatos: {ex.Message}");
+            }
+            
+            System.Diagnostics.Debug.WriteLine($"[AGENDA-DEBUG] ========== mostrarDatos FIN ==========");
 
         }
 
@@ -627,7 +704,7 @@ namespace CapaPresentacion
                 dgvGrilla.Columns[25].HeaderText = "Labo";
                 dgvGrilla.Columns[26].HeaderText = "Rayos";
                 dgvGrilla.Columns[27].HeaderText = "Electro";
-                dgvGrilla.Columns[35].HeaderText = "Salida";
+                dgvGrilla.Columns[36].HeaderText = "Salida";
 
                 if (dgvGrilla.Rows.Count > 0)
                 {
@@ -657,14 +734,14 @@ namespace CapaPresentacion
                         var chkRevisadoVal = dgvGrilla.Rows[i].Cells[17].Value; // APTO
                         var natVal = dgvGrilla.Rows[i].Cells[28].Value; // NAT
                         var continuaVal = dgvGrilla.Rows[i].Cells[29].Value; // CONTINUA
-                        var salidaVal = dgvGrilla.Rows[i].Cells[35].Value; // SALIDA
+                        var salidaVal = dgvGrilla.Columns.Count > 36 ? dgvGrilla.Rows[i].Cells[36].Value : null; // SALIDA (con validación)
 
                         System.Diagnostics.Debug.WriteLine($"[PINTAR] Fila {i} - Valores crudos: APTO={chkRevisadoVal} (Tipo: {chkRevisadoVal?.GetType().Name}), NAT={natVal} (Tipo: {natVal?.GetType().Name}), CONTINUA={continuaVal} (Tipo: {continuaVal?.GetType().Name}), SALIDA={salidaVal} (Tipo: {salidaVal?.GetType().Name})");
 
-                        bool chkRevisadoOn = chkRevisadoVal != null && chkRevisadoVal != DBNull.Value && Convert.ToBoolean(chkRevisadoVal);
-                        bool natOn = natVal != null && natVal != DBNull.Value && Convert.ToBoolean(natVal);
-                        bool continuaOn = continuaVal != null && continuaVal != DBNull.Value && Convert.ToBoolean(continuaVal);
-                        bool salidaOn = salidaVal != null && salidaVal != DBNull.Value && Convert.ToBoolean(salidaVal);
+                        bool chkRevisadoOn = ConvertirABoolSeguro(chkRevisadoVal);
+                        bool natOn = ConvertirABoolSeguro(natVal);
+                        bool continuaOn = ConvertirABoolSeguro(continuaVal);
+                        bool salidaOn = ConvertirABoolSeguro(salidaVal);
 
                         System.Diagnostics.Debug.WriteLine($"[PINTAR] Fila {i}: APTO={chkRevisadoOn}, NAT={natOn}, CONTINUA={continuaOn}, SALIDA={salidaOn}");
 
@@ -740,12 +817,12 @@ namespace CapaPresentacion
                 var chkRevisadoVal = dgvGrilla.Rows[rowIndex].Cells[17].Value; // APTO
                 var natVal = dgvGrilla.Rows[rowIndex].Cells[28].Value; // NAT
                 var continuaVal = dgvGrilla.Rows[rowIndex].Cells[29].Value; // CONTINUA
-                var salidaVal = dgvGrilla.Rows[rowIndex].Cells[35].Value; // SALIDA
+                var salidaVal = dgvGrilla.Columns.Count > 36 ? dgvGrilla.Rows[rowIndex].Cells[36].Value : null; // SALIDA (con validación)
 
-                bool chkRevisadoOn = chkRevisadoVal != null && chkRevisadoVal != DBNull.Value && Convert.ToBoolean(chkRevisadoVal);
-                bool natOn = natVal != null && natVal != DBNull.Value && Convert.ToBoolean(natVal);
-                bool continuaOn = continuaVal != null && continuaVal != DBNull.Value && Convert.ToBoolean(continuaVal);
-                bool salidaOn = salidaVal != null && salidaVal != DBNull.Value && Convert.ToBoolean(salidaVal);
+                bool chkRevisadoOn = ConvertirABoolSeguro(chkRevisadoVal);
+                bool natOn = ConvertirABoolSeguro(natVal);
+                bool continuaOn = ConvertirABoolSeguro(continuaVal);
+                bool salidaOn = ConvertirABoolSeguro(salidaVal);
 
                 // Nuevas reglas del doctor:
 
@@ -819,15 +896,15 @@ namespace CapaPresentacion
             intFilaSelecc = dgvGrilla.CurrentCell.RowIndex;
             intColSelecc = dgvGrilla.CurrentCell.ColumnIndex;
 
-            // Manejar los checkboxes (columnas 25-35)
-            if (e.ColumnIndex >= 25 && e.ColumnIndex <= 35 && e.RowIndex >= 0)
+            // Manejar los checkboxes (columnas 25-36)
+            if (e.ColumnIndex >= 25 && e.ColumnIndex <= 36 && e.RowIndex >= 0)
             {
                 System.Diagnostics.Debug.WriteLine($"[CHECKBOX] Detectado checkbox en columna {e.ColumnIndex}");
 
                 var valor = dgvGrilla.Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
                 System.Diagnostics.Debug.WriteLine($"[CHECKBOX] Valor antes de cambio: {valor} (Tipo: {valor?.GetType().Name})");
 
-                bool estadoActual = valor != DBNull.Value && valor != null ? Convert.ToBoolean(valor) : false;
+                bool estadoActual = ConvertirABoolSeguro(valor);
                 bool nuevoEstado = !estadoActual; // Invertir el valor
 
                 dgvGrilla.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = nuevoEstado;
@@ -841,18 +918,21 @@ namespace CapaPresentacion
                 // Guardar el estado en base de datos
                 mesaEntrada.guardarEstadoCheckbox(idTipoExamen, e.ColumnIndex, nuevoEstado);
 
-                // Si es Salida (columna 35), actualizar HoraSalida en tiempo real
-                if (e.ColumnIndex == 35)
+                // Si es Salida (columna 36), actualizar HoraSalida en tiempo real
+                if (e.ColumnIndex == 36)
                 {
-                    if (nuevoEstado)
+                    if (dgvGrilla.Columns.Count > 37)
                     {
-                        // Marcar Salida - mostrar hora actual (solo hora)
-                        dgvGrilla.Rows[e.RowIndex].Cells[36].Value = DateTime.Now.ToString("HH:mm:ss");
-                    }
-                    else
-                    {
-                        // Desmarcar Salida - limpiar hora
-                        dgvGrilla.Rows[e.RowIndex].Cells[36].Value = string.Empty;
+                        if (nuevoEstado)
+                        {
+                            // Marcar Salida - mostrar hora actual (solo hora)
+                            dgvGrilla.Rows[e.RowIndex].Cells[37].Value = DateTime.Now.ToString("HH:mm:ss");
+                        }
+                        else
+                        {
+                            // Desmarcar Salida - limpiar hora
+                            dgvGrilla.Rows[e.RowIndex].Cells[37].Value = string.Empty;
+                        }
                     }
                 }
 
@@ -877,13 +957,13 @@ namespace CapaPresentacion
 
             // Log para verificar HoraSalida en la grilla
             System.Diagnostics.Debug.WriteLine($"[HORA_SALIDA_GRILLA] Total columnas en grilla: {dgvGrilla.Columns.Count}");
-            if (dgvGrilla.Columns.Count > 36)
+            if (dgvGrilla.Columns.Count > 37)
             {
-                System.Diagnostics.Debug.WriteLine($"[HORA_SALIDA_GRILLA] Columna 36 (HoraSalida) existe: {dgvGrilla.Columns[36].Name}");
+                System.Diagnostics.Debug.WriteLine($"[HORA_SALIDA_GRILLA] Columna 37 (HoraSalida) existe: {dgvGrilla.Columns[37].Name}");
 
                 for (int i = 0; i < Math.Min(5, dgvGrilla.Rows.Count); i++)
                 {
-                    var horaSalidaValue = dgvGrilla.Rows[i].Cells[36].Value;
+                    var horaSalidaValue = dgvGrilla.Columns.Count > 37 ? dgvGrilla.Rows[i].Cells[37].Value : null;
                     System.Diagnostics.Debug.WriteLine($"[HORA_SALIDA_GRILLA] Fila {i} - HoraSalida: {horaSalidaValue} (Tipo: {horaSalidaValue?.GetType().Name})");
                 }
             }
@@ -893,7 +973,7 @@ namespace CapaPresentacion
             }
 
             // Ajustar orden de columnas visualmente (solo primera vez)
-            if (dgvGrilla.Columns.Count > 36 && !columnasConfiguradas)
+            if (dgvGrilla.Columns.Count > 37 && !columnasConfiguradas)
             {
                 // FechaNaci antes de ObservacTurno
                 dgvGrilla.Columns[16].DisplayIndex = 13; // FechaNaci antes de ObservacTurno
@@ -923,42 +1003,54 @@ namespace CapaPresentacion
                     dgvGrilla.Columns["EEG"].Width = 55; // Ancho suficiente para título y checkbox
                     dgvGrilla.Columns["EEG"].HeaderText = "Eeg";
                     dgvGrilla.Columns["EEG"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                    dgvGrilla.Columns["EEG"].DisplayIndex = 32; // Después de Espiro (31)
                 }
                 if (dgvGrilla.Columns.Contains("Odon"))
                 {
                     dgvGrilla.Columns["Odon"].Width = 55; // Ancho suficiente para título y checkbox
                     dgvGrilla.Columns["Odon"].HeaderText = "Odon";
                     dgvGrilla.Columns["Odon"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                    dgvGrilla.Columns["Odon"].DisplayIndex = 33; // Después de EEG (32)
                 }
                 if (dgvGrilla.Columns.Contains("Ergo"))
                 {
                     dgvGrilla.Columns["Ergo"].Width = 55; // Ancho suficiente para título y checkbox
                     dgvGrilla.Columns["Ergo"].HeaderText = "Ergo";
                     dgvGrilla.Columns["Ergo"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                    dgvGrilla.Columns["Ergo"].DisplayIndex = 34; // Después de Odon (33)
                 }
                 if (dgvGrilla.Columns.Contains("Psico"))
                 {
                     dgvGrilla.Columns["Psico"].Width = 55; // Ancho suficiente para título y checkbox
                     dgvGrilla.Columns["Psico"].HeaderText = "Psico";
                     dgvGrilla.Columns["Psico"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                    dgvGrilla.Columns["Psico"].DisplayIndex = 35; // Después de Ergo (34)
+                }
+                if (dgvGrilla.Columns.Contains("Espiro"))
+                {
+                    dgvGrilla.Columns["Espiro"].Width = 55; // Ancho suficiente para título y checkbox
+                    dgvGrilla.Columns["Espiro"].HeaderText = "Espiro";
+                    dgvGrilla.Columns["Espiro"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                    // Espiro entre Audio y EEG visualmente
+                    dgvGrilla.Columns["Espiro"].DisplayIndex = 31; // Después de Audio (30)
                 }
 
                 // Salida penúltima (antes de HoraSalida)
-                dgvGrilla.Columns[35].DisplayIndex = 35; // Salida penúltima
-                dgvGrilla.Columns[35].Width = 55; // Ancho suficiente para título y checkbox
-                dgvGrilla.Columns[35].HeaderText = "Salida";
-                dgvGrilla.Columns[35].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                dgvGrilla.Columns[36].DisplayIndex = 36; // Salida penúltima
+                dgvGrilla.Columns[36].Width = 55; // Ancho suficiente para título y checkbox
+                dgvGrilla.Columns[36].HeaderText = "Salida";
+                dgvGrilla.Columns[36].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
                 // RM después de Continua
                 dgvGrilla.Columns[15].DisplayIndex = 18; // RM después de Continua
 
                 // HoraSalida al final
-                dgvGrilla.Columns[36].DisplayIndex = 36; // HoraSalida al final
-                dgvGrilla.Columns[36].Width = 60; // Ancho de columna HoraSalida
-                dgvGrilla.Columns[36].HeaderText = "Hora"; // Nombre de columna HoraSalida
-                dgvGrilla.Columns[36].HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter; // Centrar encabezado
-                dgvGrilla.Columns[36].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; // Centrar contenido
-                dgvGrilla.Columns[36].ReadOnly = true; // HoraSalida read-only para evitar acciones al hacer click
+                dgvGrilla.Columns[37].DisplayIndex = 37; // HoraSalida al final
+                dgvGrilla.Columns[37].Width = 60; // Ancho de columna HoraSalida
+                dgvGrilla.Columns[37].HeaderText = "Hora"; // Nombre de columna HoraSalida
+                dgvGrilla.Columns[37].HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter; // Centrar encabezado
+                dgvGrilla.Columns[37].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; // Centrar contenido
+                dgvGrilla.Columns[37].ReadOnly = true; // HoraSalida read-only para evitar acciones al hacer click
 
                 // Color de selección RGB(0, 120, 212) - #0078D4 (azul Windows)
                 dgvGrilla.DefaultCellStyle.SelectionBackColor = Color.FromArgb(0, 120, 212);

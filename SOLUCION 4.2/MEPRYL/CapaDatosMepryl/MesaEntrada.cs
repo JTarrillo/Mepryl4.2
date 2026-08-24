@@ -1453,6 +1453,7 @@ namespace CapaDatosMepryl
             retorno.Columns.Add("Nat");
             retorno.Columns.Add("Continua");
             retorno.Columns.Add("Audio");
+            retorno.Columns.Add("Espiro");
             retorno.Columns.Add("EEG");
             retorno.Columns.Add("Odon");
             retorno.Columns.Add("Ergo");
@@ -1470,6 +1471,7 @@ namespace CapaDatosMepryl
             retorno.Columns[33].DataType = System.Type.GetType("System.Boolean");
             retorno.Columns[34].DataType = System.Type.GetType("System.Boolean");
             retorno.Columns[35].DataType = System.Type.GetType("System.Boolean");
+            retorno.Columns[36].DataType = System.Type.GetType("System.Boolean");
 
             return retorno;
         }
@@ -1532,6 +1534,14 @@ namespace CapaDatosMepryl
             // yyyyMMdd (sin separadores) es el único formato que SQL Server siempre interpreta correctamente
             string fechaDesde = DateTime.Today.ToString("yyyyMMdd");
             string fechaHasta = DateTime.Today.AddDays(1).ToString("yyyyMMdd");
+            
+            // TEMPORAL: Para debug, buscar datos de los últimos 30 días
+            string fechaDesdeDebug = DateTime.Today.AddDays(-30).ToString("yyyyMMdd");
+            string fechaHastaDebug = DateTime.Today.AddDays(1).ToString("yyyyMMdd");
+            
+            System.Diagnostics.Debug.WriteLine($"[AGENDA-DEBUG] Buscando datos desde: {fechaDesde} hasta: {fechaHasta}");
+            System.Diagnostics.Debug.WriteLine($"[AGENDA-DEBUG] DateTime.Today: {DateTime.Today}");
+            System.Diagnostics.Debug.WriteLine($"[AGENDA-DEBUG] TEMPORAL: Buscando datos desde: {fechaDesdeDebug} hasta: {fechaHastaDebug} (últimos 30 días)");
 
             var sw = System.Diagnostics.Stopwatch.StartNew();
             DataTable consulta = SQLConnector.obtenerTablaSegunConsultaString(
@@ -1550,6 +1560,7 @@ namespace CapaDatosMepryl
         ISNULL(ec.Nat, 0) as Nat,
         ISNULL(ec.Continua, 1) as Continua,
         ISNULL(ec.Audio, 0) as Audio,
+        ISNULL(ec.Espiro, 0) as Espiro,
         ISNULL(ec.EEG, 0) as EEG,
         ISNULL(ec.Odon, 0) as Odon,
         ISNULL(ec.Ergo, 0) as Ergo,
@@ -1589,6 +1600,7 @@ namespace CapaDatosMepryl
                     { "Odon", devolverBooleano(row["Odon"]) },
                     { "Ergo", devolverBooleano(row["Ergo"]) },
                     { "Psico", devolverBooleano(row["Psico"]) },
+                    { "Espiro", devolverBooleano(row["Espiro"]) },
                     { "Salida", devolverBooleano(row["Salida"]) }
                 };
             }
@@ -1720,7 +1732,7 @@ namespace CapaDatosMepryl
 
                     // Cargar estados de checkboxes desde el diccionario
                     bool estadoLaboratorio = false, estadoRayos = false, estadoElectro = false, estadoSalida = false, estadoNat = false, estadoContinua = false;
-                    bool estadoAudio = false, estadoEEG = false, estadoOdon = false, estadoErgo = false, estadoPsico = false;
+                    bool estadoAudio = false, estadoEEG = false, estadoOdon = false, estadoErgo = false, estadoPsico = false, estadoEspiro = false;
                     System.Diagnostics.Debug.WriteLine($"[CHECKBOX] Buscando estado para IdTipoExamen={idTipoExamen}. Diccionario tiene {estadosCheckboxes.Count} claves");
                     if (estadosCheckboxes.TryGetValue(idTipoExamen, out var estados))
                     {
@@ -1735,6 +1747,7 @@ namespace CapaDatosMepryl
                         estadoOdon = estados["Odon"];
                         estadoErgo = estados["Ergo"];
                         estadoPsico = estados["Psico"];
+                        estadoEspiro = estados["Espiro"];
                         System.Diagnostics.Debug.WriteLine($"[CHECKBOX] Cargando desde BD para IdTipoExamen={idTipoExamen}: Labo={estadoLaboratorio}, Rayos={estadoRayos}, Electro={estadoElectro}, Salida={estadoSalida}, Nat={estadoNat}, Continua={estadoContinua}");
                     }
                     else
@@ -1769,7 +1782,7 @@ namespace CapaDatosMepryl
                         ligaEmpresa, clubTarea,
                         modificado,
                         estadoLaboratorio, estadoRayos, estadoElectro, estadoNat, estadoContinua,
-                        estadoAudio, estadoEEG, estadoOdon, estadoErgo, estadoPsico, estadoSalida,
+                        estadoAudio, estadoEspiro, estadoEEG, estadoOdon, estadoErgo, estadoPsico, estadoSalida,
                         horaSalidaStr
                     );
                 }
@@ -1778,6 +1791,23 @@ namespace CapaDatosMepryl
                     System.Diagnostics.Debug.WriteLine($"[AGENDA-OPT] Error procesando fila: {ex.Message}");
                 }
             }
+            
+            System.Diagnostics.Debug.WriteLine($"[AGENDA-DEBUG] cargarMesaEntradaPlanillaCompleta - Total filas en retorno: {retorno.Rows.Count}");
+            System.Diagnostics.Debug.WriteLine($"[AGENDA-DEBUG] cargarMesaEntradaPlanillaCompleta - Total columnas en retorno: {retorno.Columns.Count}");
+            
+            if (retorno.Rows.Count > 0)
+            {
+                System.Diagnostics.Debug.WriteLine($"[AGENDA-DEBUG] Primera fila del retorno:");
+                foreach (DataColumn col in retorno.Columns)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[AGENDA-DEBUG] Columna {col.ColumnName}: {retorno.Rows[0][col]}");
+                }
+            }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine($"[AGENDA-DEBUG] ADVERTENCIA: No hay filas en el retorno");
+            }
+
             return retorno;
         }
 
@@ -1886,7 +1916,7 @@ namespace CapaDatosMepryl
                 else
                 {
                     // Insertar nuevo registro con valores predeterminados y el valor específico marcado
-                    string insertSql = $"INSERT INTO dbo.EstadosCheckboxesMesaEntrada (idTipoExamen, Labo, Rayos, Electro, Nat, Continua, Audio, EEG, Odon, Ergo, Psico, Salida";
+                    string insertSql = $"INSERT INTO dbo.EstadosCheckboxesMesaEntrada (idTipoExamen, Labo, Rayos, Electro, Nat, Continua, Audio, Espiro, EEG, Odon, Ergo, Psico, Salida";
 
                     // Determinar valores según la columna que se está marcando
                     int laboVal = (columna == 25 && estado) ? 1 : 0;
@@ -1895,20 +1925,21 @@ namespace CapaDatosMepryl
                     int natVal = (columna == 28 && estado) ? 1 : 0;
                     int continuaVal = (columna == 29 && estado) ? 1 : 1; // Continua siempre 1 por defecto
                     int audioVal = (columna == 30 && estado) ? 1 : 0;
-                    int eegVal = (columna == 31 && estado) ? 1 : 0;
-                    int odonVal = (columna == 32 && estado) ? 1 : 0;
-                    int ergoVal = (columna == 33 && estado) ? 1 : 0;
-                    int psicoVal = (columna == 34 && estado) ? 1 : 0;
-                    int salidaVal = (columna == 35 && estado) ? 1 : 0;
+                    int espiroVal = (columna == 31 && estado) ? 1 : 0;
+                    int eegVal = (columna == 32 && estado) ? 1 : 0;
+                    int odonVal = (columna == 33 && estado) ? 1 : 0;
+                    int ergoVal = (columna == 34 && estado) ? 1 : 0;
+                    int psicoVal = (columna == 35 && estado) ? 1 : 0;
+                    int salidaVal = (columna == 36 && estado) ? 1 : 0;
 
                     // Si es Salida y se está marcando, incluir HoraSalida
                     if (esSalida && estado)
                     {
-                        insertSql += $", HoraSalida) VALUES ('{idTipoExamen}', {laboVal}, {rayosVal}, {electroVal}, {natVal}, {continuaVal}, {audioVal}, {eegVal}, {odonVal}, {ergoVal}, {psicoVal}, {salidaVal}, GETDATE())";
+                        insertSql += $", HoraSalida) VALUES ('{idTipoExamen}', {laboVal}, {rayosVal}, {electroVal}, {natVal}, {continuaVal}, {audioVal}, {espiroVal}, {eegVal}, {odonVal}, {ergoVal}, {psicoVal}, {salidaVal}, GETDATE())";
                     }
                     else
                     {
-                        insertSql += $") VALUES ('{idTipoExamen}', {laboVal}, {rayosVal}, {electroVal}, {natVal}, {continuaVal}, {audioVal}, {eegVal}, {odonVal}, {ergoVal}, {psicoVal}, {salidaVal})";
+                        insertSql += $") VALUES ('{idTipoExamen}', {laboVal}, {rayosVal}, {electroVal}, {natVal}, {continuaVal}, {audioVal}, {espiroVal}, {eegVal}, {odonVal}, {ergoVal}, {psicoVal}, {salidaVal})";
                     }
 
                     SQLConnector.EjecutarConsulta(insertSql);

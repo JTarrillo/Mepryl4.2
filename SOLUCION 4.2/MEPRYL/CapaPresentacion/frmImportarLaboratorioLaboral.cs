@@ -649,9 +649,10 @@ namespace CapaPresentacion
             
             // [18] gluc - Excel [21] GLU
             string valorGlucOrina = GetSafeValue(fila, 21);
-            if (valorGlucOrina != "")
+            string valorGlucOrinaMapeado = MapearCategoriaCelulas(valorGlucOrina);
+            if (valorGlucOrinaMapeado != "")
             {
-                valores.Add(valorGlucOrina);
+                valores.Add(valorGlucOrinaMapeado);
             }
             else
             {
@@ -660,9 +661,10 @@ namespace CapaPresentacion
             
             // [19] prot - Excel [22] PRO
             string valorProt = GetSafeValue(fila, 22);
-            if (valorProt != "")
+            string valorProtMapeado = MapearCategoriaCelulas(valorProt);
+            if (valorProtMapeado != "")
             {
-                valores.Add(valorProt);
+                valores.Add(valorProtMapeado);
             }
             else
             {
@@ -671,9 +673,10 @@ namespace CapaPresentacion
             
             // [20] hemogOrina - Excel [23] HGB
             string valorHemogOrina = GetSafeValue(fila, 23);
-            if (valorHemogOrina != "")
+            string valorHemogOrinaMapeado = MapearCategoriaCelulas(valorHemogOrina);
+            if (valorHemogOrinaMapeado != "")
             {
-                valores.Add(valorHemogOrina);
+                valores.Add(valorHemogOrinaMapeado);
             }
             else
             {
@@ -693,9 +696,10 @@ namespace CapaPresentacion
             
             // [22] bilirrubina - Excel [25] BIL
             string valorBilirrubina = GetSafeValue(fila, 25);
-            if (valorBilirrubina != "")
+            string valorBilirrubinaMapeado = MapearCategoriaCelulas(valorBilirrubina);
+            if (valorBilirrubinaMapeado != "")
             {
-                valores.Add(valorBilirrubina);
+                valores.Add(valorBilirrubinaMapeado);
             }
             else
             {
@@ -704,9 +708,10 @@ namespace CapaPresentacion
             
             // [23] celulas - Excel [26] CEL
             string valorCelulas = GetSafeValue(fila, 26);
-            if (valorCelulas != "")
+            string valorCelulasMapeado = MapearCategoriaCelulas(valorCelulas);
+            if (valorCelulasMapeado != "")
             {
-                valores.Add(valorCelulas);
+                valores.Add(valorCelulasMapeado);
             }
             else
             {
@@ -715,9 +720,10 @@ namespace CapaPresentacion
             
             // [24] leuco - Excel [27] LEU
             string valorLeuco = GetSafeValue(fila, 27);
-            if (valorLeuco != "")
+            string valorLeucoMapeado = MapearCategoriaCelulas(valorLeuco);
+            if (valorLeucoMapeado != "")
             {
-                valores.Add(valorLeuco);
+                valores.Add(valorLeucoMapeado);
             }
             else
             {
@@ -726,9 +732,10 @@ namespace CapaPresentacion
             
             // [25] hematies - Excel [28] HEM
             string valorHematies = GetSafeValue(fila, 28);
-            if (valorHematies != "")
+            string valorHematiesMapeado = MapearCategoriaCelulas(valorHematies);
+            if (valorHematiesMapeado != "")
             {
-                valores.Add(valorHematies);
+                valores.Add(valorHematiesMapeado);
             }
             else
             {
@@ -963,6 +970,30 @@ namespace CapaPresentacion
             catch
             {
                 return "";
+            }
+        }
+
+        /// <summary>
+        /// Mapea códigos de categorías de células a sus descripciones completas
+        /// R → Regular, N → No contiene, E → Escasas, A → Abundantes
+        /// </summary>
+        private string MapearCategoriaCelulas(string valor)
+        {
+            if (string.IsNullOrEmpty(valor))
+                return "";
+            
+            switch (valor.ToUpper().Trim())
+            {
+                case "R":
+                    return "Regular";
+                case "N":
+                    return "No contiene";
+                case "E":
+                    return "Escasas";
+                case "A":
+                    return "Abundantes";
+                default:
+                    return valor; // Devolver el valor original si no coincide
             }
         }
 

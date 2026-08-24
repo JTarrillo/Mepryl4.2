@@ -2284,13 +2284,16 @@ namespace CapaPresentacion
         }
 
         // GRV - Ramírez Llamar a propiedaes del formulario turnos
+        // CORRECCIÓN ARQUITECTÓNICA: Eliminar forzado de CONSULTORIO para respetar especialidad del horario
         public void ProcesoConsultorio(string idPaciente, string idEmpresa, DateTime fechaTurno)
         {
             strIDPaciente = idPaciente;
             strIDEmpresa = idEmpresa;
             blnConsultaExterna = true;
             tpFecha.DateTime = fechaTurno;
-            cboTipoExamen.SelectedIndex = 7;   // Propiedad .Text = CONSULTORIO
+            // ❌ ELIMINADO: cboTipoExamen.SelectedIndex = 7;   // Forzaba CONSULTORIO incorrectamente
+            // ✅ CORREGIDO: No forzar selección, usar especialidad del horario
+            cboTipoExamen.SelectedIndex = -1; // No forzar selección específica
             obtenerTipoExamen();
             rbEstadoLibres.Checked = true;
             dgv.CurrentCell = this.dgv[8, 0];
@@ -2310,7 +2313,9 @@ namespace CapaPresentacion
             strIDEmpresa = idEmpresa;
             blnConsultaExterna = true;
             tpFecha.DateTime = fechaTurno;
-            cboTipoExamen.SelectedIndex = 7;   // Propiedad .Text = CONSULTORIO
+            // ❌ ELIMINADO: cboTipoExamen.SelectedIndex = 7;   // Forzaba CONSULTORIO incorrectamente
+            // ✅ CORREGIDO: No forzar selección, usar especialidad del horario
+            cboTipoExamen.SelectedIndex = -1; // No forzar selección específica
             obtenerTipoExamen();
             rbEstadoAsignados.Checked = true;
             dgv.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
