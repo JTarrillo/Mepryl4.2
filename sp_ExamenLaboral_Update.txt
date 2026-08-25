@@ -1,0 +1,131 @@
+Text                                                                                                                                                                                                                                                           
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+CREATE PROCEDURE [dbo].[sp_ExamenLaboral_Update]
+                                                                                                                                                                                                             
+@id uniqueidentifier,
+                                                                                                                                                                                                                                        
+@antCli varchar(300), @antQui varchar(300), @antTrau varchar(300), @talla varchar(5),
+                                                                                                                                                                        
+@peso varchar(5), @entradaAire varchar(150), @ruidosAgre varchar(150), @ruidosCard varchar(150),
+                                                                                                                                                             
+@silencios varchar(150), @taMax varchar(3), @taMin varchar(3), @pulso varchar(2),
+                                                                                                                                                                            
+@abdomen varchar(150), @hernias varchar(150), @varices varchar(150), @apGenitour varchar(150),
+                                                                                                                                                               
+@pielYFaneras varchar(150), @apLocomotor varchar(150), @snc varchar(150), @ojoDer varchar(50),
+                                                                                                                                                               
+@ojoDerLent varchar(50), @ojoIzq varchar(50), @ojoIzqLent varchar(50), @visionCromatica varchar(150),
+                                                                                                                                                        
+@exOdonto varchar(150), @equil varchar(150), @observacionesCli varchar(500), @medico varchar(100),
+                                                                                                                                                           
+@dictamenCli varchar(100), @gRojos varchar(10), @gBlancos varchar(10), @hemoglobina varchar(5),
+                                                                                                                                                              
+@hematocrito varchar(5), @eritro varchar(5), @plaquetas varchar(10), @obsSerieRoja varchar(100),
+                                                                                                                                                             
+@cayado varchar(2), @segmentado varchar(2), @eosinof varchar(2), @basof varchar(2),
+                                                                                                                                                                          
+@linfoc varchar(2), @monoc varchar(2), @obsSerieBlanca varchar(100), @glucemia varchar(3),
+                                                                                                                                                                   
+@uremia varchar(2), @chagas varchar(50), @vdrl varchar(50), @grupo varchar(2), @factor varchar(2),
+                                                                                                                                                           
+@uricemia varchar(2), @te varchar(3), @otrosQuimicaHemat varchar(150), @colTotal varchar(4),
+                                                                                                                                                                 
+@hdl varchar(4), @ldl varchar(4), @trig varchar(4), @otrosPerfilLipidico varchar(150),
+                                                                                                                                                                       
+@color varchar(20), @aspecto varchar(20), @densidad varchar(5), @ph varchar(2), @celulas varchar(50),
+                                                                                                                                                        
+@leuco varchar(50), @hematies varchar(50), @prot varchar(50), @gluc varchar(50),
+                                                                                                                                                                             
+@hemogOrina varchar(50), @cetonas varchar(50), @bilirrubina varchar(50), @otrosOrina varchar(200),
+                                                                                                                                                           
+@observacionesLab varchar(200), @dictamenLab varchar(100), @toraxF varchar(100), @lumbarF varchar(100),
+                                                                                                                                                      
+@lumbarP varchar(100), @cervicalF varchar(100), @cervicalP varchar(100), @fnp varchar(100),
+                                                                                                                                                                  
+@mnp varchar(100), @hombrosF varchar(100), @rodillasF varchar(100), @caderasF varchar(100),
+                                                                                                                                                                  
+@tobillosF varchar(100), @craneoFyP varchar(100), @hombroF varchar(100), @hombroVP varchar(100),
+                                                                                                                                                             
+@humeroFyP varchar(100), @codoFyP varchar(100), @antebrazoFyP varchar(100), @munecaFyP varchar(100),
+                                                                                                                                                         
+@manoFyP varchar(100), @toraxP varchar(100), @pCostalFyO varchar(100), @colDorsalFyP varchar(100),
+                                                                                                                                                           
+@pelvisF varchar(100), @caderaF varchar(100), @caderaP varchar(100), @femurFyP varchar(100),
+                                                                                                                                                                 
+@rodillaF varchar(100), @rodillaP varchar(100), @piernaFyP varchar(100), @tobilloFyP varchar(100),
+                                                                                                                                                           
+@axialDeCalcaneo varchar(100), @pieFyP varchar(100), @audio varchar(150), @ergo varchar(150),
+                                                                                                                                                                
+@eco varchar(150), @psico varchar(150), @espiro varchar(150), @eeg varchar(150), @iTorg varchar(150),
+                                                                                                                                                        
+@ecg varchar(150), @observaciones varchar(400), @dictamen varchar(100), @na VARCHAR(5), @k VARCHAR(5),
+                                                                                                                                                       
+@protTotal VARCHAR(5), @albumina VARCHAR(5), @alfa1 VARCHAR(5), @alfa2 VARCHAR(5), @beta1 VARCHAR(5),
+                                                                                                                                                        
+@beta2 VARCHAR(5), @gammaglob VARCHAR(5), @relacAlbGlob VARCHAR(5), @creat VARCHAR(5),
+                                                                                                                                                                       
+@dorsalF NVARCHAR(MAX) = NULL,
+                                                                                                                                                                                                                               
+@espinogramaP NVARCHAR(MAX) = NULL
+                                                                                                                                                                                                                           
+AS
+                                                                                                                                                                                                                                                           
+UPDATE dbo.ExamenLaboral
+                                                                                                                                                                                                                                     
+SET antCli=@antCli, antQui=@antQui, antTrau=@antTrau, talla=@talla, peso=@peso,
+                                                                                                                                                                              
+entradaAire=@entradaAire, ruidosAgre=@ruidosAgre, ruidosCard=@ruidosCard, silencios=@silencios,
+                                                                                                                                                              
+taMax=@taMax, taMin=@taMin, pulso=@pulso, abdomen=@abdomen, hernias=@hernias, varices=@varices,
+                                                                                                                                                              
+apGenitour=@apGenitour, pielYFaneras=@pielYFaneras, apLocomotor=@apLocomotor, snc=@snc,
+                                                                                                                                                                      
+ojoDer=@ojoDer, ojoDerLent=@ojoDerLent, ojoIzq=@ojoIzq, ojoIzqLent=@ojoIzqLent,
+                                                                                                                                                                              
+visionCromatica=@visionCromatica, exOdonto=@exOdonto, equil=@equil, observacionesCli=@observacionesCli,
+                                                                                                                                                      
+medico=@medico, dictamenCli=@dictamenCli, gRojos=@gRojos, gBlancos=@gBlancos, hemoglobina=@hemoglobina,
+                                                                                                                                                      
+hematocrito=@hematocrito, eritro=@eritro, plaquetas=@plaquetas, obsSerieRoja=@obsSerieRoja,
+                                                                                                                                                                  
+cayado=@cayado, segmentado=@segmentado, eosinof=@eosinof, basof=@basof, linfoc=@linfoc,
+                                                                                                                                                                      
+monoc=@monoc, obsSerieBlanca=@obsSerieBlanca, glucemia=@glucemia, uremia=@uremia, chagas=@chagas,
+                                                                                                                                                            
+vdrl=@vdrl, grupo=@grupo, factor=@factor, uricemia=@uricemia, te=@te, otrosQuimicaHemat=@otrosQuimicaHemat,
+                                                                                                                                                  
+colTotal=@colTotal, hdl=@hdl, ldl=@ldl, trig=@trig, otrosPerfilLipidico=@otrosPerfilLipidico,
+                                                                                                                                                                
+color=@color, aspecto=@aspecto, densidad=@densidad, ph=@ph, celulas=@celulas, leuco=@leuco,
+                                                                                                                                                                  
+hematies=@hematies, prot=@prot, gluc=@gluc, hemogOrina=@hemogOrina, cetonas=@cetonas,
+                                                                                                                                                                        
+bilirrubina=@bilirrubina, otrosOrina=@otrosOrina, observacionesLab=@observacionesLab,
+                                                                                                                                                                        
+dictamenLab=@dictamenLab, toraxF=@toraxF, lumbarF=@lumbarF, lumbarP=@lumbarP, cervicalF=@cervicalF,
+                                                                                                                                                          
+cervicalP=@cervicalP, fnp=@fnp, mnp=@mnp, hombrosF=@hombrosF, rodillasF=@rodillasF,
+                                                                                                                                                                          
+caderasF=@caderasF, tobillosF=@tobillosF, craneoFyP=@craneoFyP, hombroF=@hombroF,
+                                                                                                                                                                            
+hombroVP=@hombroVP, humeroFyP=@humeroFyP, codoFyP=@codoFyP, antebrazoFyP=@antebrazoFyP,
+                                                                                                                                                                      
+munecaFyP=@munecaFyP, manoFyP=@manoFyP, toraxP=@toraxP, pCostalFyO=@pCostalFyO, colDorsalFyP=@colDorsalFyP,
+                                                                                                                                                  
+pelvisF=@pelvisF, caderaF=@caderaF, caderaP=@caderaP, femurFyP=@femurFyP, rodillaF=@rodillaF,
+                                                                                                                                                                
+rodillaP=@rodillaP, piernaFyP=@piernaFyP, tobilloFyP=@tobilloFyP, axialDeCalcaneo=@axialDeCalcaneo,
+                                                                                                                                                          
+pieFyP=@pieFyP, audio=@audio, ergo=@ergo, eco=@eco, psico=@psico, espiro=@espiro, eeg=@eeg,
+                                                                                                                                                                  
+iTorg=@iTorg, ecg=@ecg, observaciones=@observaciones, dictamen=@dictamen, na=@na, k=@k,
+                                                                                                                                                                      
+protTotal=@protTotal, albumina=@albumina, alfa1=@alfa1, alfa2=@alfa2, beta1=@beta1, beta2=@beta2,
+                                                                                                                                                            
+gammaglob=@gammaglob, relacAlbGlob=@relacAlbGlob, creat=@creat,
+                                                                                                                                                                                              
+dorsalF=@dorsalF,
+                                                                                                                                                                                                                                            
+espinogramaP=@espinogramaP
+                                                                                                                                                                                                                                   
+WHERE id=@id                                                                                                                                                                                                                                                   

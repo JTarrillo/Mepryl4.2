@@ -884,31 +884,67 @@ namespace CapaPresentacion
 
         private void botECG_Click(object sender, EventArgs e)
         {
+            System.Diagnostics.Debug.WriteLine("[ESTUDIOS-COMP] Entrando a pestaña Estudios Complementarios (ECG)");
+            System.Diagnostics.Debug.WriteLine("[ESTUDIOS-COMP] Valores ANTES de cambiar pestaña:");
+            System.Diagnostics.Debug.WriteLine("[ESTUDIOS-COMP] tbAntCli.Text: " + tbAntCli.Text);
+            System.Diagnostics.Debug.WriteLine("[ESTUDIOS-COMP] tbGRojos.Text: " + tbGRojos.Text);
+            System.Diagnostics.Debug.WriteLine("[ESTUDIOS-COMP] tbGlucemia.Text: " + tbGlucemia.Text);
+            System.Diagnostics.Debug.WriteLine("[ESTUDIOS-COMP] tbColTotal.Text: " + tbColTotal.Text);
             tabControl1.SelectedTab = tabPageEC;
         }
 
         private void botAudio_Click(object sender, EventArgs e)
         {
+            System.Diagnostics.Debug.WriteLine("[ESTUDIOS-COMP] Entrando a pestaña Estudios Complementarios (Audio)");
+            System.Diagnostics.Debug.WriteLine("[ESTUDIOS-COMP] Valores ANTES de cambiar pestaña:");
+            System.Diagnostics.Debug.WriteLine("[ESTUDIOS-COMP] tbAntCli.Text: " + tbAntCli.Text);
+            System.Diagnostics.Debug.WriteLine("[ESTUDIOS-COMP] tbGRojos.Text: " + tbGRojos.Text);
+            System.Diagnostics.Debug.WriteLine("[ESTUDIOS-COMP] tbGlucemia.Text: " + tbGlucemia.Text);
+            System.Diagnostics.Debug.WriteLine("[ESTUDIOS-COMP] tbColTotal.Text: " + tbColTotal.Text);
             tabControl1.SelectedTab = tabPageEC;
         }
 
         private void botEco_Click(object sender, EventArgs e)
         {
+            System.Diagnostics.Debug.WriteLine("[ESTUDIOS-COMP] Entrando a pestaña Estudios Complementarios (Eco)");
+            System.Diagnostics.Debug.WriteLine("[ESTUDIOS-COMP] Valores ANTES de cambiar pestaña:");
+            System.Diagnostics.Debug.WriteLine("[ESTUDIOS-COMP] tbAntCli.Text: " + tbAntCli.Text);
+            System.Diagnostics.Debug.WriteLine("[ESTUDIOS-COMP] tbGRojos.Text: " + tbGRojos.Text);
+            System.Diagnostics.Debug.WriteLine("[ESTUDIOS-COMP] tbGlucemia.Text: " + tbGlucemia.Text);
+            System.Diagnostics.Debug.WriteLine("[ESTUDIOS-COMP] tbColTotal.Text: " + tbColTotal.Text);
             tabControl1.SelectedTab = tabPageEC;
         }
 
         private void botElectro_Click(object sender, EventArgs e)
         {
+            System.Diagnostics.Debug.WriteLine("[ESTUDIOS-COMP] Entrando a pestaña Estudios Complementarios (Electro)");
+            System.Diagnostics.Debug.WriteLine("[ESTUDIOS-COMP] Valores ANTES de cambiar pestaña:");
+            System.Diagnostics.Debug.WriteLine("[ESTUDIOS-COMP] tbAntCli.Text: " + tbAntCli.Text);
+            System.Diagnostics.Debug.WriteLine("[ESTUDIOS-COMP] tbGRojos.Text: " + tbGRojos.Text);
+            System.Diagnostics.Debug.WriteLine("[ESTUDIOS-COMP] tbGlucemia.Text: " + tbGlucemia.Text);
+            System.Diagnostics.Debug.WriteLine("[ESTUDIOS-COMP] tbColTotal.Text: " + tbColTotal.Text);
             tabControl1.SelectedTab = tabPageEC;
         }
 
         private void botErgo_Click(object sender, EventArgs e)
         {
+            System.Diagnostics.Debug.WriteLine("[ESTUDIOS-COMP] Entrando a pestaña Estudios Complementarios (Ergo)");
+            System.Diagnostics.Debug.WriteLine("[ESTUDIOS-COMP] Valores ANTES de cambiar pestaña:");
+            System.Diagnostics.Debug.WriteLine("[ESTUDIOS-COMP] tbAntCli.Text: " + tbAntCli.Text);
+            System.Diagnostics.Debug.WriteLine("[ESTUDIOS-COMP] tbGRojos.Text: " + tbGRojos.Text);
+            System.Diagnostics.Debug.WriteLine("[ESTUDIOS-COMP] tbGlucemia.Text: " + tbGlucemia.Text);
+            System.Diagnostics.Debug.WriteLine("[ESTUDIOS-COMP] tbColTotal.Text: " + tbColTotal.Text);
             tabControl1.SelectedTab = tabPageEC;
         }
 
         private void botEspiro_Click(object sender, EventArgs e)
         {
+            System.Diagnostics.Debug.WriteLine("[ESTUDIOS-COMP] Entrando a pestaña Estudios Complementarios (Espiro)");
+            System.Diagnostics.Debug.WriteLine("[ESTUDIOS-COMP] Valores ANTES de cambiar pestaña:");
+            System.Diagnostics.Debug.WriteLine("[ESTUDIOS-COMP] tbAntCli.Text: " + tbAntCli.Text);
+            System.Diagnostics.Debug.WriteLine("[ESTUDIOS-COMP] tbGRojos.Text: " + tbGRojos.Text);
+            System.Diagnostics.Debug.WriteLine("[ESTUDIOS-COMP] tbGlucemia.Text: " + tbGlucemia.Text);
+            System.Diagnostics.Debug.WriteLine("[ESTUDIOS-COMP] tbColTotal.Text: " + tbColTotal.Text);
             tabControl1.SelectedTab = tabPageEC;
         }
 
@@ -934,6 +970,13 @@ namespace CapaPresentacion
 
         private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
+            System.Diagnostics.Debug.WriteLine("[TAB-CHANGE] Cambio de pestaña detectado");
+            System.Diagnostics.Debug.WriteLine("[TAB-CHANGE] Pestaña seleccionada: " + tabControl1.SelectedTab.Name);
+            System.Diagnostics.Debug.WriteLine("[TAB-CHANGE] Valores ANTES del cambio:");
+            System.Diagnostics.Debug.WriteLine("[TAB-CHANGE] tbAntCli.Text: " + tbAntCli.Text);
+            System.Diagnostics.Debug.WriteLine("[TAB-CHANGE] tbGRojos.Text: " + tbGRojos.Text);
+            System.Diagnostics.Debug.WriteLine("[TAB-CHANGE] tbGlucemia.Text: " + tbGlucemia.Text);
+            System.Diagnostics.Debug.WriteLine("[TAB-CHANGE] tbColTotal.Text: " + tbColTotal.Text);
 
             if (tabControl1.SelectedTab == tabPageDictFinal)
             {
@@ -966,6 +1009,10 @@ namespace CapaPresentacion
             }
             else if (tabControl1.SelectedTab == tabPageEC)
             {
+                System.Diagnostics.Debug.WriteLine("[TAB-CHANGE] Entrando a tabPageEC");
+                System.Diagnostics.Debug.WriteLine("[TAB-CHANGE] textBoxsIdUsados.Count: " + (textBoxsIdUsados?.Count ?? 0));
+                System.Diagnostics.Debug.WriteLine("[TAB-CHANGE] textBoxsUsados.Count: " + (textBoxsUsados?.Count ?? 0));
+                
                 tbPanelEc1.Focus();
                 tbPanelEc1.SelectionStart = 0;
                 tbPanelEc1.SelectionLength = tbPanelEc1.Text.Length;
@@ -1017,6 +1064,22 @@ namespace CapaPresentacion
 
         private void guardar()
         {
+            System.Diagnostics.Debug.WriteLine("[GUARDAR] ========== INICIO GUARDAR ==========");
+            System.Diagnostics.Debug.WriteLine("[GUARDAR] idExamenLaboral: " + idExamenLaboral);
+            System.Diagnostics.Debug.WriteLine("[GUARDAR] Valores de los controles ANTES de guardar:");
+            System.Diagnostics.Debug.WriteLine("[GUARDAR] tbAntCli.Text: " + tbAntCli.Text);
+            System.Diagnostics.Debug.WriteLine("[GUARDAR] tbGRojos.Text: " + tbGRojos.Text);
+            System.Diagnostics.Debug.WriteLine("[GUARDAR] tbGBlancos.Text: " + tbGBlancos.Text);
+            System.Diagnostics.Debug.WriteLine("[GUARDAR] tbHemoglob.Text: " + tbHemoglob.Text);
+            System.Diagnostics.Debug.WriteLine("[GUARDAR] tbGlucemia.Text: " + tbGlucemia.Text);
+            System.Diagnostics.Debug.WriteLine("[GUARDAR] tbUremia.Text: " + tbUremia.Text);
+            System.Diagnostics.Debug.WriteLine("[GUARDAR] tbColTotal.Text: " + tbColTotal.Text);
+            System.Diagnostics.Debug.WriteLine("[GUARDAR] tbHdl.Text: " + tbHdl.Text);
+            System.Diagnostics.Debug.WriteLine("[GUARDAR] tbLdl.Text: " + tbLdl.Text);
+            System.Diagnostics.Debug.WriteLine("[GUARDAR] tbTriglic.Text: " + tbTriglic.Text);
+            System.Diagnostics.Debug.WriteLine("[GUARDAR] tbDensidad.Text: " + tbDensidad.Text);
+            System.Diagnostics.Debug.WriteLine("[GUARDAR] tbPh.Text: " + tbPh.Text);
+            
             Entidades.ExamenLaboral examen = new Entidades.ExamenLaboral();
             examen.Id = new Guid(idExamenLaboral);
             examen.AntCli = tbAntCli.Text;
@@ -1127,14 +1190,29 @@ namespace CapaPresentacion
             examen.TobilloFyP = obtenerValorTb("65");
             examen.AxialDeCalcaneo = obtenerValorTb("66");
             examen.PieFyP = obtenerValorTb("67");
-            examen.Audio = obtenerValorTb("68");
-            examen.Ergo = obtenerValorTb("70");
-            examen.Eco = obtenerValorTb("72");
-            examen.Psico = obtenerValorTb("73");
-            examen.Espiro = obtenerValorTb("75");
-            examen.Eeg = obtenerValorTb("76");
-            examen.ITorg = obtenerValorTb("77");
-            examen.Ecg = obtenerValorTb("78");
+            string audio = obtenerValorTb("68");
+            if (audio != null) examen.Audio = audio;
+            
+            string ergo = obtenerValorTb("70");
+            if (ergo != null) examen.Ergo = ergo;
+            
+            string eco = obtenerValorTb("72");
+            if (eco != null) examen.Eco = eco;
+            
+            string psico = obtenerValorTb("73");
+            if (psico != null) examen.Psico = psico;
+            
+            string espiro = obtenerValorTb("75");
+            if (espiro != null) examen.Espiro = espiro;
+            
+            string eeg = obtenerValorTb("76");
+            if (eeg != null) examen.Eeg = eeg;
+            
+            string iTorg = obtenerValorTb("77");
+            if (iTorg != null) examen.ITorg = iTorg;
+            
+            string ecg = obtenerValorTb("78");
+            if (ecg != null) examen.Ecg = ecg;
             examen.DorsalF = obtenerValorTb("99");
             examen.EspinogramaP = obtenerValorTb("103");
             examen.Observaciones = tbObservaciones.Text;
@@ -1157,31 +1235,55 @@ namespace CapaPresentacion
                 examen.Dictamen = cboDictamenFinal.SelectedValue.ToString();
             }
 
+            System.Diagnostics.Debug.WriteLine("[GUARDAR] Valores del objeto examen ANTES de enviar a BD:");
+            System.Diagnostics.Debug.WriteLine("[GUARDAR] examen.AntCli: " + examen.AntCli);
+            System.Diagnostics.Debug.WriteLine("[GUARDAR] examen.GRojos: " + examen.GRojos);
+            System.Diagnostics.Debug.WriteLine("[GUARDAR] examen.GBlancos: " + examen.GBlancos);
+            System.Diagnostics.Debug.WriteLine("[GUARDAR] examen.Hemoglobina: " + examen.Hemoglobina);
+            System.Diagnostics.Debug.WriteLine("[GUARDAR] examen.Glucemia: " + examen.Glucemia);
+            System.Diagnostics.Debug.WriteLine("[GUARDAR] examen.Uremia: " + examen.Uremia);
+            System.Diagnostics.Debug.WriteLine("[GUARDAR] examen.ColTotal: " + examen.ColTotal);
+            System.Diagnostics.Debug.WriteLine("[GUARDAR] examen.Hdl: " + examen.Hdl);
+            System.Diagnostics.Debug.WriteLine("[GUARDAR] examen.Ldl: " + examen.Ldl);
+            System.Diagnostics.Debug.WriteLine("[GUARDAR] examen.Triglic: " + examen.Triglic);
+            System.Diagnostics.Debug.WriteLine("[GUARDAR] examen.Densidad: " + examen.Densidad);
+            System.Diagnostics.Debug.WriteLine("[GUARDAR] examen.Ph: " + examen.Ph);
+
             Entidades.Resultado resultado = examenLaboral.guardarExamen(examen);
+            System.Diagnostics.Debug.WriteLine("[GUARDAR] Resultado de guardarExamen - Modo: " + resultado.Modo + ", Mensaje: " + resultado.Mensaje);
+            
             if (resultado.Modo == -1)
             {
                 MessageBox.Show("Error al guardar el exámen:\n" + resultado.Mensaje, "Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+            
+            System.Diagnostics.Debug.WriteLine("[GUARDAR] ========== FIN GUARDAR ==========");
 
 
         }
 
         private string obtenerValorTb(string id)
         {
-            if (string.IsNullOrWhiteSpace(id)) return "";
+            System.Diagnostics.Debug.WriteLine("[OBTENER-VALOR] Buscando ID: " + id);
+            if (string.IsNullOrWhiteSpace(id)) return null;
 
             string idTrim = id.Trim();
 
             // 1) Intento con las listas dinámicas (modo actual)
             if (textBoxsIdUsados != null && textBoxsUsados != null)
             {
+                System.Diagnostics.Debug.WriteLine("[OBTENER-VALOR] textBoxsIdUsados.Count: " + textBoxsIdUsados.Count);
                 int index = textBoxsIdUsados.FindIndex(x => x != null && !string.IsNullOrEmpty(x.Text) &&
                                                            x.Text.Trim().Equals(idTrim, StringComparison.OrdinalIgnoreCase));
                 if (index != -1 && index < textBoxsUsados.Count && textBoxsUsados[index] != null)
                 {
-                    return textBoxsUsados[index].Text ?? "";
+                    string valor = textBoxsUsados[index].Text ?? "";
+                    System.Diagnostics.Debug.WriteLine("[OBTENER-VALOR] Encontrado en índice " + index + ", valor: " + valor);
+                    return valor;
                 }
+                System.Diagnostics.Debug.WriteLine("[OBTENER-VALOR] No encontrado en listas dinámicas - devolviendo null para no sobrescribir");
+                return null; // Devolver null para no sobrescribir datos existentes
             }
 
             // 2) Fallback sobre los controles fijos de Rayos X (si existen en el diseñador)

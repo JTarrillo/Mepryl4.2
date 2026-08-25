@@ -239,8 +239,8 @@ namespace CapaPresentacion
         {
             if (dgvGrilla.CurrentCell != null)
             {
-                // No llamar mostrarDatos() cuando la celda actual es HoraSalida (columna 36) para evitar despintado
-                if (dgvGrilla.CurrentCell.ColumnIndex != 36)
+                // No llamar mostrarDatos() cuando la celda actual es HoraSalida (columna 37) para evitar despintado
+                if (dgvGrilla.CurrentCell.ColumnIndex != 37)
                 {
                     mostrarDatos();
                     MostrarFoto(txtDni.Text);
@@ -322,6 +322,17 @@ namespace CapaPresentacion
                 
                 System.Diagnostics.Debug.WriteLine($"[AGENDA-DEBUG] Después de asignar DataSource - dgvGrilla.Rows.Count: {dgvGrilla.Rows.Count}");
                 System.Diagnostics.Debug.WriteLine($"[AGENDA-DEBUG] Después de asignar DataSource - dgvGrilla.Columns.Count: {dgvGrilla.Columns.Count}");
+
+                // Log específico para verificar columnas Ergo y Salida después de asignar DataSource
+                if (dgvGrilla.Columns.Count > 36)
+                {
+                    for (int i = 0; i < Math.Min(3, dgvGrilla.Rows.Count); i++)
+                    {
+                        var ergoValue = dgvGrilla.Rows[i].Cells["Ergo"].Value;
+                        var salidaValue = dgvGrilla.Rows[i].Cells["Salida"].Value;
+                        System.Diagnostics.Debug.WriteLine($"[CHECKBOX-POST-DS] Fila {i} - Ergo: {ergoValue} (Tipo: {ergoValue?.GetType().Name}), Salida: {salidaValue} (Tipo: {salidaValue?.GetType().Name})");
+                    }
+                }
 
                 if (dgvGrilla.Rows.Count > 0)
                 {
@@ -881,8 +892,8 @@ namespace CapaPresentacion
         {
             System.Diagnostics.Debug.WriteLine($"[CHECKBOX] CellContentClick - ColumnIndex: {e.ColumnIndex}, RowIndex: {e.RowIndex}");
 
-            // No hacer nada cuando se hace click en HoraSalida (columna 36) para evitar despintado
-            if (e.ColumnIndex == 36)
+            // No hacer nada cuando se hace click en HoraSalida (columna 37) para evitar despintado
+            if (e.ColumnIndex == 37)
             {
                 return;
             }
@@ -896,7 +907,13 @@ namespace CapaPresentacion
             intFilaSelecc = dgvGrilla.CurrentCell.RowIndex;
             intColSelecc = dgvGrilla.CurrentCell.ColumnIndex;
 
-            // Manejar los checkboxes (columnas 25-36)
+            // Log para debug: mostrar nombre de columna clickeada
+            if (e.ColumnIndex >= 0 && e.ColumnIndex < dgvGrilla.Columns.Count)
+            {
+                System.Diagnostics.Debug.WriteLine($"[CHECKBOX] Columna clickeada - ColumnIndex: {e.ColumnIndex}, ColumnName: {dgvGrilla.Columns[e.ColumnIndex].Name}, DisplayIndex: {dgvGrilla.Columns[e.ColumnIndex].DisplayIndex}");
+            }
+
+            // Manejar los checkboxes (columnas 25-36 por ColumnIndex real)
             if (e.ColumnIndex >= 25 && e.ColumnIndex <= 36 && e.RowIndex >= 0)
             {
                 System.Diagnostics.Debug.WriteLine($"[CHECKBOX] Detectado checkbox en columna {e.ColumnIndex}");
@@ -1103,8 +1120,8 @@ namespace CapaPresentacion
             //intPosScroll = dgvGrilla.FirstDisplayedScrollingRowIndex;
             //SeleccinarFilaTurno();
 
-            // No llamar mostrarDatos() cuando se hace click en HoraSalida (columna 36) para evitar despintado
-            if (e.ColumnIndex != 36)
+            // No llamar mostrarDatos() cuando se hace click en HoraSalida (columna 37) para evitar despintado
+            if (e.ColumnIndex != 37)
             {
                 mostrarDatos();
             }

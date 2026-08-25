@@ -466,7 +466,7 @@ namespace CapaDatosMepryl
                     examen.Hemoglobina, examen.Hematocrito, examen.Eritro, examen.Plaquetas, examen.ObsSerieRoja, examen.Cayado,
                     examen.Segmentado, examen.Eosinof, examen.Basof, examen.Linfoc, examen.Monoc, examen.ObsSerieBlanca,
                     examen.Glucemia, examen.Uremia, examen.Chagas, examen.Vdrl, examen.Grupo, examen.Factor, examen.Uricemia,
-                    examen.OtrosQuimicaHemat, examen.ColTotal, examen.Hdl, examen.Ldl, examen.Triglic, examen.OtrosPerfilLipidico,
+                    examen.Te, examen.OtrosQuimicaHemat, examen.ColTotal, examen.Hdl, examen.Ldl, examen.Triglic, examen.OtrosPerfilLipidico,
                     examen.Color, examen.Aspecto, examen.Densidad, examen.Ph, examen.Celulas, examen.Leuco, examen.Hematies,
                     examen.Prot, examen.Gluc, examen.HemogOrina, examen.Cetonas, examen.Bilirrubina, examen.OtrosOrina,
                     examen.ObservacionesLab, examen.DictamenLab, examen.ToraxF, examen.LumbarF, examen.LumbarP,
@@ -497,8 +497,8 @@ namespace CapaDatosMepryl
                 silencios, taMax, taMin, pulso, abdomen, hernias, varices, apGenitour, pielYFaneras, apLocomotor, snc, 
                 ojoDer, ojoDerLent, ojoIzq, ojoIzqLent, visionCromatica, exOdonto, equil, observacionesCli, medico, 
                 dictamenCli, gRojos, gBlancos, hemoglobina, hematocrito, eritro, plaquetas, obsSerieRoja, cayado, 
-                segmentado, eosinof, basof, linfoc, monoc, obsSerieBlanca, glucemia, uremia, chagas, vdrl, grupo, 
-                factor, uricemia, otrosQuimicaHemat, colTotal, hdl, ldl, trig, otrosPerfilLipidico, color, aspecto, 
+                segmentado, eosinof, basof, linfoc, monoc, obsSerieBlanca, glucemia, uremia, chagas, vdrl, grupo,
+                factor, uricemia, te, otrosQuimicaHemat, colTotal, hdl, ldl, trig, otrosPerfilLipidico, color, aspecto, 
                 densidad, ph, rodillaF, leuco, hematies, prot, gluc, hemogOrina, cetonas, bilirrubina, otrosOrina, 
                 observacionesLab, dictamenLab, toraxF, lumbarF, lumbarP, cervicalF, cervicalP, fnp, mnp, hombrosF, 
                 rodillasF, caderasF, tobillosF, craneoFyP, hombroF, hombroVP, humeroFyP, codoFyP, antebrazoFyP, 
@@ -581,6 +581,7 @@ namespace CapaDatosMepryl
                 retorno.Grupo = getSafeValue("grupo", "");
                 retorno.Factor = getSafeValue("factor", "");
                 retorno.Uricemia = getSafeValue("uricemia", "");
+                retorno.Te = getSafeValue("te", "");
                 retorno.OtrosQuimicaHemat = getSafeValue("otrosQuimicaHemat", "");
                 retorno.ColTotal = getSafeValue("colTotal", "");
                 retorno.Hdl = getSafeValue("hdl", "");
@@ -1368,7 +1369,9 @@ namespace CapaDatosMepryl
                 // Acceso seguro por nombre de columna en lugar de índice
                 object pathValue = row.Table.Columns.Contains("Path") ? row["Path"] : null;
                 string pathString = (pathValue != DBNull.Value && pathValue != null) ? pathValue.ToString() : "";
-                dt.Rows[0][67] = Imagen_A_Bytes(pathString);
+
+                // Usar el nombre de columna "logo" en lugar del índice 67 para evitar IndexOutOfRangeException
+                dt.Rows[0]["logo"] = Imagen_A_Bytes(pathString);
             }
 
             return dt;

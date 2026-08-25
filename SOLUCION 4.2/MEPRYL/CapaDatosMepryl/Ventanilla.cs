@@ -112,7 +112,13 @@ namespace CapaDatosMepryl
             // Si está vacía, generar observación automática si se requiere
             bool requiereObservacionAutomatica = llevaPlanilla || sena > 0 || !string.IsNullOrWhiteSpace(observacionesExtra) || promo > 0 || lista > 0;
             if (requiereObservacionAutomatica)
+            {
+                // Si observacionesExtra ya es una observación automática completa, usarla directamente para evitar duplicación
+                if (!string.IsNullOrWhiteSpace(observacionesExtra) && EsObservacionAutomatica(observacionesExtra))
+                    return observacionesExtra;
+
                 return GenerarObservaciones(promo, lista, sena, llevaPlanilla, observacionesExtra);
+            }
 
             return string.Empty;
         }
@@ -282,23 +288,31 @@ namespace CapaDatosMepryl
 
                 if (tieneTipoExamenPaciente)
                 {
-                    // PRIORIDAD: Usar precios del TipoExamenDePaciente si existen, sino usar precios vigentes
-                    decimal promoObservacion = teData.precio > 0 ? teData.precio : (teData.precioPromoVigente > 0 ? teData.precioPromoVigente : importeBruto);
-                    decimal listaObservacion = teData.precio > 0 ? (teData.precioListaVigente > 0 ? teData.precioListaVigente : 0) : teData.precioListaVigente;
-                    decimal senaObservacion = teData.precio > 0 ? teData.sena : teData.senaVigente;
+                    // PRIORIDAD: Si la observación del turno ya es automática, usarla directamente para evitar duplicación
+                    if (!string.IsNullOrWhiteSpace(observaciones) && EsObservacionAutomatica(observaciones))
+                    {
+                        // Ya es una observación automática válida, no procesarla más
+                    }
+                    else
+                    {
+                        // PRIORIDAD: Usar precios del TipoExamenDePaciente si existen, sino usar precios vigentes
+                        decimal promoObservacion = teData.precio > 0 ? teData.precio : (teData.precioPromoVigente > 0 ? teData.precioPromoVigente : importeBruto);
+                        decimal listaObservacion = teData.precio > 0 ? (teData.precioListaVigente > 0 ? teData.precioListaVigente : 0) : teData.precioListaVigente;
+                        decimal senaObservacion = teData.precio > 0 ? teData.sena : teData.senaVigente;
 
-                    System.Diagnostics.Debug.WriteLine($"[VENTANILLA] IdTurno={idTurno}, IdEspecialidad={teData.idEspecialidad}, ObservacionesManual='{teData.observacionesManual}', ObservacionesExtra='{teData.observacionesExtra}', LlevaPlanilla={teData.llevaPlanilla}");
+                        System.Diagnostics.Debug.WriteLine($"[VENTANILLA] IdTurno={idTurno}, IdEspecialidad={teData.idEspecialidad}, ObservacionesManual='{teData.observacionesManual}', ObservacionesExtra='{teData.observacionesExtra}', LlevaPlanilla={teData.llevaPlanilla}");
 
-                    // PRIORIDAD: Si hay observación manual en la tabla Turno, usar esa. Si no, usar observaciones automáticas
-                    string observacionesParaVigente = !string.IsNullOrWhiteSpace(teData.observacionesManual) ? teData.observacionesManual : teData.observacionesExtra;
+                        // PRIORIDAD: Si hay observación manual en la tabla Turno, usar esa. Si no, usar observaciones automáticas
+                        string observacionesParaVigente = !string.IsNullOrWhiteSpace(teData.observacionesManual) ? teData.observacionesManual : teData.observacionesExtra;
 
-                    observaciones = ObtenerObservacionVigente(
-                        observaciones,
-                        promoObservacion,
-                        listaObservacion,
-                        senaObservacion,
-                        teData.llevaPlanilla,
-                        observacionesParaVigente);
+                        observaciones = ObtenerObservacionVigente(
+                            observaciones,
+                            promoObservacion,
+                            listaObservacion,
+                            senaObservacion,
+                            teData.llevaPlanilla,
+                            observacionesParaVigente);
+                    }
                 }
 
                 // El nombre del subtipo ya viene rescatado desde el SQL mediante COALESCE

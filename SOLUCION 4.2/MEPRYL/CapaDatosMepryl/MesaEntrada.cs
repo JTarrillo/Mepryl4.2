@@ -1881,11 +1881,12 @@ namespace CapaDatosMepryl
                     case 28: nombreColumna = "Nat"; break;
                     case 29: nombreColumna = "Continua"; break;
                     case 30: nombreColumna = "Audio"; break;
-                    case 31: nombreColumna = "EEG"; break;
-                    case 32: nombreColumna = "Odon"; break;
-                    case 33: nombreColumna = "Ergo"; break;
-                    case 34: nombreColumna = "Psico"; break;
-                    case 35: nombreColumna = "Salida"; esSalida = true; break;
+                    case 31: nombreColumna = "Espiro"; break;
+                    case 32: nombreColumna = "EEG"; break;
+                    case 33: nombreColumna = "Odon"; break;
+                    case 34: nombreColumna = "Ergo"; break;
+                    case 35: nombreColumna = "Psico"; break;
+                    case 36: nombreColumna = "Salida"; esSalida = true; break;
                     default: return;
                 }
 

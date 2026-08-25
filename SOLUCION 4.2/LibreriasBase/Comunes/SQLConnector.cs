@@ -46,9 +46,13 @@ namespace Comunes
 
         }
 
+        // ⚠️ MÉTODO DEPRECADO - No usar conexión estática compartida
+        // Este método causa problemas de concurrencia cuando múltiples formularios MDI
+        // navegan simultáneamente. Usar conexiones locales con 'using' en su lugar.
         public static SqlConnection getCn()
         {
-            return cn;
+            // Lanzar excepción si se intenta usar la conexión estática
+            throw new InvalidOperationException("No usar getCn() - usar conexiones locales con 'using' para evitar problemas de concurrencia.");
         }
 
 
@@ -64,42 +68,43 @@ namespace Comunes
             DataTable dt = new DataTable();
             try
             {
-                //SqlConnection cn = new SqlConnection(configuracion.getConectionString());
-                //cn.Open();
-                //SqlConnection conection = getCn();
-                SqlCommand cmd = new SqlCommand(consulta, getCn());
-                SqlDataAdapter da = new SqlDataAdapter(cmd);
-                da.Fill(dt);
-                //cn.Close();
+                // Usar conexión local con using para evitar problemas de conexión estática compartida
+                using (SqlConnection cnLocal = new SqlConnection(configuracion.getConectionString()))
+                {
+                    cnLocal.Open();
+                    SqlCommand cmd = new SqlCommand(consulta, cnLocal);
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    da.Fill(dt);
+                }
                 return dt;
             }
             catch (Exception ex)
             {
-                string detalle = ex.Message + "\n\n[DIAG] SQL: " + (consulta.Length > 800 ? consulta.Substring(0, 800) + "..." : consulta);
-                MessageBox.Show(detalle);
+                // No mostrar MessageBox en capa de datos - viola separación de responsabilidades
+                // En su lugar, escribir al log para debugging
+                ManejadorErrores.escribirLog(ex, true, configuracion);
                 return null;
             }
-            finally
-            {
-                dt.Dispose();
-            }
+            // Eliminado el finally con dt.Dispose() - causaba ObjectDisposedException
         }
 
         public static void EjecutarConsulta(string consulta)
         {
             try
             {
-                //SqlConnection cn = new SqlConnection(configuracion.getConectionString());
-                //cn.Open();
-                //SqlConnection conection = getCn();
-                SqlCommand cmd = new SqlCommand(consulta, getCn());
-                cmd.ExecuteNonQuery();
-                //cn.Close();
+                // Usar conexión local con using para evitar problemas de conexión estática compartida
+                using (SqlConnection cnLocal = new SqlConnection(configuracion.getConectionString()))
+                {
+                    cnLocal.Open();
+                    SqlCommand cmd = new SqlCommand(consulta, cnLocal);
+                    cmd.ExecuteNonQuery();
+                }
             }
             catch (Exception ex)
             {
-                string detalle = ex.Message + "\n\n[DIAG] EjecutarConsulta SQL: " + (consulta.Length > 800 ? consulta.Substring(0, 800) + "..." : consulta);
-                MessageBox.Show(detalle);
+                // No mostrar MessageBox en capa de datos - viola separación de responsabilidades
+                // En su lugar, escribir al log para debugging
+                ManejadorErrores.escribirLog(ex, true, configuracion);
             }
         }
 
@@ -113,22 +118,26 @@ namespace Comunes
             DataTable dt = new DataTable();
             try
             {
-                //SqlConnection cn = new SqlConnection(configuracion.getConectionString());
-                //cn.Open();
-                SqlCommand cmd = new SqlCommand(procedure, getCn());
-                cmd.CommandType = CommandType.StoredProcedure;
-                if (_validateArgumentsAndParameters(args, values))
+                // Usar conexión local con using para evitar problemas de conexión estática compartida
+                using (SqlConnection cnLocal = new SqlConnection(configuracion.getConectionString()))
                 {
-                    _loadSqlCommand(args, values, cmd);
+                    cnLocal.Open();
+                    SqlCommand cmd = new SqlCommand(procedure, cnLocal);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    if (_validateArgumentsAndParameters(args, values))
+                    {
+                        _loadSqlCommand(args, values, cmd);
+                    }
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    da.Fill(dt);
                 }
-                SqlDataAdapter da = new SqlDataAdapter(cmd);
-                da.Fill(dt);
-                //cn.Close();
                 return dt;
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                // No mostrar MessageBox en capa de datos - viola separación de responsabilidades
+                // En su lugar, escribir al log para debugging
+                ManejadorErrores.escribirLog(ex, true, configuracion);
                 return null;
             }
         }
@@ -248,17 +257,19 @@ namespace Comunes
             try
             {
                 SqlDataReader dr;
-                //SqlConnection cn = new SqlConnection(configuracion.getConectionString());
-                //cn.Open();
-                SqlCommand cmd = new SqlCommand(procedure, getCn());
-                cmd.CommandType = CommandType.StoredProcedure;
-                if (_validateArgumentsAndParameters(args, values))
+                // Usar conexión local con using para evitar problemas de conexión estática compartida
+                using (SqlConnection cnLocal = new SqlConnection(configuracion.getConectionString()))
                 {
-                    _loadSqlCommand(args, values, cmd);
+                    cnLocal.Open();
+                    SqlCommand cmd = new SqlCommand(procedure, cnLocal);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    if (_validateArgumentsAndParameters(args, values))
+                    {
+                        _loadSqlCommand(args, values, cmd);
+                    }
+                    dr = cmd.ExecuteReader();
+                    dr.Close();
                 }
-                dr = cmd.ExecuteReader();
-                dr.Close();
-                //cn.Close();
                 return true;
             }
             catch (Exception ex)
@@ -322,18 +333,20 @@ namespace Comunes
         {
             try
             {
-                //SqlConnection cn = new SqlConnection(configuracion.getConectionString());
-                //cn.Open();
-                SqlCommand cmd = new SqlCommand(procedure, getCn());
-                cmd.CommandType = CommandType.StoredProcedure;
-                if (_validateArgumentsAndParameters(args, values))
+                // Usar conexión local con using para evitar problemas de conexión estática compartida
+                using (SqlConnection cnLocal = new SqlConnection(configuracion.getConectionString()))
                 {
-                    _loadSqlCommand(args, values, cmd);
+                    cnLocal.Open();
+                    SqlCommand cmd = new SqlCommand(procedure, cnLocal);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    if (_validateArgumentsAndParameters(args, values))
+                    {
+                        _loadSqlCommand(args, values, cmd);
+                    }
+                    cmd.Parameters.Add("@retorno", SqlDbType.UniqueIdentifier).Direction = ParameterDirection.Output;
+                    cmd.ExecuteNonQuery();
+                    return cmd.Parameters["@retorno"].Value.ToString();
                 }
-                cmd.Parameters.Add("@retorno", SqlDbType.UniqueIdentifier).Direction = ParameterDirection.Output;
-                cmd.ExecuteNonQuery();
-                //cn.Close();
-                return cmd.Parameters["@retorno"].Value.ToString();
             }
             catch (Exception ex)
             {
