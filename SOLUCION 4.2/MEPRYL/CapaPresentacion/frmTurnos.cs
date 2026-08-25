@@ -2290,16 +2290,41 @@ namespace CapaPresentacion
         }
 
         // GRV - Ramírez Llamar a propiedaes del formulario turnos
-        // CORRECCIÓN ARQUITECTÓNICA: Eliminar forzado de CONSULTORIO para respetar especialidad del horario
+        // VALIDACIÓN DE JERARQUÍA: Este método se llama desde frmConsultorio específicamente para crear turnos de CONSULTORIO
+        // Ahora valida que el horario seleccionado pertenezca a la jerarquía de CONSULTORIO antes de forzar CONSULTORIO
         public void ProcesoConsultorio(string idPaciente, string idEmpresa, DateTime fechaTurno)
         {
             strIDPaciente = idPaciente;
             strIDEmpresa = idEmpresa;
             blnConsultaExterna = true;
             tpFecha.DateTime = fechaTurno;
-            // ❌ ELIMINADO: cboTipoExamen.SelectedIndex = 7;   // Forzaba CONSULTORIO incorrectamente
-            // ✅ CORREGIDO: No forzar selección, usar especialidad del horario
-            cboTipoExamen.SelectedIndex = -1; // No forzar selección específica
+            
+            // ✅ VALIDACIÓN DE JERARQUÍA: Verificar que el horario seleccionado pertenezca a CONSULTORIO
+            Guid idConsultorioPadre = new Guid("AADF0EE7-D030-49A6-8191-A7C5565C3337"); // CONSULTORIO padre
+            
+            // Obtener el horario que se va a asignar
+            var horarioSeleccionado = obtenerHorarioDisponible(fechaTurno);
+            
+            if (horarioSeleccionado != null && horarioSeleccionado.IdPadre != idConsultorioPadre && horarioSeleccionado.Id != idConsultorioPadre)
+            {
+                // ❌ HORARIO NO PERTENECE A CONSULTORIO - Mostrar error y abortar
+                MessageBox.Show(
+                    $"El horario seleccionado pertenece a '{horarioSeleccionado.Descripcion}' y no a CONSULTORIO.\n\n" +
+                    "No se puede asignar CONSULTORIO a un horario de FUTBOL u otra especialidad diferente.\n\n" +
+                    "Por favor, seleccione un horario de CONSULTORIO o contacte al administrador.",
+                    "Error de Jerarquía - Consultorio",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                
+                // Limpiar variables y abortar
+                blnConsultaExterna = false;
+                strIDEmpresa = "";
+                strIDPaciente = "";
+                return;
+            }
+            
+            // ✅ HORARIO CORRECTO - Proceder con asignación de CONSULTORIO
+            cboTipoExamen.SelectedIndex = 7;   // Propiedad .Text = CONSULTORIO
             obtenerTipoExamen();
             rbEstadoLibres.Checked = true;
             dgv.CurrentCell = this.dgv[8, 0];
@@ -2313,15 +2338,79 @@ namespace CapaPresentacion
             strIDPaciente = "";
         }
 
+        // Método auxiliar para obtener información del horario disponible
+        private HorarioInfo obtenerHorarioDisponible(DateTime fechaTurno)
+        {
+            try
+            {
+                // Obtener el primer horario disponible para esa fecha
+                DataTable dtHorario = SQLConnector.obtenerTablaSegunConsultaString(@"
+                    SELECT TOP 1 
+                        h.id, 
+                        e.descripcion, 
+                        e.IdPadre, 
+                        e.Padre
+                    FROM dbo.Horario h
+                    INNER JOIN dbo.Especialidad e ON h.especialidadID = e.id
+                    WHERE h.fecha = '" + fechaTurno.ToString("yyyy-MM-dd") + @"'
+                    ORDER BY h.horaInicio");
+                
+                if (dtHorario.Rows.Count > 0)
+                {
+                    return new HorarioInfo
+                    {
+                        Id = new Guid(dtHorario.Rows[0][0].ToString()),
+                        Descripcion = dtHorario.Rows[0][1].ToString(),
+                        IdPadre = dtHorario.Rows[0][2] != DBNull.Value ? new Guid(dtHorario.Rows[0][2].ToString()) : Guid.Empty,
+                        Padre = dtHorario.Rows[0][3] != DBNull.Value ? Convert.ToInt32(dtHorario.Rows[0][3]) : 0
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[ERROR] obtenerHorarioDisponible: {ex.Message}");
+            }
+            
+            return null;
+        }
+
+        // Clase auxiliar para información del horario
+        private class HorarioInfo
+        {
+            public Guid Id { get; set; }
+            public string Descripcion { get; set; }
+            public Guid IdPadre { get; set; }
+            public int Padre { get; set; }
+        }
+
         public void ProcesoConsultorioMuestraTurno(string idPaciente, string idEmpresa, DateTime fechaTurno)
         {
             strIDPaciente = idPaciente;
             strIDEmpresa = idEmpresa;
             blnConsultaExterna = true;
             tpFecha.DateTime = fechaTurno;
-            // ❌ ELIMINADO: cboTipoExamen.SelectedIndex = 7;   // Forzaba CONSULTORIO incorrectamente
-            // ✅ CORREGIDO: No forzar selección, usar especialidad del horario
-            cboTipoExamen.SelectedIndex = -1; // No forzar selección específica
+            
+            // ✅ VALIDACIÓN DE JERARQUÍA: Verificar que el horario seleccionado pertenezca a CONSULTORIO
+            Guid idConsultorioPadre = new Guid("AADF0EE7-D030-49A6-8191-A7C5565C3337"); // CONSULTORIO padre
+            
+            var horarioSeleccionado = obtenerHorarioDisponible(fechaTurno);
+            
+            if (horarioSeleccionado != null && horarioSeleccionado.IdPadre != idConsultorioPadre && horarioSeleccionado.Id != idConsultorioPadre)
+            {
+                MessageBox.Show(
+                    $"El horario seleccionado pertenece a '{horarioSeleccionado.Descripcion}' y no a CONSULTORIO.\n\n" +
+                    "No se puede asignar CONSULTORIO a un horario de FUTBOL u otra especialidad diferente.",
+                    "Error de Jerarquía - Consultorio",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                
+                blnConsultaExterna = false;
+                strIDEmpresa = "";
+                strIDPaciente = "";
+                return;
+            }
+            
+            cboTipoExamen.SelectedIndex = 7;   // Propiedad .Text = CONSULTORIO
             obtenerTipoExamen();
             rbEstadoAsignados.Checked = true;
             dgv.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
