@@ -625,17 +625,42 @@ namespace CapaPresentacion
 
         private void cargarTurnoSeleccionado()
         {
+            System.Diagnostics.Debug.WriteLine($"[DEBUG] cargarTurnoSeleccionado - CurrentCell: {dgv.CurrentCell?.RowIndex ?? -1}, turnoAsignado: {(dgv.CurrentCell != null ? turnoAsignado(dgv.CurrentCell.RowIndex) : false)}");
+
             if (dgv.CurrentCell != null && turnoAsignado(dgv.CurrentCell.RowIndex))
             {
-                // ✅ CAMBIAR de [6] a [7]
-                char tipoPaciente = turno.verificarTipoPaciente(new Guid(dgv.Rows[dgv.CurrentCell.RowIndex].Cells[7].Value.ToString()));
-                if (tipoPaciente == 'P')
+                try
                 {
-                    cargarPanelPreventiva();
+                    // ✅ CAMBIAR de [6] a [7]
+                    string idPacienteStr = dgv.Rows[dgv.CurrentCell.RowIndex].Cells[7].Value?.ToString();
+                    System.Diagnostics.Debug.WriteLine($"[DEBUG] cargarTurnoSeleccionado - IdPaciente: {idPacienteStr}");
+
+                    if (!string.IsNullOrEmpty(idPacienteStr))
+                    {
+                        char tipoPaciente = turno.verificarTipoPaciente(new Guid(idPacienteStr));
+                        System.Diagnostics.Debug.WriteLine($"[DEBUG] cargarTurnoSeleccionado - TipoPaciente: {tipoPaciente}");
+
+                        if (tipoPaciente == 'P')
+                        {
+                            cargarPanelPreventiva();
+                        }
+                        else
+                        {
+                            cargarPanelLaboral();
+                        }
+                    }
+                    else
+                    {
+                        System.Diagnostics.Debug.WriteLine($"[DEBUG] cargarTurnoSeleccionado - IdPaciente está vacío");
+                        panelPacientePreventiva.Visible = false;
+                        panelLaboral.Visible = false;
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    cargarPanelLaboral();
+                    System.Diagnostics.Debug.WriteLine($"[ERROR] cargarTurnoSeleccionado: {ex.Message}");
+                    panelPacientePreventiva.Visible = false;
+                    panelLaboral.Visible = false;
                 }
             }
             else
@@ -787,84 +812,177 @@ namespace CapaPresentacion
 
         private void cargarPanelLaboral()
         {
+            System.Diagnostics.Debug.WriteLine($"[DEBUG] cargarPanelLaboral - Inicio");
+            System.Diagnostics.Debug.WriteLine($"[DEBUG] cargarPanelLaboral - CurrentCell: {dgv.CurrentCell?.RowIndex ?? -1}");
+
             panelPacientePreventiva.Visible = false;
             panelLaboral.Visible = true;
-            test = dgv.Rows[dgv.CurrentCell.RowIndex].Cells[0].Value.ToString();
-            test = dgv.Rows[dgv.CurrentCell.RowIndex].Cells[0].Value.ToString();
-            Entidades.TurnoLaboral pacienteLaboral = turno.cargarTurnoPacienteLaboral(new Guid(dgv.Rows[dgv.CurrentCell.RowIndex].Cells[0].Value.ToString()));
 
-            // Si PrecioLista es 0, buscarlo en PrecioPromo usando el IdSubtipo de la grilla
-            if (pacienteLaboral.TipoExamen.PrecioLista == 0)
+            Entidades.TurnoLaboral pacienteLaboral = null;
+
+            try
             {
-                string idSubtipoLab = dgv.Rows[dgv.CurrentCell.RowIndex].Cells["IdSubtipo"].Value?.ToString() ?? "";
-                if (!string.IsNullOrEmpty(idSubtipoLab) && idSubtipoLab != Guid.Empty.ToString())
+                string idTurno = dgv.Rows[dgv.CurrentCell.RowIndex].Cells[0].Value?.ToString();
+                System.Diagnostics.Debug.WriteLine($"[DEBUG] cargarPanelLaboral - IdTurno: {idTurno}");
+
+                test = idTurno;
+                test = idTurno;
+
+                if (!string.IsNullOrEmpty(idTurno))
                 {
-                    DataTable ppLab = turno.ObtenerPrecioPromo(new Guid(idSubtipoLab), obtenerFecha());
-                    if (ppLab.Rows.Count > 0 && Convert.ToDouble(ppLab.Rows[0]["PrecioLista"].ToString()) > 0)
-                        pacienteLaboral.TipoExamen.PrecioLista = Convert.ToDouble(ppLab.Rows[0]["PrecioLista"].ToString());
+                    pacienteLaboral = turno.cargarTurnoPacienteLaboral(new Guid(idTurno));
+                    System.Diagnostics.Debug.WriteLine($"[DEBUG] cargarPanelLaboral - pacienteLaboral cargado: {pacienteLaboral?.ApellidoNombre ?? "null"}");
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine($"[ERROR] cargarPanelLaboral - IdTurno está vacío");
                 }
             }
-
-            // ✅ Forzar precio 0 para CONSULTORIO LABORAL
-            Guid idConsultorio = new Guid("254110EB-0A50-47D8-89EF-118D163FCE8B");
-            if (pacienteLaboral.TipoExamen.Id == idConsultorio || 
-                pacienteLaboral.TipoExamen.IdTipoExamenPaciente == idConsultorio)
+            catch (Exception ex)
             {
-                pacienteLaboral.TipoExamen.PrecioBase = 0;
-                pacienteLaboral.TipoExamen.PrecioLista = 0;
-                pacienteLaboral.TipoExamen.Seña = 0;
+                System.Diagnostics.Debug.WriteLine($"[ERROR] cargarPanelLaboral: {ex.Message}");
             }
 
-            llenarPanelPacienteLaboral(pacienteLaboral);
+            if (pacienteLaboral != null)
+            {
+                // Si PrecioLista es 0, buscarlo en PrecioPromo usando el IdSubtipo de la grilla
+                if (pacienteLaboral.TipoExamen.PrecioLista == 0)
+                {
+                    string idSubtipoLab = dgv.Rows[dgv.CurrentCell.RowIndex].Cells["IdSubtipo"].Value?.ToString() ?? "";
+                    if (!string.IsNullOrEmpty(idSubtipoLab) && idSubtipoLab != Guid.Empty.ToString())
+                    {
+                        DataTable ppLab;
+
+                        // Verificar si la empresa es PARTICULARES
+                        string razonSocialEmpresa = ObtenerRazonSocialEmpresa(pacienteLaboral.IdEmpresa.ToString());
+                        bool esParticulares = razonSocialEmpresa.ToUpper().Contains("PARTICULAR");
+
+                        if (esParticulares)
+                        {
+                            // Usar PrecioPromo/PrecioPublico generales
+                            ppLab = turno.ObtenerPrecioPromo(new Guid(idSubtipoLab), obtenerFecha());
+                        }
+                        else
+                        {
+                            // Usar PrecioEmpresa (mismo precio para todas las empresas)
+                            ppLab = turno.ObtenerPrecioEmpresa(new Guid(idSubtipoLab), obtenerFecha());
+
+                            // Si no hay precio específico, fallback a PrecioPromo general
+                            if (ppLab.Rows.Count == 0)
+                            {
+                                ppLab = turno.ObtenerPrecioPromo(new Guid(idSubtipoLab), obtenerFecha());
+                            }
+                        }
+
+                        if (ppLab.Rows.Count > 0 && Convert.ToDouble(ppLab.Rows[0]["PrecioLista"].ToString()) > 0)
+                            pacienteLaboral.TipoExamen.PrecioLista = Convert.ToDouble(ppLab.Rows[0]["PrecioLista"].ToString());
+                    }
+
+                    // ✅ Forzar precio 0 para CONSULTORIO LABORAL
+                    Guid idConsultorio = new Guid("254110EB-0A50-47D8-89EF-118D163FCE8B");
+                    if (pacienteLaboral.TipoExamen.Id == idConsultorio ||
+                        pacienteLaboral.TipoExamen.IdTipoExamenPaciente == idConsultorio)
+                    {
+                        pacienteLaboral.TipoExamen.PrecioBase = 0;
+                        pacienteLaboral.TipoExamen.PrecioLista = 0;
+                        pacienteLaboral.TipoExamen.Seña = 0;
+                    }
+                }
+
+                System.Diagnostics.Debug.WriteLine($"[DEBUG] cargarPanelLaboral - Llamando a llenarPanelPacienteLaboral");
+                llenarPanelPacienteLaboral(pacienteLaboral);
+            }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine($"[ERROR] cargarPanelLaboral - pacienteLaboral es null, no se puede llenar el panel");
+            }
+        }
+
+             private string ObtenerRazonSocialEmpresa(string idEmpresa)
+        {
+            string razonSocial = "";
+            try
+            {
+                CapaNegocioMepryl.Empresa empresaNegocio = new CapaNegocioMepryl.Empresa();
+                Entidades.Empresa empresaEntidad = empresaNegocio.cargarDatos(idEmpresa);
+                if (empresaEntidad != null)
+                {
+                    razonSocial = empresaEntidad.RazonSocial;
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[TURNOS] Error al obtener razonSocial: {ex.Message}");
+            }
+            return razonSocial;
         }
 
         private void llenarPanelPacienteLaboral(Entidades.TurnoLaboral turnoLab)
         {
-            // No resetear el dropdown de observaciones para mantener la selección del usuario
-            // if (cboObsPredefinidasLab != null) cboObsPredefinidasLab.SelectedIndex = 0;
-            string strFecha = "";
-            tbIdTurnoLaboral.Text = turnoLab.Id.ToString();
-            tbIdPacienteLaboral.Text = turnoLab.IdPaciente.ToString();
-            tbPacienteLaboral.Text = turnoLab.ApellidoNombre;
-            tbDniLaboral.Text = turnoLab.Dni;
-            tbCuilLaboral.Text = turnoLab.Cuil;
-            tbIdEmpresaLaboral.Text = turnoLab.IdEmpresa.ToString();
-            tbEmpresaLaboral.Text = turnoLab.Empresa;
-            strFecha = turnoLab.FechaNacimiento.ToString("dd/MM/yyyy");
-            if (strFecha != "01/01/0001")
-            {
-                txtFNacLab.Text = turnoLab.FechaNacimiento.ToString("dd/MM/yyyy");
-                txtEdadLab.Text = (DateTime.Today.AddTicks(-turnoLab.FechaNacimiento.Ticks).Year - 1).ToString();
-            }
-            else
-            {
-                txtFNacLab.Text = "";
-                txtEdadLab.Text = "0";
-            }
+            System.Diagnostics.Debug.WriteLine($"[DEBUG] llenarPanelPacienteLaboral - Inicio");
+            System.Diagnostics.Debug.WriteLine($"[DEBUG] llenarPanelPacienteLaboral - Paciente: {turnoLab?.ApellidoNombre ?? "null"}");
 
-            tbTareaLaboral.Text = turnoLab.Tarea;
-            txtEmailLab.Text = turnoLab.Email;
-            tbTelefonoLaboral.Text = turnoLab.Telefono;
-            tipoExamenActual = turnoLab.TipoExamen;
-            tbObservacionesLaboral.Text = ObtenerObservacionVigente(turnoLab.Observaciones, tipoExamenActual);
-            tbIdTipoExamenLaboral.Text = tipoExamenActual.IdTipoExamenPaciente.ToString();
-            tbImporteLaboral.Text = tipoExamenActual.PrecioBase.ToString("N0");
-            tbImporteListaLaboral.Text = tipoExamenActual.PrecioLista.ToString("N0");
-            tbSeñaLaboral.Text = tipoExamenActual.Seña.ToString("N0");
-            
-            // ✅ Recalcular balance
-            ActualizarPreciosPanelLaboral();
-            
-            tbExamenLaboral.Text = dgv.Rows[dgv.CurrentCell.RowIndex].Cells["SubTipoExamen"].Value?.ToString();
-            if (tipoExamenActual.Modificado)
+            try
             {
-                tbExamenLaboral.Text = tbExamenLaboral.Text + " MODIF.";
+                // No resetear el dropdown de observaciones para mantener la selección del usuario
+                // if (cboObsPredefinidasLab != null) cboObsPredefinidasLab.SelectedIndex = 0;
+                string strFecha = "";
+                tbIdTurnoLaboral.Text = turnoLab.Id.ToString();
+                tbIdPacienteLaboral.Text = turnoLab.IdPaciente.ToString();
+                tbPacienteLaboral.Text = turnoLab.ApellidoNombre;
+                tbDniLaboral.Text = turnoLab.Dni;
+                tbCuilLaboral.Text = turnoLab.Cuil;
+                tbIdEmpresaLaboral.Text = turnoLab.IdEmpresa.ToString();
+                tbEmpresaLaboral.Text = turnoLab.Empresa;
+
+                System.Diagnostics.Debug.WriteLine($"[DEBUG] llenarPanelPacienteLaboral - Paciente: {turnoLab.ApellidoNombre}, Empresa: {turnoLab.Empresa}");
+
+                strFecha = turnoLab.FechaNacimiento.ToString("dd/MM/yyyy");
+                if (strFecha != "01/01/0001")
+                {
+                    txtFNacLab.Text = turnoLab.FechaNacimiento.ToString("dd/MM/yyyy");
+                    txtEdadLab.Text = (DateTime.Today.AddTicks(-turnoLab.FechaNacimiento.Ticks).Year - 1).ToString();
+                }
+                else
+                {
+                    txtFNacLab.Text = "";
+                    txtEdadLab.Text = "0";
+                }
+
+                tbTareaLaboral.Text = turnoLab.Tarea;
+                txtEmailLab.Text = turnoLab.Email;
+                tbTelefonoLaboral.Text = turnoLab.Telefono;
+                tipoExamenActual = turnoLab.TipoExamen;
+                tbObservacionesLaboral.Text = ObtenerObservacionVigente(turnoLab.Observaciones, tipoExamenActual);
+                tbIdTipoExamenLaboral.Text = tipoExamenActual.IdTipoExamenPaciente.ToString();
+                tbImporteLaboral.Text = tipoExamenActual.PrecioBase.ToString("N0");
+                tbImporteListaLaboral.Text = tipoExamenActual.PrecioLista.ToString("N0");
+                tbSeñaLaboral.Text = tipoExamenActual.Seña.ToString("N0");
+
+                System.Diagnostics.Debug.WriteLine($"[DEBUG] llenarPanelPacienteLaboral - Precios cargados - Base: {tipoExamenActual.PrecioBase}, Lista: {tipoExamenActual.PrecioLista}");
+
+                // ✅ Recalcular balance
+                ActualizarPreciosPanelLaboral();
+
+                tbExamenLaboral.Text = dgv.Rows[dgv.CurrentCell.RowIndex].Cells["SubTipoExamen"].Value?.ToString();
+                if (tipoExamenActual.Modificado)
+                {
+                    tbExamenLaboral.Text = tbExamenLaboral.Text + " MODIF.";
+                }
+                // GRV
+                strUltRegistro[6] = tbIdPacienteLaboral.Text = turnoLab.IdPaciente.ToString();
+                strUltRegistro[7] = turnoLab.Dni;
+                strUltRegistro[8] = turnoLab.ApellidoNombre;
+                strUltRegistro[9] = "";
+
+                System.Diagnostics.Debug.WriteLine($"[DEBUG] llenarPanelPacienteLaboral - Panel llenado correctamente");
+                System.Diagnostics.Debug.WriteLine($"[DEBUG] llenarPanelPacienteLaboral - panelLaboral.Visible: {panelLaboral.Visible}");
             }
-            // GRV
-            strUltRegistro[6] = tbIdPacienteLaboral.Text = turnoLab.IdPaciente.ToString();
-            strUltRegistro[7] = turnoLab.Dni;
-            strUltRegistro[8] = turnoLab.ApellidoNombre;
-            strUltRegistro[9] = "";
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[ERROR] llenarPanelPacienteLaboral: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"[ERROR] llenarPanelPacienteLaboral - StackTrace: {ex.StackTrace}");
+            }
         }
 
         private void turnoNoAsignado()
@@ -1034,7 +1152,28 @@ namespace CapaPresentacion
             string idSubtipoAsigLab = dgv.Rows[dgv.CurrentCell.RowIndex].Cells["IdSubtipo"].Value?.ToString() ?? "";
             if (!string.IsNullOrEmpty(idSubtipoAsigLab))
             {
-                DataTable ppAsigLab = turno.ObtenerPrecioPromo(new Guid(idSubtipoAsigLab), fechaTurno);
+                DataTable ppAsigLab;
+
+                // Verificar si la empresa es PARTICULARES
+                string razonSocialEmpresa = ObtenerRazonSocialEmpresa(idEmpresa);
+                bool esParticulares = razonSocialEmpresa.ToUpper().Contains("PARTICULAR");
+
+                if (esParticulares)
+                {
+                    // Usar PrecioPromo/PrecioPublico generales
+                    ppAsigLab = turno.ObtenerPrecioPromo(new Guid(idSubtipoAsigLab), fechaTurno);
+                }
+                else
+                {
+                    // Usar PrecioEmpresa (mismo precio para todas las empresas)
+                    ppAsigLab = turno.ObtenerPrecioEmpresa(new Guid(idSubtipoAsigLab), fechaTurno);
+
+                    // Si no hay precio específico, fallback a PrecioPromo general
+                    if (ppAsigLab.Rows.Count == 0)
+                    {
+                        ppAsigLab = turno.ObtenerPrecioPromo(new Guid(idSubtipoAsigLab), fechaTurno);
+                    }
+                }
                 if (ppAsigLab.Rows.Count > 0)
                 {
                     pacienteLaboral.TipoExamen.PrecioBase = Convert.ToDouble(ppAsigLab.Rows[0]["PrecioPromo"].ToString());
@@ -1204,6 +1343,7 @@ namespace CapaPresentacion
 
         private void dgv_CurrentCellChanged(object sender, EventArgs e)
         {
+            System.Diagnostics.Debug.WriteLine($"[DEBUG] dgv_CurrentCellChanged - CurrentCell: {dgv.CurrentCell?.RowIndex ?? -1}");
             cargarTurnoSeleccionado();
         }
 
@@ -2517,6 +2657,8 @@ namespace CapaPresentacion
 
         private void dgv_CellClick(object sender, DataGridViewCellEventArgs e)
         {
+            System.Diagnostics.Debug.WriteLine($"[DEBUG] dgv_CellClick - RowIndex: {e.RowIndex}, ColumnIndex: {e.ColumnIndex}");
+
             //LimpiarUltimoRegistroIngresado();
             //if (blnRecargaGrilla == true && rbEstadoLibres.Checked == true)
             //{
@@ -2526,6 +2668,34 @@ namespace CapaPresentacion
             //    cargarGrillaTurnosSinFiltro();
             //    //blnRecargaGrilla = false;
             //}
+
+            // DEBUG: Mostrar datos de la fila seleccionada en los labels superiores
+            if (e.RowIndex >= 0 && dgv.Rows[e.RowIndex].Cells.Count > 0)
+            {
+                try
+                {
+                    DataGridViewRow fila = dgv.Rows[e.RowIndex];
+                    string tipoPadre = fila.Cells["TipoPadre"].Value?.ToString() ?? "";
+                    string fecha = fila.Cells["Fecha"].Value?.ToString() ?? "";
+                    string hora = fila.Cells["Hora"].Value?.ToString() ?? "";
+                    string dni = fila.Cells["Dni"].Value?.ToString() ?? "";
+                    string paciente = fila.Cells["Paciente"].Value?.ToString() ?? "";
+                    string codigo = fila.Cells["Codigo"].Value?.ToString() ?? "";
+
+                    System.Diagnostics.Debug.WriteLine($"[DEBUG] dgv_CellClick - TipoPadre: {tipoPadre}, Paciente: {paciente}");
+
+                    lblTipoExamen.Text = tipoPadre;
+                    lblFecha.Text = fecha;
+                    lblHora.Text = hora;
+                    lblDNI.Text = dni;
+                    lblNombre.Text = paciente;
+                    lblCodigo.Text = codigo;
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[ERROR] dgv_CellClick: {ex.Message}");
+                }
+            }
         }
 
         private void LimpiarUltimoRegistroIngresado()

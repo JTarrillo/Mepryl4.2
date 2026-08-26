@@ -141,6 +141,9 @@ namespace CapaNegocioMepryl
                     Lista02.Add(r.ItemArray[3].ToString());
                     Lista02.Add(r.ItemArray[4].ToString());
                     Lista02.Add(r.ItemArray[5].ToString());
+                    Lista02.Add(r.ItemArray[6].ToString()); // CUIT
+
+                    System.Diagnostics.Debug.WriteLine($"[DEBUG] dtArchivosPDF row - Dia: {r.ItemArray[0]}, Mes: {r.ItemArray[1]}, Anio: {r.ItemArray[2]}, Orden: {r.ItemArray[3]}, DNI: {r.ItemArray[4]}, Nombre: {r.ItemArray[5]}, CUIT: {r.ItemArray[6]}");
 
                     //ProcesoConcatenar(PathArchivoConsolidado(Lista02, DirectorioBase), Lista01);
                     ProcesoConcatenar(PathArchivoConsolidado(Lista02, DirectorioBase), ArchivosPdf);
@@ -383,14 +386,43 @@ namespace CapaNegocioMepryl
                     System.IO.Directory.CreateDirectory(DirConsolidado);
                 }
 
-                strPath = DirConsolidado + "\\" + Lista[3].ToString() + " - " + Lista[4].ToString() + " - " + Lista[0].ToString() + Lista[1].ToString() + Lista[2].ToString() + " - " + Lista[5].ToString() + ".pdf";
+                // Limpiar el CUIT de caracteres inválidos para nombres de archivo
+                string cuitLimpio = Lista[6].ToString();
+                if (!string.IsNullOrEmpty(cuitLimpio))
+                {
+                    // Remover caracteres inválidos para nombres de archivo
+                    foreach (char c in System.IO.Path.GetInvalidFileNameChars())
+                    {
+                        cuitLimpio = cuitLimpio.Replace(c.ToString(), "");
+                    }
+                }
+                else
+                {
+                    cuitLimpio = "SIN_CUIT"; // Valor por defecto si está vacío
+                }
+
+                strPath = DirConsolidado + "\\" + Lista[3].ToString() + " - " + Lista[4].ToString() + " - " + Lista[0].ToString() + Lista[1].ToString() + Lista[2].ToString() + " - " + cuitLimpio + " - " + Lista[5].ToString() + ".pdf";
 
                 Lista.Clear();
             }catch(System.ArgumentException ex)
             {
-                strPath = Path.GetTempPath() + "\\" + Lista[3].ToString() + " - " + Lista[4].ToString() + " - " + Lista[0].ToString() + Lista[1].ToString() + Lista[2].ToString() + " - " + Lista[5].ToString() + ".pdf";
+                // Limpiar el CUIT también en el caso de excepción
+                string cuitLimpio = Lista[6].ToString();
+                if (!string.IsNullOrEmpty(cuitLimpio))
+                {
+                    foreach (char c in System.IO.Path.GetInvalidFileNameChars())
+                    {
+                        cuitLimpio = cuitLimpio.Replace(c.ToString(), "");
+                    }
+                }
+                else
+                {
+                    cuitLimpio = "SIN_CUIT";
+                }
+
+                strPath = Path.GetTempPath() + "\\" + Lista[3].ToString() + " - " + Lista[4].ToString() + " - " + Lista[0].ToString() + Lista[1].ToString() + Lista[2].ToString() + " - " + cuitLimpio + " - " + Lista[5].ToString() + ".pdf";
             }
-                
+
             return strPath;
         }
 

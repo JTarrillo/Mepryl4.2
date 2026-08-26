@@ -18,6 +18,7 @@ namespace CapaPresentacion
     {
         private PrecioPromo precioPromo;
         private PrecioPublico precioPublico;
+        private CapaNegocioMepryl.PrecioEmpresa precioEmpresa;
         private DataGridView dgvEmpresas;
         private bool yaInicializado = false;
         private decimal[] _coefsPromo = new decimal[12];
@@ -56,6 +57,7 @@ namespace CapaPresentacion
             this.MdiParent = parentForm;
             precioPromo = new PrecioPromo();
             precioPublico = new PrecioPublico();
+            precioEmpresa = new CapaNegocioMepryl.PrecioEmpresa();
             InicializarGrillaEmpresas();
 
             for (int i = 0; i < 12; i++)
@@ -154,31 +156,50 @@ namespace CapaPresentacion
 
         private DataTable ObtenerDatosActual(int anio)
         {
-            return EsPrecioPublico() ? precioPublico.ListarPreciosPublicoAnio(anio) : precioPromo.ListarPreciosPublicoAnio(anio);
+            if (EsPrecioPublico())
+                return precioPublico.ListarPreciosPublicoAnio(anio);
+            else if (EsPrecioEmpresa())
+                return precioEmpresa.ListarPreciosEmpresaAnio(anio);
+            else
+                return precioPromo.ListarPreciosPublicoAnio(anio);
         }
 
         private void GuardarDatosActual(int anio, DataTable dtDatos)
         {
             if (EsPrecioPublico())
                 precioPublico.GuardarPreciosPublicoAnio(anio, dtDatos);
+            else if (EsPrecioEmpresa())
+                precioEmpresa.GuardarPreciosEmpresaAnio(anio, dtDatos);
             else
                 precioPromo.GuardarPreciosPublicoAnio(anio, dtDatos);
         }
 
         private bool ExistenPreciosActual(int anio)
         {
-            return EsPrecioPublico() ? precioPublico.ExistenPreciosAnio(anio) : precioPromo.ExistenPreciosAnio(anio);
+            if (EsPrecioPublico())
+                return precioPublico.ExistenPreciosAnio(anio);
+            else if (EsPrecioEmpresa())
+                return true; // PrecioEmpresa siempre tiene datos para las especialidades
+            else
+                return precioPromo.ExistenPreciosAnio(anio);
         }
 
         private DataTable ObtenerCoeficientesActual(int anio)
         {
-            return EsPrecioPublico() ? precioPublico.ListarCoeficientesAnio(anio) : precioPromo.ListarCoeficientesAnio(anio);
+            if (EsPrecioPublico())
+                return precioPublico.ListarCoeficientesAnio(anio);
+            else if (EsPrecioEmpresa())
+                return precioEmpresa.ListarCoeficientesAnio(anio);
+            else
+                return precioPromo.ListarCoeficientesAnio(anio);
         }
 
         private void GuardarCoeficientesActual(int anio, decimal[] coef)
         {
             if (EsPrecioPublico())
                 precioPublico.GuardarCoeficientesAnio(anio, coef);
+            else if (EsPrecioEmpresa())
+                precioEmpresa.GuardarCoeficientesAnio(anio, coef);
             else
                 precioPromo.GuardarCoeficientesAnio(anio, coef);
         }
@@ -187,6 +208,8 @@ namespace CapaPresentacion
         {
             if (EsPrecioPublico())
                 precioPublico.CopiarPrecios(mesOrigen, anioOrigen, mesDestino, anioDestino);
+            else if (EsPrecioEmpresa())
+                precioEmpresa.CopiarPrecios(mesOrigen, anioOrigen, mesDestino, anioDestino);
             else
                 precioPromo.CopiarPrecios(mesOrigen, anioOrigen, mesDestino, anioDestino);
         }
@@ -195,6 +218,8 @@ namespace CapaPresentacion
         {
             if (EsPrecioPublico())
                 precioPublico.AplicarVariacion(mes, anio, porcentaje);
+            else if (EsPrecioEmpresa())
+                precioEmpresa.AplicarVariacion(mes, anio, porcentaje);
             else
                 precioPromo.AplicarVariacion(mes, anio, porcentaje);
         }
@@ -267,10 +292,11 @@ namespace CapaPresentacion
         {
             _coefsPromo = ConstruirArrayCoeficientes(precioPromo.ListarCoeficientesAnio(anio));
             DataTable dtPromo = precioPromo.ListarPreciosPublicoAnio(anio);
+            DataTable dtEmpresa = precioEmpresa.ListarPreciosEmpresaAnio(anio);
 
             // BUZO y LIBRETA deben aparecer en ambas grillas
             CargarFilasEnGrilla(dgvPrecios, dtPromo, row => !EsSubtipoEmpresa(row["Tipo"]?.ToString(), row["Descripcion"]?.ToString()) || EsBuoOLibreta(row["Tipo"]?.ToString(), row["Descripcion"]?.ToString()));
-            CargarFilasEnGrilla(dgvEmpresas, dtPromo, row => EsSubtipoEmpresa(row["Tipo"]?.ToString(), row["Descripcion"]?.ToString()) || EsBuoOLibreta(row["Tipo"]?.ToString(), row["Descripcion"]?.ToString()));
+            CargarFilasEnGrilla(dgvEmpresas, dtEmpresa, row => EsSubtipoEmpresa(row["Tipo"]?.ToString(), row["Descripcion"]?.ToString()) || EsBuoOLibreta(row["Tipo"]?.ToString(), row["Descripcion"]?.ToString()));
 
             ActualizarEncabezadosCoeficientes(dgvPrecios, _coefsPromo);
             ActualizarEncabezadosCoeficientes(dgvEmpresas, _coefsPromo);

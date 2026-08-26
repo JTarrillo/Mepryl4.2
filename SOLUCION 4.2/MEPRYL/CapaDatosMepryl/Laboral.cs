@@ -19,8 +19,8 @@ namespace CapaDatosMepryl
 
         public Laboral()
         {
-            // GRV - Modificado - Consulta explícita con columnas reales de la tabla Validaciones
-            validaciones = SQLConnector.obtenerTablaSegunConsultaString("SELECT id, codigo, codigoInterno, descripcion, rangoDesde, rangoHasta, idClasif FROM dbo.Validaciones");
+            // GRV - Modificado
+            validaciones = SQLConnector.obtenerTablaSegunConsultaString("select * from dbo.Validaciones");
         }
 
         public DataTable consultasConFiltro(string filtro)
@@ -65,7 +65,7 @@ namespace CapaDatosMepryl
                     }
                 }
 
-                string strSQL = @"select c.id, c.fecha, c.identificador, 
+                DataTable tablaLaborales = SQLConnector.obtenerTablaSegunConsultaString(@"select c.id, c.fecha, c.identificador, 
             p.id, p.dni,(p.apellido + ' ' + p.nombres), tep.id, e.descripcion, cl.id, cl.tipo, cl.idExamenLaboral, cl.idConsultorioLaboral,
             tep.imp, tep.impLab, cons, tep.mail 
             from dbo.Consulta c inner join dbo.PacienteLaboral p on c.pacienteID = p.id
@@ -73,18 +73,7 @@ namespace CapaDatosMepryl
                             inner join dbo.Especialidad e on tep.idEspecialidad = e.id
                             inner join dbo.ConsultaLaboral cl on tep.id = cl.idTipoExamen
             where c.tipo != 'P' " + consulta + " and convert(date,c.fecha) >= '" + desdeSql + @"' and convert(date,c.fecha)
-            <= '" + hastaSql + "' order by CONVERT(VARCHAR(10),c.fecha,101), convert(int,REPLACE(REPLACE(REPLACE(REPLACE(c.identificador, 'L', ''), 'CO',''), 'EC', ''),'R',''))";
-                
-                System.Diagnostics.Debug.WriteLine("[LABORAL] consultasSinFiltro SQL: " + strSQL);
-                DataTable tablaLaborales = SQLConnector.obtenerTablaSegunConsultaString(strSQL);
-                System.Diagnostics.Debug.WriteLine("[LABORAL] consultasSinFiltro Rows: " + tablaLaborales.Rows.Count);
-                
-                foreach (DataRow row in tablaLaborales.Rows)
-                {
-                    System.Diagnostics.Debug.WriteLine("[LABORAL] Fila: identificador=" + row["identificador"].ToString() + 
-                        ", idExamenLaboral(cl)=" + row["idExamenLaboral"].ToString() + 
-                        ", tep.id=" + row["id"].ToString());
-                }
+            <= '" + hastaSql + "' order by CONVERT(VARCHAR(10),c.fecha,101), convert(int,REPLACE(REPLACE(REPLACE(REPLACE(c.identificador, 'L', ''), 'CO',''), 'EC', ''),'R',''))");
 
                 if (listaFiltro.Contains("L"))
                 {
@@ -157,7 +146,6 @@ namespace CapaDatosMepryl
             retorno.Columns.Add("ImpLaboratorio");
             retorno.Columns.Add("Consolidado");
             retorno.Columns.Add("Enviado");
-            retorno.Columns.Add("IdTipoExamenGrilla"); // Nueva columna para la grilla
 
             foreach (DataRow r in tablaLaborales.Rows)
             {
@@ -204,7 +192,7 @@ namespace CapaDatosMepryl
                         Convert.ToDateTime(r.ItemArray[1]).ToString("HH:mm"), r.ItemArray[2], r.ItemArray[7].ToString(),
                         idEmp, emp, tarea, r.ItemArray[4], r.ItemArray[5], r.ItemArray[6],
                         r.ItemArray[8], r.ItemArray[9], estAtenc, "", fechaAltaCitacion, "",
-                        r.ItemArray[6], r.ItemArray[11], r.ItemArray[6], r.ItemArray[12], r.ItemArray[13], r.ItemArray[14], r.ItemArray[15], r.ItemArray[6]);
+                        r.ItemArray[10], r.ItemArray[11], "", r.ItemArray[6], r.ItemArray[12], r.ItemArray[13], r.ItemArray[14]);
                     }
                     else
                     {
@@ -236,7 +224,7 @@ namespace CapaDatosMepryl
                         Convert.ToDateTime(r.ItemArray[1]).ToString("HH:mm"), r.ItemArray[2], r.ItemArray[7].ToString(),
                         idEmp, emp, tarea, r.ItemArray[4], r.ItemArray[5], r.ItemArray[6],
                         r.ItemArray[8], r.ItemArray[9], "", "", fechaAltaCitacion, dictamen,
-                        r.ItemArray[6], r.ItemArray[11], dictamenClinico, r.ItemArray[6], r.ItemArray[12], r.ItemArray[13], r.ItemArray[14], r.ItemArray[15], r.ItemArray[6]);
+                        r.ItemArray[10], r.ItemArray[11], dictamenClinico, r.ItemArray[6], r.ItemArray[12], r.ItemArray[13], r.ItemArray[14], r.ItemArray[15]);
                     }
                 }
 
@@ -492,171 +480,136 @@ namespace CapaDatosMepryl
         public Entidades.ExamenLaboral cargarExamen(string id)
         {
             Entidades.ExamenLaboral retorno = new ExamenLaboral();
-            // Consulta explícita con columnas en orden específico para evitar desfasaje
-            string consulta = @"SELECT id, antCli, antQui, antTrau, talla, peso, entradaAire, ruidosAgre, ruidosCard, 
-                silencios, taMax, taMin, pulso, abdomen, hernias, varices, apGenitour, pielYFaneras, apLocomotor, snc, 
-                ojoDer, ojoDerLent, ojoIzq, ojoIzqLent, visionCromatica, exOdonto, equil, observacionesCli, medico, 
-                dictamenCli, gRojos, gBlancos, hemoglobina, hematocrito, eritro, plaquetas, obsSerieRoja, cayado, 
-                segmentado, eosinof, basof, linfoc, monoc, obsSerieBlanca, glucemia, uremia, chagas, vdrl, grupo,
-                factor, uricemia, te, otrosQuimicaHemat, colTotal, hdl, ldl, trig, otrosPerfilLipidico, color, aspecto, 
-                densidad, ph, rodillaF, leuco, hematies, prot, gluc, hemogOrina, cetonas, bilirrubina, otrosOrina, 
-                observacionesLab, dictamenLab, toraxF, lumbarF, lumbarP, cervicalF, cervicalP, fnp, mnp, hombrosF, 
-                rodillasF, caderasF, tobillosF, craneoFyP, hombroF, hombroVP, humeroFyP, codoFyP, antebrazoFyP, 
-                munecaFyP, manoFyP, toraxP, pCostalFyO, colDorsalFyP, pelvisF, caderaF, caderaP, femurFyP, dorsalF, 
-                espinogramaP, rodillaP, piernaFyP, tobilloFyP, axialDeCalcaneo, pieFyP, audio, ergo, eco, psico, 
-                espiro, eeg, iTorg, ecg, observaciones, dictamen, na, k, protTotal, albumina, alfa1, alfa2, beta1, 
-                beta2, gammaglob, relacAlbGlob, creat 
-                FROM dbo.ExamenLaboral WHERE id = '" + id + "'";
-            
-            DataTable examen = SQLConnector.obtenerTablaSegunConsultaString(consulta);
+            DataTable examen = SQLConnector.obtenerTablaSegunConsultaString("select * from dbo.ExamenLaboral where id = '" + id + "'");
             if (examen.Rows.Count > 0)
             {
-                DataRow row = examen.Rows[0];
-                
-                // Método auxiliar para obtener valores de forma segura
-                Func<string, object, string> getSafeValue = (columnName, defaultValue) => 
-                {
-                    try
-                    {
-                        if (row.Table.Columns.Contains(columnName) && row[columnName] != DBNull.Value)
-                        {
-                            return row[columnName].ToString();
-                        }
-                        return defaultValue.ToString();
-                    }
-                    catch
-                    {
-                        return defaultValue.ToString();
-                    }
-                };
-
-                retorno.Id = new Guid(getSafeValue("id", Guid.Empty));
-                retorno.AntCli = getSafeValue("antCli", "");
-                retorno.AntQui = getSafeValue("antQui", "");
-                retorno.AntTrau = getSafeValue("antTrau", "");
-                retorno.Talla = getSafeValue("talla", "");
-                retorno.Peso = getSafeValue("peso", "");
-                retorno.EntradaAire = getSafeValue("entradaAire", "");
-                retorno.RuidosAgre = getSafeValue("ruidosAgre", "");
-                retorno.RuidosCard = getSafeValue("ruidosCard", "");
-                retorno.Silencios = getSafeValue("silencios", "");
-                retorno.TaMax = getSafeValue("taMax", "");
-                retorno.TaMin = getSafeValue("taMin", "");
-                retorno.Pulso = getSafeValue("pulso", "");
-                retorno.Abdomen = getSafeValue("abdomen", "");
-                retorno.Hernias = getSafeValue("hernias", "");
-                retorno.Varices = getSafeValue("varices", "");
-                retorno.ApGenitour = getSafeValue("apGenitour", "");
-                retorno.PielYFaneras = getSafeValue("pielYFaneras", "");
-                retorno.ApLocomotor = getSafeValue("apLocomotor", "");
-                retorno.Snc = getSafeValue("snc", "");
-                retorno.OjoDer = getSafeValue("ojoDer", "");
-                retorno.OjoDerLent = getSafeValue("ojoDerLent", "");
-                retorno.OjoIzq = getSafeValue("ojoIzq", "");
-                retorno.OjoIzqLent = getSafeValue("ojoIzqLent", "");
-                retorno.VisionCromatica = getSafeValue("visionCromatica", "");
-                retorno.ExOdonto = getSafeValue("exOdonto", "");
-                retorno.Equil = getSafeValue("equil", "");
-                retorno.ObservacionesCli = getSafeValue("observacionesCli", "");
-                retorno.Medico = getSafeValue("medico", "");
-                retorno.DictamenCli = getSafeValue("dictamenCli", "");
-                retorno.GRojos = getSafeValue("gRojos", "");
-                retorno.GBlancos = getSafeValue("gBlancos", "");
-                retorno.Hemoglobina = getSafeValue("hemoglobina", "");
-                retorno.Hematocrito = getSafeValue("hematocrito", "");
-                retorno.Eritro = getSafeValue("eritro", "");
-                retorno.Plaquetas = getSafeValue("plaquetas", "");
-                retorno.ObsSerieRoja = getSafeValue("obsSerieRoja", "");
-                retorno.Cayado = getSafeValue("cayado", "");
-                retorno.Segmentado = getSafeValue("segmentado", "");
-                retorno.Eosinof = getSafeValue("eosinof", "");
-                retorno.Basof = getSafeValue("basof", "");
-                retorno.Linfoc = getSafeValue("linfoc", "");
-                retorno.Monoc = getSafeValue("monoc", "");
-                retorno.ObsSerieBlanca = getSafeValue("obsSerieBlanca", "");
-                retorno.Glucemia = getSafeValue("glucemia", "");
-                retorno.Uremia = getSafeValue("uremia", "");
-                retorno.Chagas = getSafeValue("chagas", "");
-                retorno.Vdrl = getSafeValue("vdrl", "");
-                retorno.Grupo = getSafeValue("grupo", "");
-                retorno.Factor = getSafeValue("factor", "");
-                retorno.Uricemia = getSafeValue("uricemia", "");
-                retorno.Te = getSafeValue("te", "");
-                retorno.OtrosQuimicaHemat = getSafeValue("otrosQuimicaHemat", "");
-                retorno.ColTotal = getSafeValue("colTotal", "");
-                retorno.Hdl = getSafeValue("hdl", "");
-                retorno.Ldl = getSafeValue("ldl", "");
-                retorno.Triglic = getSafeValue("trig", "");
-                retorno.OtrosPerfilLipidico = getSafeValue("otrosPerfilLipidico", "");
-                retorno.Color = getSafeValue("color", "");
-                retorno.Aspecto = getSafeValue("aspecto", "");
-                retorno.Densidad = getSafeValue("densidad", "");
-                retorno.Ph = getSafeValue("ph", "");
-                retorno.RodillaF = getSafeValue("rodillaF", "");
-                retorno.Leuco = getSafeValue("leuco", "");
-                retorno.Hematies = getSafeValue("hematies", "");
-                retorno.Prot = getSafeValue("prot", "");
-                retorno.Gluc = getSafeValue("gluc", "");
-                retorno.HemogOrina = getSafeValue("hemogOrina", "");
-                retorno.Cetonas = getSafeValue("cetonas", "");
-                retorno.Bilirrubina = getSafeValue("bilirrubina", "");
-                retorno.OtrosOrina = getSafeValue("otrosOrina", "");
-                retorno.ObservacionesLab = getSafeValue("observacionesLab", "");
-                retorno.DictamenLab = getSafeValue("dictamenLab", "");
-                retorno.ToraxF = getSafeValue("toraxF", "");
-                retorno.LumbarF = getSafeValue("lumbarF", "");
-                retorno.LumbarP = getSafeValue("lumbarP", "");
-                retorno.CervicalF = getSafeValue("cervicalF", "");
-                retorno.CervicalP = getSafeValue("cervicalP", "");
-                retorno.Fnp = getSafeValue("fnp", "");
-                retorno.Mnp = getSafeValue("mnp", "");
-                retorno.HombrosF = getSafeValue("hombrosF", "");
-                retorno.RodillasF = getSafeValue("rodillasF", "");
-                retorno.CaderasF = getSafeValue("caderasF", "");
-                retorno.TobillosF = getSafeValue("tobillosF", "");
-                retorno.CraneoFyP = getSafeValue("craneoFyP", "");
-                retorno.HombroF = getSafeValue("hombroF", "");
-                retorno.HombroVP = getSafeValue("hombroVP", "");
-                retorno.HumeroFyP = getSafeValue("humeroFyP", "");
-                retorno.CodoFyP = getSafeValue("codoFyP", "");
-                retorno.AntebrazoFyP = getSafeValue("antebrazoFyP", "");
-                retorno.MunecaFyP = getSafeValue("munecaFyP", "");
-                retorno.ManoFyP = getSafeValue("manoFyP", "");
-                retorno.ToraxP = getSafeValue("toraxP", "");
-                retorno.PCostalFyO = getSafeValue("pCostalFyO", "");
-                retorno.ColDorsalFyP = getSafeValue("colDorsalFyP", "");
-                retorno.PelvisF = getSafeValue("pelvisF", "");
-                retorno.CaderaF = getSafeValue("caderaF", "");
-                retorno.CaderaP = getSafeValue("caderaP", "");
-                retorno.FemurFyP = getSafeValue("femurFyP", "");
-                retorno.DorsalF = getSafeValue("dorsalF", "");
-                retorno.EspinogramaP = getSafeValue("espinogramaP", "");
-                retorno.RodillaP = getSafeValue("rodillaP", "");
-                retorno.PiernaFyP = getSafeValue("piernaFyP", "");
-                retorno.TobilloFyP = getSafeValue("tobilloFyP", "");
-                retorno.AxialDeCalcaneo = getSafeValue("axialDeCalcaneo", "");
-                retorno.PieFyP = getSafeValue("pieFyP", "");
-                retorno.Audio = getSafeValue("audio", "");
-                retorno.Ergo = getSafeValue("ergo", "");
-                retorno.Eco = getSafeValue("eco", "");
-                retorno.Psico = getSafeValue("psico", "");
-                retorno.Espiro = getSafeValue("espiro", "");
-                retorno.Eeg = getSafeValue("eeg", "");
-                retorno.ITorg = getSafeValue("iTorg", "");
-                retorno.Ecg = getSafeValue("ecg", "");
-                retorno.Observaciones = getSafeValue("observaciones", "");
-                retorno.Dictamen = getSafeValue("dictamen", "");
-                retorno.Na = getSafeValue("na", "");
-                retorno.K = getSafeValue("k", "");
-                retorno.ProtTotales = getSafeValue("protTotal", "");
-                retorno.Albumina = getSafeValue("albumina", "");
-                retorno.ALFA1 = getSafeValue("alfa1", "");
-                retorno.ALFA2 = getSafeValue("alfa2", "");
-                retorno.BETA1 = getSafeValue("beta1", "");
-                retorno.BETA2 = getSafeValue("beta2", "");
-                retorno.Gammaglob = getSafeValue("gammaglob", "");
-                retorno.RelacAlbGlob = getSafeValue("relacAlbGlob", "");
-                retorno.Creat = getSafeValue("creat", "");
+                retorno.Id = new Guid(examen.Rows[0].ItemArray[0].ToString());
+                retorno.AntCli = examen.Rows[0].ItemArray[1].ToString();
+                retorno.AntQui = examen.Rows[0].ItemArray[2].ToString();
+                retorno.AntTrau = examen.Rows[0].ItemArray[3].ToString();
+                retorno.Talla = examen.Rows[0].ItemArray[4].ToString();
+                retorno.Peso = examen.Rows[0].ItemArray[5].ToString();
+                retorno.EntradaAire = examen.Rows[0].ItemArray[6].ToString();
+                retorno.RuidosAgre = examen.Rows[0].ItemArray[7].ToString();
+                retorno.RuidosCard = examen.Rows[0].ItemArray[8].ToString();
+                retorno.Silencios = examen.Rows[0].ItemArray[9].ToString();
+                retorno.TaMax = examen.Rows[0].ItemArray[10].ToString();
+                retorno.TaMin = examen.Rows[0].ItemArray[11].ToString();
+                retorno.Pulso = examen.Rows[0].ItemArray[12].ToString();
+                retorno.Abdomen = examen.Rows[0].ItemArray[13].ToString();
+                retorno.Hernias = examen.Rows[0].ItemArray[14].ToString();
+                retorno.Varices = examen.Rows[0].ItemArray[15].ToString();
+                retorno.ApGenitour = examen.Rows[0].ItemArray[16].ToString();
+                retorno.PielYFaneras = examen.Rows[0].ItemArray[17].ToString();
+                retorno.ApLocomotor = examen.Rows[0].ItemArray[18].ToString();
+                retorno.Snc = examen.Rows[0].ItemArray[19].ToString();
+                retorno.OjoDer = examen.Rows[0].ItemArray[20].ToString();
+                retorno.OjoDerLent = examen.Rows[0].ItemArray[21].ToString();
+                retorno.OjoIzq = examen.Rows[0].ItemArray[22].ToString();
+                retorno.OjoIzqLent = examen.Rows[0].ItemArray[23].ToString();
+                retorno.VisionCromatica = examen.Rows[0].ItemArray[24].ToString();
+                retorno.ExOdonto = examen.Rows[0].ItemArray[25].ToString();
+                retorno.Equil = examen.Rows[0].ItemArray[26].ToString();
+                retorno.ObservacionesCli = examen.Rows[0].ItemArray[27].ToString();
+                retorno.Medico = examen.Rows[0].ItemArray[28].ToString();
+                retorno.DictamenCli = examen.Rows[0].ItemArray[29].ToString();
+                retorno.GRojos = examen.Rows[0].ItemArray[30].ToString();
+                retorno.GBlancos = examen.Rows[0].ItemArray[31].ToString();
+                retorno.Hemoglobina = examen.Rows[0].ItemArray[32].ToString();
+                retorno.Hematocrito = examen.Rows[0].ItemArray[33].ToString();
+                retorno.Eritro = examen.Rows[0].ItemArray[34].ToString();
+                retorno.Plaquetas = examen.Rows[0].ItemArray[35].ToString();
+                retorno.ObsSerieRoja = examen.Rows[0].ItemArray[36].ToString();
+                retorno.Cayado = examen.Rows[0].ItemArray[37].ToString();
+                retorno.Segmentado = examen.Rows[0].ItemArray[38].ToString();
+                retorno.Eosinof = examen.Rows[0].ItemArray[39].ToString();
+                retorno.Basof = examen.Rows[0].ItemArray[40].ToString();
+                retorno.Linfoc = examen.Rows[0].ItemArray[41].ToString();
+                retorno.Monoc = examen.Rows[0].ItemArray[42].ToString();
+                retorno.ObsSerieBlanca = examen.Rows[0].ItemArray[43].ToString();
+                retorno.Glucemia = examen.Rows[0].ItemArray[44].ToString();
+                retorno.Uremia = examen.Rows[0].ItemArray[45].ToString();
+                retorno.Chagas = examen.Rows[0].ItemArray[46].ToString();
+                retorno.Vdrl = examen.Rows[0].ItemArray[47].ToString();
+                retorno.Grupo = examen.Rows[0].ItemArray[48].ToString();
+                retorno.Factor = examen.Rows[0].ItemArray[49].ToString();
+                retorno.Uricemia = examen.Rows[0].ItemArray[50].ToString();
+                retorno.Te = examen.Rows[0].ItemArray[51].ToString();
+                retorno.OtrosQuimicaHemat = examen.Rows[0].ItemArray[52].ToString();
+                retorno.ColTotal = examen.Rows[0].ItemArray[53].ToString();
+                retorno.Hdl = examen.Rows[0].ItemArray[54].ToString();
+                retorno.Ldl = examen.Rows[0].ItemArray[55].ToString();
+                retorno.Triglic = examen.Rows[0].ItemArray[56].ToString();
+                retorno.OtrosPerfilLipidico = examen.Rows[0].ItemArray[57].ToString();
+                retorno.Color = examen.Rows[0].ItemArray[58].ToString();
+                retorno.Aspecto = examen.Rows[0].ItemArray[59].ToString();
+                retorno.Densidad = examen.Rows[0].ItemArray[60].ToString();
+                retorno.Ph = examen.Rows[0].ItemArray[61].ToString();
+                retorno.RodillaF = examen.Rows[0].ItemArray[62].ToString();
+                retorno.Leuco = examen.Rows[0].ItemArray[63].ToString();
+                retorno.Hematies = examen.Rows[0].ItemArray[64].ToString();
+                retorno.Prot = examen.Rows[0].ItemArray[65].ToString();
+                retorno.Gluc = examen.Rows[0].ItemArray[66].ToString();
+                retorno.HemogOrina = examen.Rows[0].ItemArray[67].ToString();
+                retorno.Cetonas = examen.Rows[0].ItemArray[68].ToString();
+                retorno.Bilirrubina = examen.Rows[0].ItemArray[69].ToString();
+                retorno.OtrosOrina = examen.Rows[0].ItemArray[70].ToString();
+                retorno.ObservacionesLab = examen.Rows[0].ItemArray[71].ToString();
+                retorno.DictamenLab = examen.Rows[0].ItemArray[72].ToString();
+                retorno.ToraxF = examen.Rows[0].ItemArray[73].ToString();
+                retorno.LumbarF = examen.Rows[0].ItemArray[74].ToString();
+                retorno.LumbarP = examen.Rows[0].ItemArray[75].ToString();
+                retorno.CervicalF = examen.Rows[0].ItemArray[76].ToString();
+                retorno.CervicalP = examen.Rows[0].ItemArray[77].ToString();
+                retorno.Fnp = examen.Rows[0].ItemArray[78].ToString();
+                retorno.Mnp = examen.Rows[0].ItemArray[79].ToString();
+                retorno.HombrosF = examen.Rows[0].ItemArray[80].ToString();
+                retorno.RodillasF = examen.Rows[0].ItemArray[81].ToString();
+                retorno.CaderasF = examen.Rows[0].ItemArray[82].ToString();
+                retorno.TobillosF = examen.Rows[0].ItemArray[83].ToString();
+                retorno.CraneoFyP = examen.Rows[0].ItemArray[84].ToString();
+                retorno.HombroF = examen.Rows[0].ItemArray[85].ToString();
+                retorno.HombroVP = examen.Rows[0].ItemArray[86].ToString();
+                retorno.HumeroFyP = examen.Rows[0].ItemArray[87].ToString();
+                retorno.CodoFyP = examen.Rows[0].ItemArray[88].ToString();
+                retorno.AntebrazoFyP = examen.Rows[0].ItemArray[89].ToString();
+                retorno.MunecaFyP = examen.Rows[0].ItemArray[90].ToString();
+                retorno.ManoFyP = examen.Rows[0].ItemArray[91].ToString();
+                retorno.ToraxP = examen.Rows[0].ItemArray[92].ToString();
+                retorno.PCostalFyO = examen.Rows[0].ItemArray[93].ToString();
+                retorno.ColDorsalFyP = examen.Rows[0].ItemArray[94].ToString();
+                retorno.PelvisF = examen.Rows[0].ItemArray[95].ToString();
+                retorno.CaderaF = examen.Rows[0].ItemArray[96].ToString();
+                retorno.CaderaP = examen.Rows[0].ItemArray[97].ToString();
+                retorno.FemurFyP = examen.Rows[0].ItemArray[98].ToString();
+                retorno.DorsalF = examen.Rows[0].ItemArray[99].ToString();
+                retorno.EspinogramaP = examen.Rows[0].ItemArray[103].ToString();
+                retorno.RodillaP = examen.Rows[0].ItemArray[100].ToString();
+                retorno.PiernaFyP = examen.Rows[0].ItemArray[101].ToString();
+                retorno.TobilloFyP = examen.Rows[0].ItemArray[102].ToString();
+                retorno.AxialDeCalcaneo = examen.Rows[0].ItemArray[126].ToString();
+                retorno.PieFyP = examen.Rows[0].ItemArray[104].ToString();
+                retorno.Audio = examen.Rows[0].ItemArray[105].ToString();
+                retorno.Ergo = examen.Rows[0].ItemArray[106].ToString();
+                retorno.Eco = examen.Rows[0].ItemArray[107].ToString();
+                retorno.Psico = examen.Rows[0].ItemArray[108].ToString();
+                retorno.Espiro = examen.Rows[0].ItemArray[109].ToString();
+                retorno.Eeg = examen.Rows[0].ItemArray[110].ToString();
+                retorno.ITorg = examen.Rows[0].ItemArray[111].ToString();
+                retorno.Ecg = examen.Rows[0].ItemArray[112].ToString();
+                retorno.Observaciones = examen.Rows[0].ItemArray[113].ToString();
+                retorno.Dictamen = examen.Rows[0].ItemArray[114].ToString();
+                retorno.Na = examen.Rows[0].ItemArray[115].ToString();
+                retorno.K = examen.Rows[0].ItemArray[116].ToString();
+                retorno.ProtTotales = examen.Rows[0].ItemArray[117].ToString();
+                retorno.Albumina = examen.Rows[0].ItemArray[118].ToString();
+                retorno.ALFA1 = examen.Rows[0].ItemArray[119].ToString();
+                retorno.ALFA2 = examen.Rows[0].ItemArray[120].ToString();
+                retorno.BETA1 = examen.Rows[0].ItemArray[121].ToString();
+                retorno.BETA2 = examen.Rows[0].ItemArray[122].ToString();
+                retorno.Gammaglob = examen.Rows[0].ItemArray[123].ToString();
+                retorno.RelacAlbGlob = examen.Rows[0].ItemArray[124].ToString();
+                retorno.Creat = examen.Rows[0].ItemArray[125].ToString();
             }
             return retorno;
 
@@ -665,35 +618,13 @@ namespace CapaDatosMepryl
         public void llenarParametrosReporteLaboral(string idExamenLaboral)
         {
             ImpresionExamenLaboral retorno = new ImpresionExamenLaboral();
-            // Consulta explícita con columnas específicas
-            string consulta = @"SELECT antCli, antQui, antTrau FROM dbo.ExamenLaboral 
-            WHERE id = '" + idExamenLaboral + "'";
-            
-            DataTable examen = SQLConnector.obtenerTablaSegunConsultaString(consulta);
+            DataTable examen = SQLConnector.obtenerTablaSegunConsultaString(@"select * from dbo.ExamenLaboral
+            where id = '" + idExamenLaboral + "'");
             if (examen.Rows.Count > 0)
             {
-                DataRow row = examen.Rows[0];
-                
-                // Método auxiliar para obtener valores de forma segura
-                Func<string, object, string> getSafeValue = (columnName, defaultValue) => 
-                {
-                    try
-                    {
-                        if (row.Table.Columns.Contains(columnName) && row[columnName] != DBNull.Value)
-                        {
-                            return row[columnName].ToString();
-                        }
-                        return defaultValue.ToString();
-                    }
-                    catch
-                    {
-                        return defaultValue.ToString();
-                    }
-                };
-
-                retorno.AntCli = getSafeValue("antCli", "");
-                retorno.AntQui = getSafeValue("antQui", "");
-                retorno.AntTrau = getSafeValue("antTrau", "");
+                retorno.AntCli = examen.Rows[0].ItemArray[1].ToString();
+                retorno.AntQui = examen.Rows[0].ItemArray[2].ToString();
+                retorno.AntTrau = examen.Rows[0].ItemArray[3].ToString();
             }
 
 
@@ -704,7 +635,7 @@ namespace CapaDatosMepryl
         public DataTable cargarParametrosExamen(string idExamen, bool oliv)
         {
             System.Diagnostics.Debug.WriteLine($"[LABORAL] cargarParametrosExamen - idExamen: {idExamen}, oliv: {oliv}");
-            
+
             DataTable retorno = new DataTable();
             retorno.Columns.Add("tipoExamen");
             retorno.Columns.Add("fecha");
@@ -1336,7 +1267,7 @@ namespace CapaDatosMepryl
             strSQL = "SELECT TOP 1 C.fecha, C.identificador, E.razonSocial, P.DNI, P.fechaNacimiento, (P.Apellido + ' ' + P.Nombres) as 'nombre', P.Telefonos, " +
                             "P.Celular, EL.gRojos, EL.gBlancos, EL.hemoglobina, EL.hematocrito, EL.eritro, EL.plaquetas, EL.obsSerieRoja, " +
                             "EL.cayado, EL.segmentado, EL.eosinof, EL.basof, EL.linfoc, EL.monoc, EL.obsSerieBlanca, EL.glucemia, EL.uremia, " +
-                            "EL.chagas, EL.vdrl, EL.grupo, EL.factor, EL.uricemia, EL.otrosQuimicaHemat, EL.colTotal, EL.hdl, " +
+                            "EL.chagas, EL.vdrl, EL.grupo, EL.factor, EL.uricemia, EL.te, EL.otrosQuimicaHemat, EL.colTotal, EL.hdl, " +
                             "EL.ldl, EL.trig, EL.otrosPerfilLipidico, EL.color, EL.aspecto, EL.celulas, EL.leuco, EL.hematies, EL.gluc, " +
                             "EL.hemogOrina, EL.prot, EL.cetonas, EL.bilirrubina, EL.otrosOrina, EL.dictamenLab, EL.densidad, EL.ph, CR.piePagina, " +
                             "CR.profesional, CR.matricula, CR.cargo, CR.logo AS Path, EL.observacionesLab, EL.na, EL.k, EL.protTotal, EL.albumina, EL.alfa1, EL.alfa2, EL.beta1, EL.beta2, EL.gammaglob, EL.relacAlbGlob, EL.creat " +
@@ -1365,13 +1296,7 @@ namespace CapaDatosMepryl
 
             if (dt.Rows.Count > 0)
             {
-                DataRow row = dt.Rows[0];
-                // Acceso seguro por nombre de columna en lugar de índice
-                object pathValue = row.Table.Columns.Contains("Path") ? row["Path"] : null;
-                string pathString = (pathValue != DBNull.Value && pathValue != null) ? pathValue.ToString() : "";
-
-                // Usar el nombre de columna "logo" en lugar del índice 67 para evitar IndexOutOfRangeException
-                dt.Rows[0]["logo"] = Imagen_A_Bytes(pathString);
+                dt.Rows[0][67] = Imagen_A_Bytes(Convert.ToString(dt.Rows[0].ItemArray[54]));
             }
 
             return dt;
@@ -1382,12 +1307,7 @@ namespace CapaDatosMepryl
             if (idValidacion.ToString() != "" && idValidacion != null)
             {
                 DataRow[] dr = validaciones.Select("id = " + idValidacion);
-                if (dr.Length > 0) 
-                { 
-                    // Acceso seguro por nombre de columna
-                    object descripcionValue = dr[0]["descripcion"];
-                    return (descripcionValue != DBNull.Value && descripcionValue != null) ? descripcionValue.ToString() : "";
-                }
+                if (dr.Length > 0) { return dr[0][3].ToString(); }
             }
             return string.Empty;
         }
@@ -1405,21 +1325,10 @@ namespace CapaDatosMepryl
                      "INNER JOIN dbo.ExamenLaboral EL ON CL.idExamenLaboral = EL.id " +
                      "WHERE C.identificador = '" + Identificador + "' AND Convert(date, C.fecha) = '" + Convert.ToDateTime(Fecha).ToShortDateString() + "'";
 
-            System.Diagnostics.Debug.WriteLine("[IDEXAMENLABORAL] Buscando ID - Identificador: " + Identificador + ", Fecha: " + Convert.ToDateTime(Fecha).ToShortDateString());
-            System.Diagnostics.Debug.WriteLine("[IDEXAMENLABORAL] SQL: " + strSQL);
-
             dtConsulta = SQLConnector.obtenerTablaSegunConsultaString(strSQL);
-            System.Diagnostics.Debug.WriteLine("[IDEXAMENLABORAL] Filas encontradas: " + dtConsulta.Rows.Count);
 
             if (dtConsulta.Rows.Count > 0)
-            {
                 strIDExamen = dtConsulta.Rows[0][0].ToString();
-                System.Diagnostics.Debug.WriteLine("[IDEXAMENLABORAL] ID encontrado: " + strIDExamen);
-            }
-            else
-            {
-                System.Diagnostics.Debug.WriteLine("[IDEXAMENLABORAL] NO se encontró ID para Identificador: " + Identificador + ", Fecha: " + Convert.ToDateTime(Fecha).ToShortDateString());
-            }
 
             return strIDExamen;
         }
@@ -1530,15 +1439,6 @@ namespace CapaDatosMepryl
                  strConsulta +
             "WHERE id = CONVERT(uniqueidentifier, '" + IDExamenLaboral(Fecha, Identificador) + "')";
 
-            string idToUpdate = IDExamenLaboral(Fecha, Identificador);
-            System.Diagnostics.Debug.WriteLine("[ACTUALIZAR EXAMEN] ID a actualizar: " + idToUpdate);
-            System.Diagnostics.Debug.WriteLine("[ACTUALIZAR EXAMEN] Identificador: " + Identificador + ", Fecha: " + Fecha);
-            System.Diagnostics.Debug.WriteLine("[ACTUALIZAR EXAMEN] Valores[0] (gRojos): " + valores[0]);
-            System.Diagnostics.Debug.WriteLine("[ACTUALIZAR EXAMEN] Valores[11] (glucemia): " + valores[11]);
-            System.Diagnostics.Debug.WriteLine("[ACTUALIZAR EXAMEN] Valores[28] (hdl): " + valores[28]);
-            System.Diagnostics.Debug.WriteLine("[ACTUALIZAR EXAMEN] Valores[29] (colTotal): " + valores[29]);
-            System.Diagnostics.Debug.WriteLine("[ACTUALIZAR EXAMEN] Valores[31] (ldl): " + valores[31]);
-
             dtConsulta = SQLConnector.obtenerTablaSegunConsultaString(strSQL);
 
             blnResultado = true;
@@ -1547,7 +1447,6 @@ namespace CapaDatosMepryl
 
             return blnResultado;
         }
-
         public bool ActualizarExamenLaboralPorId(string idExamenLaboral, List<string> valores)
         {
             bool blnResultado = false;

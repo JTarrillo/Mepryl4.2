@@ -95,7 +95,10 @@ namespace CapaNegocioMepryl
         {
             turno.habilitarTurno(idTurno);
         }
-
+        public DataTable ObtenerPrecioEmpresa(Guid idEspecialidad, DateTime fecha)
+        {
+            return turno.ObtenerPrecioEmpresa(idEspecialidad, fecha);
+        }
         public void inhabilitarTurno(Guid idTurno)
         {
             turno.inhabilitarTurno(idTurno);

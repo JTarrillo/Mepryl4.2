@@ -104,6 +104,23 @@ namespace CapaPresentacion
         private void cargarExamenesSinFiltro(DateTime desde, DateTime hasta, List<string> filtro)
         {
             DataTable laborales = laboral.cargarListadoSinFiltro(desde, hasta, filtro);
+
+            bool encontrado = false;
+            foreach (DataRow row in laborales.Rows)
+            {
+                if (row["Ident."].ToString() == "L29")
+                {
+                    //System.Diagnostics.Debugger.Break();
+                    encontrado = true;
+                    break;
+                }
+            }
+
+            if (!encontrado)
+            {
+                System.Diagnostics.Debug.WriteLine("No se encontró el registro L29");
+            }
+
             llenarDgv(laborales);
         }
 
@@ -219,105 +236,41 @@ namespace CapaPresentacion
         {
             try
             {
-                if (dgv.Rows.Count == 0)
+                if (puntero != -1)
                 {
-                    return; // No hay filas, no seleccionar nada
-                }
-
-                if (puntero != -1 && puntero < dgv.Rows.Count)
-                {
-                    // Verificar que la celda exista antes de acceder
-                    if (celda >= 0 && celda < dgv.Columns.Count)
-                    {
-                        dgv.Rows[puntero].Cells[celda].Selected = true;
-                    }
-                    // Siempre seleccionar la columna 14 como celda actual
-                    if (14 < dgv.Columns.Count)
-                    {
-                        dgv.CurrentCell = dgv.Rows[puntero].Cells[14];
-                    }
+                    dgv.Rows[puntero].Cells[celda].Selected = true;
+                    //dgv.Rows[puntero].Selected = true;
+                    dgv.CurrentCell = dgv.Rows[puntero].Cells[14];
                 }
                 else
                 {
-                    // Fallback: seleccionar primera fila, columna 1
-                    if (dgv.Columns.Count > 1)
-                    {
-                        dgv.Rows[0].Cells[1].Selected = true;
-                    }
+                    dgv.Rows[0].Cells[1].Selected = true;
                 }
             }
             catch (System.ArgumentOutOfRangeException ex)
             {
-                System.Diagnostics.Debug.WriteLine("[BUSQUEDA] Exception en seleccionarCelda: " + ex.ToString());
-                if (dgv.Rows.Count > 0 && dgv.Columns.Count > 1)
+                if (dgv.Rows.Count > 0)
                 {
-                    try
-                    {
-                        dgv.Rows[0].Cells[1].Selected = true;
-                    }
-                    catch { }
+                    dgv.Rows[0].Cells[1].Selected = true;
                 }
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine("[BUSQUEDA] Exception general en seleccionarCelda: " + ex.ToString());
             }
         }
 
         public void actualizar()
         {
-            System.Diagnostics.Debug.WriteLine("[BUSQUEDA] actualizar() llamado");
-            
             if (!string.IsNullOrEmpty(tbBusqueda.Text))
             {
-                System.Diagnostics.Debug.WriteLine("[BUSQUEDA] Usando filtro de búsqueda: " + tbBusqueda.Text);
                 DataTable laborales = laboral.cargarListadoConFiltro(tbBusqueda.Text);
                 llenarDgv(laborales);
                 return;
             }
-            
             if (panel1.Enabled)
             {
-                System.Diagnostics.Debug.WriteLine("[BUSQUEDA] Modo fecha única: " + tpFecha.Value.ToString("yyyy-MM-dd"));
                 cargarExamenesSinFiltro(tpFecha.Value, tpFecha.Value, obtenerFiltro());
             }
             else
             {
-                System.Diagnostics.Debug.WriteLine("[BUSQUEDA] Modo rango: " + tpDesde.Value.ToString("yyyy-MM-dd") + " a " + tpHasta.Value.ToString("yyyy-MM-dd"));
                 cargarExamenesSinFiltro(tpDesde.Value, tpHasta.Value, obtenerFiltro());
-            }
-            
-            System.Diagnostics.Debug.WriteLine("[BUSQUEDA] actualizar() completado");
-        }
-
-        private bool verificarExamenExiste(string idExamen)
-        {
-            string strSQL = "SELECT id FROM dbo.ExamenLaboral WHERE id = CONVERT(uniqueidentifier, '" + idExamen + "')";
-            DataTable dtConsulta = SQLConnector.obtenerTablaSegunConsultaString(strSQL);
-            
-            if (dtConsulta.Rows.Count > 0 && dtConsulta.Rows[0]["id"] != DBNull.Value)
-            {
-                return true;
-            }
-            return false;
-        }
-
-        private void crearExamenLaboral(string idExamen)
-        {
-            try
-            {
-                string strSQL = "INSERT INTO dbo.ExamenLaboral (id) VALUES (CONVERT(uniqueidentifier, '" + idExamen + "'))";
-                SQLConnector.obtenerTablaSegunConsultaString(strSQL);
-                
-                // Actualizar ConsultaLaboral para consistencia
-                strSQL = "UPDATE dbo.ConsultaLaboral SET idExamenLaboral = CONVERT(uniqueidentifier, '" + idExamen + "') WHERE idTipoExamen = '" + idExamen + "'";
-                SQLConnector.obtenerTablaSegunConsultaString(strSQL);
-                
-                System.Diagnostics.Debug.WriteLine("[ABRIR EXAMEN] ExamenLaboral creado exitosamente: " + idExamen);
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine("[ABRIR EXAMEN] ERROR al crear ExamenLaboral: " + ex.ToString());
             }
         }
 
@@ -329,14 +282,6 @@ namespace CapaPresentacion
 
         private void abrirVentanaCarga(DataGridViewCellEventArgs c)
         {
-            System.Diagnostics.Debug.WriteLine("[ABRIR EXAMEN] Columna 17 (IdExamenLaboral): " + dgv.Rows[c.RowIndex].Cells[17].Value.ToString());
-            System.Diagnostics.Debug.WriteLine("[ABRIR EXAMEN] Columna 19 (IdTipoExamen): " + dgv.Rows[c.RowIndex].Cells[19].Value.ToString());
-            
-            // Usar directamente la columna 17 que ya tiene el ID correcto (unificado)
-            string idExamenParaUsar = dgv.Rows[c.RowIndex].Cells[17].Value.ToString();
-            
-            System.Diagnostics.Debug.WriteLine("[ABRIR EXAMEN] ID final a usar: " + idExamenParaUsar);
-            
             intFilaSelecc = dgv.CurrentCell.RowIndex; // GRV - Modificado
             puntero = intFilaSelecc;
             //celda = dgv.CurrentCell.ColumnIndex;            
@@ -370,26 +315,11 @@ namespace CapaPresentacion
                 frm.setearLabelTitulo(dgv.Rows[c.RowIndex].Cells[4].Value.ToString());
                 if (dgv.Rows[c.RowIndex].Cells[3].Value.ToString().Contains("L"))
                 {
-                    // Usar directamente la columna 17 que ya tiene el ID unificado correcto
-                    string idExamenParaUsar = dgv.Rows[c.RowIndex].Cells[17].Value.ToString();
-                    
-                    System.Diagnostics.Debug.WriteLine("[ABRIR EXAMEN] Usando columna 17 (ID unificado): " + idExamenParaUsar);
-                    
-                    // Verificar si el registro existe en ExamenLaboral
-                    bool existeExamen = verificarExamenExiste(idExamenParaUsar);
-                    if (!existeExamen)
-                    {
-                        System.Diagnostics.Debug.WriteLine("[ABRIR EXAMEN] No existe ExamenLaboral, creando...");
-                        crearExamenLaboral(idExamenParaUsar);
-                    }
-                    
-                    System.Diagnostics.Debug.WriteLine("[ABRIR EXAMEN] ID final a usar: " + idExamenParaUsar);
-                    
                     frm.setearValores(dgv.Rows[c.RowIndex].Cells[11].Value.ToString(), dgv.Rows[c.RowIndex].Cells[6].Value.ToString(),
                 dgv.Rows[c.RowIndex].Cells[7].Value.ToString(), dgv.Rows[c.RowIndex].Cells[8].Value.ToString() + " - " +
                 dgv.Rows[c.RowIndex].Cells[9].Value.ToString(), dgv.Rows[c.RowIndex].Cells[1].Value.ToString(),
                 dgv.Rows[c.RowIndex].Cells[4].Value.ToString(), dgv.Rows[c.RowIndex].Cells[3].Value.ToString(),
-                dgv.Rows[c.RowIndex].Cells[8].Value.ToString(), idExamenParaUsar);
+                dgv.Rows[c.RowIndex].Cells[8].Value.ToString(), dgv.Rows[c.RowIndex].Cells[17].Value.ToString());
                 }
                 else if (dgv.Rows[c.RowIndex].Cells[3].Value.ToString().Contains("EC"))
                 {
@@ -1208,12 +1138,8 @@ namespace CapaPresentacion
 
         private void recargarGrilla()
         {
-            System.Diagnostics.Debug.WriteLine("[BUSQUEDA] recargarGrilla llamado");
-            
-            // Para la importación, siempre usar el método de actualización general
-            // que maneja correctamente ambos paneles
-            actualizar();
-            
+            System.Diagnostics.Debug.WriteLine("[BUSQUEDA] recargarGrilla llamado - Fecha: " + tpFecha.Value.ToString());
+            cargarExamenesSinFiltro(tpFecha.Value, tpFecha.Value, obtenerFiltro());
             System.Diagnostics.Debug.WriteLine("[BUSQUEDA] recargarGrilla completado");
         }
 
@@ -1378,6 +1304,7 @@ namespace CapaPresentacion
             dtArchivosPDF.Columns.Add("Orden");
             dtArchivosPDF.Columns.Add("DNI");
             dtArchivosPDF.Columns.Add("Paciente");
+            dtArchivosPDF.Columns.Add("CUIT");
             dtArchivosPDF.Columns.Add("InfClinico");
             dtArchivosPDF.Columns.Add("InfLaboratorio");
             dtArchivosPDF.Columns.Add("InfECG");
@@ -1418,6 +1345,7 @@ namespace CapaPresentacion
             dtConsulta.Columns.Add("Oto", typeof(System.Boolean)); // index 14
             dtConsulta.Columns.Add("Espiro", typeof(System.Boolean)); // index 15
             dtConsulta.Columns.Add("IdTep", typeof(System.String)); // index 16
+            dtConsulta.Columns.Add("CUIT", typeof(System.String)); // index 17
 
             if (!ConsolidaTodo)
             {
@@ -1509,28 +1437,29 @@ namespace CapaPresentacion
                                            strAnio,
                                            r.ItemArray[1].ToString(), // NroOrden
                                            r.ItemArray[2].ToString(), // DNI
-                                           r.ItemArray[3].ToString()); // Nombre                   
+                                           r.ItemArray[3].ToString(), // Nombre
+                                           r.ItemArray[17].ToString()); // CUIT                   
 
                     if (!string.IsNullOrEmpty(r.ItemArray[4].ToString()))
                     {
-                        if (Int32.Parse(r.ItemArray[4].ToString()) != 502) // 502 significa "INFANTIL INICIAL"    
+                        if (Int32.Parse(r.ItemArray[4].ToString()) != 502) // 502 significa "INFANTIL INICIAL"
                         {
-                            CargarArchivoClinico(r.ItemArray[2].ToString(), strMes, strDia, strNombreMes, r.ItemArray[1].ToString(), 6, strAnio, Boolean.Parse(r.ItemArray[5].ToString()));
-                            CargarArchivoLaboratorio(r.ItemArray[2].ToString(), strMes, strDia, strNombreMes, r.ItemArray[1].ToString(), 7, strAnio, Boolean.Parse(r.ItemArray[6].ToString()));
-                            CargarArchivoECG(strDia, strMes, r.ItemArray[1].ToString(), strNombreMes, 8, strAnio, r.ItemArray[2].ToString(), Boolean.Parse(r.ItemArray[8].ToString()));
-                            CargarArchivoRX(strDia, strMes, strAnio, r.ItemArray[1].ToString(), strNombreMes, 9, r.ItemArray[2].ToString(), Boolean.Parse(r.ItemArray[7].ToString()));
-                            CargarArchivoAudiometria(strDia, strMes, r.ItemArray[1].ToString(), strNombreMes, 10, strAnio, r.ItemArray[2].ToString(), Boolean.Parse(r.ItemArray[11].ToString()));
-                            CargarArchivoOtoscopia(strDia, strMes, r.ItemArray[1].ToString(), strNombreMes, 11, strAnio, r.ItemArray[2].ToString(), Boolean.Parse(r.ItemArray[14].ToString()));
-                            CargarArchivoErgometria(strDia, strMes, r.ItemArray[1].ToString(), strNombreMes, 12, strAnio, r.ItemArray[2].ToString(), Boolean.Parse(r.ItemArray[12].ToString()));
-                            CargarArchivoEspirometria(strDia, strMes, strAnio, r.ItemArray[1].ToString(), strNombreMes, 13, r.ItemArray[2].ToString(), Boolean.Parse(r.ItemArray[15].ToString()));
-                            CargarArchivoPsicotecnico(strDia, strMes, r.ItemArray[1].ToString(), strNombreMes, 14, strAnio, r.ItemArray[2].ToString(), Boolean.Parse(r.ItemArray[10].ToString()));
-                            CargarArchivoEEG(strDia, strMes, r.ItemArray[1].ToString(), strNombreMes, 15, strAnio, r.ItemArray[2].ToString(), Boolean.Parse(r.ItemArray[9].ToString()));
-                            CargarArchivoEcoDoppler(r.ItemArray[2].ToString(), strMes, strDia, strNombreMes, r.ItemArray[1].ToString(), 16, strAnio, Boolean.Parse(r.ItemArray[13].ToString()));
+                            CargarArchivoClinico(r.ItemArray[2].ToString(), strMes, strDia, strNombreMes, r.ItemArray[1].ToString(), 7, strAnio, Boolean.Parse(r.ItemArray[5].ToString()));
+                            CargarArchivoLaboratorio(r.ItemArray[2].ToString(), strMes, strDia, strNombreMes, r.ItemArray[1].ToString(), 8, strAnio, Boolean.Parse(r.ItemArray[6].ToString()));
+                            CargarArchivoECG(strDia, strMes, r.ItemArray[1].ToString(), strNombreMes, 9, strAnio, r.ItemArray[2].ToString(), Boolean.Parse(r.ItemArray[8].ToString()));
+                            CargarArchivoRX(strDia, strMes, strAnio, r.ItemArray[1].ToString(), strNombreMes, 10, r.ItemArray[2].ToString(), Boolean.Parse(r.ItemArray[7].ToString()));
+                            CargarArchivoAudiometria(strDia, strMes, r.ItemArray[1].ToString(), strNombreMes, 11, strAnio, r.ItemArray[2].ToString(), Boolean.Parse(r.ItemArray[11].ToString()));
+                            CargarArchivoOtoscopia(strDia, strMes, r.ItemArray[1].ToString(), strNombreMes, 12, strAnio, r.ItemArray[2].ToString(), Boolean.Parse(r.ItemArray[14].ToString()));
+                            CargarArchivoErgometria(strDia, strMes, r.ItemArray[1].ToString(), strNombreMes, 13, strAnio, r.ItemArray[2].ToString(), Boolean.Parse(r.ItemArray[12].ToString()));
+                            CargarArchivoEspirometria(strDia, strMes, strAnio, r.ItemArray[1].ToString(), strNombreMes, 14, r.ItemArray[2].ToString(), Boolean.Parse(r.ItemArray[15].ToString()));
+                            CargarArchivoPsicotecnico(strDia, strMes, r.ItemArray[1].ToString(), strNombreMes, 15, strAnio, r.ItemArray[2].ToString(), Boolean.Parse(r.ItemArray[10].ToString()));
+                            CargarArchivoEEG(strDia, strMes, r.ItemArray[1].ToString(), strNombreMes, 16, strAnio, r.ItemArray[2].ToString(), Boolean.Parse(r.ItemArray[9].ToString()));
+                            CargarArchivoEcoDoppler(r.ItemArray[2].ToString(), strMes, strDia, strNombreMes, r.ItemArray[1].ToString(), 17, strAnio, Boolean.Parse(r.ItemArray[13].ToString()));
                         }
                         else
                         {
-                            CargarArchivoLaboratorio(r.ItemArray[2].ToString(), strMes, strDia, strNombreMes, r.ItemArray[1].ToString(), 6, strAnio, Boolean.Parse(r.ItemArray[6].ToString()));
-                            CargarArchivoRX(strDia, strMes, strAnio, r.ItemArray[1].ToString(), strNombreMes, 7, r.ItemArray[2].ToString(), Boolean.Parse(r.ItemArray[8].ToString()));
+                            CargarArchivoLaboratorio(r.ItemArray[2].ToString(), strMes, strDia, strNombreMes, r.ItemArray[1].ToString(), 7, strAnio, Boolean.Parse(r.ItemArray[6].ToString()));
+                            CargarArchivoRX(strDia, strMes, strAnio, r.ItemArray[1].ToString(), strNombreMes, 8, r.ItemArray[2].ToString(), Boolean.Parse(r.ItemArray[8].ToString()));
 
                         }
 
@@ -2111,7 +2040,7 @@ namespace CapaPresentacion
             Mes = Mes.Substring(0, 2);
             strFecha = Anio + Mes + Dia;
             strFecha01 = Dia + "/" + Mes + "/" + Anio;
-            
+
             // Nuevo filtro para estructura cambiada de RX
             // Busca archivos JPG que contengan el número de orden en cualquier subcarpeta
             strFiltro = "*" + NroOrden + "*.jpg";

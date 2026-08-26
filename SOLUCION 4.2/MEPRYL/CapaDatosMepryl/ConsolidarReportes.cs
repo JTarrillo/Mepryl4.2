@@ -145,12 +145,16 @@ namespace CapaDatosMepryl
                 strSQL = @"select CONVERT(date, c.fecha) as Fecha, c.identificador AS 'Nº Examen', 
                                 p.dni,(p.apellido + ' ' + p.nombres) as 'Paciente', '368' as 'Infantil Inicial', 
                                 item1 AS Clinico, item37 AS Orina, item38 AS RX, item77 AS ECG, item75 AS EEG, Item72 AS Psico,
-                                item68 as Audio, item70 AS Ergo, item71 AS Eco, item2 AS Oto, item74 as Espiro, item99 AS DorsalF, '" + idTipoExamen + @"' AS IdTep 
+                                item68 as Audio, item70 AS Ergo, item71 AS Eco, item2 AS Oto, item74 as Espiro, item99 AS DorsalF, 
+                                REPLACE(REPLACE(REPLACE(emp.cuit, '-', ''), '.', ''), ',', '') AS CUIT,
+                                '" + idTipoExamen + @"' AS IdTep 
                                 from dbo.Consulta c inner join dbo.PacienteLaboral p on c.pacienteID = p.id
                                     inner join dbo.TipoExamenDePaciente tep on c.id = tep.idConsulta
                                     inner join dbo.Especialidad e on tep.idEspecialidad = e.id
                                     inner join dbo.ConsultaLaboral cl on tep.id = cl.idTipoExamen
                                     INNER JOIN dbo.EstudiosPorExamen EE ON EE.idTipoExamen = tep.id
+                                    inner join dbo.empresaPorTipoDeExamen ete on tep.id = ete.idTipoExamen
+                                    inner join dbo.Empresa emp on ete.idEmpresa = emp.id
                                 where c.tipo != 'P' and convert(date, c.fecha) >= convert(date, '" + FechaInicio.ToShortDateString() + @"', 105) and convert(date, c.fecha)
                                 <= convert(date, '" + FechaFin.ToShortDateString() + @"', 105) AND c.identificador = '" + NroOrden + @"' AND p.dni = '" + DNI + @"' order by CONVERT(VARCHAR(10), c.fecha, 101), convert(int, REPLACE(REPLACE(REPLACE(c.identificador, 'L', ''), 'CO', ''), 'EC', ''))";
 
