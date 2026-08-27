@@ -530,9 +530,11 @@ namespace CapaPresentacion
             string strFecha = "";
 
             //strDirectorioBase = Consolidar.DirectorioPlacaRX(strDirectorioRX, Anio + Mes + Dia, NroOrden);
-            
+
             if (File.Exists(strDirRXTemp))
                 strDirectorioBase = Path.GetDirectoryName(strDirRXTemp).ToString();
+            else
+                strDirectorioBase = strDirectorioConsolidar + "\\" + Anio + "\\" + Mes + "-" + NombreMes + "\\" + Dia + "\\CLINICA\\";
             
             if (dt.Rows.Count > 0)
             {
@@ -554,7 +556,7 @@ namespace CapaPresentacion
                     strNombreArchivoRadiologico.Add(r.ItemArray[3].ToString());
                 }
 
-                strPath = UtilMepryl.PathArchivoConsolidado(strNombreArchivoRadiologico, strDirectorioBase);                
+                strPath = UtilMepryl.PathArchivoConsolidadoRadiologico(strNombreArchivoRadiologico, strDirectorioBase);                
 
                 CrearReporte.CreateWordDocument(strArchivoPlantilla, strPath, new object(), Etiquetas, 'P', false);
 

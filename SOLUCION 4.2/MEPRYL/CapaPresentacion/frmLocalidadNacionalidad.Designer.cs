@@ -256,7 +256,8 @@
             // 
             // tab
             // 
-            this.tab.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.tab.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tab.Controls.Add(this.tabPage6);
             this.tab.Controls.Add(this.tabAgregarTiposSubtipos);
@@ -448,7 +449,7 @@
             this.dgvClinico.AllowUserToOrderColumns = true;
             this.dgvClinico.AllowUserToResizeColumns = false;
             this.dgvClinico.AllowUserToResizeRows = false;
-            this.dgvClinico.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.dgvClinico.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvClinico.BackgroundColor = System.Drawing.Color.WhiteSmoke;
             this.dgvClinico.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.dgvClinico.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
@@ -558,7 +559,7 @@
             this.dgvOrina.AllowUserToOrderColumns = true;
             this.dgvOrina.AllowUserToResizeColumns = false;
             this.dgvOrina.AllowUserToResizeRows = false;
-            this.dgvOrina.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.dgvOrina.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvOrina.BackgroundColor = System.Drawing.Color.WhiteSmoke;
             this.dgvOrina.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.dgvOrina.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
@@ -587,7 +588,7 @@
             this.dgvBacteriologia.AllowUserToOrderColumns = true;
             this.dgvBacteriologia.AllowUserToResizeColumns = false;
             this.dgvBacteriologia.AllowUserToResizeRows = false;
-            this.dgvBacteriologia.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.dgvBacteriologia.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvBacteriologia.BackgroundColor = System.Drawing.Color.WhiteSmoke;
             this.dgvBacteriologia.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.dgvBacteriologia.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
@@ -615,7 +616,7 @@
             this.dgvPerfilLipidico.AllowUserToOrderColumns = true;
             this.dgvPerfilLipidico.AllowUserToResizeColumns = false;
             this.dgvPerfilLipidico.AllowUserToResizeRows = false;
-            this.dgvPerfilLipidico.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.dgvPerfilLipidico.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvPerfilLipidico.BackgroundColor = System.Drawing.Color.WhiteSmoke;
             this.dgvPerfilLipidico.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.dgvPerfilLipidico.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
@@ -643,7 +644,7 @@
             this.dgvSerologia.AllowUserToOrderColumns = true;
             this.dgvSerologia.AllowUserToResizeColumns = false;
             this.dgvSerologia.AllowUserToResizeRows = false;
-            this.dgvSerologia.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.dgvSerologia.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvSerologia.BackgroundColor = System.Drawing.Color.WhiteSmoke;
             this.dgvSerologia.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.dgvSerologia.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
@@ -671,7 +672,7 @@
             this.dgvQuimicaHematica.AllowUserToOrderColumns = true;
             this.dgvQuimicaHematica.AllowUserToResizeColumns = false;
             this.dgvQuimicaHematica.AllowUserToResizeRows = false;
-            this.dgvQuimicaHematica.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.dgvQuimicaHematica.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvQuimicaHematica.BackgroundColor = System.Drawing.Color.WhiteSmoke;
             this.dgvQuimicaHematica.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.dgvQuimicaHematica.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
@@ -699,7 +700,7 @@
             this.dgvHematologia.AllowUserToOrderColumns = true;
             this.dgvHematologia.AllowUserToResizeColumns = false;
             this.dgvHematologia.AllowUserToResizeRows = false;
-            this.dgvHematologia.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.dgvHematologia.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvHematologia.BackgroundColor = System.Drawing.Color.WhiteSmoke;
             this.dgvHematologia.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.dgvHematologia.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
@@ -755,7 +756,7 @@
             this.dgvMiembroInferior.AllowUserToOrderColumns = true;
             this.dgvMiembroInferior.AllowUserToResizeColumns = false;
             this.dgvMiembroInferior.AllowUserToResizeRows = false;
-            this.dgvMiembroInferior.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.dgvMiembroInferior.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvMiembroInferior.BackgroundColor = System.Drawing.Color.WhiteSmoke;
             this.dgvMiembroInferior.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.dgvMiembroInferior.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
@@ -794,7 +795,7 @@
             this.dgvTroncoYPelvis.AllowUserToOrderColumns = true;
             this.dgvTroncoYPelvis.AllowUserToResizeColumns = false;
             this.dgvTroncoYPelvis.AllowUserToResizeRows = false;
-            this.dgvTroncoYPelvis.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.dgvTroncoYPelvis.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvTroncoYPelvis.BackgroundColor = System.Drawing.Color.WhiteSmoke;
             this.dgvTroncoYPelvis.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.dgvTroncoYPelvis.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
@@ -833,7 +834,7 @@
             this.dgvCraneoYMSuperior.AllowUserToOrderColumns = true;
             this.dgvCraneoYMSuperior.AllowUserToResizeColumns = false;
             this.dgvCraneoYMSuperior.AllowUserToResizeRows = false;
-            this.dgvCraneoYMSuperior.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.dgvCraneoYMSuperior.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvCraneoYMSuperior.BackgroundColor = System.Drawing.Color.WhiteSmoke;
             this.dgvCraneoYMSuperior.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.dgvCraneoYMSuperior.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
@@ -872,7 +873,7 @@
             this.dgvLaboralesBasicas.AllowUserToOrderColumns = true;
             this.dgvLaboralesBasicas.AllowUserToResizeColumns = false;
             this.dgvLaboralesBasicas.AllowUserToResizeRows = false;
-            this.dgvLaboralesBasicas.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.dgvLaboralesBasicas.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvLaboralesBasicas.BackgroundColor = System.Drawing.Color.WhiteSmoke;
             this.dgvLaboralesBasicas.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.dgvLaboralesBasicas.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
@@ -923,7 +924,7 @@
             this.dgvEstComplementarios.AllowUserToOrderColumns = true;
             this.dgvEstComplementarios.AllowUserToResizeColumns = false;
             this.dgvEstComplementarios.AllowUserToResizeRows = false;
-            this.dgvEstComplementarios.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.dgvEstComplementarios.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvEstComplementarios.BackgroundColor = System.Drawing.Color.WhiteSmoke;
             this.dgvEstComplementarios.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.dgvEstComplementarios.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
@@ -1372,8 +1373,7 @@
             // 
             // panelPrincipal4
             // 
-            this.panelPrincipal4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelPrincipal4.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelPrincipal4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelPrincipal4.Controls.Add(this.label15);
             this.panelPrincipal4.Controls.Add(this.dgv4);
@@ -1405,7 +1405,7 @@
             this.dgv4.AllowUserToDeleteRows = false;
             this.dgv4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.dgv4.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.dgv4.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgv4.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
             this.dgv4.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgv4.Location = new System.Drawing.Point(5, 63);
@@ -1761,6 +1761,7 @@
             this.panelPrincipal2.Controls.Add(this.dgv2);
             this.panelPrincipal2.Controls.Add(this.cboTipoPrestacion2);
             this.panelPrincipal2.Controls.Add(this.label7);
+            this.panelPrincipal2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelPrincipal2.Location = new System.Drawing.Point(5, 9);
             this.panelPrincipal2.Name = "panelPrincipal2";
             this.panelPrincipal2.Size = new System.Drawing.Size(699, 413);
@@ -1790,7 +1791,7 @@
             // 
             this.dgv2.AllowUserToAddRows = false;
             this.dgv2.AllowUserToDeleteRows = false;
-            this.dgv2.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.dgv2.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgv2.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
             this.dgv2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgv2.Location = new System.Drawing.Point(5, 63);
@@ -1849,6 +1850,7 @@
             this.panelPrincipal.Controls.Add(this.botAgregar);
             this.panelPrincipal.Controls.Add(this.botEliminar);
             this.panelPrincipal.Controls.Add(this.botEditar);
+            this.panelPrincipal.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelPrincipal.Location = new System.Drawing.Point(7, 9);
             this.panelPrincipal.Margin = new System.Windows.Forms.Padding(4);
             this.panelPrincipal.Name = "panelPrincipal";
@@ -1859,7 +1861,7 @@
             // 
             this.dgv.AllowUserToAddRows = false;
             this.dgv.AllowUserToDeleteRows = false;
-            this.dgv.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.dgv.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgv.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
             this.dgv.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgv.Location = new System.Drawing.Point(7, 4);
@@ -2194,7 +2196,7 @@
             // 
             this.dgv3.AllowUserToAddRows = false;
             this.dgv3.AllowUserToDeleteRows = false;
-            this.dgv3.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.dgv3.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgv3.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
             this.dgv3.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgv3.Location = new System.Drawing.Point(5, 3);
@@ -2492,7 +2494,7 @@
             // 
             this.dgv6.AllowUserToAddRows = false;
             this.dgv6.AllowUserToDeleteRows = false;
-            this.dgv6.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.dgv6.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgv6.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
             this.dgv6.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgv6.Location = new System.Drawing.Point(5, 63);

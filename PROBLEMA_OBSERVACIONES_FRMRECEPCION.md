@@ -277,3 +277,107 @@ private string ObtenerObservacionVigente(string observacionActual, Entidades.Tip
 ## Validación
 
 Las observaciones de los turnos ahora llegan correctamente a frmRecepcion, manteniendo la misma información que se muestra en frmTurnos, tanto para observaciones manuales como automáticas.
+
+---
+
+## Problema Nuevo (27/08/2026) - Observaciones con importe $ 0
+
+### Descripción del Problema
+El paciente GARCIA ANIBAL ATILIO (DNI: 40470816) tiene:
+- **Importe: $ 0**
+- **Observaciones: $ 60.000 | LISTA: $ 81.000**
+
+Esto no tiene sentido - si el importe es 0, no debería generar observaciones con precios. El sistema está generando observaciones automáticas con precios vigentes ($ 60.000 y $ 81.000) aunque el importe real del paciente sea $ 0.
+
+### Causa Raíz
+El método `ObtenerObservacionVigente()` en `Ventanilla.cs` (línea 113) y `frmTurnos.cs` (línea 1713) tenía la siguiente condición:
+
+```csharp
+bool requiereObservacionAutomatica = llevaPlanilla || sena > 0 || !string.IsNullOrWhiteSpace(observacionesExtra) || promo > 0 || lista > 0;
+```
+
+Esta condición generaba observaciones automáticas si `promo > 0` o `lista > 0`, sin verificar si el importe neto del paciente (precio - seña) era mayor a 0. Como resultado, pacientes con importe $ 0 pero con precios vigentes en el sistema recibían observaciones incorrectas.
+
+### Solución Aplicada (27/08/2026)
+
+#### 1. Modificación de ObtenerObservacionVigente en Ventanilla.cs
+
+**Archivo:** `CapaDatosMepryl\Ventanilla.cs` (líneas 99-125)
+
+**Cambio:** Modificar la condición para verificar el importe neto (promo - sena) en lugar de verificar solo promo o lista individualmente.
+
+```csharp
+// Solo generar observaciones de precios si el importe neto (promo - sena) es mayor a 0
+decimal importeNeto = promo - sena;
+bool requiereObservacionAutomatica = llevaPlanilla || sena > 0 || !string.IsNullOrWhiteSpace(observacionesExtra) || importeNeto > 0;
+```
+
+#### 2. Modificación de GenerarObservaciones en Ventanilla.cs
+
+**Archivo:** `CapaDatosMepryl\Ventanilla.cs` (líneas 74-102)
+
+**Cambio:** Agregar verificación del importe neto antes de generar observaciones de precios.
+
+```csharp
+// Solo generar observaciones de precios si el importe neto (promo - sena) es mayor a 0
+decimal importeNeto = promo - sena;
+if (importeNeto > 0)
+{
+    if (sena > 0)
+        sb.Append("$ " + promo.ToString("N0") + " - $ " + sena.ToString("N0") + " (SEÑA)");
+    else
+        sb.Append("$ " + promo.ToString("N0"));
+
+    if (lista > 0)
+    {
+        sb.Append(" | LISTA: $ " + lista.ToString("N0"));
+        if (sena > 0)
+            sb.Append(" - SEÑA = $ " + (lista - sena).ToString("N0"));
+    }
+}
+```
+
+#### 3. Modificación de ObtenerObservacionVigente en frmTurnos.cs
+
+**Archivo:** `CapaPresentacion\frmTurnos.cs` (líneas 1696-1720)
+
+**Cambio:** Modificar la condición para verificar el importe neto (PrecioBase - Seña).
+
+```csharp
+// Solo generar observaciones de precios si el importe neto (precio - seña) es mayor a 0
+decimal importeNeto = te.PrecioBase - te.Seña;
+bool requiereObservacionAutomatica = te.LlevaPlanilla || te.Seña > 0 || !string.IsNullOrWhiteSpace(te.ObservacionesExtra) || importeNeto > 0;
+```
+
+#### 4. Modificación de generarObservaciones en frmTurnos.cs
+
+**Archivo:** `CapaPresentacion\frmTurnos.cs` (líneas 1640-1646)
+
+**Cambio:** Modificar la verificación de importes para usar el importe neto.
+
+```csharp
+// Solo procesar observaciones monetarias si el importe neto (promo - seña) es > 0
+decimal importeNeto = promo - seña;
+bool hayImportes = (importeNeto > 0 || lista > 0 || seña > 0);
+```
+
+### Archivos Modificados (27/08/2026)
+1. `CapaDatosMepryl\Ventanilla.cs`
+   - Método `ObtenerObservacionVigente()` (líneas 99-125)
+   - Método `GenerarObservaciones()` (líneas 74-102)
+
+2. `CapaPresentacion\frmTurnos.cs`
+   - Método `ObtenerObservacionVigente()` (líneas 1696-1720)
+   - Método `generarObservaciones()` (líneas 1640-1646)
+
+3. `CapaDatosMepryl\MesaEntrada.cs`
+   - Método `cargarObservacionesTurno()` (líneas 424-470) - Agregada verificación de importe neto para observaciones automáticas
+   - Método `procesarFilaTablaGrilla()` (líneas 379-396) - Modificado para usar `cargarObservacionesTurno` con filtrado
+   - Método `EsObservacionAutomatica()` (líneas 472-482) - Nuevo método auxiliar para detectar observaciones automáticas
+
+### Validación
+Los pacientes con importe $ 0 ya no mostrarán observaciones de precios. Las observaciones automáticas solo se generarán cuando el importe neto (precio - seña) sea mayor a 0. Esta validación se aplica ahora en:
+
+- Ventanilla (frmRecepcion)
+- Turnos (frmTurnos)
+- Mesa de Entrada (frmMesaDeEntrada)

@@ -80,32 +80,34 @@ namespace CapaNegocioMepryl
                 foreach (DataRow r in dtLA.Rows)
                 {
                     System.Diagnostics.Debug.WriteLine($"[CONSOLIDAR] --- Procesando fila {filaIndex} ---");
-                    
-                    Lista01.Add(r.ItemArray[6].ToString());
-                    Lista01.Add(r.ItemArray[7].ToString());
-                    Lista01.Add(r.ItemArray[8].ToString());
-                    Lista01.Add(r.ItemArray[9].ToString());
 
-                    Lista02.Add(r.ItemArray[0].ToString());
-                    Lista02.Add(r.ItemArray[1].ToString());
-                    Lista02.Add(r.ItemArray[2].ToString());
-                    Lista02.Add(r.ItemArray[3].ToString());
-                    Lista02.Add(r.ItemArray[4].ToString());
-                    Lista02.Add(r.ItemArray[5].ToString());
+                    // Para preventiva no hay CUIT, las columnas son:
+                    // 0=Dia, 1=Mes, 2=Anio, 3=Orden, 4=DNI, 5=Paciente, 6=InfClinico, 7=InfLaboratorio, 8=InfECG, 9=ImgRX01, 10=InfAudiometria, 11=Ergometria
+                    Lista01.Add(r.ItemArray[6].ToString()); // InfClinico
+                    Lista01.Add(r.ItemArray[7].ToString()); // InfLaboratorio
+                    Lista01.Add(r.ItemArray[8].ToString()); // InfECG
+                    Lista01.Add(r.ItemArray[9].ToString()); // ImgRX01
+
+                    Lista02.Add(r.ItemArray[0].ToString()); // Dia
+                    Lista02.Add(r.ItemArray[1].ToString()); // Mes
+                    Lista02.Add(r.ItemArray[2].ToString()); // Anio
+                    Lista02.Add(r.ItemArray[3].ToString()); // Orden
+                    Lista02.Add(r.ItemArray[4].ToString()); // DNI
+                    Lista02.Add(r.ItemArray[5].ToString()); // Paciente
 
                     System.Diagnostics.Debug.WriteLine($"[CONSOLIDAR] Lista02 (datos): Fecha={Lista02[0]}, NroOrden={Lista02[1]}, DNI={Lista02[2]}, Nombre={Lista02[3]}, Apellido={Lista02[4]}, Mensaje={Lista02[5]}");
                     System.Diagnostics.Debug.WriteLine($"[CONSOLIDAR] Lista01 (archivos): Arch1={Lista01[0]}, Arch2={Lista01[1]}, Arch3={Lista01[2]}, Arch4={Lista01[3]}");
 
-                    string pathSalida = PathArchivoConsolidado(Lista02, DirectorioBase);
+                    string pathSalida = PathArchivoConsolidadoPreventiva(Lista02, DirectorioBase);
                     System.Diagnostics.Debug.WriteLine($"[CONSOLIDAR] PathSalida: {pathSalida}");
-                    
+
                     ProcesoConcatenar(pathSalida, Lista01);
-                    
+
                     if (!string.IsNullOrEmpty(strEstado))
                     {
                         System.Diagnostics.Debug.WriteLine($"[CONSOLIDAR] ERROR en ProcesoConcatenar: {strEstado}");
                     }
-                    
+
                     Lista01.Clear();
                     Lista02.Clear();
                     filaIndex++;
@@ -113,6 +115,54 @@ namespace CapaNegocioMepryl
             }
 
             System.Diagnostics.Debug.WriteLine($"[CONSOLIDAR] ========== ConcatenarPDFs FIN ==========");
+            return strEstado;
+        }
+
+        public string ConcatenarPDFs(DataTable ListaArchivos, string DirectorioBase, List<string> ArchivosPdf)
+        {
+            strEstado = "";
+            DataTable dtLA = ListaArchivos;
+            List<string> Lista02 = new List<string>();
+
+            System.Diagnostics.Debug.WriteLine($"[CONSOLIDAR] ========== ConcatenarPDFs (con lista externa) INICIO ==========");
+            System.Diagnostics.Debug.WriteLine($"[CONSOLIDAR] DirectorioBase: {DirectorioBase}");
+            System.Diagnostics.Debug.WriteLine($"[CONSOLIDAR] Filas en ListaArchivos: {dtLA.Rows.Count}");
+            System.Diagnostics.Debug.WriteLine($"[CONSOLIDAR] Archivos en lista externa: {ArchivosPdf.Count}");
+
+            if (dtLA.Rows.Count > 0)
+            {
+                int filaIndex = 0;
+                foreach (DataRow r in dtLA.Rows)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[CONSOLIDAR] --- Procesando fila {filaIndex} ---");
+
+                    // Para preventiva no hay CUIT, las columnas son:
+                    // 0=Dia, 1=Mes, 2=Anio, 3=Orden, 4=DNI, 5=Paciente, 6=InfClinico, 7=InfLaboratorio, 8=InfECG, 9=ImgRX01, 10=InfAudiometria, 11=Ergometria
+                    Lista02.Add(r.ItemArray[0].ToString()); // Dia
+                    Lista02.Add(r.ItemArray[1].ToString()); // Mes
+                    Lista02.Add(r.ItemArray[2].ToString()); // Anio
+                    Lista02.Add(r.ItemArray[3].ToString()); // Orden
+                    Lista02.Add(r.ItemArray[4].ToString()); // DNI
+                    Lista02.Add(r.ItemArray[5].ToString()); // Paciente
+
+                    System.Diagnostics.Debug.WriteLine($"[CONSOLIDAR] Lista02 (datos): Fecha={Lista02[0]}, NroOrden={Lista02[1]}, DNI={Lista02[2]}, Nombre={Lista02[3]}, Apellido={Lista02[4]}, Mensaje={Lista02[5]}");
+
+                    string pathSalida = PathArchivoConsolidadoPreventiva(Lista02, DirectorioBase);
+                    System.Diagnostics.Debug.WriteLine($"[CONSOLIDAR] PathSalida: {pathSalida}");
+
+                    ProcesoConcatenar(pathSalida, ArchivosPdf);
+
+                    if (!string.IsNullOrEmpty(strEstado))
+                    {
+                        System.Diagnostics.Debug.WriteLine($"[CONSOLIDAR] ERROR en ProcesoConcatenar: {strEstado}");
+                    }
+
+                    Lista02.Clear();
+                    filaIndex++;
+                }
+            }
+
+            System.Diagnostics.Debug.WriteLine($"[CONSOLIDAR] ========== ConcatenarPDFs (con lista externa) FIN ==========");
             return strEstado;
         }
 
@@ -401,7 +451,7 @@ namespace CapaNegocioMepryl
                     cuitLimpio = "SIN_CUIT"; // Valor por defecto si está vacío
                 }
 
-                strPath = DirConsolidado + "\\" + Lista[3].ToString() + " - " + Lista[4].ToString() + " - " + Lista[0].ToString() + Lista[1].ToString() + Lista[2].ToString() + " - " + cuitLimpio + " - " + Lista[5].ToString() + ".pdf";
+                strPath = DirConsolidado + "\\" + Lista[3].ToString() + " - " + Lista[0].ToString() + Lista[1].ToString() + Lista[2].ToString() + " - " + Lista[4].ToString() + " - " + cuitLimpio + " - " + Lista[5].ToString() + ".pdf";
 
                 Lista.Clear();
             }catch(System.ArgumentException ex)
@@ -421,6 +471,52 @@ namespace CapaNegocioMepryl
                 }
 
                 strPath = Path.GetTempPath() + "\\" + Lista[3].ToString() + " - " + Lista[4].ToString() + " - " + Lista[0].ToString() + Lista[1].ToString() + Lista[2].ToString() + " - " + cuitLimpio + " - " + Lista[5].ToString() + ".pdf";
+            }
+
+            return strPath;
+        }
+
+        public string PathArchivoConsolidadoRadiologico(List<string> Lista, string DirConsolidado)
+        {
+            string strPath = "";
+
+            try
+            {
+                if (!System.IO.Directory.Exists(DirConsolidado))
+                {
+                    System.IO.Directory.CreateDirectory(DirConsolidado);
+                }
+
+                strPath = DirConsolidado + "\\" + Lista[3].ToString() + " - " + Lista[0].ToString() + Lista[1].ToString() + Lista[2].ToString() + " - " + Lista[4].ToString() + " - " + Lista[5].ToString() + ".pdf";
+
+                Lista.Clear();
+            }
+            catch (System.ArgumentException ex)
+            {
+                strPath = Path.GetTempPath() + "\\" + Lista[3].ToString() + " - " + Lista[0].ToString() + Lista[1].ToString() + Lista[2].ToString() + " - " + Lista[4].ToString() + " - " + Lista[5].ToString() + ".pdf";
+            }
+
+            return strPath;
+        }
+
+        public string PathArchivoConsolidadoPreventiva(List<string> Lista, string DirConsolidado)
+        {
+            string strPath = "";
+
+            try
+            {
+                if (!System.IO.Directory.Exists(DirConsolidado))
+                {
+                    System.IO.Directory.CreateDirectory(DirConsolidado);
+                }
+
+                strPath = DirConsolidado + "\\" + Lista[3].ToString() + " - " + Lista[0].ToString() + Lista[1].ToString() + Lista[2].ToString() + " - " + Lista[4].ToString() + " - " + Lista[5].ToString() + ".pdf";
+
+                Lista.Clear();
+            }
+            catch (System.ArgumentException ex)
+            {
+                strPath = Path.GetTempPath() + "\\" + Lista[3].ToString() + " - " + Lista[0].ToString() + Lista[1].ToString() + Lista[2].ToString() + " - " + Lista[4].ToString() + " - " + Lista[5].ToString() + ".pdf";
             }
 
             return strPath;

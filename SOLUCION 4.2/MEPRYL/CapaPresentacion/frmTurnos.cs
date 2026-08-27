@@ -1633,43 +1633,63 @@ namespace CapaPresentacion
             // Formato: [ObsExtra | ] [PLANILLA | ] $ {Promo} - $ {Seña} (SEÑA) | LISTA: $ {Lista} - SEÑA = $ {Lista - Seña}
             var sb = new System.Text.StringBuilder();
 
-            // Prefijo extra (ej: "EXPRESS")
-            if (!string.IsNullOrWhiteSpace(te.ObservacionesExtra))
-                sb.Append(te.ObservacionesExtra.Trim() + " | ");
-
-            // Indicador de planilla
-            if (te.LlevaPlanilla)
-                sb.Append("PLANILLA | ");
-
             decimal promo = (decimal)te.PrecioBase;
             decimal lista = (decimal)te.PrecioLista;
             decimal seña = (decimal)te.Seña;
 
             bool hayPrecioMostrado = false;
+            // Solo procesar observaciones monetarias si el importe neto (promo - seña) es > 0
+            decimal importeNeto = promo - seña;
+            bool hayImportes = (importeNeto > 0m || lista > 0m || seña > 0m);
 
-            // Precio promo con seña (solo si promo > 0)
-            if (promo > 0)
+            // Solo procesar observaciones monetarias si hay importes > 0
+            if (hayImportes)
             {
-                if (seña > 0)
-                    sb.Append("$ " + promo.ToString("N0") + " - $ " + seña.ToString("N0") + " (SEÑA)");
-                else
-                    sb.Append("$ " + promo.ToString("N0"));
-                hayPrecioMostrado = true;
+                // Prefijo extra (ej: "EXPRESS")
+                if (!string.IsNullOrWhiteSpace(te.ObservacionesExtra))
+                    sb.Append(te.ObservacionesExtra.Trim() + " | ");
+
+                // Indicador de planilla
+                if (te.LlevaPlanilla)
+                    sb.Append("PLANILLA | ");
+
+                // Precio promo con seña (solo si promo > 0)
+                if (promo > 0)
+                {
+                    if (seña > 0)
+                        sb.Append("$ " + promo.ToString("N0") + " - $ " + seña.ToString("N0") + " (SEÑA)");
+                    else
+                        sb.Append("$ " + promo.ToString("N0"));
+                    hayPrecioMostrado = true;
+                }
+
+                // Precio lista con seña (solo si lista > 0)
+                if (lista > 0)
+                {
+                    if (hayPrecioMostrado)
+                        sb.Append(" | ");
+                    sb.Append("LISTA: $ " + lista.ToString("N0"));
+                    if (seña > 0)
+                        sb.Append(" - SEÑA = $ " + (lista - seña).ToString("N0"));
+                    hayPrecioMostrado = true;
+                }
+            }
+            else
+            {
+                // Si no hay importes, solo mostrar observaciones extra y planilla (sin datos monetarios)
+                if (!string.IsNullOrWhiteSpace(te.ObservacionesExtra))
+                    sb.Append(te.ObservacionesExtra.Trim());
+
+                if (te.LlevaPlanilla)
+                {
+                    if (sb.Length > 0)
+                        sb.Append(" | ");
+                    sb.Append("PLANILLA");
+                }
             }
 
-            // Precio lista con seña (solo si lista > 0)
-            if (lista > 0)
-            {
-                if (hayPrecioMostrado)
-                    sb.Append(" | ");
-                sb.Append("LISTA: $ " + lista.ToString("N0"));
-                if (seña > 0)
-                    sb.Append(" - SEÑA = $ " + (lista - seña).ToString("N0"));
-                hayPrecioMostrado = true;
-            }
-
-            // Si no hay precios ni planilla ni observaciones extra, devolver string vacío
-            if (!hayPrecioMostrado && !te.LlevaPlanilla && string.IsNullOrWhiteSpace(te.ObservacionesExtra))
+            // Si no hay nada que mostrar, devolver string vacío
+            if (sb.Length == 0)
                 return string.Empty;
 
             return sb.ToString();
@@ -1692,7 +1712,9 @@ namespace CapaPresentacion
             }
 
             // Si está vacía, generar observación automática si se requiere
-            bool requiereObservacionAutomatica = te.LlevaPlanilla || te.Seña > 0 || !string.IsNullOrWhiteSpace(te.ObservacionesExtra) || te.PrecioBase > 0 || te.PrecioLista > 0;
+            // Solo generar observaciones de precios si el importe neto (precio - seña) es mayor a 0
+            decimal importeNeto = (decimal)te.PrecioBase - (decimal)te.Seña;
+            bool requiereObservacionAutomatica = te.LlevaPlanilla || te.Seña > 0 || !string.IsNullOrWhiteSpace(te.ObservacionesExtra) || importeNeto > 0;
             if (requiereObservacionAutomatica)
             {
                 // Si te.ObservacionesExtra ya es una observación automática completa, usarla directamente para evitar duplicación

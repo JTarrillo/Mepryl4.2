@@ -598,6 +598,9 @@ namespace CapaPresentacion
 
         private void DgvTiposExamenes_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
         {
+            // Configurar columnas con diseño híbrido después de cargar datos
+            ConfigurarDataGridViewColumnas(dgvTiposExamenes);
+            
             // Obtén la lista de tipos temporales
             var tiposTemporales = listaTiposExamenes.Where(t => t.IdMotivoConsulta == idMotivoConsultaSeleccionado).ToList();
             foreach (DataGridViewRow row in dgvTiposExamenes.Rows)
@@ -626,11 +629,293 @@ namespace CapaPresentacion
                 this.btnGuardar.Visible = false;
                 this.btnGuardar.Enabled = false;
                 InitializeForm();
+                
+                // Configurar diseño responsivo
+                ConfigurarDiseñoResponsivo();
+                
+                // Suscribir al evento de redimensionamiento
+                this.Resize += FrmAñadirEspecialidad_Resize;
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine("✗ Error en Load: " + ex.Message);
                 MessageBox.Show("Error al cargar: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void FrmAñadirEspecialidad_Resize(object sender, EventArgs e)
+        {
+            AjustarLayoutSegunResolucion();
+        }
+
+        private void ConfigurarDiseñoResponsivo()
+        {
+            // Configurar tamaño mínimo del formulario
+            this.MinimumSize = new System.Drawing.Size(1200, 800);
+            
+            // Configurar pesos de columnas del DataGridView
+            ConfigurarDataGridViewColumnas(dgvTiposExamenes);
+            
+            // Ajuste inicial
+            AjustarLayoutSegunResolucion();
+        }
+
+        private void ConfigurarDataGridViewColumnas(DataGridView dgv)
+        {
+            if (dgv == null || dgv.Columns.Count == 0) return;
+            
+            try
+            {
+                // Detectar resolución actual para configuración híbrida
+                int anchoFormulario = this.ClientSize.Width;
+                bool esPantallaGrande = anchoFormulario >= 1600; // 1920x1080 o similar
+                bool esPantallaPequeña = anchoFormulario < 1400; // 1366x768 o menor
+                
+                // Configurar scroll según resolución
+                if (esPantallaPequeña)
+                {
+                    dgv.ScrollBars = ScrollBars.Both; // Scroll horizontal en pantallas pequeñas
+                }
+                else
+                {
+                    dgv.ScrollBars = ScrollBars.Vertical; // Solo vertical en pantallas grandes
+                }
+                
+                // Configuración híbrida: columnas compactas fijas + columnas elásticas con Fill
+                for (int i = 0; i < dgv.Columns.Count; i++)
+                {
+                    DataGridViewColumn col = dgv.Columns[i];
+                    
+                    // Columnas compactas con ancho fijo (checkboxes, estados, IDs cortos, etc.)
+                    if (EsColumnaCompacta(col))
+                    {
+                        col.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+                        col.Width = ObtenerAnchoFijoColumna(col);
+                        col.MinimumWidth = col.Width; // Mantener ancho mínimo
+                        col.FillWeight = 0; // No participar en el relleno
+                    }
+                    // Columnas elásticas (texto principal, descripciones, etc.)
+                    else if (EsColumnaElastica(col))
+                    {
+                        if (esPantallaPequeña)
+                        {
+                            // En pantallas pequeñas: ancho mínimo para forzar scroll horizontal
+                            col.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+                            col.MinimumWidth = ObtenerAnchoMinimoColumna(col);
+                            col.Width = col.MinimumWidth;
+                            col.FillWeight = 0;
+                        }
+                        else
+                        {
+                            // En pantallas grandes: Fill para ocupar todo el espacio
+                            col.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                            col.MinimumWidth = ObtenerAnchoMinimoColumna(col); // Mantener mínimo
+                            col.FillWeight = ObtenerFillWeightColumna(col, dgv.Columns.Count);
+                        }
+                    }
+                    // Columnas restantes con comportamiento adaptativo
+                    else
+                    {
+                        col.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+                        col.MinimumWidth = 50; // Mínimo básico
+                        col.FillWeight = 0;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error configurando columnas DataGridView: {ex.Message}");
+            }
+        }
+
+        private int ObtenerAnchoMinimoColumna(DataGridViewColumn col)
+        {
+            // Definir anchos mínimos para columnas elásticas según su tipo
+            string nombreCol = col.Name.ToLower();
+            
+            // Descripciones necesitan más espacio mínimo
+            if (nombreCol.Contains("descripcion"))
+                return 300; // Mínimo 300px para descripciones
+                
+            // Nombres principales necesitan espacio moderado
+            if (nombreCol.Contains("nombre") || nombreCol.Contains("subtipo"))
+                return 200; // Mínimo 200px para nombres
+                
+            // Tipos de examen
+            if (nombreCol.Contains("tipo") || nombreCol.Contains("examen"))
+                return 180; // Mínimo 180px para tipos
+                
+            // Motivos
+            if (nombreCol.Contains("motivo"))
+                return 150; // Mínimo 150px para motivos
+                
+            return 120; // Mínimo por defecto para otras columnas elásticas
+        }
+
+        private bool EsColumnaCompacta(DataGridViewColumn col)
+        {
+            // Identificar columnas que deben tener ancho fijo compacto
+            string nombreCol = col.Name.ToLower();
+            string headerText = col.HeaderText.ToLower();
+            
+            // Checkbox de estado/activo
+            if (col is DataGridViewCheckBoxColumn)
+                return true;
+                
+            // Columnas con nombres típicos de datos compactos
+            if (nombreCol.Contains("estado") || nombreCol.Contains("activo") || 
+                nombreCol.Contains("check") || nombreCol.Contains("bool") ||
+                headerText.Contains("estado") || headerText.Contains("activo"))
+                return true;
+                
+            // IDs cortos (menos de 50 caracteres de ancho esperado)
+            if (nombreCol.Contains("id") && col.Width < 80)
+                return true;
+                
+            // Columnas numéricas pequeñas
+            if (nombreCol.Contains("orden") || nombreCol.Contains("prioridad") ||
+                headerText.Contains("orden") || headerText.Contains("prioridad"))
+                return true;
+                
+            return false;
+        }
+
+        private bool EsColumnaElastica(DataGridViewColumn col)
+        {
+            // Identificar columnas que deben expandirse para llenar espacio
+            string nombreCol = col.Name.ToLower();
+            string headerText = col.HeaderText.ToLower();
+            
+            // Columnas de texto principales
+            if (nombreCol.Contains("nombre") || nombreCol.Contains("descripcion") || 
+                nombreCol.Contains("subtipo") || nombreCol.Contains("examen") ||
+                nombreCol.Contains("tipo") || nombreCol.Contains("motivo") ||
+                headerText.Contains("nombre") || headerText.Contains("descripción") ||
+                headerText.Contains("subtipo") || headerText.Contains("examen"))
+                return true;
+                
+            return false;
+        }
+
+        private int ObtenerAnchoFijoColumna(DataGridViewColumn col)
+        {
+            // Asignar anchos fijos apropiados según el tipo de columna
+            if (col is DataGridViewCheckBoxColumn)
+                return 50; // Checkbox: ancho compacto
+                
+            string nombreCol = col.Name.ToLower();
+            
+            if (nombreCol.Contains("estado") || nombreCol.Contains("activo"))
+                return 60; // Estado: texto corto
+                
+            if (nombreCol.Contains("id"))
+                return 80; // ID: ancho moderado
+                
+            if (nombreCol.Contains("orden") || nombreCol.Contains("prioridad"))
+                return 60; // Orden numérico pequeño
+                
+            return 100; // Ancho por defecto para columnas compactas
+        }
+
+        private float ObtenerFillWeightColumna(DataGridViewColumn col, int totalColumnas)
+        {
+            // Calcular peso de relleno proporcional
+            string nombreCol = col.Name.ToLower();
+            
+            // Dar más peso a columnas de descripción (generalmente más largas)
+            if (nombreCol.Contains("descripcion"))
+                return 100;
+                
+            // Peso estándar para nombres principales
+            if (nombreCol.Contains("nombre") || nombreCol.Contains("subtipo"))
+                return 80;
+                
+            // Peso moderado para otros textos
+            return 60;
+        }
+
+        private void AjustarLayoutSegunResolucion()
+        {
+            if (this.IsDisposed) return;
+            
+            try
+            {
+                int ancho = this.ClientSize.Width;
+                int alto = this.ClientSize.Height;
+                
+                // Reconfigurar DataGridView según resolución
+                ConfigurarDataGridViewColumnas(dgvTiposExamenes);
+                
+                // Ajustes para pantalla grande (1920x1080 o mayor)
+                if (ancho >= 1600)
+                {
+                    // Aumentar ancho de botones grandes en pantallas grandes
+                    if (btn_Activar != null)
+                    {
+                        btn_Activar.Width = 300;
+                        btn_Activar.Text = "Activar todos los subtipos";
+                    }
+                    
+                    if (Btndesactivar != null)
+                    {
+                        Btndesactivar.Width = 300;
+                        Btndesactivar.Text = "Desactivar todos los subtipos";
+                    }
+                    
+                    // Aumentar altura del GroupListado
+                    if (grpListado != null)
+                    {
+                        grpListado.Height = alto - 150;
+                    }
+                }
+                // Ajustes para resolución media (1366x768 a 1600px)
+                else if (ancho >= 1366)
+                {
+                    // Mantener tamaño normal de botones
+                    if (btn_Activar != null)
+                    {
+                        btn_Activar.Width = 258;
+                        btn_Activar.Text = "Activar todos los subtipos";
+                    }
+                    
+                    if (Btndesactivar != null)
+                    {
+                        Btndesactivar.Width = 258;
+                        Btndesactivar.Text = "Desactivar todos los subtipos";
+                    }
+                    
+                    // Altura normal del GroupListado
+                    if (grpListado != null)
+                    {
+                        grpListado.Height = alto - 150;
+                    }
+                }
+                // Ajustes para resolución baja (< 1366px)
+                else
+                {
+                    // Reducir tamaño de botones y acortar texto
+                    if (btn_Activar != null)
+                    {
+                        btn_Activar.Width = 200;
+                        btn_Activar.Text = "Activar subtipos";
+                    }
+                    
+                    if (Btndesactivar != null)
+                    {
+                        Btndesactivar.Width = 200;
+                        Btndesactivar.Text = "Desactivar subtipos";
+                    }
+                    
+                    // Reducir altura del GroupListado
+                    if (grpListado != null)
+                    {
+                        grpListado.Height = alto - 120;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error ajustando layout según resolución: {ex.Message}");
             }
         }
 

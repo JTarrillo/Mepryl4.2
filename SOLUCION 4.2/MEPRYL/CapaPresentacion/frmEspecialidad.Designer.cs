@@ -84,16 +84,23 @@ namespace CapaPresentacion
             // 
             // panDerecha
             // 
+            this.panDerecha.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.panDerecha.Location = new System.Drawing.Point(595, 164);
             this.panDerecha.Size = new System.Drawing.Size(126, 349);
             // 
             // panAbajo
             // 
+            this.panAbajo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.panAbajo.Location = new System.Drawing.Point(0, 482);
             this.panAbajo.Size = new System.Drawing.Size(718, 28);
             // 
             // panCentro
             // 
+            this.panCentro.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.panCentro.Size = new System.Drawing.Size(595, 349);
             // 
             // tabPage1
@@ -140,7 +147,7 @@ namespace CapaPresentacion
             toolTipTitleItem1.Text = "Agregar un club";
             toolTipItem1.LeftIndent = 6;
             toolTipItem1.Text = "Permite agregar un club de futbol a una liga previamente existente.\r\nEsto abre un" +
-    "a ventana en la cual podemos “Agregar, modificar o eliminar” un club.\r\n";
+    "a ventana en la cual podemos ï¿½Agregar, modificar o eliminarï¿½ un club.\r\n";
             superToolTip1.Items.Add(toolTipTitleItem1);
             superToolTip1.Items.Add(toolTipItem1);
             this.bbiAgregarClub.SuperTip = superToolTip1;
@@ -195,6 +202,9 @@ namespace CapaPresentacion
             // 
             // gbDatosPersonales
             // 
+            this.gbDatosPersonales.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.gbDatosPersonales.Controls.Add(this.cboMotivoConsulta);
             this.gbDatosPersonales.Controls.Add(this.label3);
             this.gbDatosPersonales.Controls.Add(this.botonEditar);

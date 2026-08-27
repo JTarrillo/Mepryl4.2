@@ -220,7 +220,7 @@ namespace CapaPresentacion
 
         public override string borrar(string id)
         {
-            DialogResult result = MessageBox.Show(@"�Esta seguro que desea eliminar este tipo de examen? ACLARACION: REALIZAR ESTA ACCION
+            DialogResult result = MessageBox.Show(@"�Esta seguro que desea eliminar este tipo de examen? ACLARACION: REALIZAR ESTA ACCION
             PODRIA CAUSAR FALLOS EN LA INTEGRIDAD DEL SISTEMA", "Eliminar Tipo Examen", MessageBoxButtons.YesNo, MessageBoxIcon.Stop);
             if (result == DialogResult.Yes)
             {
@@ -250,7 +250,7 @@ namespace CapaPresentacion
             }
             else
             {
-                MessageBox.Show("�Primero se debe crear el tipo de examen!", "Crear Tipo Examen",
+                MessageBox.Show("�Primero se debe crear el tipo de examen!", "Crear Tipo Examen",
                     MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
         }
@@ -265,7 +265,71 @@ namespace CapaPresentacion
 
         private void frmEspecialidad_Load(object sender, EventArgs e)
         {
+            // Configurar diseño responsivo inicial
+            ConfigurarDiseñoResponsivo();
+            
+            // Suscribir al evento de redimensionamiento
+            this.Resize += frmEspecialidad_Resize;
+        }
 
+        private void frmEspecialidad_Resize(object sender, EventArgs e)
+        {
+            AjustarLayoutSegunResolucion();
+        }
+
+        private void ConfigurarDiseñoResponsivo()
+        {
+            // Configurar tamaño mínimo del formulario
+            this.MinimumSize = new System.Drawing.Size(800, 600);
+            
+            // Ajuste inicial
+            AjustarLayoutSegunResolucion();
+        }
+
+        private void AjustarLayoutSegunResolucion()
+        {
+            if (this.IsDisposed) return;
+            
+            try
+            {
+                int ancho = this.ClientSize.Width;
+                int alto = this.ClientSize.Height;
+                
+                // Ajustes para resolución baja (1366x768 o menor)
+                if (ancho < 1400)
+                {
+                    // Ajustar tamaño del botón en resoluciones bajas
+                    if (botonEditar != null)
+                    {
+                        botonEditar.Width = Math.Min(200, botonEditar.Width);
+                        botonEditar.Text = "Modif. Estudios";
+                    }
+                    
+                    // Ajustar GroupBox
+                    if (gbDatosPersonales != null)
+                    {
+                        gbDatosPersonales.Height = Math.Min(150, gbDatosPersonales.Height);
+                    }
+                }
+                else // Resolución alta (1920x1080 o mayor)
+                {
+                    // Restaurar tamaños normales
+                    if (botonEditar != null)
+                    {
+                        botonEditar.Width = 248;
+                        botonEditar.Text = "Modificar Estudios Asociados";
+                    }
+                    
+                    if (gbDatosPersonales != null)
+                    {
+                        gbDatosPersonales.Height = 187;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error ajustando layout según resolución: {ex.Message}");
+            }
         }
     }
 }

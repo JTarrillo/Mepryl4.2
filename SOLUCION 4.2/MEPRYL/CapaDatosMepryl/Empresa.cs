@@ -6,6 +6,7 @@ using Comunes;
 using Entidades;
 using System.Data;
 using System.Reflection;
+using System.Diagnostics;
 
 namespace CapaDatosMepryl
 {
@@ -70,6 +71,7 @@ namespace CapaDatosMepryl
         public Entidades.Resultado modificacion(Entidades.Empresa e)
         {
             Entidades.Resultado resul = new Entidades.Resultado();
+            Stopwatch stopwatch = Stopwatch.StartNew();
             try
             {
                 List<string> listUpdate = SQLConnector.generarListaParaProcedure("@id","@razonSocial","@nombreFantasia",
@@ -77,7 +79,7 @@ namespace CapaDatosMepryl
                 "@tipoEntidad","@art","@actividadPrincipal","@cantidadPersonal","@paginaWeb","@apeNom1","@area1","@telefono1",
                 "@celular1","@mail1","@apeNom2","@area2","@telefono2","@celular2","@mail2","@apeNom3","@area3","@telefono3",
                 "@celular3","@mail3","@categoria","@condVta","@tipoContrato","@listaPrecios","@modifPrecioConFact","@diaYHorarioPago","@observaciones",
-                "@impAbono","@intPorMora","@consultas","@visitas","@cantVisitas","@exAptitud","@cantExAptitud","@activa","@logo", "@principal");
+                "@impAbono","@intPorMora","@consultas","@visitas","@cantVisitas","@exAptitud","@cantExAptitud","@activa","@logo", "@principal", "@Fecha");
                 SQLConnector.executeProcedure("sp_Empresa_Update", listUpdate, e.Id, convertirString(e.RazonSocial),
                     convertirString(e.NombreFantasia), convertirString(e.NumeroDocumento), convertirString(e.TipoDocumento),
                     convertirString(e.TipoContribuyente), convertirString(e.Direccion), convertirString(e.CodigoPostal),
@@ -93,13 +95,23 @@ namespace CapaDatosMepryl
                     convertirInt(e.ListaPrecios), convertirBit(e.ModifConFact), convertirString(e.DiasYHorariosPago),
                     convertirString(e.Observaciones), convertirDecimal(e.ImpAbono), convertirDecimal(e.IntMora),
                     convertirBit(e.Consultas), convertirBit(e.Visitas), convertirInt(e.CantVisitas), convertirBit(e.ExAptitud),
-                    convertirInt(e.CantExAptitud), convertirString(e.Activo), e.Logo.GetBuffer(), convertirBit(e.EmpresaPrincipal));
+                    convertirInt(e.CantExAptitud), convertirString(e.Activo), e.Logo.GetBuffer(), convertirBit(e.EmpresaPrincipal), convertirString(e.FechaAlta));
+                stopwatch.Stop();
+                string logPath = @"C:\Mepryl4.2\logs\Empresa_Update.log";
+                string logMessage = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} - Empresa actualizada: {e.RazonSocial} - ID: {e.Id} - Tiempo: {stopwatch.ElapsedMilliseconds}ms{Environment.NewLine}";
+                System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(logPath));
+                System.IO.File.AppendAllText(logPath, logMessage);
                 resul.Modo = 1;
                 return resul;
 
             }
             catch (Exception ex)
             {
+                stopwatch.Stop();
+                string logPath = @"C:\Mepryl4.2\logs\Empresa_Update.log";
+                string logMessage = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} - ERROR actualizando empresa: {e.RazonSocial} - ID: {e.Id} - Tiempo: {stopwatch.ElapsedMilliseconds}ms - Error: {ex.Message}{Environment.NewLine}";
+                System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(logPath));
+                System.IO.File.AppendAllText(logPath, logMessage);
                 resul.Modo = -1;
                 resul.Mensaje = ex.ToString();
                 return resul;

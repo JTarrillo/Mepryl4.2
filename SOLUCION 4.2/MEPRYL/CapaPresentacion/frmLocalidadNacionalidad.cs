@@ -69,6 +69,14 @@ namespace CapaPresentacion
         {
             dgv.DataSource = nacionalidades.cargarNacionalidades();
             dgv.Columns[0].Visible = false;
+            
+            // Configurar pesos de columnas para diseño responsivo
+            if (dgv.Columns.Count >= 2)
+            {
+                dgv.Columns[1].FillWeight = 30; // Código - 30%
+                if (dgv.Columns.Count >= 3)
+                    dgv.Columns[2].FillWeight = 70; // Descripción - 70%
+            }
         }
 
         private void botEditar_Click(object sender, EventArgs e)
@@ -861,6 +869,12 @@ namespace CapaPresentacion
             // cboTipoPrestacion2.Text = "LOCALIDAD";  // OCULTO: Localidades
             // cboTipoPrestacion4.Text = "PRESTACION";  // OCULTO: Prestaciones
             cboTipoPrestacion6.Text = "EXAMEN APTITUD";
+            
+            // Configurar diseño responsivo inicial
+            ConfigurarDiseñoResponsivo();
+            
+            // Suscribir al evento de redimensionamiento
+            this.Resize += frmLocalidadNacionalidad_Resize;
         }
 
         // *** Fin Prestaciones ***
@@ -4035,6 +4049,283 @@ namespace CapaPresentacion
                 }
             }
             catch { tbPrecioLista.Text = ""; }
+        }
+
+        // *** MÉTODOS DE DISEÑO RESPONSIVO ***
+
+        private void frmLocalidadNacionalidad_Resize(object sender, EventArgs e)
+        {
+            AjustarLayoutSegunResolucion();
+        }
+
+        private void ConfigurarDiseñoResponsivo()
+        {
+            // Configurar tamaño mínimo del formulario
+            this.MinimumSize = new System.Drawing.Size(1024, 768);
+            
+            // Configurar todos los DataGridViews para modo responsivo
+            ConfigurarDataGridViewResponsivo(dgv);
+            ConfigurarDataGridViewResponsivo(dgv2);
+            ConfigurarDataGridViewResponsivo(dgv3);
+            ConfigurarDataGridViewResponsivo(dgv4);
+            ConfigurarDataGridViewResponsivo(dgv6);
+            ConfigurarDataGridViewResponsivo(dgvClinico);
+            ConfigurarDataGridViewResponsivo(dgvOrina);
+            ConfigurarDataGridViewResponsivo(dgvBacteriologia);
+            ConfigurarDataGridViewResponsivo(dgvPerfilLipidico);
+            ConfigurarDataGridViewResponsivo(dgvSerologia);
+            ConfigurarDataGridViewResponsivo(dgvQuimicaHematica);
+            ConfigurarDataGridViewResponsivo(dgvHematologia);
+            ConfigurarDataGridViewResponsivo(dgvMiembroInferior);
+            ConfigurarDataGridViewResponsivo(dgvTroncoYPelvis);
+            ConfigurarDataGridViewResponsivo(dgvCraneoYMSuperior);
+            ConfigurarDataGridViewResponsivo(dgvLaboralesBasicas);
+            ConfigurarDataGridViewResponsivo(dgvEstComplementarios);
+            
+            // Ajuste inicial
+            AjustarLayoutSegunResolucion();
+        }
+
+        private void ConfigurarDataGridViewResponsivo(DataGridView dgv)
+        {
+            if (dgv == null) return;
+            
+            try
+            {
+                // Configuración base para todos los DataGridViews
+                dgv.AllowUserToAddRows = false;
+                dgv.AllowUserToDeleteRows = false;
+                dgv.ReadOnly = true;
+                dgv.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+                dgv.MultiSelect = false;
+                
+                // Configuración de columnas responsiva
+                dgv.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+                dgv.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedCells;
+                
+                // Configuración de scroll inteligente
+                dgv.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+                
+                // Configurar pesos de columna si hay columnas
+                if (dgv.Columns.Count > 0)
+                {
+                    for (int i = 0; i < dgv.Columns.Count; i++)
+                    {
+                        // Asignar pesos relativos según el índice
+                        if (i == 0) // Primera columna (generalmente ID)
+                            dgv.Columns[i].FillWeight = 10;
+                        else if (i == dgv.Columns.Count - 1) // Última columna
+                            dgv.Columns[i].FillWeight = 20;
+                        else // Columnas intermedias
+                            dgv.Columns[i].FillWeight = 70 / (dgv.Columns.Count - 2);
+                    }
+                }
+                
+                // Evento para ajustar columnas en redimensionamiento
+                dgv.Resize -= DataGridView_Resize; // Evitar suscripciones múltiples
+                dgv.Resize += DataGridView_Resize;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error configurando DataGridView responsivo: {ex.Message}");
+            }
+        }
+
+        private void DataGridView_Resize(object sender, EventArgs e)
+        {
+            if (sender is DataGridView dgv)
+            {
+                AjustarColumnasDinamicamente(dgv);
+            }
+        }
+
+        private void AjustarColumnasDinamicamente(DataGridView dgv)
+        {
+            if (dgv == null || this.IsDisposed) return;
+            
+            try
+            {
+                int anchoFormulario = this.ClientSize.Width;
+                
+                // Ocultar columnas menos importantes en resoluciones bajas
+                if (anchoFormulario < 1200) // Resolución menor a 1200px
+                {
+                    foreach (DataGridViewColumn col in dgv.Columns)
+                    {
+                        // Ocultar columnas auxiliares o con nombres específicos
+                        if (col.HeaderText.Contains("Auxiliar") || 
+                            col.HeaderText.Contains("Detalle") ||
+                            col.HeaderText.Contains("Observación") ||
+                            col.HeaderText.Contains("Nota"))
+                        {
+                            col.Visible = false;
+                        }
+                    }
+                }
+                else
+                {
+                    // Mostrar todas las columnas en resoluciones altas
+                    foreach (DataGridViewColumn col in dgv.Columns)
+                    {
+                        col.Visible = true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error ajustando columnas dinámicamente: {ex.Message}");
+            }
+        }
+
+        private void AjustarLayoutSegunResolucion()
+        {
+            if (this.IsDisposed) return;
+            
+            try
+            {
+                int ancho = this.ClientSize.Width;
+                int alto = this.ClientSize.Height;
+                
+                // Ajustes para resolución baja (1366x768 o menor)
+                if (ancho < 1400)
+                {
+                    // Reducir márgenes y espaciados en controles que lo soportan
+                    // Nota: TabControl no tiene Padding directamente, se ajusta en sus TabPages
+                    
+                    // Ajustar altura de DataGridViews en cada TabPage
+                    AjustarDataGridViewsEnTabPages(alto);
+                    
+                    // Ajustar paneles de edición
+                    AjustarPanelesEdicionResolucionBaja();
+                }
+                else // Resolución alta (1920x1080 o mayor)
+                {
+                    // Layout extendido
+                    AjustarPanelesEdicionResolucionAlta();
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error ajustando layout según resolución: {ex.Message}");
+            }
+        }
+
+        private void AjustarDataGridViewsEnTabPages(int altoFormulario)
+        {
+            try
+            {
+                foreach (Control control in tab.Controls)
+                {
+                    if (control is TabPage tabPage)
+                    {
+                        foreach (Control pageControl in tabPage.Controls)
+                        {
+                            if (pageControl is DataGridView dgv)
+                            {
+                                // Dejar espacio para botones y otros controles
+                                dgv.Height = tabPage.Height - 80;
+                            }
+                            else if (pageControl is Panel panel)
+                            {
+                                // Ajustar paneles que contienen DataGridViews
+                                foreach (Control panelControl in panel.Controls)
+                                {
+                                    if (panelControl is DataGridView dgvPanel)
+                                    {
+                                        dgvPanel.Height = panel.Height - 60;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error ajustando DataGridViews en TabPages: {ex.Message}");
+            }
+        }
+
+        private void AjustarPanelesEdicionResolucionBaja()
+        {
+            try
+            {
+                // Ocultar panel de edición en modo superpuesto para resolución baja
+                if (panelEdicion != null && panelEdicion.Visible)
+                {
+                    panelEdicion.Dock = System.Windows.Forms.DockStyle.Bottom;
+                    panelEdicion.Height = 150;
+                }
+                
+                if (panelEdicion2 != null && panelEdicion2.Visible)
+                {
+                    panelEdicion2.Dock = System.Windows.Forms.DockStyle.Bottom;
+                    panelEdicion2.Height = 150;
+                }
+                
+                if (panelEdicion3 != null && panelEdicion3.Visible)
+                {
+                    panelEdicion3.Dock = System.Windows.Forms.DockStyle.Bottom;
+                    panelEdicion3.Height = 150;
+                }
+                
+                if (panelEdicion4 != null && panelEdicion4.Visible)
+                {
+                    panelEdicion4.Dock = System.Windows.Forms.DockStyle.Bottom;
+                    panelEdicion4.Height = 150;
+                }
+                
+                if (panelEdicion6 != null && panelEdicion6.Visible)
+                {
+                    panelEdicion6.Dock = System.Windows.Forms.DockStyle.Bottom;
+                    panelEdicion6.Height = 150;
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error ajustando paneles de edición resolución baja: {ex.Message}");
+            }
+        }
+
+        private void AjustarPanelesEdicionResolucionAlta()
+        {
+            try
+            {
+                // Layout extendido para resolución alta
+                if (panelEdicion != null && panelEdicion.Visible)
+                {
+                    panelEdicion.Dock = System.Windows.Forms.DockStyle.Right;
+                    panelEdicion.Width = 300;
+                }
+                
+                if (panelEdicion2 != null && panelEdicion2.Visible)
+                {
+                    panelEdicion2.Dock = System.Windows.Forms.DockStyle.Right;
+                    panelEdicion2.Width = 300;
+                }
+                
+                if (panelEdicion3 != null && panelEdicion3.Visible)
+                {
+                    panelEdicion3.Dock = System.Windows.Forms.DockStyle.Right;
+                    panelEdicion3.Width = 300;
+                }
+                
+                if (panelEdicion4 != null && panelEdicion4.Visible)
+                {
+                    panelEdicion4.Dock = System.Windows.Forms.DockStyle.Right;
+                    panelEdicion4.Width = 300;
+                }
+                
+                if (panelEdicion6 != null && panelEdicion6.Visible)
+                {
+                    panelEdicion6.Dock = System.Windows.Forms.DockStyle.Right;
+                    panelEdicion6.Width = 300;
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error ajustando paneles de edición resolución alta: {ex.Message}");
+            }
         }
     }
 }

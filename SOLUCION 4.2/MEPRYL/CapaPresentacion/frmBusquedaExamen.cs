@@ -1965,13 +1965,11 @@ namespace CapaPresentacion
 
                         if (Int32.Parse(r.ItemArray[1].ToString()) < 200 || Int32.Parse(r.ItemArray[1].ToString()) > 399)
                         {
-                            //strError = UtilMepryl.ConcatenarPDFs(dtArchivosPDF, strDirecConsolTemp + "MOVIL");
-                            strError = UtilMepryl.ConcatenarPDFsLaboral(dtArchivosPDF, strDirecConsolTemp + "MOVIL", ListaArchivosPdf);
+                            strError = UtilMepryl.ConcatenarPDFs(dtArchivosPDF, strDirecConsolTemp + "MOVIL", ListaArchivosPdf);
                         }
                         else
                         {
-                            //strError = UtilMepryl.ConcatenarPDFs(dtArchivosPDF, strDirecConsolTemp + "CLINICA");
-                            strError = UtilMepryl.ConcatenarPDFsLaboral(dtArchivosPDF, strDirecConsolTemp + "CLINICA", ListaArchivosPdf);
+                            strError = UtilMepryl.ConcatenarPDFs(dtArchivosPDF, strDirecConsolTemp + "CLINICA", ListaArchivosPdf);
                         }
 
                         // Consolidar también en ruta alternativa sin fechas
@@ -1983,7 +1981,7 @@ namespace CapaPresentacion
                                 System.IO.Directory.CreateDirectory(strDirecConsolAlternativo);
 
                             // Consolidar en ruta alternativa (usando los mismos archivos)
-                            string strErrorAlternativo = UtilMepryl.ConcatenarPDFsLaboral(dtArchivosPDF, strDirecConsolAlternativo, ListaArchivosPdf);
+                            string strErrorAlternativo = UtilMepryl.ConcatenarPDFs(dtArchivosPDF, strDirecConsolAlternativo, ListaArchivosPdf);
                         }
                         catch (Exception ex)
                         {
@@ -2474,6 +2472,12 @@ namespace CapaPresentacion
 
             if (System.IO.File.Exists(strDirRXTemp))
                 strDirectorioBase = System.IO.Path.GetDirectoryName(strDirRXTemp).ToString();
+            else
+                strDirectorioBase = strDirectorioConsolidar + "\\" + Anio + "\\" + Mes + "-" + NombreMes + "\\" + Dia + "\\CLINICA\\";
+
+            System.Diagnostics.Debug.WriteLine($"[DEBUG] GenerarInfoRadiologico - strDirectorioBase: {strDirectorioBase}");
+            System.Diagnostics.Debug.WriteLine($"[DEBUG] GenerarInfoRadiologico - strDirectorioConsolidar: {strDirectorioConsolidar}");
+            System.Diagnostics.Debug.WriteLine($"[DEBUG] GenerarInfoRadiologico - Anio: {Anio}, Mes: {Mes}, NombreMes: {NombreMes}, Dia: {Dia}");
 
             if (dt.Rows.Count > 0)
             {
@@ -2495,7 +2499,7 @@ namespace CapaPresentacion
                     strNombreArchivoRadiologico.Add(r.ItemArray[3].ToString());
                 }
 
-                strPath = UtilMepryl.PathArchivoConsolidado(strNombreArchivoRadiologico, strDirectorioBase);
+                strPath = UtilMepryl.PathArchivoConsolidadoRadiologico(strNombreArchivoRadiologico, strDirectorioBase);
 
                 CrearReporte.CreateWordDocument(strArchivoPlantilla, strPath, new object(), Etiquetas, 'P', false);
 

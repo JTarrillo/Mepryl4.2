@@ -81,16 +81,21 @@ namespace CapaDatosMepryl
             if (llevaPlanilla)
                 sb.Append("PLANILLA | ");
 
-            if (sena > 0)
-                sb.Append("$ " + promo.ToString("N0") + " - $ " + sena.ToString("N0") + " (SEÑA)");
-            else
-                sb.Append("$ " + promo.ToString("N0"));
-
-            if (lista > 0)
+            // Solo generar observaciones de precios si el importe neto (promo - sena) es mayor a 0
+            decimal importeNeto = promo - sena;
+            if (importeNeto > 0)
             {
-                sb.Append(" | LISTA: $ " + lista.ToString("N0"));
                 if (sena > 0)
-                    sb.Append(" - SEÑA = $ " + (lista - sena).ToString("N0"));
+                    sb.Append("$ " + promo.ToString("N0") + " - $ " + sena.ToString("N0") + " (SEÑA)");
+                else
+                    sb.Append("$ " + promo.ToString("N0"));
+
+                if (lista > 0)
+                {
+                    sb.Append(" | LISTA: $ " + lista.ToString("N0"));
+                    if (sena > 0)
+                        sb.Append(" - SEÑA = $ " + (lista - sena).ToString("N0"));
+                }
             }
 
             return sb.ToString();
@@ -110,7 +115,9 @@ namespace CapaDatosMepryl
             }
 
             // Si está vacía, generar observación automática si se requiere
-            bool requiereObservacionAutomatica = llevaPlanilla || sena > 0 || !string.IsNullOrWhiteSpace(observacionesExtra) || promo > 0 || lista > 0;
+            // Solo generar observaciones de precios si el importe neto (promo - sena) es mayor a 0
+            decimal importeNeto = promo - sena;
+            bool requiereObservacionAutomatica = llevaPlanilla || sena > 0 || !string.IsNullOrWhiteSpace(observacionesExtra) || importeNeto > 0;
             if (requiereObservacionAutomatica)
             {
                 // Si observacionesExtra ya es una observación automática completa, usarla directamente para evitar duplicación

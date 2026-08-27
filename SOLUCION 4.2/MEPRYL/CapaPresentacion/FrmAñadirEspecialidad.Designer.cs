@@ -382,6 +382,7 @@
             this.tabGestionar.Controls.Add(this.btn_Activar);
             this.tabGestionar.Controls.Add(this.Btndesactivar);
             this.tabGestionar.Controls.Add(this.grpListado);
+            this.tabGestionar.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabGestionar.Location = new System.Drawing.Point(4, 4);
             this.tabGestionar.Name = "tabGestionar";
             this.tabGestionar.Size = new System.Drawing.Size(1172, 581);
@@ -389,6 +390,7 @@
             // 
             // btn_Activar
             // 
+            this.btn_Activar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btn_Activar.FlatAppearance.BorderColor = System.Drawing.Color.Black;
             this.btn_Activar.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btn_Activar.ForeColor = System.Drawing.Color.Black;
@@ -405,6 +407,7 @@
             // 
             // Btndesactivar
             // 
+            this.Btndesactivar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.Btndesactivar.FlatAppearance.BorderColor = System.Drawing.Color.Black;
             this.Btndesactivar.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Btndesactivar.ForeColor = System.Drawing.Color.Black;
@@ -421,6 +424,9 @@
             // 
             // grpListado
             // 
+            this.grpListado.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.grpListado.Controls.Add(this.btngravarespecialidades);
             this.grpListado.Controls.Add(this.dgvTiposExamenes);
             this.grpListado.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Bold);
@@ -451,7 +457,10 @@
             // 
             this.dgvTiposExamenes.AllowUserToAddRows = false;
             this.dgvTiposExamenes.AllowUserToDeleteRows = false;
-            this.dgvTiposExamenes.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.dgvTiposExamenes.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dgvTiposExamenes.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.None;
             this.dgvTiposExamenes.BackgroundColor = System.Drawing.Color.WhiteSmoke;
             this.dgvTiposExamenes.Location = new System.Drawing.Point(0, 10);
             this.dgvTiposExamenes.Name = "dgvTiposExamenes";
